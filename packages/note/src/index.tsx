@@ -73,11 +73,22 @@ async function setup({ aborter }: { aborter: AbortController }) {
       kikuCss?.remove();
     }
 
-    const root = document.getElementById("kiku-root");
+    let root = document.getElementById("kiku-root");
     if (!root) {
+      if (aborter.signal.aborted) return;
       const shadowParent = document.querySelector("#kiku-shadow-parent");
-      if (shadowParent || aborter.signal.aborted) return;
-      throw new Error("root not found");
+      if (shadowParent) {
+        const existingRoot = shadowParent.shadowRoot?.querySelector(
+          "#kiku-root",
+        ) as HTMLElement | undefined | null;
+        if (existingRoot && existingRoot.innerHTML.trim() === "") {
+          root = existingRoot;
+        } else {
+          return;
+        }
+      } else {
+        throw new Error("root not found");
+      }
     }
     root.part.add("root-part");
     KIKU_STATE.root = root;
