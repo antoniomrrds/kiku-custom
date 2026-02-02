@@ -29,6 +29,7 @@ __pycache__
 packages/addon/meta.json
 .env
 todo.txt
+AGENTS.md
 
 
 /packages/note/.fonts/*
