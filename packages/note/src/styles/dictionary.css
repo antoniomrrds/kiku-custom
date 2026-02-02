@@ -15,7 +15,7 @@
   /*
   *   ────────────────────────────── Jitendex ─────────────────────────────
   */
-  [data-sc-content="example-sentence"] {
+  div[data-sc-content="example-sentence"] {
     background-color: var(--color-base-300) !important;
     border-color: var(--color-primary) !important;
     span[style^="color"] {
@@ -23,11 +23,11 @@
     }
   }
 
-  [data-sc-content="example-keyword"] {
+  span[data-sc-content="example-keyword"] {
     color: var(--color-base-content-primary) !important;
   }
 
-  [data-sc-content="sense-note"] {
+  div[data-sc-content="sense-note"] {
     background-color: var(--color-base-300) !important;
     border-color: var(--color-warning) !important;
     div[style*="color"] {
@@ -35,22 +35,35 @@
     }
   }
 
-  span[style*="color: rgb(86, 86, 86)"] {
+  div[data-sc-content="xref"] {
+    background-color: var(--color-base-300) !important;
+    border-color: var(--color-primary) !important;
+    & span[data-sc-content="reference-label"] {
+      color: var(--color-base-content-primary) !important;
+    }
+  }
+
+  span[style*="color: rgb(86, 86, 86)"],
+  span[data-sc-content="part-of-speech-info"],
+  span[data-sc-content="forms-label"] {
     background-color: var(--color-secondary) !important;
     color: var(--color-secondary-content) !important;
   }
 
-  span[style*="background-color: brown"] {
+  span[style*="background-color: brown"],
+  span[data-sc-content="misc-info"] {
     background-color: var(--color-accent) !important;
     color: var(--color-accent-content) !important;
   }
 
-  span[style*="background-color: purple"] {
+  span[style*="background-color: purple"],
+  span[data-sc-content="field-info"] {
     background-color: var(--color-primary) !important;
     color: var(--color-primary-content) !important;
   }
 
-  li[data-dictionary*="Jitendex.org"] {
+  li[data-dictionary*="Jitendex.org"],
+  div[class="yomitan-glossary"] {
     i:first-child {
       color: var(--color-base-content-calm) !important;
     }
