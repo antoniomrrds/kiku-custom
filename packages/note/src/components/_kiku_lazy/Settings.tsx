@@ -203,6 +203,19 @@ function GeneralSettings() {
           </label>
         </fieldset>
         <fieldset class="fieldset py-0">
+          <legend class="fieldset-legend">Mute NSFW</legend>
+          <label class="label">
+            <input
+              type="checkbox"
+              checked={$config.muteNsfw}
+              class="toggle"
+              on:change={(e) => {
+                $setConfig("muteNsfw", e.target.checked);
+              }}
+            />
+          </label>
+        </fieldset>
+        <fieldset class="fieldset py-0">
           <legend class="fieldset-legend">Show Theme</legend>
           <label class="label">
             <input

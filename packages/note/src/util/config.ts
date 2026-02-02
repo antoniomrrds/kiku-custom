@@ -11,6 +11,7 @@ export type KikuConfig = {
   systemFontSecondary: string;
   useSystemFontSecondary: boolean;
   blurNsfw: boolean;
+  muteNsfw: boolean;
   pictureOnFront: boolean;
   showTheme: boolean;
   showStartupTime: boolean;
@@ -93,6 +94,7 @@ export function validateConfig(config: KikuConfig): KikuConfig {
       useSystemFontSecondary: typeof config.useSystemFontSecondary === "boolean" ? config.useSystemFontSecondary : defaultConfig.useSystemFontSecondary,
 
       blurNsfw: typeof config.blurNsfw === "boolean" ? config.blurNsfw : defaultConfig.blurNsfw,
+      muteNsfw: typeof config.muteNsfw === "boolean" ? config.muteNsfw : defaultConfig.muteNsfw,
       pictureOnFront: typeof config.pictureOnFront === "boolean" ? config.pictureOnFront : defaultConfig.pictureOnFront,
       showTheme: typeof config.showTheme === "boolean" ? config.showTheme : defaultConfig.showTheme,
       showStartupTime: typeof config.showStartupTime === "boolean" ? config.showStartupTime : defaultConfig.showStartupTime,

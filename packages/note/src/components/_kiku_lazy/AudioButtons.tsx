@@ -1,4 +1,4 @@
-import { createEffect, For, Show } from "solid-js";
+import { createEffect, For, onMount, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
 import { nodesToString } from "#/util/general";
@@ -103,6 +103,12 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
           }
         };
       }
+    }
+  });
+
+  onMount(() => {
+    if ($card.isNsfw && $config.muteNsfw) {
+      $card.expressionAudioRef?.querySelector("a")?.click();
     }
   });
 
