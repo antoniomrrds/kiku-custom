@@ -27,12 +27,19 @@ export default function BackBody(props: {
   const [definitionIndex, setDefinitionIndex] = createSignal(initPageIndex());
   const [definitionPicture, setDefinitionPicture] = createSignal<string>();
 
-  // empty glossary if it's the same as main definition
-  const glossary =
-    ankiFields.MainDefinition === ankiFields.Glossary
-      ? ""
-      : ankiFields.Glossary;
-  const pages = [ankiFields.SelectionText, ankiFields.MainDefinition, glossary];
+  const glossary = () => {
+    // empty glossary if it's the same as main definition
+    if (ankiFields.MainDefinition === ankiFields.Glossary) return "";
+    return removeMainDefinitionFromGlossary(
+      ankiFields.Glossary,
+      ankiFields.MainDefinition,
+    );
+  };
+  const pages = [
+    ankiFields.SelectionText,
+    ankiFields.MainDefinition,
+    glossary(),
+  ];
 
   const pagesWithContent = pages.filter(
     (page) => !isHtmlEffectivelyEmpty(page?.trim()),
@@ -122,6 +129,35 @@ export default function BackBody(props: {
       )}
     </div>
   );
+}
+
+function removeMainDefinitionFromGlossary(
+  glossary: string,
+  mainDefinition: string,
+) {
+  const parser = new DOMParser();
+  const glossaryDoc = parser.parseFromString(glossary, "text/html");
+  const mainDefinitionDoc = parser.parseFromString(mainDefinition, "text/html");
+
+  const mainDefinitionLi = mainDefinitionDoc.querySelector(
+    'div[class="yomitan-glossary"] > ol > li[data-dictionary]',
+  );
+  if (!mainDefinitionLi) return glossary;
+  const mainDefinitionDictionary =
+    mainDefinitionLi.getAttribute("data-dictionary");
+  if (!mainDefinitionDictionary) return glossary;
+
+  const glossaries = glossaryDoc.querySelectorAll(
+    `div[class="yomitan-glossary"] > ol > li[data-dictionary]`,
+  );
+  for (const glossaryLi of glossaries) {
+    if (
+      glossaryLi.getAttribute("data-dictionary") === mainDefinitionDictionary
+    ) {
+      glossaryLi.remove();
+    }
+  }
+  return glossaryDoc.body.innerHTML;
 }
 
 function ExternalLinks() {
