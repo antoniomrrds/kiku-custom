@@ -1,10 +1,15 @@
 .definition-field {
-  ol {
-    list-style-position: inside;
+  ol,
+  ul,
+  menu {
+    padding-inline-start: 1.5em;
+    list-style-position: outside;
   }
-
+  ol {
+    list-style-type: decimal;
+  }
   ul {
-    list-style-position: inside;
+    list-style: disc;
   }
 
   /*
@@ -70,11 +75,11 @@
   }
 
   ol:has(> li[data-details="JMdict"]) {
-    list-style-type: disc;
+    list-style-type: number;
   }
 
   ol:has(> li[data-dictionary^="JMdict"]) {
-    list-style-type: disc;
+    list-style-type: number;
   }
 
   ol:has(> li[data-dictionary^="JMdict"]) ul {
