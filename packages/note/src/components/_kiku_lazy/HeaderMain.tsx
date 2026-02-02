@@ -48,19 +48,29 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
           </Match>
           <Match when={!$card.nested}>
             <div class="relative">
-              <BoltIcon
-                class="size-5"
-                classList={{
-                  "text-base-content-soft cursor-pointer":
-                    $card.side === "back",
-                  "text-base-content-subtle-100": $card.side === "front",
-                }}
-                on:click={() => {
-                  navigate("settings", "forward", () =>
-                    navigate("main", "back"),
-                  );
-                }}
-              ></BoltIcon>
+              <div
+                class="tooltip tooltip-bottom"
+                data-tip={
+                  $card.side === "front"
+                    ? "Settings page is only accessible from the back side of the card"
+                    : undefined
+                }
+              >
+                <BoltIcon
+                  class="size-5"
+                  classList={{
+                    "text-base-content-soft cursor-pointer":
+                      $card.side === "back",
+                    "text-base-content-subtle-100": $card.side === "front",
+                  }}
+                  on:click={() => {
+                    navigate("settings", "forward", () =>
+                      navigate("main", "back"),
+                    );
+                  }}
+                ></BoltIcon>
+              </div>
+
               <Show when={$general.isThemeChanged}>
                 <div class="status status-warning absolute top-0 right-0 translate-x-0.5 -translate-y-0.5"></div>
               </Show>

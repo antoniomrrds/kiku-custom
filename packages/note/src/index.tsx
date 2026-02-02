@@ -91,7 +91,7 @@ async function setup({ aborter }: { aborter: AbortController }) {
     const style = qa?.querySelector("style");
     if (style) shadow?.appendChild(style.cloneNode(true));
     const tailwind = document.querySelector(
-      "[data-vite-dev-id='/home/yym/repos/kiku/packages/note/src/styles/tailwind.css']",
+      'style[type="text/css"][data-vite-dev-id$="tailwind.css"]',
     );
     if (tailwind) {
       shadow?.appendChild(tailwind.cloneNode(true));
