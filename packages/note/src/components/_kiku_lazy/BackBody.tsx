@@ -19,32 +19,33 @@ export default function BackBody(props: {
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$config] = useConfigContext();
 
-  const initPage = () => {
+  const initPageIndex = () => {
     if (ankiFields.SelectionText) return 0;
     if (!isHtmlEffectivelyEmpty(ankiFields.MainDefinition)) return 1;
     return 2;
   };
-  const [definitionPage, setDefinitionPage] = createSignal(initPage());
+  const [definitionIndex, setDefinitionIndex] = createSignal(initPageIndex());
   const [definitionPicture, setDefinitionPicture] = createSignal<string>();
 
-  const pages = [
-    ankiFields.SelectionText,
-    ankiFields.MainDefinition,
-    ankiFields.Glossary,
-  ];
+  // empty glossary if it's the same as main definition
+  const glossary =
+    ankiFields.MainDefinition === ankiFields.Glossary
+      ? ""
+      : ankiFields.Glossary;
+  const pages = [ankiFields.SelectionText, ankiFields.MainDefinition, glossary];
 
   const pagesWithContent = pages.filter(
     (page) => !isHtmlEffectivelyEmpty(page?.trim()),
   );
 
-  const pageType = () => {
-    if (definitionPage() === 0) return "Selection Text";
-    if (definitionPage() === 1) return "Main Definition";
-    if (definitionPage() === 2) return "Glossary";
+  const pageName = () => {
+    if (definitionIndex() === 0) return "Selection Text";
+    if (definitionIndex() === 1) return "Main Definition";
+    if (definitionIndex() === 2) return "Glossary";
   };
 
   function changePage(direction: 1 | -1) {
-    setDefinitionPage((prev) => {
+    setDefinitionIndex((prev) => {
       let next = (prev + direction + pages.length) % pages.length;
       for (let i = 0; i < pages.length; i++) {
         if (!isHtmlEffectivelyEmpty(pages[next]?.trim())) break;
@@ -84,7 +85,7 @@ export default function BackBody(props: {
         <div class="animate-fade-in">
           {pagesWithContent.length > 1 && (
             <div class="text-end text-base-content-soft text-sm">
-              {pageType()}
+              {pageName()}
             </div>
           )}
           <div class="relative bg-base-200 p-4 border-s-4 border-primary text-base sm:text-xl rounded-lg definition-field">
@@ -99,7 +100,7 @@ export default function BackBody(props: {
                   innerHTML={definitionPicture()}
                 ></div>
               )}
-              <div class="contents" innerHTML={pages[definitionPage()]}></div>
+              <div class="contents" innerHTML={pages[definitionIndex()]}></div>
             </div>
             {pagesWithContent.length > 1 && (
               <>
