@@ -855,7 +855,7 @@ function DebugSettings() {
           <div class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] rounded-box gap-x-4 gap-y-2">
             <fieldset class="fieldset">
               <legend class="fieldset-legend">
-                AnkiConnect Port
+                AnkiConnect Address
                 <UndoIcon
                   class="h-4 w-4 cursor-pointer"
                   classList={{

@@ -49,7 +49,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
           <Match when={!$card.nested}>
             <div class="relative">
               <div
-                class="tooltip tooltip-bottom"
+                class="tooltip tooltip-bottom flex items-center"
                 data-tip={
                   $card.side === "front"
                     ? "Settings page is only accessible from the back side of the card"
