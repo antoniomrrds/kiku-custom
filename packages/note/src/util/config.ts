@@ -1,6 +1,6 @@
 import { defaultConfig } from "./defaulConfig";
 import { type WebFont, webFonts } from "./fonts";
-import { type DaisyUITheme, daisyUIThemes } from "./theme";
+import { colorBase100Map, type DaisyUITheme, daisyUIThemes } from "./theme";
 
 export type KikuConfig = {
   theme: DaisyUITheme;
@@ -157,6 +157,8 @@ export type CssVar = {
   "--line-height-sm-hint": string;
 
   "--layout-max-width": string;
+
+  "--color-base-100": string;
 };
 
 // biome-ignore format: this looks nicer
@@ -205,6 +207,7 @@ export function getCssVar(config: KikuConfig) {
     "--line-height-sm-hint": tailwindFontSizeVar[config.fontSizeSmHint].lineHeight,
 
     "--layout-max-width": tailwindContainerSizeVar[config.layoutMaxWidth].maxWidth,
+    "--color-base-100": colorBase100Map[config.theme],
   };
 
   return cssVar;

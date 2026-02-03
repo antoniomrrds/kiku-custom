@@ -108,3 +108,8 @@
     /* custom theme here */
   }
 }
+
+/* apply initial background-color before the card render */
+.card {
+  background-color: var(--color-base-100) !important;
+}
