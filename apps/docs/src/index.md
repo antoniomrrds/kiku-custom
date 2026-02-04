@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Kiku"
-  text: "Modern Anki notes, built like web apps."
+  text: "Modern Anki notes, for Japanese learners."
   tagline: A fully interactive Anki note type
   image:
     src: /logo.png

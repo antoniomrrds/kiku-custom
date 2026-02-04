@@ -2,6 +2,15 @@
 outline: deep
 ---
 
+::: tip TLDR
+
+1. **Download** the latest `.apkg` from [Releases](https://github.com/youyoumu/kiku/releases).
+2. **Clean** existing files via `Tools` > `Kiku Note Manager` > **Delete Kiku files**.
+3. **Import** the new `.apkg` into Anki.
+4. **Sync** by opening the Kiku settings page and clicking **Save**.
+
+:::
+
 # Updating Kiku
 
 Download the latest `Kiku_v*.apkg` from the [Release page](https://github.com/youyoumu/kiku/releases).
