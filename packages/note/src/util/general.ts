@@ -4,7 +4,7 @@ import { exampleFields } from "./examples";
 
 // biome-ignore format: this looks nicer
 export const env = {
-  KIKU_VERSION: "1.6.0",
+  KIKU_VERSION: "1.7.0",
   KIKU_NOTE_TYPE: "Kiku",
   KIKU_CARD_TYPE: "Mining",
   KIKU_CONFIG_FILE: "_kiku_config.json",
