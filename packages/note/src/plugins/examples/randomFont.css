@@ -1,0 +1,7 @@
+.font-secondary {
+  visibility: hidden;
+}
+
+[data-hide-secondary="false"] .font-secondary {
+  visibility: visible;
+}

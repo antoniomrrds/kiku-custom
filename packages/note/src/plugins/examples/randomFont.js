@@ -27,5 +27,15 @@ export const plugin = {
 
     document.documentElement.style.setProperty("--font-secondary", font);
     if (root) root.style.setProperty("--font-secondary", font);
+
+    // wait until the font is loaded
+    document.fonts.onloadingdone = () => {
+      if (root) root.dataset.hideSecondary = "false";
+    };
+    // safe guard when fonts.onloadingdone event fails
+    const delay = 100; // ms
+    setTimeout(() => {
+      if (root) root.dataset.hideSecondary = "false";
+    }, delay);
   },
 };
