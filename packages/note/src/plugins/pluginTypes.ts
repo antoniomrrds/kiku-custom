@@ -23,6 +23,7 @@ import type h from "solid-js/h";
 import type { JSX } from "solid-js/jsx-runtime";
 import type { createStore } from "solid-js/store";
 import type { Portal } from "solid-js/web";
+import type { UseKanjiContext } from "#/components/_kiku_lazy/KanjiContext";
 import type { PitchInfo } from "#/components/_kiku_lazy/util/hatsuon";
 import type { UseAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
 import type { UseBreakpointContext } from "#/components/shared/BreakpointContext";
@@ -83,6 +84,12 @@ export type KikuPlugin = {
       index: number;
       ref?: (ref: HTMLDivElement) => void;
     }) => JSX.Element;
+    ctx: Ctx;
+  }) => JSX.Element | JSX.Element[];
+  KanjiInfoExtra?: (props: {
+    inKanjiPage?: boolean;
+    DefaultKanjiInfoExtra: () => JSX.Element;
+    useKanjiContext: UseKanjiContext;
     ctx: Ctx;
   }) => JSX.Element | JSX.Element[];
   onPluginLoad?: (props: { ctx: Ctx }) => void;

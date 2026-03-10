@@ -1,7 +1,15 @@
-import { createEffect, createUniqueId, For, Show } from "solid-js";
+import {
+  createEffect,
+  createUniqueId,
+  ErrorBoundary,
+  For,
+  Show,
+} from "solid-js";
 import { createStore } from "solid-js/store";
 import type { AnkiNote } from "#/types";
 import { useNavigationTransition } from "#/util/hooks";
+import { useCtxContext } from "../shared/CtxContext";
+import { useGeneralContext } from "../shared/GeneralContext";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { type ContextLabel, useKanjiPageContext } from "./KanjiPageContext";
 import { capitalizeSentence } from "./util/general";
@@ -60,6 +68,9 @@ export function KanjiInfo() {
 
 export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
   const [$kanji, $setKanji] = useKanjiContext();
+  const [$general] = useGeneralContext();
+  const ctx = useCtxContext();
+
   const KanjiKeywordComponent = props.inKanjiPage
     ? KanjiKeywordKanjiPage
     : KanjiKeyword;
@@ -102,198 +113,223 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
     }
   });
 
+  function DefaultKanjiInfoExtra() {
+    return (
+      <>
+        <Show when={$kanji.kanjiInfo?.visuallySimilar.length}>
+          <div class="collapse collapse-arrow rounded-none">
+            <input
+              type="checkbox"
+              class="p-0"
+              checked={$checkbox.visuallySimilar}
+              on:change={(e) => {
+                $setCheckbox("visuallySimilar", e.currentTarget.checked);
+              }}
+            />
+            <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
+              <div class="font-bold text-base-content-calm">
+                Visually Similar
+              </div>
+            </div>
+            <div class="collapse-content p-0">
+              <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
+                <For each={$kanji.kanjiInfo?.visuallySimilar}>
+                  {(kanji) => {
+                    return (
+                      <KanjiContextProvider kanji={kanji}>
+                        <KanjiKeywordComponent
+                          parentKanji={$kanji.kanji}
+                          noteList={$kanji.visuallySimilar}
+                          nestedFocus={{
+                            kanji: kanji,
+                            noteId: undefined,
+                          }}
+                          contextLabel={{
+                            text: $kanji.kanji,
+                            type: "similar",
+                          }}
+                        />
+                      </KanjiContextProvider>
+                    );
+                  }}
+                </For>
+              </div>
+            </div>
+          </div>
+        </Show>
+
+        <Show when={$kanji.kanjiInfo?.composedOf.length}>
+          <div class="collapse collapse-arrow rounded-none">
+            <input
+              type="checkbox"
+              class="p-0"
+              ref={(ref) => $setCheckboxRef("composedOf", ref)}
+              checked={$checkbox.composedOf}
+              on:change={(e) => {
+                $setCheckbox("composedOf", e.currentTarget.checked);
+              }}
+            />
+            <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
+              <div class="font-bold text-base-content-calm">Composed of</div>
+            </div>
+            <div class="collapse-content p-0">
+              <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
+                <For each={$kanji.kanjiInfo?.composedOf}>
+                  {(kanji) => {
+                    return (
+                      <KanjiContextProvider kanji={kanji}>
+                        <KanjiKeywordComponent
+                          parentKanji={$kanji.kanji}
+                          noteList={$kanji.composedOf}
+                          nestedFocus={{
+                            kanji: kanji,
+                            noteId: undefined,
+                          }}
+                          contextLabel={{
+                            text: $kanji.kanji,
+                            type: "composedOf",
+                          }}
+                        />
+                      </KanjiContextProvider>
+                    );
+                  }}
+                </For>
+              </div>
+            </div>
+          </div>
+        </Show>
+
+        <Show when={$kanji.kanjiInfo?.usedIn.length}>
+          <div class="collapse collapse-arrow rounded-none">
+            <input
+              type="checkbox"
+              class="p-0"
+              checked={$checkbox.usedIn}
+              on:change={(e) => {
+                $setCheckbox("usedIn", e.currentTarget.checked);
+              }}
+            />
+            <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
+              <div class="font-bold text-base-content-calm">Used in</div>
+            </div>
+            <div class="collapse-content p-0">
+              <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
+                <For each={$kanji.kanjiInfo?.usedIn}>
+                  {(kanji) => {
+                    return (
+                      <KanjiContextProvider kanji={kanji}>
+                        <KanjiKeywordComponent
+                          parentKanji={$kanji.kanji}
+                          noteList={$kanji.usedIn}
+                          nestedFocus={{
+                            kanji: kanji,
+                            noteId: undefined,
+                          }}
+                          contextLabel={{
+                            text: $kanji.kanji,
+                            type: "usedIn",
+                          }}
+                        />
+                      </KanjiContextProvider>
+                    );
+                  }}
+                </For>
+              </div>
+            </div>
+          </div>
+        </Show>
+
+        <Show when={$kanji.kanjiInfo?.meanings.length}>
+          <div class="collapse collapse-arrow rounded-none">
+            <input
+              type="checkbox"
+              class="p-0"
+              checked={$checkbox.meanings}
+              on:change={(e) => {
+                $setCheckbox("meanings", e.currentTarget.checked);
+              }}
+            />
+            <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
+              <div class="font-bold text-base-content-calm">Meanings</div>
+            </div>
+            <div class="collapse-content p-0">
+              <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
+                <For each={$kanji.kanjiInfo?.meanings}>
+                  {(meaning) => {
+                    return (
+                      <div class="border border-base-300 inline-flex px-1 bg-base-300">
+                        {meaning}
+                      </div>
+                    );
+                  }}
+                </For>
+              </div>
+            </div>
+          </div>
+        </Show>
+
+        <Show when={$kanji.kanjiInfo?.related.length}>
+          <div class="collapse collapse-arrow rounded-none">
+            <input
+              type="checkbox"
+              class="p-0"
+              checked={$checkbox.related}
+              on:change={(e) => {
+                $setCheckbox("related", e.currentTarget.checked);
+              }}
+            />
+            <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
+              <div class="font-bold text-base-content-calm">Related</div>
+            </div>
+            <div class="collapse-content p-0">
+              <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
+                <For each={$kanji.kanjiInfo?.related}>
+                  {(kanji) => {
+                    return (
+                      <KanjiContextProvider kanji={kanji}>
+                        <KanjiKeywordComponent
+                          parentKanji={$kanji.kanji}
+                          noteList={$kanji.related}
+                          nestedFocus={{
+                            kanji: kanji,
+                            noteId: undefined,
+                          }}
+                          contextLabel={{
+                            text: $kanji.kanji,
+                            type: "related",
+                          }}
+                        />
+                      </KanjiContextProvider>
+                    );
+                  }}
+                </For>
+              </div>
+            </div>
+          </div>
+        </Show>
+      </>
+    );
+  }
+
   return (
-    <>
-      <Show when={$kanji.kanjiInfo?.visuallySimilar.length}>
-        <div class="collapse collapse-arrow rounded-none">
-          <input
-            type="checkbox"
-            class="p-0"
-            checked={$checkbox.visuallySimilar}
-            on:change={(e) => {
-              $setCheckbox("visuallySimilar", e.currentTarget.checked);
-            }}
-          />
-          <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
-            <div class="font-bold text-base-content-calm">Visually Similar</div>
-          </div>
-          <div class="collapse-content p-0">
-            <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.visuallySimilar}>
-                {(kanji) => {
-                  return (
-                    <KanjiContextProvider kanji={kanji}>
-                      <KanjiKeywordComponent
-                        parentKanji={$kanji.kanji}
-                        noteList={$kanji.visuallySimilar}
-                        nestedFocus={{
-                          kanji: kanji,
-                          noteId: undefined,
-                        }}
-                        contextLabel={{
-                          text: $kanji.kanji,
-                          type: "similar",
-                        }}
-                      />
-                    </KanjiContextProvider>
-                  );
-                }}
-              </For>
-            </div>
-          </div>
-        </div>
+    <ErrorBoundary fallback={<DefaultKanjiInfoExtra />}>
+      <Show
+        when={$general.plugin?.KanjiInfoExtra}
+        fallback={<DefaultKanjiInfoExtra />}
+      >
+        {(get) => {
+          const KanjiInfoExtra = get();
+          return (
+            <KanjiInfoExtra
+              inKanjiPage={props.inKanjiPage}
+              DefaultKanjiInfoExtra={DefaultKanjiInfoExtra}
+              ctx={ctx}
+              useKanjiContext={useKanjiContext}
+            />
+          );
+        }}
       </Show>
-
-      <Show when={$kanji.kanjiInfo?.composedOf.length}>
-        <div class="collapse collapse-arrow rounded-none">
-          <input
-            type="checkbox"
-            class="p-0"
-            ref={(ref) => $setCheckboxRef("composedOf", ref)}
-            checked={$checkbox.composedOf}
-            on:change={(e) => {
-              $setCheckbox("composedOf", e.currentTarget.checked);
-            }}
-          />
-          <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
-            <div class="font-bold text-base-content-calm">Composed of</div>
-          </div>
-          <div class="collapse-content p-0">
-            <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.composedOf}>
-                {(kanji) => {
-                  return (
-                    <KanjiContextProvider kanji={kanji}>
-                      <KanjiKeywordComponent
-                        parentKanji={$kanji.kanji}
-                        noteList={$kanji.composedOf}
-                        nestedFocus={{
-                          kanji: kanji,
-                          noteId: undefined,
-                        }}
-                        contextLabel={{
-                          text: $kanji.kanji,
-                          type: "composedOf",
-                        }}
-                      />
-                    </KanjiContextProvider>
-                  );
-                }}
-              </For>
-            </div>
-          </div>
-        </div>
-      </Show>
-
-      <Show when={$kanji.kanjiInfo?.usedIn.length}>
-        <div class="collapse collapse-arrow rounded-none">
-          <input
-            type="checkbox"
-            class="p-0"
-            checked={$checkbox.usedIn}
-            on:change={(e) => {
-              $setCheckbox("usedIn", e.currentTarget.checked);
-            }}
-          />
-          <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
-            <div class="font-bold text-base-content-calm">Used in</div>
-          </div>
-          <div class="collapse-content p-0">
-            <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.usedIn}>
-                {(kanji) => {
-                  return (
-                    <KanjiContextProvider kanji={kanji}>
-                      <KanjiKeywordComponent
-                        parentKanji={$kanji.kanji}
-                        noteList={$kanji.usedIn}
-                        nestedFocus={{
-                          kanji: kanji,
-                          noteId: undefined,
-                        }}
-                        contextLabel={{
-                          text: $kanji.kanji,
-                          type: "usedIn",
-                        }}
-                      />
-                    </KanjiContextProvider>
-                  );
-                }}
-              </For>
-            </div>
-          </div>
-        </div>
-      </Show>
-
-      <Show when={$kanji.kanjiInfo?.meanings.length}>
-        <div class="collapse collapse-arrow rounded-none">
-          <input
-            type="checkbox"
-            class="p-0"
-            checked={$checkbox.meanings}
-            on:change={(e) => {
-              $setCheckbox("meanings", e.currentTarget.checked);
-            }}
-          />
-          <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
-            <div class="font-bold text-base-content-calm">Meanings</div>
-          </div>
-          <div class="collapse-content p-0">
-            <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.meanings}>
-                {(meaning) => {
-                  return (
-                    <div class="border border-base-300 inline-flex px-1 bg-base-300">
-                      {meaning}
-                    </div>
-                  );
-                }}
-              </For>
-            </div>
-          </div>
-        </div>
-      </Show>
-
-      <Show when={$kanji.kanjiInfo?.related.length}>
-        <div class="collapse collapse-arrow rounded-none">
-          <input
-            type="checkbox"
-            class="p-0"
-            checked={$checkbox.related}
-            on:change={(e) => {
-              $setCheckbox("related", e.currentTarget.checked);
-            }}
-          />
-          <div class="collapse-title p-0 mb-1 after:text-base-content-calm text-start">
-            <div class="font-bold text-base-content-calm">Related</div>
-          </div>
-          <div class="collapse-content p-0">
-            <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.related}>
-                {(kanji) => {
-                  return (
-                    <KanjiContextProvider kanji={kanji}>
-                      <KanjiKeywordComponent
-                        parentKanji={$kanji.kanji}
-                        noteList={$kanji.related}
-                        nestedFocus={{
-                          kanji: kanji,
-                          noteId: undefined,
-                        }}
-                        contextLabel={{
-                          text: $kanji.kanji,
-                          type: "related",
-                        }}
-                      />
-                    </KanjiContextProvider>
-                  );
-                }}
-              </For>
-            </div>
-          </div>
-        </div>
-      </Show>
-    </>
+    </ErrorBoundary>
   );
 }
 

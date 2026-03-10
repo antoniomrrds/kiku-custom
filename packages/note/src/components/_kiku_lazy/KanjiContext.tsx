@@ -98,3 +98,5 @@ export function useKanjiContext() {
   if (!kanjiStore) throw new Error("Missing KanjiContext");
   return kanjiStore;
 }
+
+export type UseKanjiContext = typeof useKanjiContext;
