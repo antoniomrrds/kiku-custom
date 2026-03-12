@@ -1,6 +1,6 @@
 import { mkdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { AnkiConnect } from "./util.js";
+import { AnkiConnect } from "../tools/util.js";
 
 class Script {
   DECK_NAME = "Kiku"; // change if needed

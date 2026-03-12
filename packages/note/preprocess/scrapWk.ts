@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
-import { sleep } from "../script/util.js";
+import { sleep } from "../tools/util.js";
 
 type WkKanji = {
   visuallySimilar: string[];

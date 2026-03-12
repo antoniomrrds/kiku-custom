@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { generateSsrTemplate } from "./generateSsrTemplate.js";
-import { getVersion, log } from "./util.js";
+import { getVersion, log } from "../tools/util.js";
 
 class Script {
   ROOT_DIR = join(import.meta.dirname, "..");

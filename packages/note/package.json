@@ -4,7 +4,7 @@
   "version": "1.7.2",
   "type": "module",
   "scripts": {
-    "dev": "vite ./src/preview/anki",
+    "dev": "vite ./preview/anki",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
     "copyDist": "node ./script/copyDist.ts",

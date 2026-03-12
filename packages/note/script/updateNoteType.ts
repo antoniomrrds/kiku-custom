@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { generateCssVars, getCssVar } from "../src/util/config.js";
 import { defaultConfig } from "../src/util/defaulConfig.js";
-import { AnkiConnect, log } from "./util.js";
+import { AnkiConnect, log } from "../tools/util.js";
 
 class Script {
   NOTE_TYPE = "Kiku";

@@ -1,11 +1,10 @@
-import { stat } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
-import express from "express";
-import { defineConfig, type PluginOption } from "vite";
+import { defineConfig } from "vite";
 import circularDpendency from "vite-plugin-circular-dependency";
 import solid from "vite-plugin-solid";
+import { serveAnkiCollectionMedia } from "./tools/vite-plugin-serve-anki-collection.media.js";
 
 const nodeRequire = createRequire(import.meta.url);
 const packageJson = nodeRequire("./package.json");
@@ -14,37 +13,11 @@ if (typeof version !== "string") throw Error("version is not a string");
 
 const ROOT_DIR = join(import.meta.dirname);
 
-function serveAnkiCollectionMediaPlugin(): PluginOption {
-  return {
-    name: "serve-anki-media-root",
-    configureServer: async (server) => {
-      const BASE_DIR =
-        process.platform === "win32"
-          ? (process.env.APPDATA ?? "")
-          : join(process.env.HOME ?? "", ".local/share");
-      const USER = "yym";
-      // const USER = "User 1";
-      const ANKI_MEDIA_DIR = join(BASE_DIR, `Anki2/${USER}/collection.media`);
-      const LOCAL_MEDIA_DIR = join(import.meta.dirname, ".collection.media");
-
-      for (const dir of [ANKI_MEDIA_DIR, LOCAL_MEDIA_DIR]) {
-        try {
-          await stat(dir);
-          //@ts-expect-error idk but it works
-          server.middlewares.use(express.static(dir));
-        } catch (e) {
-          // ignore
-        }
-      }
-    },
-  };
-}
-
 export default defineConfig({
   plugins: [
     solid({ ssr: true }),
     tailwindcss(),
-    serveAnkiCollectionMediaPlugin(),
+    serveAnkiCollectionMedia(),
     circularDpendency({
       outputFilePath: "./.circularDependency.json",
       circleImportThrowErr: true,

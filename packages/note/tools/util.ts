@@ -3,7 +3,8 @@ import { readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { createGzip } from "node:zlib";
 
-const ROOT_DIR = join(import.meta.dirname, "..");
+const TOOLS_DIR = import.meta.dirname;
+const NOTE_PACKAGE_DIR = join(TOOLS_DIR, "..");
 
 export const AnkiConnect = {
   call: async (action: string, params: Record<string, unknown> = {}) => {
@@ -85,7 +86,7 @@ export const log = {
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function getVersion() {
-  const pkgJsonPath = join(ROOT_DIR, "package.json");
+  const pkgJsonPath = join(NOTE_PACKAGE_DIR, "package.json");
   const pkg = JSON.parse(await readFile(pkgJsonPath, "utf8"));
   const version = pkg.version;
   if (typeof version !== "string") throw Error("version is not a string");
