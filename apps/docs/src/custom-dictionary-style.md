@@ -6,4 +6,4 @@ outline: deep
 
 Using `_kiku_plugin.css`, this will only show Jitendex example sentences on hover.
 
-<<< ../../../packages/note/src/plugins/examples/jitendexStyle.css
+<<< ../../../packages/note/src/plugins/examples/jitendex-style.css

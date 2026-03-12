@@ -19,7 +19,7 @@ import {
 import h from "solid-js/h";
 import { createStore } from "solid-js/store";
 import { Match, Portal, Show, Suspense, Switch } from "solid-js/web";
-import type { Ctx } from "#/plugins/pluginTypes";
+import type { Ctx } from "#/plugins/plugin-types";
 import { useAnkiFieldContext } from "./AnkiFieldsContext";
 import { useBreakpointContext } from "./BreakpointContext";
 import { useCardContext } from "./CardContext";

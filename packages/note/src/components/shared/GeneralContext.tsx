@@ -2,7 +2,7 @@ import { createContext, onMount, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { isServer } from "solid-js/web";
-import type { KikuPlugin } from "#/plugins/pluginTypes";
+import type { KikuPlugin } from "#/plugins/plugin-types";
 import type { KanjiInfo, KikuNotesManifest } from "#/types";
 import { env } from "#/util/general";
 import type { NexClient } from "#/worker/client";

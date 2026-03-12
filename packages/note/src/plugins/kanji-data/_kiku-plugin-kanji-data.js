@@ -3,7 +3,7 @@
  * stroke order diagrams, metadata (levels, radicals), multiple meanings with
  * supplementary info, and historical origins (Naritachi).
  *
- * @import { KikuPlugin } from "#/plugins/pluginTypes";
+ * @import { KikuPlugin } from "#/plugins/plugin-types";
  */
 
 /**

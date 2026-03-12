@@ -1,5 +1,5 @@
 /**
- * @import { KikuPlugin } from "#/plugins/pluginTypes";
+ * @import { KikuPlugin } from "#/plugins/plugin-types";
  */
 
 //TODO: docs
