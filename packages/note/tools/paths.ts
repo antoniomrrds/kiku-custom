@@ -24,12 +24,12 @@ export const paths = {
 
   "@/src/index.tsx":                           p("src/index.tsx"),
 
-  "@/src/templates/":                          p("src/templates/"),
-  "@/src/templates/front.html":                p("src/templates/front.html"),
-  "@/src/templates/back.html":                 p("src/templates/back.html"),
-  "@/src/templates/style.css":                 p("src/templates/style.css"),
-  "@/src/templates/_kiku_plugin.js":           p("src/templates/_kiku_plugin.js"),
-  "@/src/templates/_kiku_plugin.css":          p("src/templates/_kiku_plugin.css"),
+  "@/template/":                               p("template/"),
+  "@/template/front.html":                     p("template/front.html"),
+  "@/template/back.html":                      p("template/back.html"),
+  "@/template/style.css":                      p("template/style.css"),
+  "@/template/_kiku_plugin.js":                p("template/_kiku_plugin.js"),
+  "@/template/_kiku_plugin.css":               p("template/_kiku_plugin.css"),
 
   "@/dist/_kiku_front.html":                   p("dist/_kiku_front.html"),
   "@/dist/_kiku_back.html":                    p("dist/_kiku_back.html"),

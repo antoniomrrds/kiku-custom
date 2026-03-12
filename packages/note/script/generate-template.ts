@@ -5,9 +5,9 @@ import { generateSsrTemplate } from "./generate-ssr-template.js";
 
 class Script {
   PATHS = {
-    FRONT_SRC: paths["@/src/templates/front.html"],
-    BACK_SRC: paths["@/src/templates/back.html"],
-    STYLE_SRC: paths["@/src/templates/style.css"],
+    FRONT_SRC: paths["@/template/front.html"],
+    BACK_SRC: paths["@/template/back.html"],
+    STYLE_SRC: paths["@/template/style.css"],
 
     FRONT_DEST: paths["@/dist/_kiku_front.html"],
     BACK_DEST: paths["@/dist/_kiku_back.html"],
@@ -16,10 +16,10 @@ class Script {
     CSS_SRC: paths["@/dist/_kiku.css"],
     CSS_DEST: paths["@/dist/_kiku.css"],
 
-    PLUGIN_SRC: paths["@/src/templates/_kiku_plugin.js"],
+    PLUGIN_SRC: paths["@/template/_kiku_plugin.js"],
     PLUGIN_DEST: paths["@/dist/_kiku_plugin.js"],
 
-    CSS_PLUGIN_SRC: paths["@/src/templates/_kiku_plugin.css"],
+    CSS_PLUGIN_SRC: paths["@/template/_kiku_plugin.css"],
     CSS_PLUGIN_DEST: paths["@/dist/_kiku_plugin.css"],
   };
 
