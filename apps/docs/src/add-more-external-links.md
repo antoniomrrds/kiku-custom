@@ -7,4 +7,4 @@ outline: deep
 In your `collection.media` directory, open the file named `_kiku_plugin.js`,
 and replace its contents with the following code:
 
-<<< ../../../packages/note/src/plugins/add-more-external-links/_kiku_plugin.js
+<<< ../../../packages/note/plugins/add-more-external-links/_kiku_plugin.js

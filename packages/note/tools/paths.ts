@@ -17,6 +17,7 @@ export const paths = {
   "@/package.json":                            p("package.json"),
 
   "@/src/":                                    p("src/"),
+  "@/plugins/":                                p("plugins/"),
   "@/dist/":                                   p("dist/"),
   "@/preprocess/":                             p("preprocess/"),
   "@/script/":                                 p("script/"),
