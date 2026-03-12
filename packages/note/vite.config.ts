@@ -12,6 +12,8 @@ const packageJson = nodeRequire("./package.json");
 const version = packageJson.version;
 if (typeof version !== "string") throw Error("version is not a string");
 
+const ROOT_DIR = join(import.meta.dirname);
+
 function serveAnkiCollectionMediaPlugin(): PluginOption {
   return {
     name: "serve-anki-media-root",
@@ -58,7 +60,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: "src/index.tsx",
+      entry: join(ROOT_DIR, "src/index.tsx"),
       fileName: "_kiku",
       formats: ["es"],
     },

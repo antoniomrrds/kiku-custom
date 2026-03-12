@@ -64,8 +64,8 @@
       --line-height-sm-hint: var(--text-2xl--line-height);
     }
     </style>
-    <link rel="stylesheet" href="/reviewer.css">
-    <link rel="stylesheet" href="/webview.css">
+    <link rel="stylesheet" href="./reviewer.css">
+    <link rel="stylesheet" href="./webview.css">
   </head>
 
   <body class="isLin nightMode night_mode reduce-motion fancy">
@@ -74,7 +74,9 @@
 
     <div id="qa">
       <div id="kiku-root">
-        <script src="/src/index.tsx" type="module"></script>
+        <script type="module">
+        import { init } from "../../src/index.tsx";
+        </script>
       </div>
     </div>
   </body>

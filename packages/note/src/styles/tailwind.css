@@ -5,6 +5,7 @@
 @import "./dictionary.css";
 @import "./tailwindProperty.css";
 @import "./configurable.css";
+@source "..";
 
 /* biome-ignore format: this looks nicer */
 @theme {

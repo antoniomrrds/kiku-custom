@@ -4,10 +4,9 @@
   "version": "1.7.2",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite ./src/preview/anki",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
-    "preview": "vite preview",
     "copyDist": "node ./script/copyDist.ts",
     "updateNoteType": "npx vite-node ./script/updateNoteType.ts",
     "generateTemplate": "npx vite-node ./script/generateTemplate.ts",
