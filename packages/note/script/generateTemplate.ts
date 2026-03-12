@@ -9,9 +9,9 @@ class Script {
   DIST_DIR = join(import.meta.dirname, "../dist");
 
   PATHS = {
-    FRONT_SRC: join(this.SRC_DIR, "front.html"),
-    BACK_SRC: join(this.SRC_DIR, "back.html"),
-    STYLE_SRC: join(this.SRC_DIR, "style.css"),
+    FRONT_SRC: join(this.SRC_DIR, "templates/front.html"),
+    BACK_SRC: join(this.SRC_DIR, "templates/back.html"),
+    STYLE_SRC: join(this.SRC_DIR, "templates/style.css"),
 
     FRONT_DEST: join(this.DIST_DIR, "_kiku_front.html"),
     BACK_DEST: join(this.DIST_DIR, "_kiku_back.html"),
@@ -20,10 +20,10 @@ class Script {
     CSS_SRC: join(this.DIST_DIR, "_kiku.css"),
     CSS_DEST: join(this.DIST_DIR, "_kiku.css"),
 
-    PLUGIN_SRC: join(this.SRC_DIR, "_kiku_plugin.js"),
+    PLUGIN_SRC: join(this.SRC_DIR, "templates/_kiku_plugin.js"),
     PLUGIN_DEST: join(this.DIST_DIR, "_kiku_plugin.js"),
 
-    CSS_PLUGIN_SRC: join(this.SRC_DIR, "_kiku_plugin.css"),
+    CSS_PLUGIN_SRC: join(this.SRC_DIR, "templates/_kiku_plugin.css"),
     CSS_PLUGIN_DEST: join(this.DIST_DIR, "_kiku_plugin.css"),
   };
 

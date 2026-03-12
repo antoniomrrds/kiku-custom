@@ -39,14 +39,15 @@ Kiku Note is a TypeScript project that uses [Vite](https://vitejs.dev/) as the b
 │   ├──  components
 │   ├──  plugins              # Plugin types and plugin examples
 │   ├──  styles               # The actual CSS files
+│   ├──  templates            # Templates to generate Anki note files
+│   │   ├──  _kiku_plugin.css # Template to generate _kiku_plugin.css
+│   │   ├──  _kiku_plugin.js  # Template to generate _kiku_plugin.js
+│   │   ├──  back.html        # Template to generate the Back Template and _kiku_back.html
+│   │   ├──  front.html       # Template to generate the Front Template and _kiku_front.html
+│   │   └──  style.css        # Template to generate the Styling Template and _kiku_style.css
 │   ├──  util
 │   ├──  worker
-│   ├──  _kiku_plugin.css     # Template to generate _kiku_plugin.css during the build process
-│   ├──  _kiku_plugin.js      # Template to generate _kiku_plugin.js during the build process
-│   ├──  back.html            # Template to generate the Back Template for Kiku and _kiku_back.html
-│   ├──  front.html           # Template to generate the Front Template for Kiku and _kiku_front.html
 │   ├──  index.tsx            # Entry point for the JavaScript bundle
-│   ├──  style.css            # Template to generate the Styling Template for Kiku and _kiku_style.css
 │   └──  types.ts
 ├──  index.html
 ├──  package.json
