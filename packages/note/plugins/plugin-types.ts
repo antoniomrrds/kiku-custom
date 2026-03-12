@@ -29,7 +29,11 @@ import type { UseAnkiFieldContext } from "#/components/shared/AnkiFieldsContext"
 import type { UseBreakpointContext } from "#/components/shared/BreakpointContext";
 import type { UseCardContext } from "#/components/shared/CardContext";
 import type { UseConfigContext } from "#/components/shared/ConfigContext";
-import type { AnkiBackFields, AnkiDroidAPI, AnkiFrontFields } from "#/util/types";
+import type {
+  AnkiBackFields,
+  AnkiDroidAPI,
+  AnkiFrontFields,
+} from "#/util/types";
 
 /**
  * The Plugin Context (Ctx) provides the essential building blocks for creating

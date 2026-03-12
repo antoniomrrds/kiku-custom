@@ -76,6 +76,15 @@
       <div id="kiku-root">
         <script type="module">
         import { init } from "../../src/index.tsx";
+
+        const params = new URLSearchParams(window.location.search);
+        const side = params.get("side") || "back";
+
+        init({ side }).then(() => {
+          if (globalThis.KIKU_STATE?.root) {
+            globalThis.KIKU_STATE.root.dataset.side = side;
+          }
+        });
         </script>
       </div>
     </div>

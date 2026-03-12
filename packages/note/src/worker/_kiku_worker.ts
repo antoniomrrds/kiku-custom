@@ -1,3 +1,5 @@
+import type { KikuConfig } from "#/util/config";
+import type { Env } from "#/util/general";
 import type {
   AnkiFields,
   AnkiNote,
@@ -6,8 +8,6 @@ import type {
   KikuDbMainManifest,
   KikuNotesManifest,
 } from "#/util/types";
-import type { KikuConfig } from "#/util/config";
-import type { Env } from "#/util/general";
 
 let ankiConnectAddress = "";
 

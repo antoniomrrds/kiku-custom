@@ -238,14 +238,3 @@ async function setup({ aborter }: { aborter: AbortController }) {
       : `<span>Something went wrong.</span>`;
   }
 }
-
-if (import.meta.env.DEV) {
-  const params = new Proxy(new URLSearchParams(window.location.search), {
-    get: (searchParams, prop) => searchParams.get(prop as string),
-  });
-  // @ts-expect-error
-  const side = params.side;
-  init({ side: side ?? "back" }).then(() => {
-    if (KIKU_STATE.root) KIKU_STATE.root.dataset.side = side;
-  });
-}
