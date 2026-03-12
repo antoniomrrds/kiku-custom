@@ -1,15 +1,10 @@
-import { createRequire } from "node:module";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import circularDpendency from "vite-plugin-circular-dependency";
 import solid from "vite-plugin-solid";
 import { paths } from "./tools/paths.js";
+import { getVersion } from "./tools/util.js";
 import { serveAnkiCollectionMedia } from "./tools/vite-plugin-serve-anki-collection.media.js";
-
-const nodeRequire = createRequire(import.meta.url);
-const packageJson = nodeRequire("./package.json");
-const version = packageJson.version;
-if (typeof version !== "string") throw Error("version is not a string");
 
 export default defineConfig({
   plugins: [
@@ -27,7 +22,7 @@ export default defineConfig({
     },
   },
   define: {
-    __VERSION__: JSON.stringify(version),
+    __VERSION__: JSON.stringify(await getVersion()),
   },
   build: {
     lib: {
