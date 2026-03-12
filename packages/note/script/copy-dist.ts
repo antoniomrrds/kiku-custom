@@ -1,14 +1,9 @@
 import { cp, stat } from "node:fs/promises";
 import { basename, join } from "node:path";
+import { ENV } from "../tools/env.ts";
 
 class Script {
-  BASE_DIR =
-    process.platform === "win32"
-      ? (process.env.APPDATA ?? "")
-      : join(process.env.HOME ?? "", ".local/share");
-  USER = "yym"; // change if needed
-  // USER = "User 1";
-  ANKI_MEDIA_DIR = join(this.BASE_DIR, `Anki2/${this.USER}/collection.media`);
+  ANKI_MEDIA_DIR = ENV.ANKI_COLLECTION_MEDIA_PATH;
 
   async ensureAnkiDir() {
     await stat(this.ANKI_MEDIA_DIR);

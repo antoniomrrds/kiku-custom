@@ -33,6 +33,7 @@
     "vite.config.ts",
     "preview/anki/vite.config.ts",
     "preprocess",
+    "tools",
     "script",
     "src/types.ts"
   ]
