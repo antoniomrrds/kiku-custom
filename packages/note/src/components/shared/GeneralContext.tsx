@@ -40,7 +40,7 @@ export function GeneralContextProvider(props: {
   children: JSX.Element;
   aborter: AbortController;
 }) {
-  let timeout: number;
+  let timeout: ReturnType<typeof setTimeout>;
   const success = (message: string) => {
     if (timeout) clearTimeout(timeout);
     $setGeneral("toast", { message, type: "success" });

@@ -105,7 +105,7 @@ class Script {
     const jpdbJson = await jpdbScraper.readKanjiJson();
     const wkJson = await wkScraper.readWkKanjiInfoJson();
 
-    const extraKeywordMap = {};
+    const extraKeywordMap: Record<string, string> = {};
     for (const kanji of Object.keys(jpdbJson)) {
       for (const keyword of jpdbJson[kanji].composedOf) {
         extraKeywordMap[keyword.kanji] = keyword.keyword;

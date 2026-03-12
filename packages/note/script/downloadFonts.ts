@@ -55,7 +55,10 @@ class Script {
       await fs.rm(extractDir, { recursive: true, force: true });
       await fs.rm(zipPath, { force: true });
     } catch (err) {
-      console.error(`❌ Failed for ${name}:`, err.message);
+      console.error(
+        `❌ Failed for ${name}:`,
+        err instanceof Error ? err.message : err,
+      );
     }
   }
 

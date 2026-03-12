@@ -246,7 +246,7 @@ export class Nex {
       });
     }
   }
-  debounceTimer: number | null = null;
+  debounceTimer: ReturnType<typeof setTimeout> | null = null;
   debounceMs = 200;
   async queryShared({
     kanjiList,

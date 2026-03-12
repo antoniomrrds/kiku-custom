@@ -48,7 +48,7 @@ class KanjiVgParser {
     const children = rootGroup.children();
     type El = (typeof children)[number];
 
-    const getTopLevel = (_, child: El) => {
+    const getTopLevel = (_: unknown, child: El) => {
       const $child = $(child);
       const direct = $child.attr("kvg:element");
       if (direct && direct !== kanji) {
