@@ -15,4 +15,4 @@ In addition to the JavaScript module, you may include a `_kiku_plugin.css` file 
 <<< ../../../packages/note/src/plugins/plugin-types.ts
 
 The plugin system is currently very basic, but more APIs will be added in the future.
-Check out the [examples](https://github.com/youyoumu/kiku/tree/main/packages/note/src/plugins/examples) for more advanced usage.
+Check out the [examples](https://github.com/youyoumu/kiku/tree/main/packages/note/src/plugins) for more advanced usage.

@@ -8,8 +8,8 @@ Using `_kiku_plugin.css` and `_kiku_plugin.js`, this will randomize the secondar
 
 `_kiku_plugin.css`
 
-<<< ../../../packages/note/src/plugins/examples/random-font.css
+<<< ../../../packages/note/src/plugins/random-font/_kiku_plugin.css
 
 `_kiku_plugin.js`
 
-<<< ../../../packages/note/src/plugins/examples/random-font.js
+<<< ../../../packages/note/src/plugins/random-font/_kiku_plugin.js

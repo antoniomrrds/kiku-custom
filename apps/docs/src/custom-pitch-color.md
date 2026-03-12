@@ -6,4 +6,4 @@ outline: deep
 
 Using `_kiku_plugin.js`, you can adjust the color of the pitch graph
 
-<<< ../../../packages/note/src/plugins/examples/pitch.js
+<<< ../../../packages/note/src/plugins/custom-pitch-color/_kiku_plugin.js
