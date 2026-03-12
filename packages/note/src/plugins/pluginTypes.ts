@@ -63,6 +63,14 @@ export type Ctx = {
   useConfigContext: UseConfigContext;
 };
 
+export type KanjiInfoExtraSections = {
+  VisuallySimilar: () => JSX.Element;
+  ComposedOf: () => JSX.Element;
+  UsedIn: () => JSX.Element;
+  Meanings: () => JSX.Element;
+  Related: () => JSX.Element;
+};
+
 export type KikuPlugin = {
   ExternalLinks?: (props: {
     DefaultExternalLinks: () => JSX.Element;
@@ -89,6 +97,14 @@ export type KikuPlugin = {
   KanjiInfoExtra?: (props: {
     inKanjiPage?: boolean;
     DefaultKanjiInfoExtra: () => JSX.Element;
+    sections: KanjiInfoExtraSections;
+    checkboxRef: {
+      visuallySimilar: undefined | HTMLInputElement;
+      composedOf: undefined | HTMLInputElement;
+      usedIn: undefined | HTMLInputElement;
+      meanings: undefined | HTMLInputElement;
+      related: undefined | HTMLInputElement;
+    };
     useKanjiContext: UseKanjiContext;
     ctx: Ctx;
   }) => JSX.Element | JSX.Element[];
