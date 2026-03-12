@@ -5,7 +5,7 @@ import { jmdictParser } from "./parseJmdict.js";
 import { kanjiVgParser } from "./parseKanjiVg.js";
 import { jpdbScraper } from "./scrapJpdb.js";
 import { wkScraper } from "./scrapWk.js";
-import { gzipFile } from "./util.js";
+import { gzipFile } from "../script/util.js";
 
 type KikuKanji = {
   composedOf: string[];

@@ -32,6 +32,7 @@
   "include": [
     "vite.config.ts",
     "preview/anki/vite.config.ts",
+    "preprocess",
     "script",
     "src/types.ts"
   ]

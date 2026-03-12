@@ -31,6 +31,6 @@
       "#/*": ["./src/*"]
     }
   },
-  "include": ["src", "preview", "script/generateSsrTemplate.tsx"],
+  "include": ["src", "preview"],
   "exclude": ["preview/anki/vite.config.ts"]
 }
