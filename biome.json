@@ -6,7 +6,13 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist", "!!**/node_modules", "!!**/public"]
+    "includes": [
+      "**",
+      "!!**/dist",
+      "!!**/node_modules",
+      "!!**/public",
+      "!!**/packages/note/preview"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -25,11 +31,11 @@
         "useValidAnchor": "off"
       },
       "correctness": {
-        "noUnknownProperty": "info",
-        "noUnusedVariables": "info"
+        "noUnknownProperty": "off",
+        "noUnusedVariables": "off"
       },
       "complexity": {
-        "noImportantStyles": "info"
+        "noImportantStyles": "off"
       },
       "style": {
         "useTemplate": "off"

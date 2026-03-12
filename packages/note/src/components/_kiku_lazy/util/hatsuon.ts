@@ -187,7 +187,7 @@ export function getPitchNumFromPattern(
     pattern = removeDigraphPitches(reading, pattern);
   }
   pattern = pattern.slice(1);
-  return pattern.findIndex((x) => x === 0) + 1 || pattern.length + 1;
+  return pattern.indexOf(0 as never) + 1 || pattern.length + 1;
 }
 
 /**

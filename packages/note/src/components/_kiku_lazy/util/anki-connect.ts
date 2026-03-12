@@ -1,4 +1,3 @@
-import { useGeneralContext } from "#/components/shared/GeneralContext";
 import { generateCssVars, getCssVar, type KikuConfig } from "#/util/config";
 import { env } from "#/util/general";
 
