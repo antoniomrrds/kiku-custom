@@ -36,6 +36,6 @@
     "preprocess",
     "tools",
     "script",
-    "src/types.ts"
+    "src/util/types.ts"
   ]
 }

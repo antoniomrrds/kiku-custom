@@ -5,7 +5,7 @@ import {
   type Store,
   unwrap,
 } from "solid-js/store";
-import type { AnkiNote, KanjiInfo } from "#/types";
+import type { AnkiNote, KanjiInfo } from "#/util/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 

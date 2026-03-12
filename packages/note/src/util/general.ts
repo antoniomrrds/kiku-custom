@@ -1,5 +1,5 @@
 import { isServer } from "solid-js/web";
-import { type AnkiFields, ankiFieldsSkeleton } from "#/types";
+import { type AnkiFields, ankiFieldsSkeleton } from "#/util/types";
 import { exampleFields } from "./examples";
 
 const version: string =

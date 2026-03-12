@@ -1,7 +1,7 @@
 import { createContext, createUniqueId, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/types";
+import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/util/types";
 
 type Query = {
   status: "loading" | "success" | "error";

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
-import type { AnkiBackFields, AnkiFields, AnkiFrontFields } from "#/types";
+import type { AnkiBackFields, AnkiFields, AnkiFrontFields } from "#/util/types";
 import { getAnkiFields } from "#/util/general";
 
 const AnkiFieldsContext = createContext<{

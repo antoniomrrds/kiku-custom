@@ -5,7 +5,7 @@ import type {
   KanjiInfoCompact,
   KikuDbMainManifest,
   KikuNotesManifest,
-} from "#/types";
+} from "#/util/types";
 import type { KikuConfig } from "#/util/config";
 import type { Env } from "#/util/general";
 

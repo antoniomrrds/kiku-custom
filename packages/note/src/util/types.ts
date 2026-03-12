@@ -1,6 +1,6 @@
-import type { Debug } from "./util/debug";
-import type { Logger } from "./util/logger";
-import type { NexClient } from "./worker/client";
+import type { Debug } from "./debug";
+import type { Logger } from "./logger";
+import type { NexClient } from "../worker/client";
 
 export type AnkiFields = {
   Expression: string;

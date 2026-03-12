@@ -6,7 +6,7 @@ import {
   Show,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import type { AnkiNote } from "#/types";
+import type { AnkiNote } from "#/util/types";
 import { useNavigationTransition } from "#/util/hooks";
 import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
