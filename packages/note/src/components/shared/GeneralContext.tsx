@@ -6,7 +6,7 @@ import type { KikuPlugin } from "#/plugins/pluginTypes";
 import type { KanjiInfo, KikuNotesManifest } from "#/types";
 import { env } from "#/util/general";
 import type { NexClient } from "#/worker/client";
-import { AnkiConnect } from "../_kiku_lazy/util/ankiConnect";
+import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useBreakpointContext } from "./BreakpointContext";
 
 type GeneralStore = {

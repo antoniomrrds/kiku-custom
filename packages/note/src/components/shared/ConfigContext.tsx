@@ -4,7 +4,7 @@ import { type SetStoreFunction, type Store, unwrap } from "solid-js/store";
 import { type KikuConfig, updateConfigState } from "#/util/config";
 import { env } from "#/util/general";
 import type { DaisyUITheme } from "#/util/theme";
-import { AnkiConnect } from "../_kiku_lazy/util/ankiConnect";
+import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useGeneralContext } from "./GeneralContext";
 
 const ConfigContext =

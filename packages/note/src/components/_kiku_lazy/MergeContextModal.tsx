@@ -9,7 +9,7 @@ import { useConfigContext } from "../shared/ConfigContext";
 import { useRootFieldGroupContext } from "../shared/FieldGroupContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
-import { AnkiConnect } from "./util/ankiConnect";
+import { AnkiConnect } from "./util/anki-connect";
 
 export default function MergeContextModal() {
   let dialogRef: HTMLDialogElement | undefined;

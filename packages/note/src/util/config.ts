@@ -1,4 +1,4 @@
-import { defaultConfig } from "./defaulConfig";
+import { defaultConfig } from "./defaul-config";
 import { type WebFont, webFonts } from "./fonts";
 import { colorBase100Map, type DaisyUITheme, daisyUIThemes } from "./theme";
 

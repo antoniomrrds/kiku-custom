@@ -16,14 +16,14 @@
     "package": {
       "dependsOn": ["^package"]
     },
-    "copyDist": {
-      "dependsOn": ["^copyDist"]
+    "copy-dist": {
+      "dependsOn": ["^copy-dist"]
     },
-    "updateNoteType": {
-      "dependsOn": ["^updateNoteType"]
+    "update-note-type": {
+      "dependsOn": ["^update-note-type"]
     },
-    "generateTemplate": {
-      "dependsOn": ["^generateTemplate"]
+    "generate-template": {
+      "dependsOn": ["^generate-template"]
     },
     "apply": {
       "dependsOn": ["^apply"]

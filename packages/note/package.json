@@ -7,10 +7,10 @@
     "dev": "vite ./preview/anki",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
-    "copyDist": "node ./script/copyDist.ts",
-    "updateNoteType": "npx vite-node ./script/updateNoteType.ts",
-    "generateTemplate": "npx vite-node ./script/generateTemplate.ts",
-    "apply": "pnpm run build && pnpm run generateTemplate && pnpm run copyDist && pnpm run updateNoteType",
+    "copy-dist": "node ./script/copy-dist.ts",
+    "update-note-type": "npx vite-node ./script/update-note-type.ts",
+    "generate-template": "npx vite-node ./script/generate-template.ts",
+    "apply": "pnpm run build && pnpm run generate-template && pnpm run copy-dist && pnpm run update-note-type",
     "package": "npx vite-node ./script/package.ts"
   },
   "dependencies": {

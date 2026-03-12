@@ -7,7 +7,7 @@ import { useBreakpointContext } from "../shared/BreakpointContext";
 import { useCardContext } from "../shared/CardContext";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
-import { parseFurigana } from "./util/parseFurigana";
+import { parseFurigana } from "./util/parse-furigana";
 
 export default function Expression() {
   const [$card, $setCard] = useCardContext();

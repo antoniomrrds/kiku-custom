@@ -19,7 +19,7 @@ import {
   tailwindFontSizeVar,
   tailwindSize,
 } from "#/util/config";
-import { defaultConfig } from "#/util/defaulConfig";
+import { defaultConfig } from "#/util/defaul-config";
 import { type WebFont, webFonts } from "#/util/fonts";
 import { env } from "#/util/general";
 import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
@@ -30,7 +30,7 @@ import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderSettings from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
-import { AnkiConnect } from "./util/ankiConnect";
+import { AnkiConnect } from "./util/anki-connect";
 import { capitalize } from "./util/general";
 
 function toDashed(str: string) {

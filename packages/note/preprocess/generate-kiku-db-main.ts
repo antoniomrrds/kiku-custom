@@ -1,10 +1,10 @@
 import { writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 import * as tar from "tar";
-import { jmdictParser } from "./parseJmdict.js";
-import { kanjiVgParser } from "./parseKanjiVg.js";
-import { jpdbScraper } from "./scrapJpdb.js";
-import { wkScraper } from "./scrapWk.js";
+import { jmdictParser } from "./parse-jmdict.js";
+import { kanjiVgParser } from "./parse-kanji-vg.js";
+import { jpdbScraper } from "./scrap-jpdb.js";
+import { wkScraper } from "./scrap-wk.js";
 import { gzipFile } from "../tools/util.js";
 
 type KikuKanji = {

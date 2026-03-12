@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { generateSsrTemplate } from "./generateSsrTemplate.js";
+import { generateSsrTemplate } from "./generate-ssr-template.js";
 import { getVersion, log } from "../tools/util.js";
 
 class Script {

@@ -12,9 +12,9 @@
     "lint:write": "biome lint --write .",
     "check": "biome check .",
     "check:write": "biome check --write .",
-    "copyDist": "turbo run copyDist",
-    "updateNoteType": "turbo run updateNoteType",
-    "generateTemplate": "turbo run generateTemplate",
+    "copy-dist": "turbo run copy-dist",
+    "update-note-type": "turbo run update-note-type",
+    "generate-template": "turbo run generate-template",
     "apply": "turbo run apply",
     "apply:force": "turbo run apply --force"
   },
