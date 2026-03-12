@@ -1,14 +1,12 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { env } from "../src/util/general";
 import { generateSsrTemplate } from "./generateSsrTemplate.js";
-import { log } from "./util.js";
+import { getVersion, log } from "./util.js";
 
 class Script {
   ROOT_DIR = join(import.meta.dirname, "..");
   SRC_DIR = join(import.meta.dirname, "../src");
   DIST_DIR = join(import.meta.dirname, "../dist");
-  VERSION: string;
 
   PATHS = {
     FRONT_SRC: join(this.SRC_DIR, "front.html"),
@@ -29,23 +27,6 @@ class Script {
     CSS_PLUGIN_DEST: join(this.DIST_DIR, "_kiku_plugin.css"),
   };
 
-  async validateVersion() {
-    const pkgJsonPath = join(this.ROOT_DIR, "package.json");
-    const pkg = JSON.parse(await readFile(pkgJsonPath, "utf8"));
-    const declared = env.KIKU_VERSION;
-    const actual = pkg.version;
-
-    if (!actual) throw new Error("package.json has no version field.");
-    if (declared !== actual) {
-      throw new Error(
-        `Version mismatch: env.KIKU_VERSION = ${declared} -- package.json version = ${actual}`,
-      );
-    }
-
-    console.log(`✅ Version OK: ${declared}`);
-    return actual as string;
-  }
-
   async loadSources() {
     const [front, back, style, css, plugin, cssPlugin] = await Promise.all([
       readFile(this.PATHS.FRONT_SRC, "utf8"),
@@ -58,7 +39,7 @@ class Script {
     return { front, back, style, css, plugin, cssPlugin };
   }
 
-  buildTemplates(src: {
+  async buildTemplates(src: {
     front: string;
     back: string;
     style: string;
@@ -66,6 +47,7 @@ class Script {
     plugin: string;
     cssPlugin: string;
   }) {
+    const version = `v${await getVersion()}`;
     const { frontSsrTemplate, backSsrTemplate, hydrationScript } =
       generateSsrTemplate();
 
@@ -77,14 +59,14 @@ class Script {
     log.gray(hydrationScript);
 
     const front = src.front
-      .replace("__VERSION__", this.VERSION)
+      .replace("__VERSION__", version)
       .replace("<!-- SSR_TEMPLATE -->", frontSsrTemplate)
       .replace("<!-- HYDRATION_SCRIPT -->", hydrationScript);
     const back = src.back
-      .replace("__VERSION__", this.VERSION)
+      .replace("__VERSION__", version)
       .replace("<!-- SSR_TEMPLATE -->", backSsrTemplate)
       .replace("<!-- HYDRATION_SCRIPT -->", hydrationScript);
-    const style = src.style.replace("__VERSION__", this.VERSION);
+    const style = src.style.replace("__VERSION__", version);
     const css = src.css;
     const plugin = src.plugin;
     const cssPlugin = src.cssPlugin;
@@ -111,9 +93,8 @@ class Script {
   }
 
   async run() {
-    this.VERSION = `v${await this.validateVersion()}`;
     const sources = await this.loadSources();
-    const templates = this.buildTemplates(sources);
+    const templates = await this.buildTemplates(sources);
     await this.writeOutputs(templates);
   }
 }

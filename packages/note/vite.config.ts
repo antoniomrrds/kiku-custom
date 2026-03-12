@@ -1,10 +1,16 @@
 import { stat } from "node:fs/promises";
+import { createRequire } from "node:module";
 import { join } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import express from "express";
 import { defineConfig, type PluginOption } from "vite";
 import circularDpendency from "vite-plugin-circular-dependency";
 import solid from "vite-plugin-solid";
+
+const nodeRequire = createRequire(import.meta.url);
+const packageJson = nodeRequire("./package.json");
+const version = packageJson.version;
+if (typeof version !== "string") throw Error("version is not a string");
 
 function serveAnkiCollectionMediaPlugin(): PluginOption {
   return {
@@ -46,6 +52,9 @@ export default defineConfig({
     alias: {
       "#": join(import.meta.dirname, "src"),
     },
+  },
+  define: {
+    __VERSION__: JSON.stringify(version),
   },
   build: {
     lib: {

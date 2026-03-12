@@ -2,9 +2,13 @@ import { isServer } from "solid-js/web";
 import { type AnkiFields, ankiFieldsSkeleton } from "#/types";
 import { exampleFields } from "./examples";
 
+const version: string =
+  // @ts-expect-error: injected by vite
+  typeof __VERSION__ !== "undefined" ? __VERSION__ : "unknown";
+
 // biome-ignore format: this looks nicer
 export const env = {
-  KIKU_VERSION: "1.7.1",
+  KIKU_VERSION: version,
   KIKU_NOTE_TYPE: "Kiku",
   KIKU_CARD_TYPE: "Mining",
   KIKU_CONFIG_FILE: "_kiku_config.json",
