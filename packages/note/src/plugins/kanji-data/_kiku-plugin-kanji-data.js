@@ -218,6 +218,11 @@ const CIRCLED_NUMBERS = [
  * @typedef {Object} Options
  * @property {boolean} [defaultOpen = true]
  * @property {string} [collapseTitle = "Extra Info"]
+ * @property {boolean} [showVisuallySimilar = true]
+ * @property {boolean} [showComposedOf = true]
+ * @property {boolean} [showUsedIn = true]
+ * @property {boolean} [showMeanings = true]
+ * @property {boolean} [showRelated = true]
  */
 
 /**
@@ -227,6 +232,11 @@ const CIRCLED_NUMBERS = [
 export default (options) => {
   const defaultOpen = options?.defaultOpen ?? true;
   const collapseTitle = options?.collapseTitle ?? "Extra Info";
+  const showVisuallySimilar = options?.showVisuallySimilar ?? true;
+  const showComposedOf = options?.showComposedOf ?? true;
+  const showUsedIn = options?.showUsedIn ?? true;
+  const showMeanings = options?.showMeanings ?? true;
+  const showRelated = options?.showRelated ?? true;
 
   /**
    * The Kiku plugin exported object.
@@ -572,14 +582,28 @@ export default (options) => {
         ]);
       }
 
+      function KanjiDataSection() {
+        return h(Show, { when: data() }, (/** @type {KanjiObject} */ k) =>
+          h(KanjiData, { data: k }),
+        );
+      }
+
+      function Style() {
+        return h("link", {
+          rel: "stylesheet",
+          href: "_kiku-plugin-kanji-data.css",
+        });
+      }
+
       /** @type{any} */
       const component = [
-        props.DefaultKanjiInfoExtra,
-        h("link", { rel: "stylesheet", href: "_kiku-plugin-kanji-data.css" }),
-        () =>
-          h(Show, { when: data() }, (/** @type {KanjiObject} */ k) =>
-            h(KanjiData, { data: k }),
-          ),
+        Style,
+        showVisuallySimilar ? props.sections.VisuallySimilar : null,
+        showComposedOf ? props.sections.ComposedOf : null,
+        showUsedIn ? props.sections.UsedIn : null,
+        showMeanings ? props.sections.Meanings : null,
+        showRelated ? props.sections.Related : null,
+        KanjiDataSection,
       ];
       return component;
     },
