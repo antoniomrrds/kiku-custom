@@ -2,6 +2,7 @@ import { createReadStream, createWriteStream } from "node:fs";
 import { readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { createGzip } from "node:zlib";
+import chalk from "chalk";
 
 const TOOLS_DIR = import.meta.dirname;
 const NOTE_PACKAGE_DIR = join(TOOLS_DIR, "..");
@@ -47,39 +48,39 @@ export async function gzipFile(
 
 export const log = {
   red(message: string) {
-    console.log(`\x1b[31m${message}\x1b[0m`);
+    console.log(chalk.red(message));
   },
   green(message: string) {
-    console.log(`\x1b[32m${message}\x1b[0m`);
+    console.log(chalk.green(message));
   },
   yellow(message: string) {
-    console.log(`\x1b[33m${message}\x1b[0m`);
+    console.log(chalk.yellow(message));
   },
   blue(message: string) {
-    console.log(`\x1b[34m${message}\x1b[0m`);
+    console.log(chalk.blue(message));
   },
   magenta(message: string) {
-    console.log(`\x1b[35m${message}\x1b[0m`);
+    console.log(chalk.magenta(message));
   },
   cyan(message: string) {
-    console.log(`\x1b[36m${message}\x1b[0m`);
+    console.log(chalk.cyan(message));
   },
   white(message: string) {
-    console.log(`\x1b[37m${message}\x1b[0m`);
+    console.log(chalk.white(message));
   },
   gray(message: string) {
-    console.log(`\x1b[90m${message}\x1b[0m`);
+    console.log(chalk.gray(message));
   },
 
   // background colors (optional)
   bgRed(message: string) {
-    console.log(`\x1b[41m${message}\x1b[0m`);
+    console.log(chalk.bgRed(message));
   },
   bgGreen(message: string) {
-    console.log(`\x1b[42m${message}\x1b[0m`);
+    console.log(chalk.bgGreen(message));
   },
   bgBlue(message: string) {
-    console.log(`\x1b[44m${message}\x1b[0m`);
+    console.log(chalk.bgBlue(message));
   },
 };
 
