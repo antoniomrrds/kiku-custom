@@ -1,5 +1,5 @@
 import { stat } from "node:fs/promises";
-import express from "express";
+import serveStatic from "serve-static";
 import type { PluginOption } from "vite";
 import { env } from "./env.ts";
 import { paths } from "./paths.ts";
@@ -14,8 +14,7 @@ export function serveAnkiCollectionMedia(): PluginOption {
       ]) {
         try {
           await stat(dir);
-          //@ts-expect-error idk but it works
-          server.middlewares.use(express.static(dir));
+          server.middlewares.use(serveStatic(dir));
         } catch {}
       }
     },
