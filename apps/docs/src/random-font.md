@@ -4,7 +4,7 @@ outline: deep
 
 # Random Font
 
-Using `_kiku_plugin.css` and `_kiku_plugin.js`, this will randomize the secondary font (Expression, Sentence, etc)
+Using `_kiku_plugin.css` and `_kiku_plugin.js`, this will randomize the secondary font (Expression, Sentence, etc.).
 
 `_kiku_plugin.css`
 

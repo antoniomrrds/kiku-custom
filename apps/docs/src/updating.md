@@ -23,7 +23,7 @@ You may keep `_kiku_config.json`, `_kiku_plugin.js`, and `_kiku_plugin.css`.
 After that, import the `.apkg` into Anki as usual.
 
 ::: info
-If you choose to keep `_kiku_config.json`, make sure to open the settings page and click **Save** after updating it.
+If you choose to keep `_kiku_config.json`, make sure to open the settings page and click **Save** after updating Kiku.
 This ensures that the settings in the Front/Back/Styling templates are synced with your configuration.
 :::
 

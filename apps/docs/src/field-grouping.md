@@ -34,7 +34,7 @@ SentenceAudio:
 
 ---
 
-And you want to add new **Picture**, **Sentence**, and **SentenceAudio** to the same note.
+And you want to add a new **Picture**, **Sentence**, and **SentenceAudio** to the same note.
 Without grouping, it will look like this:
 
 ::: details Fields {open}
@@ -130,5 +130,5 @@ The button is available on the top left corner when you visit nested notes.
 - Existing `data-group-id` will be preserved.
 - **Picture**, **Sentence**, **SentenceFurigana**, **SentenceAudio**, **MiscInfo** and **Tag** will be merged.
 - If either note has empty **SentenceFurigana**, the target note's **SentenceFurigana** will be updated as empty.
-- Some special tag like `leech`, `marked`, `potential_leech` will not be added to the target note.
+- Some special tags like `leech`, `marked`, `potential_leech` will not be added to the target note.
 - "Delete Root Note" option will be available when the root note is less than 1 day old. This option will delete the root note after merging.

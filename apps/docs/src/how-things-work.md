@@ -59,7 +59,7 @@ Some explanations about these files:
 
 ## Settings
 
-Every settings change is applied immediately, and the changes are saved to [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage).
+Every setting change is applied immediately, and the changes are saved to [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage).
 The settings stored in `sessionStorage` are cleared when you exit the review screen.
 
 To make the settings persistent, AnkiConnect is required.

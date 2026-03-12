@@ -9,16 +9,16 @@ Kiku is designed to be compatible with [Lapis](https://github.com/donkuri/lapis)
 :::
 
 ::: warning
-This documentation assumes you already know about Anki, Yomitan, and mining-stuff.
+This documentation assumes you already know about Anki, Yomitan, and mining stuff.
 :::
 
 ::: warning
 Anki 25.09 or later is required.
 :::
 
-## Installing notetype
+## Installing Note Type
 
-Download the latest release `Kiku_v*.apkg` from [Release](https://github.com/youyoumu/kiku/releases/latest), and then import it to your Anki. After that the `Kiku` notetype should be available in your `Note Types` list.
+Download the latest release `Kiku_v*.apkg` from [Release](https://github.com/youyoumu/kiku/releases/latest), and then import it to your Anki. After that, the `Kiku` note type should be available in your `Note Types` list.
 
 ## Yomitan Setup
 
@@ -31,7 +31,7 @@ Open your Yomitan settings, go to `Anki` > `Configure Anki flashcard`, select `K
 | ExpressionReading     | `{reading}`                                                                                                                                                |
 | ExpressionAudio       | `{audio}`                                                                                                                                                  |
 | SelectionText         | `{popup-selection-text}`                                                                                                                                   |
-| MainDefinition        | Something like `{single-glossary-jmdict/jitendex}`. Find this by clicking the down arrow next to this field, and finding a dictionary in a similar format. |
+| MainDefinition        | Something like `{single-glossary-jmdict/jitendex}`. Find this by clicking the down arrow next to this field, and find a dictionary in a similar format.     |
 | DefinitionPicture     | Here you can include any image you'd like to use to help _illustrate_ the definition or the vocabulary term.                                               |
 | Sentence              | `{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}`                                                                                                          |
 | SentenceFurigana      |                                                                                                                                                            |

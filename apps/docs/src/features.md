@@ -8,15 +8,15 @@ outline: deep
 
 ### Kanji View
 
-The Kanji page show your other notes that use the same kanji. You can also see notes that use similar kanji and deep dive into the note itself.
-This feature requires notes cache generated from the [Kiku Note Manager](https://ankiweb.net/shared/info/408592650?cb=1763445474367) addon.
-If the notes cache is not available, it will uses [AnkiConnect](https://ankiweb.net/shared/info/2055492159) as fallback.
+The Kanji page shows your other notes that use the same kanji. You can also see notes that use similar kanji and deep dive into the note itself.
+This feature requires a notes cache generated from the [Kiku Note Manager](https://ankiweb.net/shared/info/408592650?cb=1763445474367) addon.
+If the notes cache is not available, it will use [AnkiConnect](https://ankiweb.net/shared/info/2055492159) as a fallback.
 
 <video controls>
   <source src="/media/feature-kanji.mp4" type="video/mp4" />
 </video>
 
-### Group Multiple Picture/Sentence/SentenceAudio together
+### Group Multiple Picture/Sentence/SentenceAudio Together
 
 You can add multiple pictures, sentences, and sentence audios to a single note, and Kiku will group them together.
 Learn about how to use this feature [here](./field-grouping).
@@ -36,8 +36,8 @@ Learn about how to use this feature [here](./field-grouping).
 ### Settings
 
 Settings page where you can configure your preferences.
-Saving only available when AnkiConnect is running.
-The settings is saved on `_kiku_config.json` file under your Anki `collection.media` directory.
+Saving is only available when AnkiConnect is running.
+The settings are saved in the `_kiku_config.json` file under your Anki `collection.media` directory.
 
 <video controls>
   <source src="/media/feature-settings.mp4" type="video/mp4" />
@@ -45,8 +45,8 @@ The settings is saved on `_kiku_config.json` file under your Anki `collection.me
 
 ### AnkiDroid support
 
-AnkiDroid is supported. There's also gesture feature for AnkiDroid.
-Swipe to right to answer with `Good`, swipe to left to answer with `Again`. The gesture direction can be inverted in settings.
+AnkiDroid is supported. There is also a gesture feature for AnkiDroid.
+Swipe to the right to answer with `Good`, swipe to the left to answer with `Again`. The gesture direction can be inverted in the settings.
 
 <video controls style="height: 720px;">
   <source src="/media/feature-ankidroid.mp4" type="video/mp4"  />
