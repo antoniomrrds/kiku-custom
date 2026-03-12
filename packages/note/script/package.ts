@@ -1,24 +1,17 @@
-import { mkdir, readFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import { AnkiConnect } from "../tools/util.js";
+import { paths } from "../tools/paths.ts";
+import { AnkiConnect, getVersion } from "../tools/util.js";
 
 class Script {
   DECK_NAME = "Kiku"; // change if needed
-  ROOT_DIR = join(import.meta.dirname, "..");
-  RELEASE_DIR = join(import.meta.dirname, "../.release");
-
-  async getVersion() {
-    const pkgJsonPath = join(this.ROOT_DIR, "package.json");
-    const pkg = JSON.parse(await readFile(pkgJsonPath, "utf8"));
-    return pkg.version as string;
-  }
 
   async ensureReleaseDir() {
-    await mkdir(this.RELEASE_DIR, { recursive: true });
+    await mkdir(paths["@/.release/"], { recursive: true });
   }
 
   buildOutputPath(version: string) {
-    return join(this.RELEASE_DIR, `${this.DECK_NAME}_v${version}.apkg`);
+    return join(paths["@/.release/"], `${this.DECK_NAME}_v${version}.apkg`);
   }
 
   async exportDeck(outputPath: string) {
@@ -35,7 +28,7 @@ class Script {
   }
 
   async run() {
-    const version = await this.getVersion();
+    const version = await getVersion();
     await this.ensureReleaseDir();
     const outputPath = this.buildOutputPath(version);
     await this.exportDeck(outputPath);

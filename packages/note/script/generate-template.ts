@@ -1,30 +1,26 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { generateSsrTemplate } from "./generate-ssr-template.js";
+import { paths } from "../tools/paths.ts";
 import { getVersion, log } from "../tools/util.js";
+import { generateSsrTemplate } from "./generate-ssr-template.js";
 
 class Script {
-  ROOT_DIR = join(import.meta.dirname, "..");
-  SRC_DIR = join(import.meta.dirname, "../src");
-  DIST_DIR = join(import.meta.dirname, "../dist");
-
   PATHS = {
-    FRONT_SRC: join(this.SRC_DIR, "templates/front.html"),
-    BACK_SRC: join(this.SRC_DIR, "templates/back.html"),
-    STYLE_SRC: join(this.SRC_DIR, "templates/style.css"),
+    FRONT_SRC: paths["@/src/templates/front.html"],
+    BACK_SRC: paths["@/src/templates/back.html"],
+    STYLE_SRC: paths["@/src/templates/style.css"],
 
-    FRONT_DEST: join(this.DIST_DIR, "_kiku_front.html"),
-    BACK_DEST: join(this.DIST_DIR, "_kiku_back.html"),
-    STYLE_DEST: join(this.DIST_DIR, "_kiku_style.css"),
+    FRONT_DEST: paths["@/dist/_kiku_front.html"],
+    BACK_DEST: paths["@/dist/_kiku_back.html"],
+    STYLE_DEST: paths["@/dist/_kiku_style.css"],
 
-    CSS_SRC: join(this.DIST_DIR, "_kiku.css"),
-    CSS_DEST: join(this.DIST_DIR, "_kiku.css"),
+    CSS_SRC: paths["@/dist/_kiku.css"],
+    CSS_DEST: paths["@/dist/_kiku.css"],
 
-    PLUGIN_SRC: join(this.SRC_DIR, "templates/_kiku_plugin.js"),
-    PLUGIN_DEST: join(this.DIST_DIR, "_kiku_plugin.js"),
+    PLUGIN_SRC: paths["@/src/templates/_kiku_plugin.js"],
+    PLUGIN_DEST: paths["@/dist/_kiku_plugin.js"],
 
-    CSS_PLUGIN_SRC: join(this.SRC_DIR, "templates/_kiku_plugin.css"),
-    CSS_PLUGIN_DEST: join(this.DIST_DIR, "_kiku_plugin.css"),
+    CSS_PLUGIN_SRC: paths["@/src/templates/_kiku_plugin.css"],
+    CSS_PLUGIN_DEST: paths["@/dist/_kiku_plugin.css"],
   };
 
   async loadSources() {

@@ -1,16 +1,16 @@
 import { readFile } from "node:fs/promises";
-import { basename, join } from "node:path";
+import { basename } from "node:path";
 import { generateCssVars, getCssVar } from "../src/util/config.js";
 import { defaultConfig } from "../src/util/defaul-config.js";
+import { paths } from "../tools/paths.ts";
 import { AnkiConnect, log } from "../tools/util.js";
 
 class Script {
   NOTE_TYPE = "Kiku";
   CARD_TYPE = "Mining";
-  DIST_DIR = join(import.meta.dirname, "../dist");
-  FRONT_PATH = join(this.DIST_DIR, "_kiku_front.html");
-  BACK_PATH = join(this.DIST_DIR, "_kiku_back.html");
-  STYLE_PATH = join(this.DIST_DIR, "_kiku_style.css");
+  FRONT_PATH = paths["@/dist/_kiku_front.html"];
+  BACK_PATH = paths["@/dist/_kiku_back.html"];
+  STYLE_PATH = paths["@/dist/_kiku_style.css"];
 
   async readTemplates() {
     const [front, back, style] = await Promise.all([

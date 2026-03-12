@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import { join } from "node:path";
 import extract from "extract-zip";
+import { paths } from "../tools/paths.ts";
 
 type FontMeta = {
   id: string;
@@ -9,12 +10,11 @@ type FontMeta = {
 
 class Script {
   GOOGLE_FONTS = ["Hina Mincho", "Klee One", "IBM Plex Sans JP"];
-  OUTPUT_DIR = join(import.meta.dirname, "../.fonts");
   API_BASE = "https://gwfh.mranftl.com/api/fonts";
   allFonts: FontMeta[] = [];
 
   async ensureOutputDir() {
-    await fs.mkdir(this.OUTPUT_DIR, { recursive: true });
+    await fs.mkdir(paths["@/.fonts/"], { recursive: true });
   }
 
   async fetchFontMetadata() {
@@ -39,8 +39,8 @@ class Script {
       return;
     }
 
-    const zipPath = join(this.OUTPUT_DIR, `${id}.zip`);
-    const extractDir = join(this.OUTPUT_DIR, id);
+    const zipPath = join(paths["@/.fonts/"], `${id}.zip`);
+    const extractDir = join(paths["@/.fonts/"], id);
     const url = this.buildDownloadUrl(id);
 
     try {
@@ -67,7 +67,7 @@ class Script {
     for (const file of files) {
       if (!file.endsWith(".woff2")) continue;
       const src = join(dir, file);
-      const dest = join(this.OUTPUT_DIR, `_kiku_font_${id}.woff2`);
+      const dest = join(paths["@/.fonts/"], `_kiku_font_${id}.woff2`);
       await fs.rename(src, dest);
       console.log(`🎨 Renamed → ${dest}`);
     }

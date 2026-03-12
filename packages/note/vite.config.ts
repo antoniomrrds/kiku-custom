@@ -1,17 +1,15 @@
 import { createRequire } from "node:module";
-import { join } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import circularDpendency from "vite-plugin-circular-dependency";
 import solid from "vite-plugin-solid";
+import { paths } from "./tools/paths.js";
 import { serveAnkiCollectionMedia } from "./tools/vite-plugin-serve-anki-collection.media.js";
 
 const nodeRequire = createRequire(import.meta.url);
 const packageJson = nodeRequire("./package.json");
 const version = packageJson.version;
 if (typeof version !== "string") throw Error("version is not a string");
-
-const ROOT_DIR = join(import.meta.dirname);
 
 export default defineConfig({
   plugins: [
@@ -25,7 +23,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "#": join(import.meta.dirname, "src"),
+      "#": paths["@/src/"],
     },
   },
   define: {
@@ -33,7 +31,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: join(ROOT_DIR, "src/index.tsx"),
+      entry: paths["@/src/index.tsx"],
       fileName: "_kiku",
       formats: ["es"],
     },

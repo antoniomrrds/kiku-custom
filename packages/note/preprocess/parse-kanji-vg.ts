@@ -2,6 +2,7 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
 import extract from "extract-zip";
+import { paths } from "../tools/paths.ts";
 
 export type KanjiComposition = Record<
   string,
@@ -12,16 +13,11 @@ export type KanjiComposition = Record<
 >;
 
 class KanjiVgParser {
-  ROOT_DIR = join(import.meta.dirname, "../");
-  KANJI_VG_DIR = join(this.ROOT_DIR, ".kanjivg");
   DOWNLOAD_URL =
     "https://github.com/KanjiVG/kanjivg/releases/download/r20250816/kanjivg-20250816-main.zip";
-  DOWNLOAD_DEST = join(this.KANJI_VG_DIR, "kanjivg.zip");
-  KANJI_VG_KANJI_DIR = join(this.KANJI_VG_DIR, "kanji");
-  KANJI_VG_KANJI_JSON = join(this.KANJI_VG_DIR, "kanji.json");
 
   async fetchAndExtractKanjiVG(): Promise<void> {
-    await mkdir(this.KANJI_VG_DIR, { recursive: true });
+    await mkdir(paths["@/.kanjivg/"], { recursive: true });
 
     console.log("Fetching ZIP from", this.DOWNLOAD_URL);
     const resp = await fetch(this.DOWNLOAD_URL);
@@ -29,13 +25,15 @@ class KanjiVgParser {
       throw new Error(`Failed to download: ${resp.status} ${resp.statusText}`);
     }
 
-    console.log("Writing ZIP to", this.DOWNLOAD_DEST);
+    console.log("Writing ZIP to", paths["@/.kanjivg/kanjivg.zip"]);
     const buffer = await resp.arrayBuffer();
-    await writeFile(this.DOWNLOAD_DEST, Buffer.from(buffer));
+    await writeFile(paths["@/.kanjivg/kanjivg.zip"], Buffer.from(buffer));
 
     console.log("Download complete, extracting...");
 
-    await extract(this.DOWNLOAD_DEST, { dir: this.KANJI_VG_DIR });
+    await extract(paths["@/.kanjivg/kanjivg.zip"], {
+      dir: paths["@/.kanjivg/"],
+    });
     console.log("Extraction complete.");
   }
 
@@ -66,7 +64,7 @@ class KanjiVgParser {
   }
 
   async writeKanjiVgJson() {
-    const files = await readdir(this.KANJI_VG_KANJI_DIR);
+    const files = await readdir(paths["@/.kanjivg/kanji/"]);
     const kanjiComposition: KanjiComposition = {};
     for (let i = 0; i < files.length; i++) {
       // if (i > 1) break;
@@ -75,7 +73,7 @@ class KanjiVgParser {
       process.stdout.write(`Processing ${i + 1}/${files.length}`);
       const file = files[i];
       const svgContent = await readFile(
-        join(this.KANJI_VG_KANJI_DIR, file),
+        join(paths["@/.kanjivg/kanji/"], file),
         "utf8",
       );
       const { kanji, composedOf } = this.parseKanjiVG(svgContent);
@@ -92,14 +90,14 @@ class KanjiVgParser {
     }
 
     await writeFile(
-      this.KANJI_VG_KANJI_JSON,
+      paths["@/.kanjivg/kanji.json"],
       JSON.stringify(kanjiComposition, null, 2),
     );
   }
 
   async readKanjiVgJson() {
     return JSON.parse(
-      await readFile(kanjiVgParser.KANJI_VG_KANJI_JSON, "utf8"),
+      await readFile(paths["@/.kanjivg/kanji.json"], "utf8"),
     ) as KanjiComposition;
   }
 }

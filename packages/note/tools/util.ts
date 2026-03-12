@@ -1,11 +1,8 @@
 import { createReadStream, createWriteStream } from "node:fs";
 import { readFile, rm } from "node:fs/promises";
-import { join } from "node:path";
 import { createGzip } from "node:zlib";
 import chalk from "chalk";
-
-const TOOLS_DIR = import.meta.dirname;
-const NOTE_PACKAGE_DIR = join(TOOLS_DIR, "..");
+import { paths } from "./paths.ts";
 
 export const AnkiConnect = {
   call: async (action: string, params: Record<string, unknown> = {}) => {
@@ -87,7 +84,7 @@ export const log = {
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function getVersion() {
-  const pkgJsonPath = join(NOTE_PACKAGE_DIR, "package.json");
+  const pkgJsonPath = paths["@/package.json"];
   const pkg = JSON.parse(await readFile(pkgJsonPath, "utf8"));
   const version = pkg.version;
   if (typeof version !== "string") throw Error("version is not a string");

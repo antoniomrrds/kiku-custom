@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import * as cheerio from "cheerio";
+import { paths } from "../tools/paths.ts";
 
 type JmdictTerm = {
   kanji: string[];
@@ -9,19 +9,14 @@ type JmdictTerm = {
 };
 
 export class JmdictParser {
-  ROOT_DIR = join(import.meta.dirname, "../");
-  JMDICT_DIR = join(this.ROOT_DIR, ".jmdict");
   //NOTE: download and extract JMdict_e from ftp://ftp.edrdg.org/pub/Nihongo//JMdict_e.gz
-  JMDICT_PATH = join(this.JMDICT_DIR, "JMdict_e");
-  JMDICT_TERM_PATH = join(this.JMDICT_DIR, "term.json");
-  JMDICT_TERM_MAP_PATH = join(this.JMDICT_DIR, "termMap.json");
 
   async ensureDir() {
-    await mkdir(this.JMDICT_DIR, { recursive: true });
+    await mkdir(paths["@/.jmdict/"], { recursive: true });
   }
 
   async load() {
-    const xml = await readFile(this.JMDICT_PATH, "utf8");
+    const xml = await readFile(paths["@/.jmdict/JMdict_e"], "utf8");
     return cheerio.load(xml, { xmlMode: true });
   }
 
@@ -61,12 +56,15 @@ export class JmdictParser {
 
   async writeTerm() {
     const terms = await this.parseAll();
-    await writeFile(this.JMDICT_TERM_PATH, JSON.stringify(terms, null, 2));
+    await writeFile(
+      paths["@/.jmdict/term.json"],
+      JSON.stringify(terms, null, 2),
+    );
   }
 
   async writeTermMap() {
     const terms = JSON.parse(
-      await readFile(this.JMDICT_TERM_PATH, "utf8"),
+      await readFile(paths["@/.jmdict/term.json"], "utf8"),
     ) as JmdictTerm[];
     const termMap: Record<string, JmdictTerm> = {};
     terms.forEach((term) => {
@@ -90,7 +88,7 @@ export class JmdictParser {
     });
 
     await writeFile(
-      this.JMDICT_TERM_MAP_PATH,
+      paths["@/.jmdict/termMap.json"],
       JSON.stringify(termMap, null, 2),
     );
   }
@@ -99,7 +97,7 @@ export class JmdictParser {
   async lookup(term: string) {
     this.termMap =
       this.termMap ||
-      JSON.parse(await readFile(this.JMDICT_TERM_MAP_PATH, "utf8"));
+      JSON.parse(await readFile(paths["@/.jmdict/termMap.json"], "utf8"));
     if (!this.termMap) throw new Error("termMap not found");
     return this.termMap[term];
   }

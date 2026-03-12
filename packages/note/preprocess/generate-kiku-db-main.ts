@@ -1,11 +1,12 @@
 import { writeFile } from "node:fs/promises";
-import { basename, join } from "node:path";
+import { basename } from "node:path";
 import * as tar from "tar";
+import { paths } from "../tools/paths.ts";
+import { gzipFile } from "../tools/util.js";
 import { jmdictParser } from "./parse-jmdict.js";
 import { kanjiVgParser } from "./parse-kanji-vg.js";
 import { jpdbScraper } from "./scrap-jpdb.js";
 import { wkScraper } from "./scrap-wk.js";
-import { gzipFile } from "../tools/util.js";
 
 type KikuKanji = {
   composedOf: string[];
@@ -56,15 +57,6 @@ function toCompact(entry: KikuKanji): KikuKanjiCompact {
 }
 
 class Script {
-  ROOT_DIR = join(import.meta.dirname, "../");
-  DB_DIR = join(this.ROOT_DIR, ".db");
-  KIKU_DB_KANJI_JSON = join(this.DB_DIR, "kiku_db_kanji.json");
-  KIKU_DB_KANJI_COMPACT_JSON = join(this.DB_DIR, "kiku_db_kanji_compact.json");
-  KIKU_DB_KANJI_COMPACT_JSON_GZ = join(
-    this.DB_DIR,
-    "kiku_db_kanji_compact.json.gz",
-  );
-
   async compareKanjiVgAndJpdb() {
     const kanjiVgJson = await kanjiVgParser.readKanjiVgJson();
     const jpdbJson = await jpdbScraper.readKanjiJson();
@@ -182,32 +174,30 @@ class Script {
     }
 
     await writeFile(
-      this.KIKU_DB_KANJI_COMPACT_JSON,
+      paths["@/.db/kiku_db_kanji_compact.json"],
       JSON.stringify(kikuDbKanjiCompact),
     );
   }
 
   async gzipKikuDbKanjiCompactJson() {
     await gzipFile(
-      this.KIKU_DB_KANJI_COMPACT_JSON,
-      this.KIKU_DB_KANJI_COMPACT_JSON_GZ,
+      paths["@/.db/kiku_db_kanji_compact.json"],
+      paths["@/.db/kiku_db_kanji_compact.json.gz"],
       false,
     );
   }
 
-  KIKU_DB_MAIN_TAR = join(this.DB_DIR, "_kiku_db_main.tar");
-  KIKU_DB_MAIN_MANIFEST_JSON = join(this.DB_DIR, "_kiku_db_main_manifest.json");
   async generateDbMainTar() {
     const filesToInclude = [
-      this.KIKU_DB_KANJI_COMPACT_JSON_GZ,
-      // this.KIKU_DB_KANJI_COMPACT_JSON,
+      paths["@/.db/kiku_db_kanji_compact.json.gz"],
+      // paths["@/.db/kiku_db_kanji_compact.json"],
     ].map((file) => basename(file));
 
     await tar.create(
       {
-        cwd: this.DB_DIR,
+        cwd: paths["@/.db/"],
         portable: true,
-        file: this.KIKU_DB_MAIN_TAR,
+        file: paths["@/.db/_kiku_db_main.tar"],
       },
       filesToInclude,
     );
@@ -220,7 +210,7 @@ class Script {
     };
 
     await tar.t({
-      file: this.KIKU_DB_MAIN_TAR,
+      file: paths["@/.db/_kiku_db_main.tar"],
       onReadEntry(entry) {
         const headerSize = 512;
         const fileSize = entry.size;
@@ -247,7 +237,7 @@ class Script {
     });
 
     await writeFile(
-      this.KIKU_DB_MAIN_MANIFEST_JSON,
+      paths["@/.db/_kiku_db_main_manifest.json"],
       JSON.stringify(manifest, null, 2),
     );
   }

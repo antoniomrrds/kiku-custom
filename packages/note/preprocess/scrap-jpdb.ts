@@ -1,6 +1,7 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
+import { paths } from "../tools/paths.ts";
 import { gzipFile } from "../tools/util.js";
 
 type Kanji = {
@@ -38,62 +39,55 @@ class JpdbScraper {
   JINMEIYO_URL = "https://jpdb.io/kanji-by-frequency?show_only=jinmeiyou";
   HYOGAI_URL = "https://jpdb.io/kanji-by-frequency?show_only=hyougai";
 
-  ROOT_DIR = join(import.meta.dirname, "../");
-  JPDB_DIR = join(this.ROOT_DIR, ".jpdb");
-  KANJI_BY_FREQ_DIR = join(this.JPDB_DIR, "kanji-by-frequency");
-  KANJI_DIR = join(this.JPDB_DIR, "kanji");
-  KANJI_JSON_PATH = join(this.JPDB_DIR, "kanji.json");
-  KANJI_ERROR_JSON_PATH = join(this.JPDB_DIR, "kanji-error.json");
-
-  KYOIKU_HTML_PATH = join(this.KANJI_BY_FREQ_DIR, "kyoiku.html");
-  KYOIKU_JSON_PATH = join(this.KANJI_BY_FREQ_DIR, "kyoiku.json");
-  JOYO_HTML_PATH = join(this.KANJI_BY_FREQ_DIR, "joyo.html");
-  JOYO_JSON_PATH = join(this.KANJI_BY_FREQ_DIR, "joyo.json");
-  JINMEIYO_HTML_PATH = join(this.KANJI_BY_FREQ_DIR, "jinmeiyo.html");
-  JINMEIYO_JSON_PATH = join(this.KANJI_BY_FREQ_DIR, "jinmeiyo.json");
-  HYOGAI_HTML_PATH = join(this.KANJI_BY_FREQ_DIR, "hyogai.html");
-  HYOGAI_JSON_PATH = join(this.KANJI_BY_FREQ_DIR, "hyogai.json");
-
   async ensureDir() {
-    await mkdir(this.KANJI_BY_FREQ_DIR, { recursive: true });
-    await mkdir(this.KANJI_DIR, { recursive: true });
+    await mkdir(paths["@/.jpdb/kanji-by-frequency/"], { recursive: true });
+    await mkdir(paths["@/.jpdb/kanji/"], { recursive: true });
   }
 
   async writeKanjiByFrequencyHtml() {
     const kyoikuRes = await fetch(this.KYOIKU_URL);
     const kyoikuHtml = await kyoikuRes.text();
-    await writeFile(this.KYOIKU_HTML_PATH, kyoikuHtml);
+    await writeFile(
+      paths["@/.jpdb/kanji-by-frequency/kyoiku.html"],
+      kyoikuHtml,
+    );
 
     const joyoRes = await fetch(this.JOYO_URL);
     const joyoHtml = await joyoRes.text();
-    await writeFile(this.JOYO_HTML_PATH, joyoHtml);
+    await writeFile(paths["@/.jpdb/kanji-by-frequency/joyo.html"], joyoHtml);
 
     const jinmeiyoRes = await fetch(this.JINMEIYO_URL);
     const jinmeiyoHtml = await jinmeiyoRes.text();
-    await writeFile(this.JINMEIYO_HTML_PATH, jinmeiyoHtml);
+    await writeFile(
+      paths["@/.jpdb/kanji-by-frequency/jinmeiyo.html"],
+      jinmeiyoHtml,
+    );
 
     const hyogaiRes = await fetch(this.HYOGAI_URL);
     const hyogaiHtml = await hyogaiRes.text();
-    await writeFile(this.HYOGAI_HTML_PATH, hyogaiHtml);
+    await writeFile(
+      paths["@/.jpdb/kanji-by-frequency/hyogai.html"],
+      hyogaiHtml,
+    );
   }
 
   async writeKanjiByFrequencyJson() {
     const category = [
       {
-        src: this.KYOIKU_HTML_PATH,
-        dest: this.KYOIKU_JSON_PATH,
+        src: paths["@/.jpdb/kanji-by-frequency/kyoiku.html"],
+        dest: paths["@/.jpdb/kanji-by-frequency/kyoiku.json"],
       },
       {
-        src: this.JOYO_HTML_PATH,
-        dest: this.JOYO_JSON_PATH,
+        src: paths["@/.jpdb/kanji-by-frequency/joyo.html"],
+        dest: paths["@/.jpdb/kanji-by-frequency/joyo.json"],
       },
       {
-        src: this.JINMEIYO_HTML_PATH,
-        dest: this.JINMEIYO_JSON_PATH,
+        src: paths["@/.jpdb/kanji-by-frequency/jinmeiyo.html"],
+        dest: paths["@/.jpdb/kanji-by-frequency/jinmeiyo.json"],
       },
       {
-        src: this.HYOGAI_HTML_PATH,
-        dest: this.HYOGAI_JSON_PATH,
+        src: paths["@/.jpdb/kanji-by-frequency/hyogai.html"],
+        dest: paths["@/.jpdb/kanji-by-frequency/hyogai.json"],
       },
     ];
 
@@ -119,16 +113,16 @@ class JpdbScraper {
 
   async getKanjiByType() {
     const kyoiku = JSON.parse(
-      await readFile(this.KYOIKU_JSON_PATH, "utf8"),
+      await readFile(paths["@/.jpdb/kanji-by-frequency/kyoiku.json"], "utf8"),
     ) as KanjiFreqKind[];
     const joyo = JSON.parse(
-      await readFile(this.JOYO_JSON_PATH, "utf8"),
+      await readFile(paths["@/.jpdb/kanji-by-frequency/joyo.json"], "utf8"),
     ) as KanjiFreqKind[];
     const jinmeiyo = JSON.parse(
-      await readFile(this.JINMEIYO_JSON_PATH, "utf8"),
+      await readFile(paths["@/.jpdb/kanji-by-frequency/jinmeiyo.json"], "utf8"),
     ) as KanjiFreqKind[];
     const hyogai = JSON.parse(
-      await readFile(this.HYOGAI_JSON_PATH, "utf8"),
+      await readFile(paths["@/.jpdb/kanji-by-frequency/hyogai.json"], "utf8"),
     ) as KanjiFreqKind[];
     return { kyoiku, joyo, jinmeiyo, hyogai };
   }
@@ -153,7 +147,7 @@ class JpdbScraper {
         const res = await fetch(url);
         const html = await res.text();
 
-        const dest = join(this.KANJI_DIR, `${kanji}.html`);
+        const dest = join(paths["@/.jpdb/kanji/"], `${kanji}.html`);
         await writeFile(dest, html);
 
         console.log(`Saved → ${dest}`);
@@ -167,14 +161,14 @@ class JpdbScraper {
 
     try {
       const kanjiErrorJson = JSON.parse(
-        await readFile(this.KANJI_ERROR_JSON_PATH, "utf8"),
+        await readFile(paths["@/.jpdb/kanji-error.json"], "utf8"),
       );
       kanjiError = Array.from(new Set([...kanjiError, ...kanjiErrorJson]));
     } catch {
       console.log("Error reading kanjiErrorJson");
     }
     await writeFile(
-      this.KANJI_ERROR_JSON_PATH,
+      paths["@/.jpdb/kanji-error.json"],
       JSON.stringify(kanjiError, null, 2),
     );
   }
@@ -183,13 +177,13 @@ class JpdbScraper {
     const { kyoiku, joyo, jinmeiyo, hyogai } = await this.getKanjiByType();
     const allKanjiByType = [...kyoiku, ...joyo, ...jinmeiyo, ...hyogai];
     const kanjiJson: Record<string, Kanji> = {};
-    const kanjis = (await readdir(this.KANJI_DIR))
+    const kanjis = (await readdir(paths["@/.jpdb/kanji/"]))
       .map((file) => file.replace(".html", ""))
       .filter((kanji) => kanji);
 
     for (const kanji of kanjis) {
       const kanjiHtml = await readFile(
-        join(this.KANJI_DIR, `${kanji}.html`),
+        join(paths["@/.jpdb/kanji/"], `${kanji}.html`),
         "utf8",
       );
       const $ = cheerio.load(kanjiHtml);
@@ -288,19 +282,21 @@ class JpdbScraper {
       kanjiJson[kanji] = kanjiInfo;
     }
 
-    await writeFile(this.KANJI_JSON_PATH, JSON.stringify(kanjiJson, null, 2));
+    await writeFile(
+      paths["@/.jpdb/kanji.json"],
+      JSON.stringify(kanjiJson, null, 2),
+    );
   }
 
   async gzipKanjiJson() {
-    const dest = join(this.JPDB_DIR, "_kiku_db_jpdb_kanji.json.gz");
-    await gzipFile(this.KANJI_JSON_PATH, dest, false);
+    const dest = join(paths["@/.jpdb/"], "_kiku_db_jpdb_kanji.json.gz");
+    await gzipFile(paths["@/.jpdb/kanji.json"], dest, false);
   }
 
   async readKanjiJson() {
-    return JSON.parse(await readFile(this.KANJI_JSON_PATH, "utf8")) as Record<
-      string,
-      Kanji
-    >;
+    return JSON.parse(
+      await readFile(paths["@/.jpdb/kanji.json"], "utf8"),
+    ) as Record<string, Kanji>;
   }
 }
 

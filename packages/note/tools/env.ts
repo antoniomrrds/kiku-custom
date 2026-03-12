@@ -1,12 +1,9 @@
 import { stat } from "node:fs/promises";
 import { join } from "node:path";
 import { loadEnvFile } from "node:process";
+import { paths } from "./paths.ts";
 
-const TOOLS_DIR = import.meta.dirname;
-const ENV_FILE = join(TOOLS_DIR, "../.env");
-
-// This will throw if the .env file is missing or cannot be read
-loadEnvFile(ENV_FILE);
+loadEnvFile(paths["@/.env"]);
 
 const BASE_DIR =
   process.platform === "win32"
@@ -24,10 +21,10 @@ try {
 } catch {
   throw new Error(
     `ANKI_COLLECTION_MEDIA_PATH does not exist at: ${ANKI_COLLECTION_MEDIA_PATH}\n` +
-      "Please check your .env file or ensure the path is correct."
+      "Please check your .env file or ensure the path is correct.",
   );
 }
 
-export const ENV = {
+export const env = {
   ANKI_COLLECTION_MEDIA_PATH,
 };

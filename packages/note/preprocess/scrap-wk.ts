@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
+import { paths } from "../tools/paths.ts";
 import { sleep } from "../tools/util.js";
 
 type WkKanji = {
@@ -9,85 +10,76 @@ type WkKanji = {
 };
 
 class WkScraper {
-  ROOT_DIR = join(import.meta.dirname, "../");
-  WK_DIR = join(this.ROOT_DIR, ".wk");
   WK_DIFFICULTY_URLS = [
     {
       difficulty: "pleasant",
       url: "https://www.wanikani.com/kanji?difficulty=pleasant",
-      dest: join(this.WK_DIR, "pleasant.html"),
+      dest: paths["@/.wk/pleasant.html"],
     },
     {
       difficulty: "painful",
       url: "https://www.wanikani.com/kanji?difficulty=painful",
-      dest: join(this.WK_DIR, "painful.html"),
+      dest: paths["@/.wk/painful.html"],
     },
     {
       difficulty: "death",
       url: "https://www.wanikani.com/kanji?difficulty=death",
-      dest: join(this.WK_DIR, "death.html"),
+      dest: paths["@/.wk/death.html"],
     },
     {
       difficulty: "hell",
       url: "https://www.wanikani.com/kanji?difficulty=hell",
-      dest: join(this.WK_DIR, "hell.html"),
+      dest: paths["@/.wk/hell.html"],
     },
     {
       difficulty: "paradise",
       url: "https://www.wanikani.com/kanji?difficulty=paradise",
-      dest: join(this.WK_DIR, "paradise.html"),
+      dest: paths["@/.wk/paradise.html"],
     },
     {
       difficulty: "reality",
       url: "https://www.wanikani.com/kanji?difficulty=reality",
-      dest: join(this.WK_DIR, "reality.html"),
+      dest: paths["@/.wk/reality.html"],
     },
   ];
-  WK_ALL_KANJI_JSON = join(this.WK_DIR, "all_kanji.json");
-  WK_KANJI_DIR = join(this.WK_DIR, "kanji");
-  FAILED_KANJI_JSON = join(this.WK_DIR, "failed_kanji.json");
-  WK_KANJI_INFO_JSON = join(this.WK_DIR, "wk_kanji_info.json");
 
-  WK_VOCAB_DIR = join(this.WK_DIR, "vocab");
   WK_VOCAB_LIST_URLS = [
     {
       difficulty: "pleasant",
       url: "https://www.wanikani.com/vocabulary?difficulty=pleasant",
-      dest: join(this.WK_DIR, "vocab_pleasant.html"),
+      dest: paths["@/.wk/vocab_pleasant.html"],
     },
     {
       difficulty: "painful",
       url: "https://www.wanikani.com/vocabulary?difficulty=painful",
-      dest: join(this.WK_DIR, "vocab_painful.html"),
+      dest: paths["@/.wk/vocab_painful.html"],
     },
     {
       difficulty: "death",
       url: "https://www.wanikani.com/vocabulary?difficulty=death",
-      dest: join(this.WK_DIR, "vocab_death.html"),
+      dest: paths["@/.wk/vocab_death.html"],
     },
     {
       difficulty: "hell",
       url: "https://www.wanikani.com/vocabulary?difficulty=hell",
-      dest: join(this.WK_DIR, "vocab_hell.html"),
+      dest: paths["@/.wk/vocab_hell.html"],
     },
     {
       difficulty: "paradise",
       url: "https://www.wanikani.com/vocabulary?difficulty=paradise",
-      dest: join(this.WK_DIR, "vocab_paradise.html"),
+      dest: paths["@/.wk/vocab_paradise.html"],
     },
     {
       difficulty: "reality",
       url: "https://www.wanikani.com/vocabulary?difficulty=reality",
-      dest: join(this.WK_DIR, "vocab_reality.html"),
+      dest: paths["@/.wk/vocab_reality.html"],
     },
   ];
-  WK_ALL_VOCAB_JSON = join(this.WK_DIR, "all_vocab.json");
-  FAILED_VOCAB_JSON = join(this.WK_DIR, "failed_vocab.json");
 
   async ensureWkDir() {
-    await mkdir(this.WK_DIR, { recursive: true });
-    await mkdir(this.WK_KANJI_DIR, { recursive: true });
-    await mkdir(this.WK_VOCAB_DIR, { recursive: true });
+    await mkdir(paths["@/.wk/"], { recursive: true });
+    await mkdir(paths["@/.wk/kanji/"], { recursive: true });
+    await mkdir(paths["@/.wk/vocab/"], { recursive: true });
   }
 
   async writeWkKanjiHtml() {
@@ -115,17 +107,20 @@ class WkScraper {
 
     // preserve insertion order by converting Set -> Array
     const result = Array.from(kanjiSet);
-    await writeFile(this.WK_ALL_KANJI_JSON, JSON.stringify(result, null, 2));
+    await writeFile(
+      paths["@/.wk/all_kanji.json"],
+      JSON.stringify(result, null, 2),
+    );
   }
 
   async writeWkKanjiInfoHtml() {
     const allKanji = JSON.parse(
-      await readFile(this.WK_ALL_KANJI_JSON, "utf8"),
+      await readFile(paths["@/.wk/all_kanji.json"], "utf8"),
     ) as string[];
 
     let failedKanji: string[] = [];
     try {
-      const text = await readFile(this.FAILED_KANJI_JSON, "utf8");
+      const text = await readFile(paths["@/.wk/failed_kanji.json"], "utf8");
       const failedKanjiJson = JSON.parse(text);
       failedKanji = failedKanjiJson;
     } catch {
@@ -144,7 +139,7 @@ class WkScraper {
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const html = await res.text();
-        await writeFile(join(this.WK_KANJI_DIR, `${kanji}.html`), html);
+        await writeFile(join(paths["@/.wk/kanji/"], `${kanji}.html`), html);
       } catch (e) {
         console.error(`Failed to write kanji info for ${kanji}:`, e);
         failedKanji.push(kanji);
@@ -152,7 +147,7 @@ class WkScraper {
       sleep(200);
     }
     await writeFile(
-      this.FAILED_KANJI_JSON,
+      paths["@/.wk/failed_kanji.json"],
       JSON.stringify(Array.from(new Set(failedKanji)), null, 2),
     );
   }
@@ -196,20 +191,23 @@ class WkScraper {
 
   async writeParsedKanjiJson() {
     const allKanji = JSON.parse(
-      await readFile(this.WK_ALL_KANJI_JSON, "utf8"),
+      await readFile(paths["@/.wk/all_kanji.json"], "utf8"),
     ) as string[];
 
     const result: Record<string, WkKanji> = {};
 
     for (const kanji of allKanji) {
-      const htmlPath = join(this.WK_KANJI_DIR, `${kanji}.html`);
+      const htmlPath = join(paths["@/.wk/kanji/"], `${kanji}.html`);
       const html = await readFile(htmlPath, "utf8");
 
       const data = this.parseWkKanjiInfo(html);
       result[kanji] = data;
     }
 
-    await writeFile(this.WK_KANJI_INFO_JSON, JSON.stringify(result, null, 2));
+    await writeFile(
+      paths["@/.wk/wk_kanji_info.json"],
+      JSON.stringify(result, null, 2),
+    );
   }
 
   async writeWkVocabHtml() {
@@ -239,19 +237,19 @@ class WkScraper {
 
     console.log("DEBUG[1227]: vocabItems=", vocabItems, vocabItems.length);
     await writeFile(
-      this.WK_ALL_VOCAB_JSON,
+      paths["@/.wk/all_vocab.json"],
       JSON.stringify(Array.from(new Set(vocabItems)), null, 2),
     );
   }
 
   async writeWkVocabInfoHtml() {
     const allVocab = JSON.parse(
-      await readFile(this.WK_ALL_VOCAB_JSON, "utf8"),
+      await readFile(paths["@/.wk/all_vocab.json"], "utf8"),
     ) as string[];
 
     let failedVocab: string[] = [];
     try {
-      const text = await readFile(this.FAILED_VOCAB_JSON, "utf8");
+      const text = await readFile(paths["@/.wk/failed_vocab.json"], "utf8");
       const json = JSON.parse(text);
       failedVocab = json;
     } catch {
@@ -270,7 +268,7 @@ class WkScraper {
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const html = await res.text();
-        await writeFile(join(this.WK_VOCAB_DIR, `${vocab}.html`), html);
+        await writeFile(join(paths["@/.wk/vocab/"], `${vocab}.html`), html);
       } catch (e) {
         console.error(`Failed to write vocab info for ${vocab}:`, e);
         failedVocab.push(vocab);
@@ -278,14 +276,14 @@ class WkScraper {
       sleep(50);
     }
     await writeFile(
-      this.FAILED_VOCAB_JSON,
+      paths["@/.wk/failed_vocab.json"],
       JSON.stringify(Array.from(new Set(failedVocab)), null, 2),
     );
   }
 
   async readWkKanjiInfoJson() {
     return JSON.parse(
-      await readFile(this.WK_KANJI_INFO_JSON, "utf8"),
+      await readFile(paths["@/.wk/wk_kanji_info.json"], "utf8"),
     ) as Record<string, WkKanji>;
   }
 }

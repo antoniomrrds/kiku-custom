@@ -1,9 +1,10 @@
 import { cp, stat } from "node:fs/promises";
 import { basename, join } from "node:path";
-import { ENV } from "../tools/env.ts";
+import { env } from "../tools/env.ts";
+import { paths } from "../tools/paths.ts";
 
 class Script {
-  ANKI_MEDIA_DIR = ENV.ANKI_COLLECTION_MEDIA_PATH;
+  ANKI_MEDIA_DIR = env.ANKI_COLLECTION_MEDIA_PATH;
 
   async ensureAnkiDir() {
     await stat(this.ANKI_MEDIA_DIR);
@@ -34,10 +35,8 @@ class Script {
       "_kiku_plugin.css",
     ];
 
-    const srcDir = join(import.meta.dirname, "../dist");
-
     console.log("\n📁 Copying DIST files...");
-    await this.copyFiles(FILES, srcDir);
+    await this.copyFiles(FILES, paths["@/dist/"]);
   }
 
   async copyFonts() {
@@ -47,18 +46,15 @@ class Script {
       "_kiku_font_ibm-plex-sans-jp.woff2",
     ];
 
-    const srcDir = join(import.meta.dirname, "../.fonts");
-
     console.log("\n📁 Copying FONTS...");
-    await this.copyFiles(FONTS, srcDir);
+    await this.copyFiles(FONTS, paths["@/.fonts/"]);
   }
 
   async copyDatabases() {
     const DBS = ["_kiku_db_main.tar", "_kiku_db_main_manifest.json"];
 
-    const srcDir = join(import.meta.dirname, "../.db");
     console.log("\n📁 Copying DATABASES...");
-    await this.copyFiles(DBS, srcDir);
+    await this.copyFiles(DBS, paths["@/.db/"]);
   }
 
   async run() {
