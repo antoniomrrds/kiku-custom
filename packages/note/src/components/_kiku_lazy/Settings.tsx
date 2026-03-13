@@ -21,7 +21,7 @@ import {
 } from "#/util/config";
 import { defaultConfig } from "#/util/defaul-config";
 import { type WebFont, webFonts } from "#/util/fonts";
-import { env } from "#/util/general";
+import { constants } from "#/util/general";
 import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
 import { daisyUIThemes } from "#/util/theme";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
@@ -145,7 +145,7 @@ function GeneralSettings() {
     <div class="flex flex-col gap-4 animate-fade-in relative">
       <div class="flex flex-col items-center text-base-content-faint justify-center">
         <div class="text-base-content-subtle-200 text-6xl">菊</div>
-        <div class="text-sm">Kiku Note v{env.KIKU_VERSION}</div>
+        <div class="text-sm">Kiku Note v{constants.KIKU_VERSION}</div>
       </div>
 
       <div class="flex gap-2 items-center justify-between">
@@ -805,7 +805,7 @@ function DebugSettings() {
     if ($general.isAnkiConnectAvailable) {
       const files = await AnkiConnect.getKikuFiles();
       setKikuFiles(JSON.stringify(files, null, 2));
-      const missing = env.KIKU_IMPORTANT_FILES.filter((file) => {
+      const missing = constants.KIKU_IMPORTANT_FILES.filter((file) => {
         return !files.includes(file);
       });
       setMissingFiles(missing.join(", "));

@@ -6,47 +6,67 @@ const version: string =
   // @ts-expect-error: injected by vite
   typeof __VERSION__ !== "undefined" ? __VERSION__ : "unknown";
 
+const assets = {
+  "_kiku_config.json": "_kiku_config.json",
+  "_kiku_front.html": "_kiku_front.html",
+  "_kiku_back.html": "_kiku_back.html",
+  "_kiku_style.css": "_kiku_style.css",
+  "_kiku_notes_manifest.json": "_kiku_notes_manifest.json",
+  "_kiku_db_main.tar": "_kiku_db_main.tar",
+  "_kiku_db_main_manifest.json": "_kiku_db_main_manifest.json",
+  "_kiku_plugin.js": "_kiku_plugin.js",
+
+  "_kiku.js": "_kiku.js",
+  "_kiku_libs.js": "_kiku_libs.js",
+  "_kiku_shared.js": "_kiku_shared.js",
+  "_kiku_lazy.js": "_kiku_lazy.js",
+  "_kiku_worker.js": "_kiku_worker.js",
+  "_kiku_plugin.css": "_kiku_plugin.css",
+  "_kiku.css": "_kiku.css",
+
+  "_kiku_font_hina-mincho.woff2": "_kiku_font_hina-mincho.woff2",
+  "_kiku_font_ibm-plex-sans-jp.woff2": "_kiku_font_ibm-plex-sans-jp.woff2",
+  "_kiku_font_klee-one.woff2": "_kiku_font_klee-one.woff2",
+};
+
 // biome-ignore format: this looks nicer
-export const env = {
+export const constants = {
   KIKU_VERSION: version,
   KIKU_NOTE_TYPE: "Kiku",
   KIKU_CARD_TYPE: "Mining",
-  KIKU_CONFIG_FILE: "_kiku_config.json",
-  KIKU_CONFIG_SESSION_STORAGE_KEY: "kiku-config",
-  KIKU_IS_THEME_CHANGED_SESSION_STORAGE_KEY: "kiku-is-theme-changed",
-  KIKU_FRONT_FILE: "_kiku_front.html",
-  KIKU_BACK_FILE: "_kiku_back.html",
-  KIKU_STYLE_FILE: "_kiku_style.css",
-  KIKU_NOTES_MANIFEST: "_kiku_notes_manifest.json",
-  KIKU_DB_MAIN_TAR: "_kiku_db_main.tar",
-  KIKU_DB_MAIN_MANIFEST_JSON: "_kiku_db_main_manifest.json",
-  KIKU_DB_KANJI_COMPACT: "kiku_db_kanji_compact.json.gz",
-
-  KIKU_PLUGIN_MODULE: "_kiku_plugin.js",
+  key: {
+    "kiku-config": "kiku-config",
+    "kiku-is-theme-changed": "kiku-is-theme-changed",
+  },
+  assets,
+  tar: {
+    "kiku_db_kanji_compact.json.gz": "kiku_db_kanji_compact.json.gz",
+  },
   KIKU_IMPORTANT_FILES: [
-    "_kiku.js",
-    "_kiku_libs.js",
-    "_kiku_shared.js",
-    "_kiku_lazy.js",
-    "_kiku_worker.js",
-    "_kiku_plugin.js",
-    "_kiku_plugin.css",
+    assets["_kiku.js"],
+    assets["_kiku_libs.js"],
+    assets["_kiku_shared.js"],
+    assets["_kiku_lazy.js"],
+    assets["_kiku_worker.js"],
+    assets["_kiku_plugin.js"],
+    assets["_kiku_plugin.css"],
 
-    "_kiku_front.html",
-    "_kiku_back.html",
-    "_kiku_style.css",
-    "_kiku.css",
+    assets["_kiku_front.html"],
+    assets["_kiku_back.html"],
+    assets["_kiku_style.css"],
+    assets["_kiku.css"],
 
-    "_kiku_font_hina-mincho.woff2",
-    "_kiku_font_ibm-plex-sans-jp.woff2",
-    "_kiku_font_klee-one.woff2",
+    assets["_kiku_font_hina-mincho.woff2"],
+    assets["_kiku_font_ibm-plex-sans-jp.woff2"],
+    assets["_kiku_font_klee-one.woff2"],
 
-    "_kiku_db_main.tar",
-    "_kiku_db_main_manifest.json",
+    assets["_kiku_db_main.tar"],
+    assets["_kiku_db_main_manifest.json"],
+    assets["_kiku_notes_manifest.json"],
   ]
 };
 
-export type Env = typeof env;
+export type Constants = typeof constants;
 
 export function extractKanji(str: string): string[] {
   // Match all CJK Unified Ideographs (Kanji range)

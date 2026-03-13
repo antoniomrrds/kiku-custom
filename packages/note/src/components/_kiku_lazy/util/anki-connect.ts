@@ -1,5 +1,5 @@
 import { generateCssVars, getCssVar, type KikuConfig } from "#/util/config";
-import { env } from "#/util/general";
+import { constants } from "#/util/general";
 
 export const base64 = {
   decode: (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0)),
@@ -36,22 +36,22 @@ export const AnkiConnect = {
 
   saveConfig: async (config: KikuConfig) => {
     await AnkiConnect.invoke("storeMediaFile", {
-      filename: env.KIKU_CONFIG_FILE,
+      filename: constants.assets["_kiku_config.json"],
       data: base64.encodeString(JSON.stringify(config)),
     });
 
     const [frontRes, backRes, styleRes] = await Promise.all([
-      fetch(env.KIKU_FRONT_FILE, { cache: "no-store" }),
-      fetch(env.KIKU_BACK_FILE, { cache: "no-store" }),
-      fetch(env.KIKU_STYLE_FILE, { cache: "no-store" }),
+      fetch(constants.assets["_kiku_front.html"], { cache: "no-store" }),
+      fetch(constants.assets["_kiku_back.html"], { cache: "no-store" }),
+      fetch(constants.assets["_kiku_style.css"], { cache: "no-store" }),
     ]);
 
     if (!frontRes.ok || !backRes.ok || !styleRes.ok) {
       throw new Error(
         `Failed to load template files: ${[
-          !frontRes.ok && env.KIKU_FRONT_FILE,
-          !backRes.ok && env.KIKU_BACK_FILE,
-          !styleRes.ok && env.KIKU_STYLE_FILE,
+          !frontRes.ok && constants.assets["_kiku_front.html"],
+          !backRes.ok && constants.assets["_kiku_back.html"],
+          !styleRes.ok && constants.assets["_kiku_style.css"],
         ]
           .filter(Boolean)
           .join(", ")}`,
@@ -85,9 +85,9 @@ export const AnkiConnect = {
 
     await AnkiConnect.invoke("updateModelTemplates", {
       model: {
-        name: env.KIKU_NOTE_TYPE,
+        name: constants.KIKU_NOTE_TYPE,
         templates: {
-          [env.KIKU_CARD_TYPE]: {
+          [constants.KIKU_CARD_TYPE]: {
             Front: frontTemplate,
             Back: backTemplate,
           },
@@ -97,7 +97,7 @@ export const AnkiConnect = {
 
     await AnkiConnect.invoke("updateModelStyling", {
       model: {
-        name: env.KIKU_NOTE_TYPE,
+        name: constants.KIKU_NOTE_TYPE,
         css: styleTemplate,
       },
     });

@@ -3,8 +3,8 @@ import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { isServer } from "solid-js/web";
 import type { KikuPlugin } from "#/plugins/plugin-types";
+import { constants } from "#/util/general";
 import type { KanjiInfo, KikuNotesManifest } from "#/util/types";
-import { env } from "#/util/general";
 import type { NexClient } from "#/worker/client";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useBreakpointContext } from "./BreakpointContext";
@@ -83,7 +83,7 @@ export function GeneralContextProvider(props: {
       ? false
       : JSON.parse(
           sessionStorage.getItem(
-            env.KIKU_IS_THEME_CHANGED_SESSION_STORAGE_KEY,
+            constants.key["kiku-is-theme-changed"],
           ) ?? "false",
         ),
     aborter: props.aborter,

@@ -2,7 +2,7 @@ import { createContext, createEffect, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { type SetStoreFunction, type Store, unwrap } from "solid-js/store";
 import { type KikuConfig, updateConfigState } from "#/util/config";
-import { env } from "#/util/general";
+import { constants } from "#/util/general";
 import type { DaisyUITheme } from "#/util/theme";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useGeneralContext } from "./GeneralContext";
@@ -27,7 +27,7 @@ export function ConfigContextProvider(props: {
     $general.nexClientPromise.promise.then((nexClient) => {
       nexClient.nex.then((nex) => {
         nex.init({
-          env: env,
+          env: constants,
           config: unwrap($config),
           assetsPath: import.meta.env.DEV ? "" : KIKU_STATE.assetsPath,
           preferAnkiConnect:
@@ -37,14 +37,14 @@ export function ConfigContextProvider(props: {
     });
 
     sessionStorage.setItem(
-      env.KIKU_CONFIG_SESSION_STORAGE_KEY,
+      constants.key["kiku-config"],
       JSON.stringify($config),
     );
     if (!initialTheme) {
       initialTheme = $config.theme;
     } else if (initialTheme && initialTheme !== $config.theme) {
       sessionStorage.setItem(
-        env.KIKU_IS_THEME_CHANGED_SESSION_STORAGE_KEY,
+        constants.key["kiku-is-theme-changed"],
         "true",
       );
       $setGeneral("isThemeChanged", true);

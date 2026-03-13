@@ -10,7 +10,7 @@ import {
   validateConfig,
 } from "./util/config.ts";
 import { defaultConfig } from "./util/defaul-config";
-import { env } from "./util/general.ts";
+import { constants } from "./util/general.ts";
 import "./styles/tailwind.css";
 import { Layout } from "./components/Layout.tsx";
 import { AnkiFieldContextProvider } from "./components/shared/AnkiFieldsContext.tsx";
@@ -125,7 +125,9 @@ async function setup({
 
     let config$: KikuConfig;
     try {
-      const cache = sessionStorage.getItem(env.KIKU_CONFIG_SESSION_STORAGE_KEY);
+      const cache = sessionStorage.getItem(
+        constants.key["kiku-config"],
+      );
       if (cache) {
         KIKU_STATE.logger.info("config cache hit:", cache);
         config$ = validateConfig(JSON.parse(cache));
@@ -133,12 +135,12 @@ async function setup({
         KIKU_STATE.logger.info("config cache miss");
         config$ = validateConfig(
           await (
-            await fetch(env.KIKU_CONFIG_FILE, { cache: "no-store" })
+            await fetch(constants.assets["_kiku_config.json"], { cache: "no-store" })
           ).json(),
         );
         if (aborter.signal.aborted) return;
         sessionStorage.setItem(
-          env.KIKU_CONFIG_SESSION_STORAGE_KEY,
+          constants.key["kiku-config"],
           JSON.stringify(config$),
         );
       }

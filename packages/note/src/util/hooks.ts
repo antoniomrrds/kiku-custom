@@ -6,7 +6,7 @@ import { useCardContext } from "#/components/shared/CardContext";
 import { useConfigContext } from "#/components/shared/ConfigContext";
 import { useGeneralContext } from "#/components/shared/GeneralContext";
 import { NexClient } from "#/worker/client";
-import { env, extractKanji } from "./general";
+import { constants, extractKanji } from "./general";
 import type { DaisyUITheme } from "./theme";
 
 export function useViewTransition() {
@@ -119,7 +119,7 @@ export function useKanji() {
         : [];
 
       const nexClient = new NexClient({
-        env: env,
+        env: constants,
         config: unwrap($config),
         assetsPath: import.meta.env.DEV ? "" : KIKU_STATE.assetsPath,
         preferAnkiConnect:

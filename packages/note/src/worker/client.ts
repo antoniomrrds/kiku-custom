@@ -1,5 +1,5 @@
 import type { KikuConfig } from "#/util/config";
-import type { Env } from "#/util/general";
+import type { Constants } from "#/util/general";
 import type { NexApi } from "./_kiku_worker.ts";
 
 export function wrap<T>(worker: Worker) {
@@ -39,7 +39,7 @@ export class NexClient {
   worker: Worker;
 
   constructor(payload: {
-    env: Env;
+    env: Constants;
     assetsPath: string;
     config: KikuConfig;
     preferAnkiConnect: boolean;

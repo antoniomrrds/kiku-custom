@@ -1,5 +1,5 @@
 import type { KikuConfig } from "#/util/config";
-import type { Env } from "#/util/general";
+import type { Constants } from "#/util/general";
 import type {
   AnkiFields,
   AnkiNote,
@@ -122,14 +122,14 @@ const AnkiConnect = {
 
 export class Nex {
   assetsPath!: string;
-  env!: Env;
+  env!: Constants;
   config!: KikuConfig;
   preferAnkiConnect!: boolean;
   cache = new Map();
 
   constructor(payload: {
     assetsPath: string;
-    env: Env;
+    env: Constants;
     config: KikuConfig;
     preferAnkiConnect: boolean;
   }) {
@@ -138,7 +138,7 @@ export class Nex {
 
   init(payload: {
     assetsPath: string;
-    env: Env;
+    env: Constants;
     config: KikuConfig;
     preferAnkiConnect: boolean;
   }) {
@@ -368,8 +368,8 @@ export class Nex {
     } else {
       this.lookupKanjiPromise = Promise.withResolvers();
       const manifest = await this.dbMainManifest();
-      const file = manifest.files[this.env.KIKU_DB_KANJI_COMPACT];
-      let res = await fetch(`${this.assetsPath}/${this.env.KIKU_DB_MAIN_TAR}`, {
+      const file = manifest.files[this.env.tar["kiku_db_kanji_compact.json.gz"]];
+      let res = await fetch(`${this.assetsPath}/${this.env.assets["_kiku_db_main.tar"]}`, {
         headers: { Range: `bytes=${file.start}-${file.end}` },
       });
       if (res.status === 200) {
@@ -400,7 +400,7 @@ export class Nex {
     const key = this.dbMainManifest.name;
     if (this.cache.has(key)) return this.cache.get(key);
     const res = await fetch(
-      `${this.assetsPath}/${this.env.KIKU_DB_MAIN_MANIFEST_JSON}`,
+      `${this.assetsPath}/${this.env.assets["_kiku_db_main_manifest.json"]}`,
     );
     if (!res.ok) {
       logger.error("Failed to load db main manifest");
@@ -415,7 +415,7 @@ export class Nex {
     const key = this.notesManifest.name;
     if (this.cache.has(key)) return this.cache.get(key);
     const res = await fetch(
-      `${this.assetsPath}/${this.env.KIKU_NOTES_MANIFEST}`,
+      `${this.assetsPath}/${this.env.assets["_kiku_notes_manifest.json"]}`,
     );
     if (!res.ok) {
       logger.error("Failed to load manifest");
