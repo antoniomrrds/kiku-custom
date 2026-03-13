@@ -70,7 +70,7 @@ export type Constants = typeof constants;
 
 export function extractKanji(str: string): string[] {
   // Match all CJK Unified Ideographs (Kanji range)
-  const matches = str.match(/[\u4E00-\u9FFF]/g);
+  const matches = str.match(/\p{Script=Han}/gu);
   return matches ? Array.from(new Set(matches)) : [];
 }
 
