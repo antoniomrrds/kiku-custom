@@ -1,6 +1,6 @@
+import type { NexClient } from "../worker/client";
 import type { Debug } from "./debug";
 import type { Logger } from "./logger";
-import type { NexClient } from "../worker/client";
 
 export type AnkiFields = {
   Expression: string;
@@ -235,8 +235,6 @@ declare global {
     ankiDroidAPI?: AnkiDroidAPI;
     isAnkiDesktop?: boolean;
     nexClient?: NexClient;
-    side?: "front" | "back";
-    ssr?: boolean;
     aborter: AbortController;
     debug: Debug;
     dispose?: () => void;

@@ -43,17 +43,22 @@ export async function init({
   ssr?: boolean;
 }) {
   const now = performance.now();
-  KIKU_STATE.side = side;
-  KIKU_STATE.ssr = ssr;
   KIKU_STATE.aborter.abort();
   KIKU_STATE.aborter = new AbortController();
   KIKU_STATE.dispose?.();
-  await setup({ aborter: KIKU_STATE.aborter });
+  await setup({ aborter: KIKU_STATE.aborter, side, ssr });
   KIKU_STATE.startupTime = performance.now() - now;
 }
 
-async function setup({ aborter }: { aborter: AbortController }) {
-  const { side, ssr } = KIKU_STATE;
+async function setup({
+  aborter,
+  side,
+  ssr,
+}: {
+  aborter: AbortController;
+  side: "front" | "back";
+  ssr?: boolean;
+}) {
   try {
     if (!side) throw new Error("Side not set");
 
