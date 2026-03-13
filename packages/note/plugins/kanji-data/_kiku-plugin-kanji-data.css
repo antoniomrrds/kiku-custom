@@ -84,15 +84,23 @@
   }
   .reading-row {
     display: flex;
-    gap: var(--spacing-2);
+    gap: var(--spacing-1);
     align-items: center;
   }
   .reading-container {
+    font-size: var(--text-sm);
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-1);
   }
   .reading-box {
+    border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+    padding: 0 var(--spacing-1);
+  }
+  .misc-badge {
+    display: flex;
+    gap: var(--spacing-1);
+    font-size: var(--text-sm);
     border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
     padding: 0 var(--spacing-1);
   }
@@ -306,6 +314,18 @@
         height: 1.15rem;
         transform: translateY(-2px);
       }
+    }
+  }
+
+  .tooltip .kiku-plugin-kanji-data {
+    .extra-info-container {
+      font-size: var(--text-base);
+    }
+    .naritachi-content {
+      font-size: var(--text-base);
+    }
+    .metadata-section {
+      gap: var(--spacing-2);
     }
   }
 }

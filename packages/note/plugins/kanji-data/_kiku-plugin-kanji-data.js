@@ -289,12 +289,12 @@ export default (options) => {
           ),
           h("div", { class: "flex flex-col gap-2 items-start" }, [
             h(ReadingsSection, { data: k }),
-            h("div", { class: "flex flex-row gap-2 items-start" }, [
-              h("div", { class: "badge text-base-content-calm" }, [
+            h("div", { class: "flex flex-row gap-1 items-start" }, [
+              h("div", { class: "misc-badge text-base-content-calm" }, [
                 h("span", {}, "部首: "),
                 h("span", {}, `${k.radical} (${k.radicalName})`),
               ]),
-              h("div", { class: "badge text-base-content-calm" }, [
+              h("div", { class: "misc-badge text-base-content-calm" }, [
                 h("span", {}, k.stroke),
                 h("span", {}, "画"),
               ]),
