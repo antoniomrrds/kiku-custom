@@ -104,21 +104,23 @@ export const AnkiConnect = {
   },
 
   getKikuFiles: async () => {
-    const res = await AnkiConnect.invoke("getMediaFilesNames", {
+    const res = (await AnkiConnect.invoke("getMediaFilesNames", {
       pattern: "_kiku*",
-    });
-    const sorted = res.result.sort((a: string, b: string) => {
-      // Extract the last extension (e.g. "json", "js", "gz")
-      const extA = a.split(".").pop();
-      const extB = b.split(".").pop();
+    })) as { result: string[] };
+    const sorted = res.result
+      .filter((v) => !v.startsWith("_kiku-plugin"))
+      .sort((a: string, b: string) => {
+        // Extract the last extension (e.g. "json", "js", "gz")
+        const extA = a.split(".").pop();
+        const extB = b.split(".").pop();
 
-      if (extA !== extB) {
-        return extA?.localeCompare(extB ?? "");
-      }
+        if (extA !== extB) {
+          return (extA ?? "").localeCompare(extB ?? "");
+        }
 
-      // Compare alphabetically by full name
-      return a.localeCompare(b);
-    });
+        // Compare alphabetically by full name
+        return a.localeCompare(b);
+      });
     return sorted as string[];
   },
 };
