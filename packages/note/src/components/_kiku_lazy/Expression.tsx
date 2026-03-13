@@ -1,4 +1,4 @@
-import { arrow, computePosition, flip, shift } from "@floating-ui/dom";
+import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom";
 import { onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import { extractKanji } from "#/util/general";
@@ -53,6 +53,7 @@ export default function Expression() {
         computePosition(kanji, tooltip, {
           placement: bp.isAtLeast("sm") ? "bottom-start" : "bottom",
           middleware: [
+            offset({ mainAxis: -5, crossAxis: 0 }),
             flip(),
             shift({ padding: 5 }),
             arrow({
@@ -202,7 +203,7 @@ function KanjiTooltip(props: {
         ref={props.arrowRef}
         class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
       ></div>
-      <div class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[70svh] overflow-auto">
+      <div class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto">
         <KanjiInfo />
         <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
           <KanjiInfoExtra />
