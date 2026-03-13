@@ -108,8 +108,8 @@ export default function Settings() {
           <div
             class="bottom-0 w-full"
             classList={{
-              fixed: !KIKU_STATE.isAnkiWeb,
-              absolute: KIKU_STATE.isAnkiWeb,
+              fixed: !$general.isAnkiWeb,
+              absolute: $general.isAnkiWeb,
             }}
           >
             <div class="mx-auto w-full relative layout-max-width">

@@ -368,10 +368,14 @@ export class Nex {
     } else {
       this.lookupKanjiPromise = Promise.withResolvers();
       const manifest = await this.dbMainManifest();
-      const file = manifest.files[this.env.tar["kiku_db_kanji_compact.json.gz"]];
-      let res = await fetch(`${this.assetsPath}/${this.env.assets["_kiku_db_main.tar"]}`, {
-        headers: { Range: `bytes=${file.start}-${file.end}` },
-      });
+      const file =
+        manifest.files[this.env.tar["kiku_db_kanji_compact.json.gz"]];
+      let res = await fetch(
+        `${this.assetsPath}/${this.env.assets["_kiku_db_main.tar"]}`,
+        {
+          headers: { Range: `bytes=${file.start}-${file.end}` },
+        },
+      );
       if (res.status === 200) {
         res = Nex.sliceBytes(await res.arrayBuffer(), file.start, file.end);
       } else {

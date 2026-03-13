@@ -10,6 +10,7 @@ import { constants, extractKanji } from "./general";
 import type { DaisyUITheme } from "./theme";
 
 export function useViewTransition() {
+  const [$general] = useGeneralContext();
   function startViewTransition(
     callback: () => void,
     {
@@ -21,7 +22,7 @@ export function useViewTransition() {
     if (
       document.startViewTransition &&
       typeof pycmd === "undefined" &&
-      !KIKU_STATE.isAnkiWeb
+      !$general.isAnkiWeb
     ) {
       beforeCallback?.();
       return document.startViewTransition(callback);
@@ -121,7 +122,7 @@ export function useKanji() {
       const nexClient = new NexClient({
         env: constants,
         config: unwrap($config),
-        assetsPath: import.meta.env.DEV ? "" : KIKU_STATE.assetsPath,
+        assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
         preferAnkiConnect:
           $config.preferAnkiConnect && !!KIKU_STATE.isAnkiDesktop,
       });

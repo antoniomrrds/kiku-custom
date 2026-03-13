@@ -22,7 +22,6 @@ const [config, setConfig] = createStore(defaultConfig);
 const logger = new Logger();
 
 globalThis.KIKU_STATE = {
-  assetsPath: "",
   logger,
   aborter: new AbortController(),
   debug,
@@ -31,7 +30,11 @@ globalThis.KIKU_STATE = {
 export function generateSsrTemplate() {
   const frontSsrTemplate = renderToString(() => (
     <BreakpointContextProvider>
-      <GeneralContextProvider aborter={globalThis.KIKU_STATE.aborter}>
+      <GeneralContextProvider
+        aborter={globalThis.KIKU_STATE.aborter}
+        isAnkiWeb={false}
+        assetsPath=""
+      >
         <AnkiFieldContextProvider>
           <CardStoreContextProvider side="front">
             <ConfigContextProvider value={[config, setConfig]}>
@@ -52,7 +55,11 @@ export function generateSsrTemplate() {
   ));
   const backSsrTemplate = renderToString(() => (
     <BreakpointContextProvider>
-      <GeneralContextProvider aborter={globalThis.KIKU_STATE.aborter}>
+      <GeneralContextProvider
+        aborter={globalThis.KIKU_STATE.aborter}
+        isAnkiWeb={false}
+        assetsPath=""
+      >
         <AnkiFieldContextProvider>
           <CardStoreContextProvider side="back">
             <ConfigContextProvider value={[config, setConfig]}>

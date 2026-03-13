@@ -83,7 +83,7 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
   let autoPlay = true;
   createEffect(() => {
     $group.sentenceAudioField;
-    const useWebVolume = bp.isAtLeast("sm") || KIKU_STATE.isAnkiWeb;
+    const useWebVolume = bp.isAtLeast("sm") || $general.isAnkiWeb;
     $card.expressionAudioRef?.querySelectorAll("audio").forEach((el) => {
       el.volume = useWebVolume ? $config.volume / 100 : 1;
     });
@@ -166,8 +166,8 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
         <div
           class="bottom-4 left-4 flex sm:hidden flex-col gap-2 items-center animate-fade-in-sm"
           classList={{
-            fixed: !KIKU_STATE.isAnkiWeb,
-            absolute: KIKU_STATE.isAnkiWeb,
+            fixed: !$general.isAnkiWeb,
+            absolute: $general.isAnkiWeb,
           }}
         >
           <NotePlayIcons />

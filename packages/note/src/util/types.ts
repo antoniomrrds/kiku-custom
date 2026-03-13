@@ -229,8 +229,6 @@ declare global {
     relax?: boolean;
     startupTime?: number;
     root?: HTMLElement;
-    isAnkiWeb?: boolean;
-    assetsPath: string;
     logger: Logger;
     ankiDroidAPI?: AnkiDroidAPI;
     isAnkiDesktop?: boolean;

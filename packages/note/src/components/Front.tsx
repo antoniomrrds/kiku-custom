@@ -42,7 +42,7 @@ export function Front() {
     setTimeout(() => {
       $setCard("ready", true);
 
-      getPlugin().then((plugin) => {
+      getPlugin($general.assetsPath).then((plugin) => {
         try {
           runWithOwner(owner, () => {
             plugin?.onPluginLoad?.({ ctx });

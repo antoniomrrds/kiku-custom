@@ -57,7 +57,7 @@ export function Back(props: { onExitNested?: () => void }) {
       $setCard("ready", true);
       KIKU_STATE.relax = true;
 
-      getPlugin().then((plugin) => {
+      getPlugin($general.assetsPath).then((plugin) => {
         try {
           runWithOwner(owner, () => {
             plugin?.onPluginLoad?.({ ctx });

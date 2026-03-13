@@ -26,8 +26,6 @@ import { debug } from "./util/debug.ts";
 import { Logger } from "./util/logger.ts";
 
 globalThis.KIKU_STATE = {
-  isAnkiWeb: window.location.origin.includes("ankiuser.net"),
-  assetsPath: window.location.origin,
   logger: new Logger(),
   isAnkiDesktop: typeof pycmd !== "undefined",
   nexClient: globalThis.KIKU_STATE?.nexClient,
@@ -70,10 +68,13 @@ async function setup({
       window.addEventListener("unload", KIKU_STATE.unload);
     }
 
-    if (KIKU_STATE.isAnkiWeb) {
+    const isAnkiWeb = window.location.origin.includes("ankiuser.net");
+    let assetsPath = window.location.origin;
+
+    if (isAnkiWeb) {
       KIKU_STATE.logger.info("AnkiWeb detected");
       document.documentElement.setAttribute("data-theme", "none");
-      KIKU_STATE.assetsPath = `${window.location.origin}/study/media`;
+      assetsPath = `${window.location.origin}/study/media`;
       const kikuCss = document.getElementById("kiku-css");
       kikuCss?.remove();
     }
@@ -159,7 +160,11 @@ async function setup({
     if (side === "front") {
       const App = () => (
         <BreakpointContextProvider>
-          <GeneralContextProvider aborter={aborter}>
+          <GeneralContextProvider
+            aborter={aborter}
+            isAnkiWeb={isAnkiWeb}
+            assetsPath={assetsPath}
+          >
             <AnkiFieldContextProvider>
               <CardStoreContextProvider side="front">
                 <ConfigContextProvider value={[config, setConfig]}>
@@ -185,7 +190,11 @@ async function setup({
       }
     } else if (side === "back") {
       const App = () => (
-        <GeneralContextProvider aborter={aborter}>
+        <GeneralContextProvider
+          aborter={aborter}
+          isAnkiWeb={isAnkiWeb}
+          assetsPath={assetsPath}
+        >
           <AnkiFieldContextProvider>
             <CardStoreContextProvider side="back">
               <BreakpointContextProvider>

@@ -10,8 +10,8 @@ export default function HeaderLayout(props: { children: JSX.Element }) {
       <div
         class="top-0 left-0 w-full py-2 sm:py-4 bg-base-100/90 backdrop-blur-xs z-10"
         classList={{
-          fixed: !KIKU_STATE.isAnkiWeb,
-          absolute: KIKU_STATE.isAnkiWeb,
+          fixed: !$general.isAnkiWeb,
+          absolute: $general.isAnkiWeb,
         }}
       >
         <div class="w-full mx-auto px-2 sm:px-4 layout-max-width">

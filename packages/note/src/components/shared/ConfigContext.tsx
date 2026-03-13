@@ -29,7 +29,7 @@ export function ConfigContextProvider(props: {
         nex.init({
           env: constants,
           config: unwrap($config),
-          assetsPath: import.meta.env.DEV ? "" : KIKU_STATE.assetsPath,
+          assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
           preferAnkiConnect:
             $config.preferAnkiConnect && !!KIKU_STATE.isAnkiDesktop,
         });

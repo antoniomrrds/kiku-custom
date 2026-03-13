@@ -12,6 +12,8 @@ import { useBreakpointContext } from "./BreakpointContext";
 type GeneralStore = {
   plugin: KikuPlugin | undefined;
   isThemeChanged: boolean;
+  isAnkiWeb: boolean;
+  assetsPath: string;
   aborter: AbortController;
   isAnkiConnectAvailable: boolean;
   notesManifest: KikuNotesManifest | undefined;
@@ -38,6 +40,8 @@ const GeneralContext =
 
 export function GeneralContextProvider(props: {
   children: JSX.Element;
+  isAnkiWeb: boolean;
+  assetsPath: string;
   aborter: AbortController;
 }) {
   let timeout: ReturnType<typeof setTimeout>;
@@ -86,6 +90,8 @@ export function GeneralContextProvider(props: {
             constants.key["kiku-is-theme-changed"],
           ) ?? "false",
         ),
+    isAnkiWeb: props.isAnkiWeb,
+    assetsPath: props.assetsPath,
     aborter: props.aborter,
     isAnkiConnectAvailable: false,
     notesManifest: undefined,

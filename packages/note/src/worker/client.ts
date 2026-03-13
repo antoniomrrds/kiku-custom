@@ -49,8 +49,11 @@ export class NexClient {
     if (KIKU_STATE.nexClient) {
       worker = KIKU_STATE.nexClient.worker;
       nex = KIKU_STATE.nexClient.nex;
-    } else if (KIKU_STATE.assetsPath !== window.location.origin) {
-      worker = new Worker(`${KIKU_STATE.assetsPath}/_kiku_worker.js`, {
+    } else if (
+      payload.assetsPath !== window.location.origin &&
+      !import.meta.env.DEV
+    ) {
+      worker = new Worker(`${payload.assetsPath}/_kiku_worker.js`, {
         type: "module",
       });
     } else {

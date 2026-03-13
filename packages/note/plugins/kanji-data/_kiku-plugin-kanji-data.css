@@ -270,7 +270,7 @@
 }
 
 @media (min-width: 640px) {
-  .kiku-plugin-kanji-data:not(.tooltip *) {
+  .kiku-plugin-kanji-data {
     .extra-info-container {
       font-size: var(--text-lg);
     }

@@ -1,12 +1,12 @@
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import { constants } from "./general";
 
-export async function getPlugin() {
+export async function getPlugin(assetsPath: string) {
   try {
     const plugin = (
       await import(
         /* @vite-ignore */
-        `${KIKU_STATE.assetsPath}/${constants.assets["_kiku_plugin.js"]}`
+        `${assetsPath}/${constants.assets["_kiku_plugin.js"]}`
       )
     ).plugin as KikuPlugin;
     return plugin;
