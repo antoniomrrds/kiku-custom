@@ -10,7 +10,7 @@ import { isServer } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/util/config";
 import { getPlugin } from "#/util/plugin";
-import { PicturePaginationSection } from "./PicturePaginationSection";
+import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useConfigContext } from "./shared/ConfigContext";
@@ -22,7 +22,7 @@ import { useGeneralContext } from "./shared/GeneralContext";
 const Lazy = {
   AudioButtons: lazy(async () => ({ default: (await import("./_kiku_lazy")).AudioButtons, })),
   HeaderMain: lazy(async () => ({ default: (await import("./_kiku_lazy")).HeaderMain, })),
-  PicturePagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).PicturePagination, })),
+  FieldGroupPagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).FieldGroupPagination, })),
   UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid, })),
   Sentence: lazy(async () => ({ default: (await import("./_kiku_lazy")).Sentence, })),
 };
@@ -138,7 +138,7 @@ export function Front() {
 
           <PictureSection />
         </div>
-        {$card.ready && !hidden() && <PicturePaginationSection />}
+        {$card.ready && !hidden() && <FieldGroupPaginationSection />}
       </div>
       <div
         class="flex flex-col gap-4 items-center text-center justify-center"

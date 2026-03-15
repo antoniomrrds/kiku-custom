@@ -3,10 +3,10 @@ import { useFieldGroupContext } from "./shared/FieldGroupContext";
 
 // biome-ignore format: this looks nicer
 const Lazy = {
-  PicturePagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).PicturePagination, })),
+  FieldGroupPagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).FieldGroupPagination, })),
 };
 
-export function PicturePaginationSection() {
+export function FieldGroupPaginationSection() {
   const { $group } = useFieldGroupContext();
 
   return (
@@ -16,7 +16,7 @@ export function PicturePaginationSection() {
         hidden: $group.ids.length <= 1,
       }}
     >
-      <Lazy.PicturePagination />
+      <Lazy.FieldGroupPagination />
     </div>
   );
 }

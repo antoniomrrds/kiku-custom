@@ -17,7 +17,7 @@ import {
 import type { DatasetProp } from "#/util/config";
 import { useKanji, useNavigationTransition } from "#/util/hooks";
 import { getPlugin } from "#/util/plugin";
-import { PicturePaginationSection } from "./PicturePaginationSection";
+import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import {
   AnkiFieldContextProvider,
@@ -142,7 +142,7 @@ export function Back(props: { onExitNested?: () => void }) {
               </div>
               <PictureSection />
             </div>
-            {$card.ready && <PicturePaginationSection />}
+            {$card.ready && <FieldGroupPaginationSection />}
           </div>
           {$card.ready && (
             <Lazy.BackBody

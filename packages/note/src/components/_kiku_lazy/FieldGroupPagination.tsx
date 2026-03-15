@@ -3,7 +3,7 @@ import { useCardContext } from "../shared/CardContext";
 import { useFieldGroupContext } from "../shared/FieldGroupContext";
 import { ArrowLeftIcon } from "./Icons";
 
-export default function PicturePagination() {
+export default function FieldGroupPagination() {
   const { $group, $next, $prev } = useFieldGroupContext();
   const [$card, $setCard] = useCardContext();
 

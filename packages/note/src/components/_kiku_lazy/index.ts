@@ -2,10 +2,10 @@ import AudioButtons from "./AudioButtons";
 import BackBody from "./BackBody";
 import BackFooter from "./BackFooter";
 import Expression from "./Expression";
+import FieldGroupPagination from "./FieldGroupPagination";
 import HeaderMain from "./HeaderMain";
 import KanjiPage from "./KanjiPage";
 import PictureModal from "./PictureModal";
-import PicturePagination from "./PicturePagination";
 import Pitches from "./Pitches";
 import Sentence from "./Sentence";
 import Settings from "./Settings";
@@ -19,7 +19,7 @@ export {
   PictureModal,
   BackBody,
   Pitches,
-  PicturePagination,
+  FieldGroupPagination,
   KanjiPage,
   UseAnkiDroid,
   Sentence,
