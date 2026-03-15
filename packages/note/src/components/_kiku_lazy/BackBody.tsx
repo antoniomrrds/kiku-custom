@@ -136,6 +136,7 @@ export default function BackBody(props: {
             <div class="overflow-auto" ref={definitionEl}>
               <DefinitionPictureSection
                 onDefinitionPictureClick={props.onDefinitionPictureClick}
+                currentHtml={currentPage()?.html}
               />
               <div class="contents" innerHTML={currentPage()?.html}></div>
             </div>

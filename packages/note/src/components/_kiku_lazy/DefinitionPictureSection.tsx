@@ -11,11 +11,20 @@ const isSvg = (src: string | null) => {
 
 export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;
+  currentHtml?: string;
 }) {
   const { ankiFields } = useAnkiFieldContext<"back">();
 
   const definitionPictures = createMemo(() => {
     if (isServer) return [];
+
+    const displayedImages = new Set<string>();
+    if (props.currentHtml) {
+      const doc = parseHtml(props.currentHtml);
+      for (const img of doc.querySelectorAll("img")) {
+        if (img.src) displayedImages.add(img.src);
+      }
+    }
 
     const defPicDoc = parseHtml(ankiFields.DefinitionPicture);
     const defPics = Array.from(defPicDoc.querySelectorAll("img")).map(
@@ -29,7 +38,8 @@ export default function DefinitionPictureSection(props: {
           img.src &&
           !isSvg(img.src) &&
           (img.height === 0 || img.height > 100) &&
-          (img.width === 0 || img.width > 100),
+          (img.width === 0 || img.width > 100) &&
+          !displayedImages.has(img.src),
       )
       .map((img) => {
         const newImg = document.createElement("img");
