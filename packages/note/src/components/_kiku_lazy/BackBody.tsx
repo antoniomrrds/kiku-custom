@@ -120,13 +120,11 @@ export default function BackBody(props: {
         <div class="animate-fade-in">
           {pages().length > 1 && (
             <div
-              class="text-end text-base-content-soft text-sm cursor-pointer hover:text-base-content transition-colors mb-1"
+              class="flex justify-between text-base-content-calm text-sm cursor-pointer hover:text-base-content transition-colors mb-1"
               on:click={() => modalRef?.showModal()}
             >
-              {currentPage()?.name}
-              <span class="ms-2 opacity-70">
-                {`(${definitionIndex() + 1}/${pages().length})`}
-              </span>
+              <div>{currentPage()?.name}</div>
+              <div class="text-base-content-soft">{`${definitionIndex() + 1}/${pages().length}`}</div>
             </div>
           )}
           <div
@@ -163,8 +161,8 @@ export default function BackBody(props: {
 
       <dialog class="modal" ref={modalRef}>
         <div class="modal-box max-w-sm max-h-[80svh] flex flex-col p-4 gap-2">
-          <h3 class="font-bold text-lg px-2 text-center">Select Dictionary</h3>
-          <div class="flex flex-col gap-1 overflow-auto py-2 pe-2">
+          <h3 class="font-bold text-lg px-2 text-center">Select Page</h3>
+          <div class="flex flex-col gap-1 overflow-auto p-2">
             <For each={pages()}>
               {(page, i) => (
                 <button
