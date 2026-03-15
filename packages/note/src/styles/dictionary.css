@@ -27,6 +27,9 @@
       padding-inline-start: 0.5em;
       list-style-type: none;
     }
+    li {
+      list-style-type: none;
+    }
   }
 
   /*

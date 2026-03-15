@@ -2,7 +2,6 @@ import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import { parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
-import { ArrowLeftIcon } from "./Icons";
 
 export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;
@@ -37,10 +36,10 @@ export default function DefinitionPictureSection(props: {
         <div innerHTML={currentDefPic()}></div>
 
         <Show when={definitionPictures().length > 1}>
-          <div class="absolute inset-0 flex items-center justify-between p-3 opacity-0 group-hover/defpic:opacity-100 transition-opacity pointer-events-none">
+          <div class="absolute inset-y-0 left-2 right-2 flex justify-between pointer-events-none">
             <button
               type="button"
-              class="btn btn-circle btn-xs btn-ghost bg-base-100/50 backdrop-blur pointer-events-auto"
+              class="h-full w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-l-sm"
               on:click={(e) => {
                 e.stopPropagation();
                 setDefPicIndex(
@@ -49,27 +48,23 @@ export default function DefinitionPictureSection(props: {
                     definitionPictures().length,
                 );
               }}
-            >
-              <ArrowLeftIcon class="w-3 h-3" />
-            </button>
+            />
             <button
               type="button"
-              class="btn btn-circle btn-xs btn-ghost bg-base-100/50 backdrop-blur pointer-events-auto"
+              class="h-full w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-r-sm"
               on:click={(e) => {
                 e.stopPropagation();
                 setDefPicIndex(
                   (prev) => (prev + 1) % definitionPictures().length,
                 );
               }}
-            >
-              <ArrowLeftIcon class="w-3 h-3 rotate-180" />
-            </button>
+            />
           </div>
           <div class="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5 pointer-events-none opacity-0 group-hover/defpic:opacity-100 transition-opacity">
             <For each={definitionPictures()}>
               {(_, i) => (
                 <div
-                  class="w-1 h-1 rounded-full bg-base-100/50 backdrop-blur"
+                  class="w-1 h-1 rounded-full bg-base-100/50"
                   classList={{ "bg-primary": i() === defPicIndex() }}
                 />
               )}

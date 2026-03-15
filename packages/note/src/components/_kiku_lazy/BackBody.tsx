@@ -140,16 +140,18 @@ export default function BackBody(props: {
               <div class="contents" innerHTML={currentPage()?.html}></div>
             </div>
             {pages().length > 1 && (
-              <>
-                <div
-                  class="cursor-pointer w-6 h-full absolute top-0 left-0 hover:bg-base-content/10"
+              <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
+                <button
+                  type="button"
+                  class="h-full w-6 hover:bg-base-content/10 cursor-pointer pointer-events-auto transition-colors rounded-l-lg"
                   on:click={() => changePage(-1)}
-                ></div>
-                <div
-                  class="cursor-pointer w-6 h-full absolute top-0 right-0 hover:bg-base-content/10"
+                />
+                <button
+                  type="button"
+                  class="h-full w-6 hover:bg-base-content/10 cursor-pointer pointer-events-auto transition-colors rounded-r-lg"
                   on:click={() => changePage(1)}
-                ></div>
-              </>
+                />
+              </div>
             )}
           </div>
           <div class="flex justify-end py-2 gap-2">

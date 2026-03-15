@@ -2,7 +2,6 @@ import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import type { DatasetProp } from "#/util/config";
 import { parseHtml } from "#/util/general";
-import { ArrowLeftIcon } from "./_kiku_lazy/Icons";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useCardContext } from "./shared/CardContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
@@ -83,24 +82,22 @@ export function PictureSection() {
       </div>
 
       <Show when={pictures().length > 1}>
-        <div class="absolute inset-0 flex items-center justify-between p-2 opacity-0 group-hover/pic:opacity-100 transition-opacity pointer-events-none">
+        <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
           <button
-            class="btn btn-circle btn-xs btn-ghost bg-base-100/50 backdrop-blur pointer-events-auto"
+            type="button"
+            class="h-full w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
             on:click={prev}
-          >
-            <ArrowLeftIcon class="w-4 h-4" />
-          </button>
+          />
           <button
-            class="btn btn-circle btn-xs btn-ghost bg-base-100/50 backdrop-blur pointer-events-auto"
+            type="button"
+            class="h-full w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
             on:click={next}
-          >
-            <ArrowLeftIcon class="w-4 h-4 rotate-180" />
-          </button>
+          />
         </div>
         <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none opacity-0 group-hover/pic:opacity-100 transition-opacity">
           {pictures().map((_, i) => (
             <div
-              class="w-1.5 h-1.5 rounded-full bg-base-100/50 backdrop-blur"
+              class="w-1.5 h-1.5 rounded-full bg-base-100/50"
               classList={{ "bg-primary": i === subIndex() }}
             />
           ))}
