@@ -12,6 +12,23 @@
     list-style: disc;
   }
 
+  li[data-dictionary*="Jitendex.org"],
+  div[class="yomitan-glossary"] {
+    i:first-child {
+      color: var(--color-base-content-calm) !important;
+    }
+  }
+
+  &[data-definition-style="glossary-split"] {
+    li[data-dictionary] i:first-child {
+      display: none !important;
+    }
+    ol {
+      padding-inline-start: 0.5em;
+      list-style-type: none;
+    }
+  }
+
   /*
   *   ────────────────────────────── Jitendex ─────────────────────────────
   */
@@ -60,13 +77,6 @@
   span[data-sc-content="field-info"] {
     background-color: var(--color-primary) !important;
     color: var(--color-primary-content) !important;
-  }
-
-  li[data-dictionary*="Jitendex.org"],
-  div[class="yomitan-glossary"] {
-    i:first-child {
-      color: var(--color-base-content-calm) !important;
-    }
   }
 
   /*

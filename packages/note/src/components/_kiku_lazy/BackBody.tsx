@@ -135,7 +135,10 @@ export default function BackBody(props: {
               </span>
             </div>
           )}
-          <div class="relative bg-base-200 p-4 border-s-4 border-primary text-base sm:text-xl rounded-lg definition-field">
+          <div
+            class="relative bg-base-200 p-4 border-s-4 border-primary text-base sm:text-xl rounded-lg definition-field"
+            data-definition-style={$config.definitionStyle}
+          >
             <div class="overflow-auto" ref={definitionEl}>
               {ankiFields.DefinitionPicture && (
                 <div
