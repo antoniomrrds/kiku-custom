@@ -1,7 +1,13 @@
-import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import { parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
+
+const isSvg = (src: string | null) => {
+  if (!src) return false;
+  const s = src.toLowerCase();
+  return s.endsWith(".svg") || s.startsWith("data:image/svg+xml");
+};
 
 export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;
@@ -10,17 +16,31 @@ export default function DefinitionPictureSection(props: {
 
   const definitionPictures = createMemo(() => {
     if (isServer) return [];
-    const doc = parseHtml(ankiFields.DefinitionPicture);
-    return Array.from(doc.querySelectorAll("img")).map((img) => img.outerHTML);
+
+    const defPicDoc = parseHtml(ankiFields.DefinitionPicture);
+    const defPics = Array.from(defPicDoc.querySelectorAll("img")).map(
+      (img) => img.outerHTML,
+    );
+
+    const glossaryDoc = parseHtml(ankiFields.Glossary);
+    const glossaryPics = Array.from(glossaryDoc.querySelectorAll("img"))
+      .filter(
+        (img) =>
+          img.src &&
+          !isSvg(img.src) &&
+          (img.height === 0 || img.height > 100) &&
+          (img.width === 0 || img.width > 100),
+      )
+      .map((img) => {
+        const newImg = document.createElement("img");
+        newImg.setAttribute("src", img.src);
+        return newImg.outerHTML;
+      });
+
+    return [...defPics, ...glossaryPics];
   });
 
   const [defPicIndex, setDefPicIndex] = createSignal(0);
-
-  createEffect(() => {
-    // Reset index when field changes
-    ankiFields.DefinitionPicture;
-    setDefPicIndex(0);
-  });
 
   const currentDefPic = () => definitionPictures()[defPicIndex()] || "";
 
