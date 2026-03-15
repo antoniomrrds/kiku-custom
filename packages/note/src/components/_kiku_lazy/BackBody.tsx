@@ -48,11 +48,17 @@ export default function BackBody(props: {
         const styles = Array.from(doc.querySelectorAll("style"))
           .map((s) => s.outerHTML)
           .join("");
+        const dictGroups = new Map<string, string>();
         for (const li of entries) {
           const dictName = li.getAttribute("data-dictionary") || "Glossary";
+          const prevHtml = dictGroups.get(dictName);
+          const divider = prevHtml ? '<div class="divider"></div>' : "";
+          dictGroups.set(dictName, (prevHtml || "") + divider + li.outerHTML);
+        }
+        for (const [name, html] of dictGroups) {
           p.push({
-            name: dictName,
-            html: `<div style="text-align: left;" class="yomitan-glossary"><ol>${styles}${li.outerHTML}</ol></div>`,
+            name: name,
+            html: `<div style="text-align: left;" class="yomitan-glossary"><ol>${styles}${html}</ol></div>`,
           });
         }
       } else {
