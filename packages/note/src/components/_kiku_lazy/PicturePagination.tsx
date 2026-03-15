@@ -49,18 +49,24 @@ export default function PicturePagination() {
   return (
     $group.ids.length > 1 && (
       <>
-        <ArrowLeftIcon
-          class="cursor-pointer size-5 sm:size-8 hover:text-base-content-calm transition-colors"
+        <button
+          type="button"
+          class="btn btn-ghost btn-circle btn-sm sm:btn-md"
           on:click={onPrevClick}
-        ></ArrowLeftIcon>
+        >
+          <ArrowLeftIcon class="size-5 sm:size-8 hover:text-base-content-calm transition-colors" />
+        </button>
         <div class="flex flex-col items-center">
           <div class="text-xs text-base-content-faint">{date()}</div>
           <div>{`${$group.index + 1} / ${$group.ids.length}`}</div>
         </div>
-        <ArrowLeftIcon
-          class="cursor-pointer size-5 sm:size-8 rotate-180 hover:text-base-content-calm transition-colors"
+        <button
+          type="button"
+          class="btn btn-ghost btn-circle btn-sm sm:btn-md"
           on:click={onNextClick}
-        ></ArrowLeftIcon>
+        >
+          <ArrowLeftIcon class="size-5 sm:size-8 rotate-180 hover:text-base-content-calm transition-colors" />
+        </button>
       </>
     )
   );
