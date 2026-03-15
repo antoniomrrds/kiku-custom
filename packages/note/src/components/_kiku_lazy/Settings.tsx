@@ -18,6 +18,7 @@ import {
   tailwindContainerSize,
   tailwindFontSizeVar,
   tailwindSize,
+  type DefinitionStyle,
 } from "#/util/config";
 import { defaultConfig } from "#/util/defaul-config";
 import { type WebFont, webFonts } from "#/util/fonts";
@@ -90,6 +91,8 @@ export default function Settings() {
       <HeaderSettings />
       <div>
         <GeneralSettings />
+        <div class="divider"></div>
+        <DefinitionSettings />
         <div class="divider"></div>
         <ModSettings />
         <div class="divider"></div>
@@ -299,6 +302,58 @@ function GeneralSettings() {
             <For each={tailwindContainerSize}>
               {(label) => <span>{label}</span>}
             </For>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  );
+}
+
+function DefinitionSettings() {
+  const [$config, $setConfig] = useConfigContext();
+
+  return (
+    <div class="flex flex-col gap-4 animate-fade-in relative">
+      <div class="flex gap-2 items-center justify-between">
+        <div class="text-2xl font-bold">Definition</div>
+      </div>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Style</legend>
+          <select
+            class="select w-full"
+            on:change={(e) => {
+              const target = e.target as HTMLSelectElement;
+              $setConfig("definitionStyle", target.value as DefinitionStyle);
+            }}
+          >
+            <option
+              value="normal"
+              selected={$config.definitionStyle === "normal"}
+            >
+              Normal (3 Pages)
+            </option>
+            <option
+              value="single-page"
+              selected={$config.definitionStyle === "single-page"}
+            >
+              Single Page (Appended)
+            </option>
+            <option
+              value="glossary-split"
+              selected={$config.definitionStyle === "glossary-split"}
+            >
+              Glossary Split (Per Dictionary)
+            </option>
+          </select>
+          <div class="fieldset-label text-xs opacity-70">
+            {(() => {
+              if ($config.definitionStyle === "normal")
+                return "Shows Selection, Main Definition, and Glossary as separate pages.";
+              if ($config.definitionStyle === "single-page")
+                return "Appends all definitions into a single scrollable page.";
+              return "Splits the glossary into individual pages for each dictionary.";
+            })()}
           </div>
         </fieldset>
       </div>

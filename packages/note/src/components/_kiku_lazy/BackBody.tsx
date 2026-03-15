@@ -33,18 +33,34 @@ export default function BackBody(props: {
 
   const pages = createMemo(() => {
     const p: { name: string; html: string }[] = [];
-    if (!isHtmlEffectivelyEmpty(ankiFields.SelectionText)) {
-      p.push({ name: "Selection Text", html: ankiFields.SelectionText });
-    }
-    if (!isHtmlEffectivelyEmpty(ankiFields.MainDefinition)) {
-      p.push({ name: "Main Definition", html: ankiFields.MainDefinition });
+    const selection = !isHtmlEffectivelyEmpty(ankiFields.SelectionText)
+      ? ankiFields.SelectionText
+      : "";
+    const main = !isHtmlEffectivelyEmpty(ankiFields.MainDefinition)
+      ? ankiFields.MainDefinition
+      : "";
+    const gHtml = glossary();
+
+    if ($config.definitionStyle === "single-page") {
+      const combined = [selection, main, gHtml].filter(Boolean);
+      if (combined.length > 0) {
+        const html = combined.join('<div class="divider my-4"></div>');
+        p.push({ name: "Definition", html });
+      }
+      return p;
     }
 
-    const gHtml = glossary();
+    if (selection) {
+      p.push({ name: "Selection Text", html: selection });
+    }
+    if (main) {
+      p.push({ name: "Main Definition", html: main });
+    }
+
     if (!isHtmlEffectivelyEmpty(gHtml)) {
       const doc = parseHtml(gHtml);
       const entries = doc.querySelectorAll("li[data-dictionary]");
-      if (entries.length > 0) {
+      if ($config.definitionStyle === "glossary-split" && entries.length > 0) {
         const styles = Array.from(doc.querySelectorAll("style"))
           .map((s) => s.outerHTML)
           .join("");

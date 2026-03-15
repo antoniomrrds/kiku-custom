@@ -24,6 +24,7 @@ export type KikuConfig = {
   modHidden: boolean;
   modHiddenDuration: number;
   modVertical: boolean;
+  definitionStyle: DefinitionStyle;
   fontSizeBaseExpression: TailwindSize;
   fontSizeBasePitch: TailwindSize;
   fontSizeBaseSentence: TailwindSize;
@@ -40,6 +41,10 @@ export type KikuConfig = {
 //biome-ignore format: this looks nicer
 export const tailwindSize = [ "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl", "7xl", "8xl", "9xl", ] as const;
 export type TailwindSize = (typeof tailwindSize)[number];
+
+//biome-ignore format: this looks nicer
+export const definitionStyle = [ "normal", "single-page", "glossary-split", ] as const;
+export type DefinitionStyle = (typeof definitionStyle)[number];
 //biome-ignore format: this looks nicer
 export const tailwindFontSizeVar = {
   xs: { fontSize: "var(--text-xs)", lineHeight: "var(--text-xs--line-height)", },
@@ -109,6 +114,7 @@ export function validateConfig(config: KikuConfig): KikuConfig {
       modHidden: typeof config.modHidden === "boolean" ? config.modHidden : defaultConfig.modHidden,
       modHiddenDuration: typeof config.modHiddenDuration === "number" && config.modHiddenDuration > 0 ? config.modHiddenDuration : defaultConfig.modHiddenDuration,
       modVertical: typeof config.modVertical === "boolean" ? config.modVertical : defaultConfig.modVertical,
+      definitionStyle: definitionStyle.includes(config.definitionStyle) ? config.definitionStyle : defaultConfig.definitionStyle,
 
       fontSizeBaseExpression: tailwindSize.includes(config.fontSizeBaseExpression) ? config.fontSizeBaseExpression : defaultConfig.fontSizeBaseExpression,
       fontSizeBasePitch: tailwindSize.includes(config.fontSizeBasePitch) ? config.fontSizeBasePitch : defaultConfig.fontSizeBasePitch,
