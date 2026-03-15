@@ -1,6 +1,8 @@
 import {
+  createMemo,
   createSignal,
   ErrorBoundary,
+  For,
   onCleanup,
   onMount,
   Show,
@@ -16,16 +18,9 @@ export default function BackBody(props: {
   onDefinitionPictureClick?: (picture: string) => void;
 }) {
   let definitionEl: HTMLDivElement | undefined;
+  let modalRef: HTMLDialogElement | undefined;
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$config] = useConfigContext();
-
-  const initPageIndex = () => {
-    if (ankiFields.SelectionText) return 0;
-    if (!isHtmlEffectivelyEmpty(ankiFields.MainDefinition)) return 1;
-    return 2;
-  };
-  const [definitionIndex, setDefinitionIndex] = createSignal(initPageIndex());
-  const [definitionPicture, setDefinitionPicture] = createSignal<string>();
 
   const glossary = () => {
     // empty glossary if it's the same as main definition
@@ -35,31 +30,48 @@ export default function BackBody(props: {
       ankiFields.MainDefinition,
     );
   };
-  const pages = [
-    ankiFields.SelectionText,
-    ankiFields.MainDefinition,
-    glossary(),
-  ];
 
-  const pagesWithContent = pages.filter(
-    (page) => !isHtmlEffectivelyEmpty(page?.trim()),
-  );
+  const pages = createMemo(() => {
+    const p: { name: string; html: string }[] = [];
+    if (!isHtmlEffectivelyEmpty(ankiFields.SelectionText)) {
+      p.push({ name: "Selection Text", html: ankiFields.SelectionText });
+    }
+    if (!isHtmlEffectivelyEmpty(ankiFields.MainDefinition)) {
+      p.push({ name: "Main Definition", html: ankiFields.MainDefinition });
+    }
 
-  const pageName = () => {
-    if (definitionIndex() === 0) return "Selection Text";
-    if (definitionIndex() === 1) return "Main Definition";
-    if (definitionIndex() === 2) return "Glossary";
-  };
+    const gHtml = glossary();
+    if (!isHtmlEffectivelyEmpty(gHtml)) {
+      const doc = parseHtml(gHtml);
+      const entries = doc.querySelectorAll("li[data-dictionary]");
+      if (entries.length > 0) {
+        const styles = Array.from(doc.querySelectorAll("style"))
+          .map((s) => s.outerHTML)
+          .join("");
+        for (const li of entries) {
+          const dictName = li.getAttribute("data-dictionary") || "Glossary";
+          p.push({
+            name: dictName,
+            html: `<div style="text-align: left;" class="yomitan-glossary"><ol>${styles}${li.outerHTML}</ol></div>`,
+          });
+        }
+      } else {
+        p.push({ name: "Glossary", html: gHtml });
+      }
+    }
+    return p;
+  });
+
+  const [definitionIndex, setDefinitionIndex] = createSignal(0);
+  const [definitionPicture, setDefinitionPicture] = createSignal<string>();
+
+  const currentPage = () => pages()[definitionIndex()];
 
   function changePage(direction: 1 | -1) {
-    setDefinitionIndex((prev) => {
-      let next = (prev + direction + pages.length) % pages.length;
-      for (let i = 0; i < pages.length; i++) {
-        if (!isHtmlEffectivelyEmpty(pages[next]?.trim())) break;
-        next = (next + direction + pages.length) % pages.length;
-      }
-      return next;
-    });
+    if (pages().length === 0) return;
+    setDefinitionIndex(
+      (prev) => (prev + direction + pages().length) % pages().length,
+    );
   }
 
   onMount(() => {
@@ -88,11 +100,17 @@ export default function BackBody(props: {
       <div class="flex flex-col justify-center gap-2 items-center text-center">
         <Sentence />
       </div>
-      {pagesWithContent.length > 0 && (
+      {pages().length > 0 && (
         <div class="animate-fade-in">
-          {pagesWithContent.length > 1 && (
-            <div class="text-end text-base-content-soft text-sm">
-              {pageName()}
+          {pages().length > 1 && (
+            <div
+              class="text-end text-base-content-soft text-sm cursor-pointer hover:text-base-content transition-colors mb-1"
+              on:click={() => modalRef?.showModal()}
+            >
+              {currentPage()?.name}
+              <span class="ms-2 opacity-70">
+                {`(${definitionIndex() + 1}/${pages().length})`}
+              </span>
             </div>
           )}
           <div class="relative bg-base-200 p-4 border-s-4 border-primary text-base sm:text-xl rounded-lg definition-field">
@@ -107,16 +125,16 @@ export default function BackBody(props: {
                   innerHTML={definitionPicture()}
                 ></div>
               )}
-              <div class="contents" innerHTML={pages[definitionIndex()]}></div>
+              <div class="contents" innerHTML={currentPage()?.html}></div>
             </div>
-            {pagesWithContent.length > 1 && (
+            {pages().length > 1 && (
               <>
                 <div
-                  class="cursor-pointer w-8 h-full absolute top-0 left-0 hover:bg-base-content/10"
+                  class="cursor-pointer w-6 h-full absolute top-0 left-0 hover:bg-base-content/10"
                   on:click={() => changePage(-1)}
                 ></div>
                 <div
-                  class="cursor-pointer w-8 h-full absolute top-0 right-0 hover:bg-base-content/10"
+                  class="cursor-pointer w-6 h-full absolute top-0 right-0 hover:bg-base-content/10"
                   on:click={() => changePage(1)}
                 ></div>
               </>
@@ -127,6 +145,39 @@ export default function BackBody(props: {
           </div>
         </div>
       )}
+
+      <dialog class="modal" ref={modalRef}>
+        <div class="modal-box max-w-sm max-h-[80svh] flex flex-col p-4 gap-2">
+          <h3 class="font-bold text-lg px-2 text-center">Select Dictionary</h3>
+          <div class="flex flex-col gap-1 overflow-auto py-2 pe-2">
+            <For each={pages()}>
+              {(page, i) => (
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-sm justify-start font-normal text-left"
+                  classList={{ "btn-active": i() === definitionIndex() }}
+                  on:click={() => {
+                    setDefinitionIndex(i());
+                    modalRef?.close();
+                  }}
+                >
+                  <span class="truncate">
+                    {i() + 1}. {page.name}
+                  </span>
+                </button>
+              )}
+            </For>
+          </div>
+          <div class="modal-action mt-2">
+            <form method="dialog">
+              <button class="btn btn-sm">Close</button>
+            </form>
+          </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 }
