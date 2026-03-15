@@ -30,19 +30,21 @@ export default function PictureModal(props: {
   });
 
   const allPictures = createMemo(() => {
-    const pics: string[] = [];
+    const pics = new Map<string, string>(); // src -> html
+
+    const addImages = (doc: Document) => {
+      for (const img of doc.querySelectorAll("img")) {
+        if (img.src) {
+          pics.set(img.src, img.outerHTML);
+        }
+      }
+    };
 
     // Picture field
-    const picDoc = parseHtml(ankiFields.Picture);
-    for (const img of picDoc.querySelectorAll("img")) {
-      pics.push(img.outerHTML);
-    }
+    addImages(parseHtml(ankiFields.Picture));
 
     // DefinitionPicture field
-    const defPicDoc = parseHtml(ankiFields.DefinitionPicture);
-    for (const img of defPicDoc.querySelectorAll("img")) {
-      pics.push(img.outerHTML);
-    }
+    addImages(parseHtml(ankiFields.DefinitionPicture));
 
     // Glossary field
     const glossaryDoc = parseHtml(ankiFields.Glossary);
@@ -55,11 +57,11 @@ export default function PictureModal(props: {
       ) {
         const newImg = document.createElement("img");
         newImg.setAttribute("src", img.src);
-        pics.push(newImg.outerHTML);
+        pics.set(img.src, newImg.outerHTML);
       }
     }
 
-    return Array.from(new Set(pics));
+    return Array.from(pics.entries()).map(([src, html]) => ({ src, html }));
   });
 
   return (
@@ -96,18 +98,26 @@ export default function PictureModal(props: {
               ></div>
             </Match>
             <Match when={showAll()}>
-              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full">
+              <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,320px))] gap-4 w-full justify-center">
                 <For each={allPictures()}>
                   {(pic) => (
                     <div
-                      class="aspect-square bg-base-200/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+                      class="aspect-square relative rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:scale-105 transition-transform group"
                       on:click={(e) => {
                         e.stopPropagation();
-                        setImg(pic);
+                        setImg(pic.html);
                         setShowAll(false);
                       }}
-                      innerHTML={pic}
-                    ></div>
+                    >
+                      <div
+                        class="absolute inset-0 bg-cover bg-center blur-lg brightness-50 scale-110"
+                        style={{ "background-image": `url(${pic.src})` }}
+                      />
+                      <div
+                        class="relative z-10 w-full h-full [&_img]:w-full [&_img]:h-full [&_img]:object-contain"
+                        innerHTML={pic.html}
+                      />
+                    </div>
                   )}
                 </For>
               </div>
