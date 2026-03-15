@@ -1,8 +1,8 @@
 import { createContext, createEffect, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import type { AnkiFields, AnkiFrontFields } from "#/util/types";
 import { nodesToString, parseHtml } from "#/util/general";
+import type { AnkiFields, AnkiFrontFields } from "#/util/types";
 import { useAnkiFieldContext } from "./AnkiFieldsContext";
 import { useCardContext } from "./CardContext";
 
@@ -54,17 +54,20 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
   };
 
   createEffect(() => {
+    ids.clear();
+    $setGroup("ids", []);
+
     const sentenceFieldDoc = parseHtml(sentenceField());
     const sentenceFieldWithGroup =
       sentenceFieldDoc.querySelectorAll("[data-group-id]");
     sentenceFieldWithGroup.forEach((el) => {
-      const id = (el as HTMLSpanElement).dataset.groupId;
+      const id = (el as HTMLElement).dataset.groupId;
       addIds(id);
     });
 
     const sentenceFieldWithoutGroup = Array.from(
       sentenceFieldDoc.body.childNodes,
-    ).filter((el) => !(el as HTMLSpanElement).dataset?.groupId);
+    ).filter((el) => !(el as HTMLElement).dataset?.groupId);
     const sentenceFieldWithoutGroupHtml = nodesToString(
       sentenceFieldWithoutGroup,
     );
@@ -73,13 +76,13 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     const sentenceAudioFieldWithGroup =
       sentenceAudioFieldDoc.querySelectorAll("[data-group-id]");
     sentenceAudioFieldWithGroup.forEach((el) => {
-      const id = (el as HTMLSpanElement).dataset.groupId;
+      const id = (el as HTMLElement).dataset.groupId;
       addIds(id);
     });
 
     const sentenceAudioFieldWithoutGroup = Array.from(
       sentenceAudioFieldDoc.body.childNodes,
-    ).filter((el) => !(el as HTMLSpanElement).dataset?.groupId);
+    ).filter((el) => !(el as HTMLElement).dataset?.groupId);
     const sentenceAudioFieldWithoutGroupHtml = nodesToString(
       sentenceAudioFieldWithoutGroup,
     );
@@ -88,24 +91,24 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     const miscInfoFieldWithGroup =
       miscInfoFieldDoc.querySelectorAll("[data-group-id]");
     miscInfoFieldWithGroup.forEach((el) => {
-      const id = (el as HTMLSpanElement).dataset.groupId;
+      const id = (el as HTMLElement).dataset.groupId;
       addIds(id);
     });
 
     const miscInfoFieldWithoutGroup = Array.from(
       miscInfoFieldDoc.body.childNodes,
-    ).filter((el) => !(el as HTMLSpanElement).dataset?.groupId);
+    ).filter((el) => !(el as HTMLElement).dataset?.groupId);
     const miscInfoFieldWithoutGroupHtml = nodesToString(
       miscInfoFieldWithoutGroup,
     );
 
-    // each img has their own separate page. img without group id will be given group id <= 0
+    // each group may contain multiple img. img without group id will be given group id 0
     const pictureFieldDoc = parseHtml(pictureField);
     const pictureFieldWithGroup = pictureFieldDoc.querySelectorAll("img");
-    pictureFieldWithGroup.forEach((el, i) => {
-      let id = (el as HTMLSpanElement).dataset.groupId;
+    pictureFieldWithGroup.forEach((el) => {
+      let id = (el as HTMLElement).dataset.groupId;
       if (!id) {
-        id = (i * -1).toString();
+        id = "0";
         el.dataset.groupId = id;
       }
       addIds(id);
@@ -114,7 +117,7 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     // create img with no src if ungrouped fields has no img
     let dummyImg: HTMLImageElement | undefined;
     if (
-      !Array.from($group.ids)
+      !Array.from(ids)
         .map(Number)
         .some((id) => id <= 0) &&
       (sentenceFieldWithoutGroupHtml.trim() ||
@@ -134,32 +137,31 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
       let sentenceAudioField: string | undefined;
       let miscInfoField: string | undefined;
       let pictureField: string | undefined;
+
+      const filterById = (nodes: Iterable<Node> | ArrayLike<Node>) =>
+        Array.from(nodes)
+          .filter(
+            (el) => (el as HTMLElement).dataset?.groupId === id.toString(),
+          )
+          .map((el) => (el as HTMLElement).outerHTML)
+          .join("");
+
       if (id > 0) {
-        sentenceField = Array.from(sentenceFieldWithGroup).find(
-          (el) => (el as HTMLSpanElement).dataset.groupId === id.toString(),
-        )?.outerHTML;
-
-        sentenceAudioField = Array.from(sentenceAudioFieldWithGroup).find(
-          (el) => (el as HTMLSpanElement).dataset.groupId === id.toString(),
-        )?.outerHTML;
-
-        miscInfoField = Array.from(miscInfoFieldWithGroup).find(
-          (el) => (el as HTMLSpanElement).dataset.groupId === id.toString(),
-        )?.outerHTML;
+        sentenceField = filterById(sentenceFieldWithGroup);
+        sentenceAudioField = filterById(sentenceAudioFieldWithGroup);
+        miscInfoField = filterById(miscInfoFieldWithGroup);
 
         const pictureFieldArray = Array.from(pictureFieldWithGroup);
         if (dummyImg) pictureFieldArray.push(dummyImg);
-        pictureField = pictureFieldArray.find((el) => {
-          return (el as HTMLSpanElement).dataset.groupId === id.toString();
-        })?.outerHTML;
+        pictureField = filterById(pictureFieldArray);
       } else {
         sentenceField = sentenceFieldWithoutGroupHtml;
         sentenceAudioField = sentenceAudioFieldWithoutGroupHtml;
         miscInfoField = miscInfoFieldWithoutGroupHtml;
 
-        pictureField = Array.from(pictureFieldWithGroup).find((el) => {
-          return (el as HTMLSpanElement).dataset.groupId === id.toString();
-        })?.outerHTML;
+        const pictureFieldArray = Array.from(pictureFieldWithGroup);
+        if (dummyImg) pictureFieldArray.push(dummyImg);
+        pictureField = filterById(pictureFieldArray);
       }
       $setGroup("sentenceField", sentenceField ?? "");
       $setGroup("sentenceAudioField", sentenceAudioField ?? "");

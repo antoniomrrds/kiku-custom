@@ -488,7 +488,7 @@ const exampleFields15: AnkiFields = {
   "Sentence": "<span data-group-id=\"11\">これで 少しは<br>世の中に<b>貢献</b>できるかな</span><span data-group-id=\"10\">どうせ勇者の捕縛に<b>貢献</b>すれば➡</span>このお店に<b>貢献</b>するために―",
   "SentenceFurigana": "",
   "SentenceAudio": "<span data-group-id=\"11\">\n<a class=\"replay-button soundLink\" href=\"#\" onclick=\"pycmd('play:a:1'); return false;\" draggable=\"false\">\n    <svg class=\"playImage\" viewBox=\"0 0 64 64\" version=\"1.1\">\n        <circle cx=\"32\" cy=\"32\" r=\"29\"></circle>\n        <path d=\"M56.502,32.301l-37.502,20.101l0.329,-40.804l37.173,20.703Z\"></path>\n    </svg>\n</a></span><span data-group-id=\"10\">\n<a class=\"replay-button soundLink\" href=\"#\" onclick=\"pycmd('play:a:2'); return false;\" draggable=\"false\">\n    <svg class=\"playImage\" viewBox=\"0 0 64 64\" version=\"1.1\">\n        <circle cx=\"32\" cy=\"32\" r=\"29\"></circle>\n        <path d=\"M56.502,32.301l-37.502,20.101l0.329,-40.804l37.173,20.703Z\"></path>\n    </svg>\n</a></span>\n<a class=\"replay-button soundLink\" href=\"#\" onclick=\"pycmd('play:a:3'); return false;\" draggable=\"false\">\n    <svg class=\"playImage\" viewBox=\"0 0 64 64\" version=\"1.1\">\n        <circle cx=\"32\" cy=\"32\" r=\"29\"></circle>\n        <path d=\"M56.502,32.301l-37.502,20.101l0.329,-40.804l37.173,20.703Z\"></path>\n    </svg>\n</a>",
-  "Picture": "<img data-group-id=\"11\" src=\"Anime_Time_Solo_Leveli_928960_pzThqpQf.jpeg\" decoding=\"async\"><img data-group-id=\"10\" src=\"SubsPlease%20Tate%20no%20Yuusha%20no%20Nariagari%20S3%20-%2010%20(1080p)%20BCA53DD5.mkv_1190221.jpeg\" decoding=\"async\"><div><img src=\"cbt%20gochuumon%20wa%20usagi%20desuka%20s01e09%20bdrip%201920x1080%20x264%20flac%209092049a.mkv_957803.webp\" decoding=\"async\"></div>",
+  "Picture": "<img data-group-id=\"11\" src=\"Anime_Time_Solo_Leveli_928960_pzThqpQf.jpeg\" decoding=\"async\"><img data-group-id=\"11\" src=\"_Anime_Time__ReLIFE_-_06_988094_roWg0j6r.jpeg\" decoding=\"async\"><img data-group-id=\"10\" src=\"SubsPlease%20Tate%20no%20Yuusha%20no%20Nariagari%20S3%20-%2010%20(1080p)%20BCA53DD5.mkv_1190221.jpeg\" decoding=\"async\"><div><img src=\"cbt%20gochuumon%20wa%20usagi%20desuka%20s01e09%20bdrip%201920x1080%20x264%20flac%209092049a.mkv_957803.webp\" decoding=\"async\"><img src=\"shoushiminseries04_08m46s485ms.webp\" decoding=\"async\"></div>",
   "Glossary": "",
   "Hint": "",
   "IsWordAndSentenceCard": "",
@@ -646,4 +646,4 @@ const exampleFields19: AnkiFields = {
   "kana:SentenceFurigana": "<span class=\"term\">（</span><span class=\"term\">ほたる</span><span class=\"term\">）</span><span class=\"term\">すごい</span><span class=\"term\"><ruby>葛藤<rt>かっとう</rt></ruby></span><span class=\"term\">してる</span><span class=\"term\">…</span>"
 }
 
-export const exampleFields = exampleFields19;
+export const exampleFields = exampleFields15;

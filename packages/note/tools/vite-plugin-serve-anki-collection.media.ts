@@ -14,7 +14,7 @@ export function serveAnkiCollectionMedia(): PluginOption {
       ]) {
         try {
           await stat(dir);
-          server.middlewares.use(serveStatic(dir));
+          server.middlewares.use(serveStatic(dir, { maxAge: 60000 }));
         } catch {}
       }
     },
