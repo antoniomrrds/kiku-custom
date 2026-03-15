@@ -12,6 +12,7 @@ import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useConfigContext } from "../shared/ConfigContext";
 import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
+import DefinitionPictureSection from "./DefinitionPictureSection";
 import Sentence from "./Sentence";
 
 export default function BackBody(props: {
@@ -85,8 +86,6 @@ export default function BackBody(props: {
   });
 
   const [definitionIndex, setDefinitionIndex] = createSignal(0);
-  const [definitionPicture, setDefinitionPicture] = createSignal<string>();
-
   const currentPage = () => pages()[definitionIndex()];
 
   function changePage(direction: 1 | -1) {
@@ -95,11 +94,6 @@ export default function BackBody(props: {
       (prev) => (prev + direction + pages().length) % pages().length,
     );
   }
-
-  onMount(() => {
-    const imgDoc = parseHtml(ankiFields.DefinitionPicture);
-    setDefinitionPicture(imgDoc.querySelector("img")?.outerHTML ?? "");
-  });
 
   onMount(() => {
     const handler = (e: KeyboardEvent) => {
@@ -140,16 +134,9 @@ export default function BackBody(props: {
             data-definition-style={$config.definitionStyle}
           >
             <div class="overflow-auto" ref={definitionEl}>
-              {ankiFields.DefinitionPicture && (
-                <div
-                  class="max-w-1/3 float-right [&_img]:rounded-sm ps-2 cursor-pointer"
-                  on:click={() => {
-                    const picture = definitionPicture();
-                    if (picture) props.onDefinitionPictureClick?.(picture);
-                  }}
-                  innerHTML={definitionPicture()}
-                ></div>
-              )}
+              <DefinitionPictureSection
+                onDefinitionPictureClick={props.onDefinitionPictureClick}
+              />
               <div class="contents" innerHTML={currentPage()?.html}></div>
             </div>
             {pages().length > 1 && (
