@@ -126,6 +126,12 @@ export function isHtmlEffectivelyEmpty(html: string): boolean {
   return !meaningfulSelectors.some((sel) => doc.body.querySelector(sel));
 }
 
+export function isSvg(src: string | null) {
+  if (!src) return false;
+  const s = src.toLowerCase();
+  return s.endsWith(".svg") || s.startsWith("data:image/svg+xml");
+}
+
 export function parseHtml(html: string) {
   return new DOMParser().parseFromString(html, "text/html");
 }

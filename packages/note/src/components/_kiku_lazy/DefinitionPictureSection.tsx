@@ -1,13 +1,7 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { isServer } from "solid-js/web";
-import { parseHtml } from "#/util/general";
+import { isSvg, parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
-
-const isSvg = (src: string | null) => {
-  if (!src) return false;
-  const s = src.toLowerCase();
-  return s.endsWith(".svg") || s.startsWith("data:image/svg+xml");
-};
 
 export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;
