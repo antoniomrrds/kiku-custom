@@ -7,7 +7,7 @@ import {
   Switch,
 } from "solid-js";
 import { Portal } from "solid-js/web";
-import { isSvg, parseHtml } from "#/util/general";
+import { collectGlossaryImgs, parseHtml } from "#/util/general";
 import { useViewTransition } from "#/util/hooks";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
@@ -48,19 +48,8 @@ export default function PictureModal(props: {
     addImages(parseHtml(ankiFields.DefinitionPicture));
 
     // Glossary field
-    const glossaryDoc = parseHtml(ankiFields.Glossary);
-    for (const img of glossaryDoc.querySelectorAll("img")) {
-      const src = img.getAttribute("src");
-      if (
-        src &&
-        !isSvg(src) &&
-        (img.height === 0 || img.height > 100) &&
-        (img.width === 0 || img.width > 100)
-      ) {
-        const newImg = document.createElement("img");
-        newImg.setAttribute("src", src);
-        pics.set(src, newImg.outerHTML);
-      }
+    for (const pic of collectGlossaryImgs(ankiFields.Glossary)) {
+      pics.set(pic.src, pic.html);
     }
 
     return Array.from(pics.entries()).map(([src, html]) => ({ src, html }));

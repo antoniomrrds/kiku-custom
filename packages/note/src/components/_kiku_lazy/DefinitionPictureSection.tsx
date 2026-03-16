@@ -1,6 +1,6 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { isServer } from "solid-js/web";
-import { isSvg, parseHtml } from "#/util/general";
+import { collectGlossaryImgs, parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 
 export default function DefinitionPictureSection(props: {
@@ -26,24 +26,9 @@ export default function DefinitionPictureSection(props: {
       (img) => img.outerHTML,
     );
 
-    const glossaryDoc = parseHtml(ankiFields.Glossary);
-    const glossaryPics = Array.from(glossaryDoc.querySelectorAll("img"))
-      .filter((img) => {
-        const src = img.getAttribute("src");
-        return (
-          src &&
-          !isSvg(src) &&
-          (img.height === 0 || img.height > 100) &&
-          (img.width === 0 || img.width > 100) &&
-          !displayedImages.has(src)
-        );
-      })
-      .map((img) => {
-        const src = img.getAttribute("src") ?? "";
-        const newImg = document.createElement("img");
-        newImg.setAttribute("src", src);
-        return newImg.outerHTML;
-      });
+    const glossaryPics = collectGlossaryImgs(ankiFields.Glossary)
+      .filter((pic) => !displayedImages.has(pic.src))
+      .map((pic) => pic.html);
 
     return [...defPics, ...glossaryPics];
   });

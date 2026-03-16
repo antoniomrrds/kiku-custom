@@ -150,3 +150,30 @@ export function nodesToString(nodes: Node[]) {
 export function unique<T>(arr: readonly T[]): T[] {
   return Array.from(new Set(arr));
 }
+
+export function collectGlossaryImgs(glossaryHtml: string) {
+  if (isServer) return [];
+
+  const doc = parseHtml(glossaryHtml);
+
+  return Array.from(doc.querySelectorAll("img"))
+    .filter((img) => {
+      const src = img.getAttribute("src");
+      return (
+        src &&
+        !isSvg(src) &&
+        (img.height === 0 || img.height > 100) &&
+        (img.width === 0 || img.width > 100) &&
+        !img.closest('span[data-sc-pixiv="read-more-link"] a')
+      );
+    })
+    .map((img) => {
+      const src = img.getAttribute("src") ?? "";
+      const newImg = document.createElement("img");
+      newImg.setAttribute("src", src);
+      return {
+        src,
+        html: newImg.outerHTML,
+      };
+    });
+}
