@@ -1,5 +1,5 @@
 import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom";
-import { onMount } from "solid-js";
+import { onMount, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { extractKanji } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
@@ -26,14 +26,6 @@ export default function Expression() {
       arrow: {},
     },
   });
-
-  function isValidExpressionFurigana() {
-    if (ankiFields.ExpressionFurigana.includes("<ruby")) return false;
-    if (!ankiFields.ExpressionFurigana.includes("[")) return false;
-    return true;
-  }
-
-  if (!isValidExpressionFurigana()) return null;
 
   function showEl(el: HTMLElement) {
     el.style.display = "block";
@@ -118,7 +110,11 @@ export default function Expression() {
 
   const furiganaData = parseFurigana(ankiFields.ExpressionFurigana);
 
-  if (furiganaData.length === 0) {
+  if (
+    furiganaData.length === 0 ||
+    ankiFields.ExpressionFurigana.includes("<ruby") ||
+    !ankiFields.ExpressionFurigana.includes("[")
+  ) {
     return (
       <ruby>
         {ankiFields.Expression.split("").map((char, i) => (
@@ -137,7 +133,9 @@ export default function Expression() {
             {char}
           </span>
         ))}
-        <rt>{ankiFields.ExpressionReading}</rt>
+        <Show when={ankiFields.ExpressionFurigana}>
+          <rt>{ankiFields.ExpressionReading}</rt>
+        </Show>
       </ruby>
     );
   }

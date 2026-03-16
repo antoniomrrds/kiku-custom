@@ -178,6 +178,7 @@ function ExpressionSection() {
   const expressionInnerHtml = () => {
     if ($card.nested) {
       if (ankiFields.Expression && ankiFields.ExpressionReading) {
+        //TODO: this is incorrect
         return `<ruby>${ankiFields.Expression}<rt>${ankiFields.ExpressionReading}</rt></ruby>`;
       }
       if (ankiFields.Expression) return ankiFields.Expression;
