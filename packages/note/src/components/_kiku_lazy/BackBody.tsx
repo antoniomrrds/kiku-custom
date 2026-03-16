@@ -7,6 +7,7 @@ import {
   onMount,
   Show,
 } from "solid-js";
+import type { DatasetProp } from "#/util/config";
 import { isHtmlEffectivelyEmpty, parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useConfigContext } from "../shared/ConfigContext";
@@ -114,6 +115,10 @@ export default function BackBody(props: {
     onCleanup(() => window.removeEventListener("keydown", handler));
   });
 
+  const definitionDataset: () => DatasetProp = () => ({
+    "data-dictionary": currentPage()?.name,
+  });
+
   return (
     <div
       class="flex sm:flex-col gap-8"
@@ -126,18 +131,28 @@ export default function BackBody(props: {
         <Sentence />
       </div>
       {pages().length > 0 && (
-        <div class="animate-fade-in">
+        <div class="animate-fade-in" {...definitionDataset()}>
           {pages().length > 1 && (
             <div
               class="flex justify-between text-base-content-calm text-sm cursor-pointer hover:text-base-content transition-colors mb-1"
               on:click={() => modalRef?.showModal()}
             >
-              <div>{currentPage()?.name}</div>
+              <div
+                style={{
+                  color:
+                    "var(--dictionary-color, var(--color-base-content-calm)",
+                }}
+              >
+                {currentPage()?.name}
+              </div>
               <div class="text-base-content-soft">{`${definitionIndex() + 1}/${pages().length}`}</div>
             </div>
           )}
           <div
-            class="relative bg-base-200 p-4 border-s-4 border-primary text-base sm:text-xl rounded-lg definition-field"
+            class="relative bg-base-200 p-4 border-s-4 text-base sm:text-xl rounded-lg"
+            style={{
+              "border-color": "var(--dictionary-color, var(--color-primary)",
+            }}
             data-definition-style={$config.definitionStyle}
           >
             <div class="overflow-auto" ref={definitionEl}>

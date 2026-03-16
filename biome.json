@@ -39,6 +39,9 @@
       },
       "style": {
         "useTemplate": "off"
+      },
+      "suspicious": {
+        "noIrregularWhitespace": "off"
       }
     }
   },
