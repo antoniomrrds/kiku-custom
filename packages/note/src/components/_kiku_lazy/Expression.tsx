@@ -201,7 +201,10 @@ function KanjiTooltip(props: {
         ref={props.arrowRef}
         class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
       ></div>
-      <div class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto">
+      <div
+        class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
+        style={{ color: "initial" }}
+      >
         <KanjiInfo />
         <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
           <KanjiInfoExtra />
