@@ -100,7 +100,7 @@ export default function PictureModal(props: {
               ></div>
             </Match>
             <Match when={showAll()}>
-              <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,320px))] gap-4 w-full justify-center">
+              <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,320px))] gap-4 w-full justify-center">
                 <For each={allPictures()}>
                   {(pic) => (
                     <div
