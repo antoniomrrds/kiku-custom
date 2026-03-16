@@ -24,11 +24,12 @@ import type { JSX } from "solid-js/jsx-runtime";
 import type { createStore } from "solid-js/store";
 import type { Portal } from "solid-js/web";
 import type { UseKanjiContext } from "#/components/_kiku_lazy/KanjiContext";
-import type { PitchInfo } from "#/util/hatsuon";
 import type { UseAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
 import type { UseBreakpointContext } from "#/components/shared/BreakpointContext";
 import type { UseCardContext } from "#/components/shared/CardContext";
 import type { UseConfigContext } from "#/components/shared/ConfigContext";
+import type { UseGeneralContext } from "#/components/shared/GeneralContext";
+import type { PitchInfo } from "#/util/hatsuon";
 import type {
   AnkiBackFields,
   AnkiDroidAPI,
@@ -121,6 +122,8 @@ export type Ctx = {
   useCardContext: UseCardContext;
   /** Provides access to Kiku's global configuration. */
   useConfigContext: UseConfigContext;
+  /** Provides access to Kiku's global general state. */
+  useGeneralContext: UseGeneralContext;
 };
 
 /**

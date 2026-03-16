@@ -24,6 +24,7 @@ import { useAnkiFieldContext } from "./AnkiFieldsContext";
 import { useBreakpointContext } from "./BreakpointContext";
 import { useCardContext } from "./CardContext";
 import { useConfigContext } from "./ConfigContext";
+import { useGeneralContext } from "./GeneralContext";
 
 const CtxContext = createContext<Ctx>();
 
@@ -59,6 +60,7 @@ export function CtxContextProvider(props: { children: JSX.Element }) {
     useBreakpointContext,
     useCardContext,
     useConfigContext,
+    useGeneralContext,
   };
 
   return (
