@@ -26,6 +26,7 @@ export type KikuConfig = {
   modHiddenDuration: number;
   modVertical: boolean;
   definitionStyle: DefinitionStyle;
+  definitionPictureFromGlossary: boolean;
   fontSizeBaseExpression: TailwindSize;
   fontSizeBasePitch: TailwindSize;
   fontSizeBaseSentence: TailwindSize;
@@ -116,6 +117,7 @@ export function validateConfig(config: KikuConfig): KikuConfig {
       modHiddenDuration: typeof config.modHiddenDuration === "number" && config.modHiddenDuration > 0 ? config.modHiddenDuration : defaultConfig.modHiddenDuration,
       modVertical: typeof config.modVertical === "boolean" ? config.modVertical : defaultConfig.modVertical,
       definitionStyle: definitionStyle.includes(config.definitionStyle) ? config.definitionStyle : defaultConfig.definitionStyle,
+      definitionPictureFromGlossary: typeof config.definitionPictureFromGlossary === "boolean" ? config.definitionPictureFromGlossary : defaultConfig.definitionPictureFromGlossary,
 
       fontSizeBaseExpression: tailwindSize.includes(config.fontSizeBaseExpression) ? config.fontSizeBaseExpression : defaultConfig.fontSizeBaseExpression,
       fontSizeBasePitch: tailwindSize.includes(config.fontSizeBasePitch) ? config.fontSizeBasePitch : defaultConfig.fontSizeBasePitch,

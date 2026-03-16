@@ -9,6 +9,7 @@ import {
 import { Portal } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
 import {
+  type DefinitionStyle,
   getCssVar,
   type KikuConfig,
   type RootDatasetKey,
@@ -18,7 +19,6 @@ import {
   tailwindContainerSize,
   tailwindFontSizeVar,
   tailwindSize,
-  type DefinitionStyle,
 } from "#/util/config";
 import { defaultConfig } from "#/util/defaul-config";
 import { type WebFont, webFonts } from "#/util/fonts";
@@ -355,6 +355,27 @@ function DefinitionSettings() {
               return "Splits the glossary into individual pages for each dictionary.";
             })()}
           </div>
+        </fieldset>
+        <fieldset class="fieldset py-0">
+          <legend class="fieldset-legend">
+            Collect Glossary Images
+            <div
+              class="tooltip"
+              data-tip="Show images extracted from the glossary in the definition picture section."
+            >
+              <InfoIcon class="size-4 text-base-content-calm" />
+            </div>
+          </legend>
+          <label class="label">
+            <input
+              type="checkbox"
+              checked={$config.definitionPictureFromGlossary}
+              class="toggle"
+              on:change={(e) => {
+                $setConfig("definitionPictureFromGlossary", e.target.checked);
+              }}
+            />
+          </label>
         </fieldset>
       </div>
     </div>

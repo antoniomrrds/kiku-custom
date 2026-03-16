@@ -2,12 +2,14 @@ import { createMemo, createSignal, For, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import { collectGlossaryImgs, parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
+import { useConfigContext } from "../shared/ConfigContext";
 
 export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;
   currentHtml?: string;
 }) {
   const { ankiFields } = useAnkiFieldContext<"back">();
+  const [$config] = useConfigContext();
 
   const definitionPictures = createMemo(() => {
     if (isServer) return [];
@@ -26,9 +28,11 @@ export default function DefinitionPictureSection(props: {
       (img) => img.outerHTML,
     );
 
-    const glossaryPics = collectGlossaryImgs(ankiFields.Glossary)
-      .filter((pic) => !displayedImages.has(pic.src))
-      .map((pic) => pic.html);
+    const glossaryPics = $config.definitionPictureFromGlossary
+      ? collectGlossaryImgs(ankiFields.Glossary)
+          .filter((pic) => !displayedImages.has(pic.src))
+          .map((pic) => pic.html)
+      : [];
 
     return [...defPics, ...glossaryPics];
   });

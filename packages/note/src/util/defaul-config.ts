@@ -24,6 +24,7 @@ export const defaultConfig: KikuConfig = {
   modHiddenDuration: 2000,
   modVertical: false,
   definitionStyle: "normal",
+  definitionPictureFromGlossary: false,
   fontSizeBaseExpression: "5xl",
   fontSizeBasePitch: "xl",
   fontSizeBaseSentence: "2xl",
