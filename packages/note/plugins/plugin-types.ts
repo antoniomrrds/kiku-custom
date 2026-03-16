@@ -221,4 +221,10 @@ export type KikuPlugin = {
    * Use this to perform side-effects when settings open.
    */
   onSettingsMount?: (props: { ctx: Ctx }) => void;
+
+  /**
+   * Filters images extracted from the glossary.
+   * Return true to keep the image, false to exclude it.
+   */
+  glossaryImagesFilter?: (img: HTMLImageElement) => boolean;
 };

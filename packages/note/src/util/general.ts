@@ -151,7 +151,10 @@ export function unique<T>(arr: readonly T[]): T[] {
   return Array.from(new Set(arr));
 }
 
-export function collectGlossaryImgs(glossaryHtml: string) {
+export function collectGlossaryImgs(
+  glossaryHtml: string,
+  filter?: (img: HTMLImageElement) => boolean,
+) {
   if (isServer) return [];
 
   const doc = parseHtml(glossaryHtml);
@@ -159,13 +162,22 @@ export function collectGlossaryImgs(glossaryHtml: string) {
   return Array.from(doc.querySelectorAll("img"))
     .filter((img) => {
       const src = img.getAttribute("src");
-      return (
+      const defaultFilterResult = !!(
         src &&
         !isSvg(src) &&
         (img.height === 0 || img.height > 100) &&
         (img.width === 0 || img.width > 100) &&
         !img.closest('span[data-sc-pixiv="read-more-link"] a')
       );
+      if (!defaultFilterResult) return false;
+      if (filter) {
+        try {
+          return filter(img);
+        } catch {
+          return true;
+        }
+      }
+      return true;
     })
     .map((img) => {
       const src = img.getAttribute("src") ?? "";

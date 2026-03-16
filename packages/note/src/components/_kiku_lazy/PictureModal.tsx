@@ -48,7 +48,10 @@ export default function PictureModal(props: {
     addImages(parseHtml(ankiFields.DefinitionPicture));
 
     // Glossary field
-    for (const pic of collectGlossaryImgs(ankiFields.Glossary)) {
+    for (const pic of collectGlossaryImgs(
+      ankiFields.Glossary,
+      $general.plugin?.glossaryImagesFilter,
+    )) {
       pics.set(pic.src, pic.html);
     }
 
