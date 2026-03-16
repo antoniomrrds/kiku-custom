@@ -1,12 +1,70 @@
-import { createContext, createUniqueId, useContext } from "solid-js";
+import {
+  createContext,
+  createMemo,
+  createUniqueId,
+  useContext,
+} from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { type PitchState, usePitchState } from "#/util/hooks";
+import { parseHtml, unique } from "#/util/general";
+import { getPitchPatternName, hatsuon } from "#/util/hatsuon";
 import {
   type AnkiFields,
   type AnkiNote,
   ankiFieldsSkeleton,
+  type PitchType,
 } from "#/util/types";
+import { useAnkiFieldContext } from "./AnkiFieldsContext";
+
+export type PitchState = ReturnType<typeof usePitchState>;
+export function usePitchState(nested: boolean | undefined) {
+  const { ankiFields } = useAnkiFieldContext<"back">();
+
+  const pitchNumbers = createMemo(() => {
+    const raw = ankiFields.PitchPosition;
+    if (!raw) return [];
+    const pitchPositionDoc = parseHtml(raw);
+    const numbers = Array.from(pitchPositionDoc.querySelectorAll("span"))
+      .map((el) => Number(el.innerText))
+      .filter((value) => !Number.isNaN(value));
+    const uniqueNumbers = unique(numbers);
+    if (uniqueNumbers.length) {
+      KIKU_STATE.logger.info("Detected pitch number:", uniqueNumbers);
+    }
+    return uniqueNumbers;
+  });
+
+  const reading = createMemo(() => {
+    if (nested) return ankiFields.ExpressionReading;
+    return ankiFields.ExpressionFurigana
+      ? ankiFields["kana:ExpressionFurigana"]
+      : ankiFields.ExpressionReading;
+  });
+
+  const pitchInfos = createMemo(() => {
+    const numbers = pitchNumbers();
+    if (!numbers.length) return [];
+    return numbers.map((pitchNum) => hatsuon({ reading: reading(), pitchNum }));
+  });
+
+  const pitchType = createMemo(() => {
+    const info = pitchInfos()[0];
+    if (!info) return undefined;
+    return getPitchPatternName(
+      info.morae.length,
+      info.pitchNum,
+      "EN",
+    ) as PitchType;
+  });
+
+  const hasPitch = createMemo(() => !!pitchNumbers().length);
+
+  return {
+    pitchInfos,
+    pitchType,
+    hasPitch,
+  };
+}
 
 type Query = {
   status: "loading" | "success" | "error";

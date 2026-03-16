@@ -1,13 +1,10 @@
-import { createEffect, createMemo } from "solid-js";
+import { createEffect } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { useAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
 import { useBreakpointContext } from "#/components/shared/BreakpointContext";
 import { useCardContext } from "#/components/shared/CardContext";
 import { useConfigContext } from "#/components/shared/ConfigContext";
 import { useGeneralContext } from "#/components/shared/GeneralContext";
-import { parseHtml, unique } from "#/util/general";
-import { getPitchPatternName, hatsuon } from "#/util/hatsuon";
-import type { PitchType } from "#/util/types";
 import { NexClient } from "#/worker/client";
 import { constants, extractKanji } from "./general";
 import type { DaisyUITheme } from "./theme";
@@ -169,54 +166,4 @@ export function useKanji() {
       setKanji();
     }
   });
-}
-
-export type PitchState = ReturnType<typeof usePitchState>;
-export function usePitchState(nested: boolean | undefined) {
-  const { ankiFields } = useAnkiFieldContext<"back">();
-
-  const pitchNumbers = createMemo(() => {
-    const raw = ankiFields.PitchPosition;
-    if (!raw) return [];
-    const pitchPositionDoc = parseHtml(raw);
-    const numbers = Array.from(pitchPositionDoc.querySelectorAll("span"))
-      .map((el) => Number(el.innerText))
-      .filter((value) => !Number.isNaN(value));
-    const uniqueNumbers = unique(numbers);
-    if (uniqueNumbers.length) {
-      KIKU_STATE.logger.info("Detected pitch number:", uniqueNumbers);
-    }
-    return uniqueNumbers;
-  });
-
-  const reading = createMemo(() => {
-    if (nested) return ankiFields.ExpressionReading;
-    return ankiFields.ExpressionFurigana
-      ? ankiFields["kana:ExpressionFurigana"]
-      : ankiFields.ExpressionReading;
-  });
-
-  const pitchInfos = createMemo(() => {
-    const numbers = pitchNumbers();
-    if (!numbers.length) return [];
-    return numbers.map((pitchNum) => hatsuon({ reading: reading(), pitchNum }));
-  });
-
-  const pitchType = createMemo(() => {
-    const info = pitchInfos()[0];
-    if (!info) return undefined;
-    return getPitchPatternName(
-      info.morae.length,
-      info.pitchNum,
-      "EN",
-    ) as PitchType;
-  });
-
-  const hasPitch = createMemo(() => !!pitchNumbers().length);
-
-  return {
-    pitchInfos,
-    pitchType,
-    hasPitch,
-  };
 }
