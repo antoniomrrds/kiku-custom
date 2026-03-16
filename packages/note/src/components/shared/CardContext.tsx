@@ -1,6 +1,7 @@
 import { createContext, createUniqueId, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
+import { type PitchState, usePitchState } from "#/util/hooks";
 import {
   type AnkiFields,
   type AnkiNote,
@@ -37,6 +38,7 @@ type CardStore = {
   nestedNoteId: number | undefined;
   nestedIsMergePreview: boolean;
   isMergePreview: boolean;
+  pitchState: PitchState;
 };
 
 const CardStoreContext =
@@ -48,6 +50,7 @@ export function CardStoreContextProvider(props: {
   isMergePreview?: boolean;
   side: "front" | "back";
 }) {
+  const pitchState = usePitchState(props.nested);
   const [$card, $setCard] = createStore<CardStore>({
     side: props.side,
     page: "main",
@@ -76,6 +79,7 @@ export function CardStoreContextProvider(props: {
     nestedNoteId: undefined,
     nestedIsMergePreview: false,
     isMergePreview: props.isMergePreview ?? false,
+    pitchState,
   });
 
   return (

@@ -24,7 +24,7 @@ import type { JSX } from "solid-js/jsx-runtime";
 import type { createStore } from "solid-js/store";
 import type { Portal } from "solid-js/web";
 import type { UseKanjiContext } from "#/components/_kiku_lazy/KanjiContext";
-import type { PitchInfo } from "#/components/_kiku_lazy/util/hatsuon";
+import type { PitchInfo } from "#/util/hatsuon";
 import type { UseAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
 import type { UseBreakpointContext } from "#/components/shared/BreakpointContext";
 import type { UseCardContext } from "#/components/shared/CardContext";

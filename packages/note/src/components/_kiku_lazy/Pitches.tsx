@@ -1,42 +1,14 @@
 import { ErrorBoundary, Show } from "solid-js";
-import {
-  getPitchPatternName,
-  hatsuon,
-  type PitchInfo,
-} from "#/components/_kiku_lazy/util/hatsuon";
-import { useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/util/config";
-import { parseHtml, unique } from "#/util/general";
+import { getPitchPatternName, type PitchInfo } from "#/util/hatsuon";
 import type { PitchType } from "#/util/types";
-import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
+import { useCardContext } from "../shared/CardContext";
 import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 
 export default function Pitches() {
   const [$card] = useCardContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
-
-  const pitchPositionDoc = parseHtml(ankiFields.PitchPosition);
-  const pitchNumber = unique(
-    Array.from(pitchPositionDoc.querySelectorAll("span"))
-      .filter((el) => {
-        return !Number.isNaN(Number(el.innerText));
-      })
-      .map((el) => {
-        return Number(el.innerText);
-      }),
-  );
-  KIKU_STATE.logger.info("Detected pitch number:", pitchNumber);
-
-  const kana = () => {
-    if ($card.nested) return ankiFields.ExpressionReading;
-    return ankiFields.ExpressionFurigana
-      ? ankiFields["kana:ExpressionFurigana"]
-      : ankiFields.ExpressionReading;
-  };
-
-  return pitchNumber.map((pitchNum, index) => {
-    const pitchInfo = hatsuon({ reading: kana(), pitchNum: pitchNum });
+  return $card.pitchState.pitchInfos().map((pitchInfo, index) => {
     return <Pitch pitchInfo={pitchInfo} index={index} />;
   });
 }

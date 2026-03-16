@@ -42,7 +42,7 @@ const Lazy = {
 };
 
 export function Back(props: { onExitNested?: () => void }) {
-  const { navigate, navigateBack } = useNavigationTransition();
+  const { navigateBack } = useNavigationTransition();
   const [$card, $setCard] = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$general, $setGeneral] = useGeneralContext();
@@ -170,7 +170,7 @@ export function Back(props: { onExitNested?: () => void }) {
 }
 
 function ExpressionSection() {
-  const [$card, $setCard] = useCardContext();
+  const [$card] = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [ref1, setRef1] = createSignal<HTMLSpanElement>();
   const [ref2, setRef2] = createSignal<HTMLSpanElement>();
@@ -206,12 +206,19 @@ function ExpressionSection() {
     }
   });
 
+  const expressionPitchDataset = () => ({
+    "data-pitch-type": $card.pitchState.pitchType(),
+  });
+  const expressionStyle = () => ({ color: "var(--pitch-color)" });
+
   return (
     <>
       <div
         ref={(ref) => setRef1(ref)}
         class="expression font-secondary text-center vertical-rl"
+        style={expressionStyle()}
         innerHTML={expressionInnerHtml()}
+        {...expressionPitchDataset()}
       >
         {isServer
           ? "{{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}{{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}"
@@ -219,8 +226,10 @@ function ExpressionSection() {
       </div>
       <div
         class="expression font-secondary text-center vertical-rl"
+        {...expressionPitchDataset()}
         style={{
           display: "none",
+          ...expressionStyle(),
         }}
         ref={(ref) => setRef2(ref)}
       ></div>
