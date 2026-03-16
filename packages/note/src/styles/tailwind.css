@@ -118,23 +118,23 @@
 }
 
 @layer utilities {
-  [data-pitch-type="heiban"] {
+  [data-pitch-type^="heiban"] {
     --pitch-color: var(--color-pitch-heiban);
     --pitch-content-color: var(--color-info-content);
   }
-  [data-pitch-type="atamadaka"] {
+  [data-pitch-type^="atamadaka"] {
     --pitch-color: var(--color-pitch-atamadaka);
     --pitch-content-color: var(--color-error-content);
   }
-  [data-pitch-type="nakadaka"] {
+  [data-pitch-type^="nakadaka"] {
     --pitch-color: var(--color-pitch-nakadaka);
     --pitch-content-color: var(--color-warning-content);
   }
-  [data-pitch-type="odaka"] {
+  [data-pitch-type^="odaka"] {
     --pitch-color: var(--color-pitch-odaka);
     --pitch-content-color: var(--color-success-content);
   }
-  [data-pitch-type="kifuku"] {
+  [data-pitch-type^="kifuku"] {
     --pitch-color: var(--color-pitch-kifuku);
     --pitch-content-color: var(--color-accent-content);
   }

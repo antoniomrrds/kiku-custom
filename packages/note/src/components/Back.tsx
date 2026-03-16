@@ -207,7 +207,9 @@ function ExpressionSection() {
   });
 
   const expressionPitchDataset = () => ({
-    "data-pitch-type": $card.pitchState.pitchType(),
+    "data-pitch-type": isServer
+      ? "{{PitchCategories}}"
+      : $card.pitchState.pitchType(),
   });
   const expressionStyle = () => ({ color: "var(--pitch-color)" });
 
@@ -215,7 +217,7 @@ function ExpressionSection() {
     <>
       <div
         ref={(ref) => setRef1(ref)}
-        class="expression font-secondary text-center vertical-rl"
+        class="expression font-secondary text-center vertical-rl transition-colors"
         style={expressionStyle()}
         innerHTML={expressionInnerHtml()}
         {...expressionPitchDataset()}
