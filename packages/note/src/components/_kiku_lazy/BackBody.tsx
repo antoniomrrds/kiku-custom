@@ -55,7 +55,16 @@ export default function BackBody(props: {
       p.push({ name: "Selection Text", html: selection });
     }
     if (main) {
-      p.push({ name: "Main Definition", html: main });
+      let name = "Main Definition";
+      if ($config.definitionStyle === "glossary-split") {
+        const doc = parseHtml(main);
+        const li = doc.querySelector("li[data-dictionary]");
+        const dictName = li?.getAttribute("data-dictionary");
+        if (dictName) {
+          name = `Main Definition (${dictName})`;
+        }
+      }
+      p.push({ name, html: main });
     }
 
     if (!isHtmlEffectivelyEmpty(gHtml)) {
