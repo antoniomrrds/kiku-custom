@@ -149,7 +149,7 @@ export default function BackBody(props: {
             </div>
           )}
           <div
-            class="relative bg-base-200 p-4 border-s-4 text-base sm:text-xl rounded-lg"
+            class="relative bg-base-200 p-4 border-s-4 text-base sm:text-xl rounded-lg definition-field"
             style={{
               "border-color": "var(--dictionary-color, var(--color-primary)",
             }}
