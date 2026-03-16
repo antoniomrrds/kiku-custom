@@ -34,8 +34,9 @@ export default function PictureModal(props: {
 
     const addImages = (doc: Document) => {
       for (const img of doc.querySelectorAll("img")) {
-        if (img.src) {
-          pics.set(img.src, img.outerHTML);
+        const src = img.getAttribute("src");
+        if (src) {
+          pics.set(src, img.outerHTML);
         }
       }
     };
@@ -49,15 +50,16 @@ export default function PictureModal(props: {
     // Glossary field
     const glossaryDoc = parseHtml(ankiFields.Glossary);
     for (const img of glossaryDoc.querySelectorAll("img")) {
+      const src = img.getAttribute("src");
       if (
-        img.src &&
-        !isSvg(img.src) &&
+        src &&
+        !isSvg(src) &&
         (img.height === 0 || img.height > 100) &&
         (img.width === 0 || img.width > 100)
       ) {
         const newImg = document.createElement("img");
-        newImg.setAttribute("src", img.src);
-        pics.set(img.src, newImg.outerHTML);
+        newImg.setAttribute("src", src);
+        pics.set(src, newImg.outerHTML);
       }
     }
 

@@ -16,7 +16,8 @@ export default function DefinitionPictureSection(props: {
     if (props.currentHtml) {
       const doc = parseHtml(props.currentHtml);
       for (const img of doc.querySelectorAll("img")) {
-        if (img.src) displayedImages.add(img.src);
+        const src = img.getAttribute("src");
+        if (src) displayedImages.add(src);
       }
     }
 
@@ -27,17 +28,20 @@ export default function DefinitionPictureSection(props: {
 
     const glossaryDoc = parseHtml(ankiFields.Glossary);
     const glossaryPics = Array.from(glossaryDoc.querySelectorAll("img"))
-      .filter(
-        (img) =>
-          img.src &&
-          !isSvg(img.src) &&
+      .filter((img) => {
+        const src = img.getAttribute("src");
+        return (
+          src &&
+          !isSvg(src) &&
           (img.height === 0 || img.height > 100) &&
           (img.width === 0 || img.width > 100) &&
-          !displayedImages.has(img.src),
-      )
+          !displayedImages.has(src)
+        );
+      })
       .map((img) => {
+        const src = img.getAttribute("src") ?? "";
         const newImg = document.createElement("img");
-        newImg.setAttribute("src", img.src);
+        newImg.setAttribute("src", src);
         return newImg.outerHTML;
       });
 
