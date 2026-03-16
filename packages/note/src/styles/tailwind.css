@@ -58,6 +58,12 @@
     from { opacity: 1; transform: translateY(0); }
     to { opacity: 0; transform: translateY(4px); }
   }
+
+  --color-pitch-heiban: var(--color-info);
+  --color-pitch-atamadaka: var(--color-error);
+  --color-pitch-nakadaka: var(--color-warning);
+  --color-pitch-odaka: var(--color-success);
+  --color-pitch-kifuku: var(--color-accent);
 }
 
 @custom-variant hover (&:hover);
@@ -112,6 +118,31 @@
 }
 
 @layer utilities {
+  [data-pitch-type] {
+    --pitch-color: var(--color-primary);
+    --pitch-content-color: var(--color-primary-content);
+  }
+  [data-pitch-type="heiban"] {
+    --pitch-color: var(--color-pitch-heiban);
+    --pitch-content-color: var(--color-info-content);
+  }
+  [data-pitch-type="atamadaka"] {
+    --pitch-color: var(--color-pitch-atamadaka);
+    --pitch-content-color: var(--color-error-content);
+  }
+  [data-pitch-type="nakadaka"] {
+    --pitch-color: var(--color-pitch-nakadaka);
+    --pitch-content-color: var(--color-warning-content);
+  }
+  [data-pitch-type="odaka"] {
+    --pitch-color: var(--color-pitch-odaka);
+    --pitch-content-color: var(--color-success-content);
+  }
+  [data-pitch-type="kifuku"] {
+    --pitch-color: var(--color-pitch-kifuku);
+    --pitch-content-color: var(--color-accent-content);
+  }
+
   .pitch-segment {
     position: relative;
   }
@@ -122,13 +153,7 @@
     right: 0;
     width: 2px;
     height: 8px;
-  }
-
-  [data-is-even="true"] .pitch-segment::after {
-    background-color: var(--color-primary); /* match text/border color */
-  }
-  [data-is-even="false"] .pitch-segment::after {
-    background-color: var(--color-secondary); /* match text/border color */
+    background-color: var(--pitch-color);
   }
 
   .picture-field-background {

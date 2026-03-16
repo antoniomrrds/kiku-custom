@@ -1,6 +1,7 @@
 import { defaultConfig } from "./defaul-config";
 import { type WebFont, webFonts } from "./fonts";
 import { colorBase100Map, type DaisyUITheme, daisyUIThemes } from "./theme";
+import type { PitchType } from "./types";
 
 export type KikuConfig = {
   theme: DaisyUITheme;
@@ -176,7 +177,7 @@ export type Dataset = {
   "data-tags": string;
   "data-nsfw": "true" | "false";
   "data-blur-nsfw": "true" | "false";
-  "data-is-even": "true" | "false";
+  "data-pitch-type": PitchType;
   "data-has-pitch": string
   "data-has-hint": string
   "data-has-picture": string

@@ -151,6 +151,13 @@ export const ankiFieldsSkeleton: AnkiFields = {
   "kana:SentenceFurigana": ""
 }
 
+export type PitchType =
+  | "heiban"
+  | "atamadaka"
+  | "nakadaka"
+  | "odaka"
+  | "kifuku";
+
 type AnkiResponse<T = unknown> = {
   success: boolean;
   value?: T;

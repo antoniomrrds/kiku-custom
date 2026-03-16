@@ -1,8 +1,13 @@
 import { ErrorBoundary, Show } from "solid-js";
-import { hatsuon, type PitchInfo } from "#/components/_kiku_lazy/util/hatsuon";
+import {
+  getPitchPatternName,
+  hatsuon,
+  type PitchInfo,
+} from "#/components/_kiku_lazy/util/hatsuon";
 import { useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/util/config";
 import { parseHtml, unique } from "#/util/general";
+import type { PitchType } from "#/util/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
@@ -68,22 +73,30 @@ export function DefaultPitch(props: {
   ref?: (ref: HTMLDivElement) => void;
 }) {
   const pitchInfo = props.pitchInfo;
-  const isEven = props.index % 2 === 0;
+  const pitchType = getPitchPatternName(
+    pitchInfo.morae.length,
+    pitchInfo.pitchNum,
+    "EN",
+  );
 
   const pitchDataset: DatasetProp = {
-    "data-is-even": isEven ? "true" : "false",
+    "data-pitch-type": pitchType as PitchType,
   };
 
   return (
-    <div class="tooltip" data-tip={pitchInfo.patternName} ref={props.ref}>
+    <div
+      class="tooltip"
+      data-tip={pitchInfo.patternName}
+      ref={props.ref}
+      {...pitchDataset}
+    >
       <div class="flex items-start gap-1 animate-fade-in-sm">
-        <div {...pitchDataset}>
+        <div>
           {pitchInfo.morae.map((mora, i) => {
             return (
               <span
+                style={{ "border-color": "var(--pitch-color)" }}
                 classList={{
-                  "border-primary": isEven,
-                  "border-secondary": !isEven,
                   "border-t-2": pitchInfo.pattern[i] === 1,
                   "pitch-segment":
                     pitchInfo.pattern[i] === 1 &&
@@ -97,11 +110,9 @@ export function DefaultPitch(props: {
         </div>
         <div
           class="text-sm px-0.5 rounded-sm leading-tight"
-          classList={{
-            "bg-primary": isEven,
-            "bg-secondary": !isEven,
-            "text-primary-content": isEven,
-            "text-secondary-content": !isEven,
+          style={{
+            "background-color": "var(--pitch-color)",
+            color: "var(--pitch-content-color)",
           }}
         >
           {pitchInfo.pitchNum}
