@@ -140,6 +140,7 @@
   }
 
   .pitch-segment {
+    padding-inline-end: 0.25rem;
     position: relative;
   }
   .pitch-segment::after {

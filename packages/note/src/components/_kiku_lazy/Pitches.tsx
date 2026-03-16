@@ -67,7 +67,6 @@ export function DefaultPitch(props: {
           {pitchInfo.morae.map((mora, i) => {
             return (
               <span
-                class="pe-1"
                 style={{
                   "border-color": "var(--pitch-color)",
                   color: "var(--pitch-color)",
