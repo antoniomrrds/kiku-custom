@@ -35,15 +35,20 @@ export default function Sentence() {
     return true;
   };
 
+  const expressionPitchDataset = () => ({
+    "data-pitch-type": $card.pitchState.pitchType(),
+  });
+
   function DefaultSentence() {
     return (
       <div
-        class={`[&_b]:text-base-content-primary sentence font-secondary`}
+        class={`sentence font-secondary sentence-field`}
         classList={{
           "animate-fade-in": animateFadeIn(),
         }}
         ref={(ref) => $setCard("sentenceFieldRef", ref)}
         innerHTML={$group.sentenceField}
+        {...expressionPitchDataset()}
       ></div>
     );
   }

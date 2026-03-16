@@ -118,10 +118,6 @@
 }
 
 @layer utilities {
-  [data-pitch-type] {
-    --pitch-color: var(--color-primary);
-    --pitch-content-color: var(--color-primary-content);
-  }
   [data-pitch-type="heiban"] {
     --pitch-color: var(--color-pitch-heiban);
     --pitch-content-color: var(--color-info-content);
@@ -154,6 +150,12 @@
     width: 2px;
     height: 8px;
     background-color: var(--pitch-color);
+  }
+
+  .sentence-field {
+    b {
+      color: var(--pitch-color, var(--color-base-content-primary));
+    }
   }
 
   .picture-field-background {
