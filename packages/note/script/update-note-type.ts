@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
 import { generateCssVars, getCssVar } from "../src/util/config.js";
-import { defaultConfig } from "../src/util/defaul-config.js";
+import { defaultConfig } from "../src/util/default-config.js";
 import { paths } from "../tools/paths.ts";
 import { AnkiConnect, log } from "../tools/util.js";
 

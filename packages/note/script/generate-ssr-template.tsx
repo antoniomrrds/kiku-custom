@@ -15,7 +15,7 @@ import { debug } from "#/util/debug";
 import { Logger } from "#/util/logger";
 import { Back } from "../src/components/Back";
 import { BreakpointContextProvider } from "../src/components/shared/BreakpointContext";
-import { defaultConfig } from "../src/util/defaul-config";
+import { defaultConfig } from "../src/util/default-config";
 
 const [config, setConfig] = createStore(defaultConfig);
 

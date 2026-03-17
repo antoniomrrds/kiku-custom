@@ -9,7 +9,7 @@ import {
   updateConfigState,
   validateConfig,
 } from "./util/config.ts";
-import { defaultConfig } from "./util/defaul-config";
+import { defaultConfig } from "./util/default-config";
 import { constants } from "./util/general.ts";
 import "./styles/tailwind.css";
 import { Layout } from "./components/Layout.tsx";

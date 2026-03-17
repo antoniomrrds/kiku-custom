@@ -70,7 +70,7 @@ When AnkiConnect is running, you can click the **"Save"** button on the Settings
 
 ### Default Config
 
-<<< ../../../packages/note/src/util/defaul-config.ts
+<<< ../../../packages/note/src/util/default-config.ts
 
 ### Settings Stored in the Front/Back/Styling Templates
 

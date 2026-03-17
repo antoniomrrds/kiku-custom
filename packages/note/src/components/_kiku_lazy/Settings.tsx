@@ -20,7 +20,7 @@ import {
   tailwindFontSizeVar,
   tailwindSize,
 } from "#/util/config";
-import { defaultConfig } from "#/util/defaul-config";
+import { defaultConfig } from "#/util/default-config";
 import { type WebFont, webFonts } from "#/util/fonts";
 import { constants } from "#/util/general";
 import { useNavigationTransition, useThemeTransition } from "#/util/hooks";

@@ -1,4 +1,4 @@
-import { defaultConfig } from "./defaul-config";
+import { defaultConfig } from "./default-config";
 import { type WebFont, webFonts } from "./fonts";
 import { colorBase100Map, type DaisyUITheme, daisyUIThemes } from "./theme";
 import type { PitchType } from "./types";
