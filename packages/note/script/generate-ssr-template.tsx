@@ -31,6 +31,7 @@ export function generateSsrTemplate() {
       <GeneralContextProvider
         aborter={globalThis.KIKU_STATE.aborter}
         isAnkiWeb={false}
+        isAnkiDesktop={false}
         assetsPath=""
       >
         <AnkiFieldContextProvider>
@@ -56,6 +57,7 @@ export function generateSsrTemplate() {
       <GeneralContextProvider
         aborter={globalThis.KIKU_STATE.aborter}
         isAnkiWeb={false}
+        isAnkiDesktop={false}
         assetsPath=""
       >
         <AnkiFieldContextProvider>

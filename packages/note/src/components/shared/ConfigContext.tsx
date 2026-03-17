@@ -31,7 +31,7 @@ export function ConfigContextProvider(props: {
           config: unwrap($config),
           assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
           preferAnkiConnect:
-            $config.preferAnkiConnect && !!KIKU_STATE.isAnkiDesktop,
+            $config.preferAnkiConnect && $general.isAnkiDesktop,
         });
       });
     });
@@ -43,10 +43,7 @@ export function ConfigContextProvider(props: {
     if (!initialTheme) {
       initialTheme = $config.theme;
     } else if (initialTheme && initialTheme !== $config.theme) {
-      sessionStorage.setItem(
-        constants.key["kiku-is-theme-changed"],
-        "true",
-      );
+      sessionStorage.setItem(constants.key["kiku-is-theme-changed"], "true");
       $setGeneral("isThemeChanged", true);
     }
   });

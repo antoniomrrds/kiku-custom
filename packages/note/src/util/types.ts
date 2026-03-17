@@ -237,7 +237,6 @@ declare global {
     root?: HTMLElement;
     logger: Logger;
     ankiDroidAPI?: AnkiDroidAPI;
-    isAnkiDesktop?: boolean;
     nexClient?: NexClient;
     aborter: AbortController;
     dispose?: () => void;

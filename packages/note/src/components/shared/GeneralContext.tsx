@@ -13,6 +13,7 @@ type GeneralStore = {
   plugin: KikuPlugin | undefined;
   isThemeChanged: boolean;
   isAnkiWeb: boolean;
+  isAnkiDesktop: boolean;
   assetsPath: string;
   aborter: AbortController;
   isAnkiConnectAvailable: boolean;
@@ -41,6 +42,7 @@ const GeneralContext =
 export function GeneralContextProvider(props: {
   children: JSX.Element;
   isAnkiWeb: boolean;
+  isAnkiDesktop: boolean;
   assetsPath: string;
   aborter: AbortController;
 }) {
@@ -91,6 +93,7 @@ export function GeneralContextProvider(props: {
           ) ?? "false",
         ),
     isAnkiWeb: props.isAnkiWeb,
+    isAnkiDesktop: props.isAnkiDesktop,
     assetsPath: props.assetsPath,
     aborter: props.aborter,
     isAnkiConnectAvailable: false,

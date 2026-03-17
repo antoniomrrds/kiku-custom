@@ -26,7 +26,6 @@ import { Logger } from "./util/logger.ts";
 
 globalThis.KIKU_STATE = {
   logger: new Logger(),
-  isAnkiDesktop: typeof pycmd !== "undefined",
   nexClient: globalThis.KIKU_STATE?.nexClient,
   aborter: globalThis.KIKU_STATE?.aborter ?? new AbortController(),
 };
@@ -38,11 +37,12 @@ export async function init({
   side: "front" | "back";
   ssr?: boolean;
 }) {
+  const isAnkiDesktop = typeof pycmd !== "undefined";
   const now = performance.now();
   KIKU_STATE.aborter.abort();
   KIKU_STATE.aborter = new AbortController();
   KIKU_STATE.dispose?.();
-  await setup({ aborter: KIKU_STATE.aborter, side, ssr });
+  await setup({ aborter: KIKU_STATE.aborter, side, ssr, isAnkiDesktop });
   KIKU_STATE.startupTime = performance.now() - now;
 }
 
@@ -50,10 +50,12 @@ async function setup({
   aborter,
   side,
   ssr,
+  isAnkiDesktop,
 }: {
   aborter: AbortController;
   side: "front" | "back";
   ssr?: boolean;
+  isAnkiDesktop: boolean;
 }) {
   try {
     if (!side) throw new Error("Side not set");
@@ -61,7 +63,7 @@ async function setup({
     if (!KIKU_STATE.unload) {
       KIKU_STATE.unload = () => {
         console.log("unload");
-        if (KIKU_STATE.isAnkiDesktop) sessionStorage.clear();
+        if (isAnkiDesktop) sessionStorage.clear();
       };
       window.addEventListener("unload", KIKU_STATE.unload);
     }
@@ -161,6 +163,7 @@ async function setup({
           <GeneralContextProvider
             aborter={aborter}
             isAnkiWeb={isAnkiWeb}
+            isAnkiDesktop={isAnkiDesktop}
             assetsPath={assetsPath}
           >
             <AnkiFieldContextProvider>
@@ -191,6 +194,7 @@ async function setup({
         <GeneralContextProvider
           aborter={aborter}
           isAnkiWeb={isAnkiWeb}
+          isAnkiDesktop={isAnkiDesktop}
           assetsPath={assetsPath}
         >
           <AnkiFieldContextProvider>

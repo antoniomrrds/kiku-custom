@@ -21,7 +21,7 @@ export function useViewTransition() {
   ) {
     if (
       document.startViewTransition &&
-      typeof pycmd === "undefined" &&
+      !$general.isAnkiDesktop &&
       !$general.isAnkiWeb
     ) {
       beforeCallback?.();
@@ -124,7 +124,7 @@ export function useKanji() {
         config: unwrap($config),
         assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
         preferAnkiConnect:
-          $config.preferAnkiConnect && !!KIKU_STATE.isAnkiDesktop,
+          $config.preferAnkiConnect && !!$general.isAnkiDesktop,
       });
       KIKU_STATE.nexClient = nexClient;
       $general.nexClientPromise.resolve(nexClient);
