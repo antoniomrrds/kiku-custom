@@ -11,7 +11,6 @@ import {
   RootFieldGroupContextProvider,
 } from "#/components/shared/FieldGroupContext";
 import { GeneralContextProvider } from "#/components/shared/GeneralContext";
-import { debug } from "#/util/debug";
 import { Logger } from "#/util/logger";
 import { Back } from "../src/components/Back";
 import { BreakpointContextProvider } from "../src/components/shared/BreakpointContext";
@@ -24,7 +23,6 @@ const logger = new Logger();
 globalThis.KIKU_STATE = {
   logger,
   aborter: new AbortController(),
-  debug,
 };
 
 export function generateSsrTemplate() {

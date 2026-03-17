@@ -1,5 +1,4 @@
 import type { NexClient } from "../worker/client";
-import type { Debug } from "./debug";
 import type { Logger } from "./logger";
 
 export type AnkiFields = {
@@ -241,7 +240,6 @@ declare global {
     isAnkiDesktop?: boolean;
     nexClient?: NexClient;
     aborter: AbortController;
-    debug: Debug;
     dispose?: () => void;
     unload?: () => void;
   };

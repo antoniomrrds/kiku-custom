@@ -22,7 +22,6 @@ import {
   RootFieldGroupContextProvider,
 } from "./components/shared/FieldGroupContext.tsx";
 import { GeneralContextProvider } from "./components/shared/GeneralContext.tsx";
-import { debug } from "./util/debug.ts";
 import { Logger } from "./util/logger.ts";
 
 globalThis.KIKU_STATE = {
@@ -30,7 +29,6 @@ globalThis.KIKU_STATE = {
   isAnkiDesktop: typeof pycmd !== "undefined",
   nexClient: globalThis.KIKU_STATE?.nexClient,
   aborter: globalThis.KIKU_STATE?.aborter ?? new AbortController(),
-  debug,
 };
 
 export async function init({
