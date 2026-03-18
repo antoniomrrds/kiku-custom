@@ -1,5 +1,5 @@
 /* @refresh reload */
-import { type Accessor, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { hydrate, render } from "solid-js/web";
 import { Back } from "./components/Back.tsx";
@@ -43,30 +43,9 @@ export async function init({
   const now = performance.now();
   KIKU_STATE.aborter.abort();
   KIKU_STATE.aborter = new AbortController();
+  const aborter = KIKU_STATE.aborter;
   KIKU_STATE.dispose?.();
-  await setup({
-    aborter: KIKU_STATE.aborter,
-    side,
-    ssr,
-    isAnkiDesktop,
-    startupTime,
-  });
-  setStartupTime(performance.now() - now);
-}
 
-async function setup({
-  aborter,
-  side,
-  ssr,
-  isAnkiDesktop,
-  startupTime,
-}: {
-  aborter: AbortController;
-  side: "front" | "back";
-  ssr?: boolean;
-  isAnkiDesktop: boolean;
-  startupTime: Accessor<number>;
-}) {
   try {
     if (!side) throw new Error("Side not set");
 
@@ -266,5 +245,7 @@ async function setup({
         </span>
       `
       : `<span>Something went wrong.</span>`;
+  } finally {
+    setStartupTime(performance.now() - now);
   }
 }
