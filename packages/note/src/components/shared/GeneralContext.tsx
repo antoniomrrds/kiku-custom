@@ -1,4 +1,4 @@
-import { createContext, onMount, useContext } from "solid-js";
+import { createContext, createEffect, onMount, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { isServer } from "solid-js/web";
@@ -14,6 +14,7 @@ type GeneralStore = {
   isThemeChanged: boolean;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
+  startupTime: () => number;
   assetsPath: string;
   aborter: AbortController;
   isAnkiConnectAvailable: boolean;
@@ -43,6 +44,7 @@ export function GeneralContextProvider(props: {
   children: JSX.Element;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
+  startupTime: () => number;
   assetsPath: string;
   aborter: AbortController;
 }) {
@@ -94,6 +96,7 @@ export function GeneralContextProvider(props: {
         ),
     isAnkiWeb: props.isAnkiWeb,
     isAnkiDesktop: props.isAnkiDesktop,
+    startupTime: props.startupTime,
     assetsPath: props.assetsPath,
     aborter: props.aborter,
     isAnkiConnectAvailable: false,

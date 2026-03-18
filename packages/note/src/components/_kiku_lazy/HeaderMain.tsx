@@ -1,11 +1,4 @@
-import {
-  createSignal,
-  createUniqueId,
-  Match,
-  onMount,
-  Show,
-  Switch,
-} from "solid-js";
+import { createUniqueId, Match, Show, Switch } from "solid-js";
 import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
 import { nextTheme } from "#/util/theme";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
@@ -27,13 +20,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
   const [$config, $setConfig] = useConfigContext();
   const [$general] = useGeneralContext();
   const { navigate, navigateBack } = useNavigationTransition();
-  const [startupTime, setStartupTime] = createSignal<number | null>(null);
   const changeTheme = useThemeTransition();
-
-  onMount(() => {
-    if (KIKU_STATE.startupTime)
-      setStartupTime(Math.round(KIKU_STATE.startupTime));
-  });
 
   return (
     <HeaderLayout>
@@ -91,8 +78,8 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
             </Show>
             <Show when={$config.showStartupTime}>
               <div class="text-base-content-soft bg-warning/10 rounded-sm px-px sm:px-1 text-xs sm:text-sm">
-                {startupTime()}
-                {startupTime() && "ms"}
+                {Math.round($general.startupTime())}
+                {$general.startupTime() !== 0 && "ms"}
               </div>
             </Show>
           </Match>

@@ -1,4 +1,5 @@
 /* @refresh reload */
+import { type Accessor, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { hydrate, render } from "solid-js/web";
 import { Back } from "./components/Back.tsx";
@@ -37,13 +38,20 @@ export async function init({
   side: "front" | "back";
   ssr?: boolean;
 }) {
+  const [startupTime, setStartupTime] = createSignal(0);
   const isAnkiDesktop = typeof pycmd !== "undefined";
   const now = performance.now();
   KIKU_STATE.aborter.abort();
   KIKU_STATE.aborter = new AbortController();
   KIKU_STATE.dispose?.();
-  await setup({ aborter: KIKU_STATE.aborter, side, ssr, isAnkiDesktop });
-  KIKU_STATE.startupTime = performance.now() - now;
+  await setup({
+    aborter: KIKU_STATE.aborter,
+    side,
+    ssr,
+    isAnkiDesktop,
+    startupTime,
+  });
+  setStartupTime(performance.now() - now);
 }
 
 async function setup({
@@ -51,11 +59,13 @@ async function setup({
   side,
   ssr,
   isAnkiDesktop,
+  startupTime,
 }: {
   aborter: AbortController;
   side: "front" | "back";
   ssr?: boolean;
   isAnkiDesktop: boolean;
+  startupTime: Accessor<number>;
 }) {
   try {
     if (!side) throw new Error("Side not set");
@@ -126,9 +136,7 @@ async function setup({
 
     let config$: KikuConfig;
     try {
-      const cache = sessionStorage.getItem(
-        constants.key["kiku-config"],
-      );
+      const cache = sessionStorage.getItem(constants.key["kiku-config"]);
       if (cache) {
         KIKU_STATE.logger.info("config cache hit:", cache);
         config$ = validateConfig(JSON.parse(cache));
@@ -136,7 +144,9 @@ async function setup({
         KIKU_STATE.logger.info("config cache miss");
         config$ = validateConfig(
           await (
-            await fetch(constants.assets["_kiku_config.json"], { cache: "no-store" })
+            await fetch(constants.assets["_kiku_config.json"], {
+              cache: "no-store",
+            })
           ).json(),
         );
         if (aborter.signal.aborted) return;
@@ -164,6 +174,7 @@ async function setup({
             aborter={aborter}
             isAnkiWeb={isAnkiWeb}
             isAnkiDesktop={isAnkiDesktop}
+            startupTime={startupTime}
             assetsPath={assetsPath}
           >
             <AnkiFieldContextProvider>
@@ -195,6 +206,7 @@ async function setup({
           aborter={aborter}
           isAnkiWeb={isAnkiWeb}
           isAnkiDesktop={isAnkiDesktop}
+          startupTime={startupTime}
           assetsPath={assetsPath}
         >
           <AnkiFieldContextProvider>
