@@ -21,9 +21,7 @@ const [config, setConfig] = createStore(defaultConfig);
 const logger = new Logger();
 const aborter = new AbortController();
 
-globalThis.KIKU_STATE = {
-  logger,
-};
+globalThis.KIKU_STATE = {};
 
 export function generateSsrTemplate() {
   const frontSsrTemplate = renderToString(() => (
@@ -35,6 +33,7 @@ export function generateSsrTemplate() {
         ankiDroidAPI={undefined}
         startupTime={() => 0}
         assetsPath=""
+        logger={logger}
       >
         <AnkiFieldContextProvider>
           <CardStoreContextProvider side="front">
@@ -63,6 +62,7 @@ export function generateSsrTemplate() {
         ankiDroidAPI={undefined}
         startupTime={() => 0}
         assetsPath=""
+        logger={logger}
       >
         <AnkiFieldContextProvider>
           <CardStoreContextProvider side="back">

@@ -10,10 +10,5 @@ export async function getPlugin(assetsPath: string) {
       )
     ).plugin as KikuPlugin;
     return plugin;
-  } catch (e) {
-    KIKU_STATE.logger.warn(
-      "Failed to load plugin:",
-      e instanceof Error ? e.message : e,
-    );
-  }
+  } catch {}
 }

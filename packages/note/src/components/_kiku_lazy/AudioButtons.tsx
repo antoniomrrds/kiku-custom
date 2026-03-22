@@ -10,10 +10,11 @@ import { useGeneralContext } from "../shared/GeneralContext";
 import { PlayIcon } from "./Icons";
 
 function AudioTag(props: { text: string }) {
+  const [$general] = useGeneralContext();
   // Find all `[sound:filename.mp3]` occurrences
   const matches = () => [...props.text.matchAll(/\[sound:([^\]]+)\]/g)];
   const sounds = () => matches().map((m) => m[1]);
-  KIKU_STATE.logger.info("Using sounds:", sounds().join(", "));
+  $general.logger.info("Using sounds:", sounds().join(", "));
 
   return (
     <Show when={sounds().length > 0}>
@@ -65,14 +66,14 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
     if (anchors?.length) {
       $setCard("sentenceAudios", Array.from(anchors));
       const anchorsHtml = nodesToString(Array.from(anchors));
-      KIKU_STATE.logger.info("Anchors in sentence audios:", anchorsHtml);
+      $general.logger.info("Anchors in sentence audios:", anchorsHtml);
     }
 
     const audios = $card.sentenceAudioRef?.querySelectorAll("audio");
     if (audios?.length) {
       $setCard("sentenceAudios", Array.from(audios));
       const audiosHtml = nodesToString(Array.from(audios));
-      KIKU_STATE.logger.info("Audios in sentence audios:", audiosHtml);
+      $general.logger.info("Audios in sentence audios:", audiosHtml);
     }
 
     if (!anchors?.length && !audios?.length) {

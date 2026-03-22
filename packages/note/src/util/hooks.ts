@@ -119,13 +119,16 @@ export function useKanji() {
         ? [ankiFields.Expression]
         : [];
 
-      const nexClient = new NexClient({
-        env: constants,
-        config: unwrap($config),
-        assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
-        preferAnkiConnect:
-          $config.preferAnkiConnect && !!$general.isAnkiDesktop,
-      });
+      const nexClient = new NexClient(
+        {
+          env: constants,
+          config: unwrap($config),
+          assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
+          preferAnkiConnect:
+            $config.preferAnkiConnect && !!$general.isAnkiDesktop,
+        },
+        $general.logger,
+      );
       KIKU_STATE.nexClient = nexClient;
       $general.nexClientPromise.resolve(nexClient);
       const nex = await nexClient.nex;
@@ -150,11 +153,11 @@ export function useKanji() {
         .notesManifest()
         .then((manifest) => $setGeneral("notesManifest", manifest))
         .catch(() => {
-          KIKU_STATE.logger.warn("Failed to load manifest");
+          $general.logger.warn("Failed to load manifest");
         });
     } catch (e) {
       $setCard("query", { status: "error" });
-      KIKU_STATE.logger.error(
+      $general.logger.error(
         "Failed to load kanji information:",
         e instanceof Error ? e.message : "",
       );

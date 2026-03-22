@@ -20,7 +20,8 @@ export function ConfigContextProvider(props: {
   let initialTheme: DaisyUITheme | undefined;
   createEffect(() => {
     ({ ...$config });
-    KIKU_STATE.logger.debug("Updating config:", $config);
+    const [$general] = useGeneralContext();
+    $general.logger.debug("Updating config:", $config);
     if (!KIKU_STATE.root) throw new Error("Missing root");
     updateConfigState(KIKU_STATE.root, $config);
     AnkiConnect.changeAddress($config.ankiConnectAddress);

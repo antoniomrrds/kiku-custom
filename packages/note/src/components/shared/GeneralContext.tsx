@@ -4,12 +4,14 @@ import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { isServer } from "solid-js/web";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import { constants } from "#/util/general";
+import type { Logger } from "#/util/logger";
 import type { AnkiDroidAPI, KanjiInfo, KikuNotesManifest } from "#/util/types";
 import type { NexClient } from "#/worker/client";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useBreakpointContext } from "./BreakpointContext";
 
 type GeneralStore = {
+  logger: Logger;
   plugin: KikuPlugin | undefined;
   isThemeChanged: boolean;
   isAnkiWeb: boolean;
@@ -49,6 +51,7 @@ export function GeneralContextProvider(props: {
   startupTime: () => number;
   assetsPath: string;
   aborter: AbortController;
+  logger: Logger;
 }) {
   let timeout: ReturnType<typeof setTimeout>;
   const success = (message: string) => {
@@ -70,11 +73,11 @@ export function GeneralContextProvider(props: {
     try {
       const version = await AnkiConnect.getVersion();
       if (version) {
-        KIKU_STATE.logger.info("AnkiConnect version:", version);
+        $general.logger.info("AnkiConnect version:", version);
         $setGeneral("isAnkiConnectAvailable", true);
       }
     } catch {
-      KIKU_STATE.logger.warn("AnkiConnect is not available");
+      $general.logger.warn("AnkiConnect is not available");
       $setGeneral("isAnkiConnectAvailable", false);
     }
   }
@@ -88,6 +91,7 @@ export function GeneralContextProvider(props: {
   }
 
   const [$general, $setGeneral] = createStore<GeneralStore>({
+    logger: props.logger,
     plugin: undefined,
     isThemeChanged: isServer
       ? false

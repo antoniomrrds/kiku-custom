@@ -25,7 +25,7 @@ export default function UseAnkiDroid() {
   const ankiDroidAPI = $general.ankiDroidAPI;
 
   if (!ankiDroidAPI && !import.meta.env.DEV) return;
-  KIKU_STATE.logger.info("Using AnkiDroid");
+  $general.logger.info("Using AnkiDroid");
 
   let rightIconRef: SVGSVGElement | undefined;
   let leftIconRef: SVGSVGElement | undefined;

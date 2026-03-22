@@ -192,6 +192,7 @@ init({
   ssr: true,
   aborter,
   ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
+  logger: globalThis.KIKU.logger,
 }).then((res) => {
   Object.assign(globalThis.KIKU, res);
 });

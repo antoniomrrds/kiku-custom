@@ -1,15 +1,16 @@
 import type { KikuConfig } from "#/util/config";
 import type { Constants } from "#/util/general";
+import type { Logger } from "../util/logger";
 import type { NexApi } from "./_kiku_worker.ts";
 
-export function wrap<T>(worker: Worker) {
+export function wrap<T>(worker: Worker, logger: Logger) {
   let msgId = 0;
   const pending = new Map();
 
   worker.onmessage = (e) => {
     const { id, result, error, log } = e.data;
     if (log) {
-      KIKU_STATE.logger.push(log.level, log.args);
+      logger.push(log.level, log.args);
       return;
     }
 
@@ -38,12 +39,15 @@ export class NexClient {
   nex: Promise<NexApi>;
   worker: Worker;
 
-  constructor(payload: {
-    env: Constants;
-    assetsPath: string;
-    config: KikuConfig;
-    preferAnkiConnect: boolean;
-  }) {
+  constructor(
+    payload: {
+      env: Constants;
+      assetsPath: string;
+      config: KikuConfig;
+      preferAnkiConnect: boolean;
+    },
+    logger: Logger,
+  ) {
     let worker: Worker;
     let nex: Promise<NexApi> | undefined;
     if (KIKU_STATE.nexClient) {
@@ -70,7 +74,7 @@ export class NexClient {
         });
       });
     } else {
-      const Nex = wrap<NexApi>(worker);
+      const Nex = wrap<NexApi>(worker, logger);
       this.nex = new Promise<NexApi>((resolve) => {
         Nex.init(payload).then(() => {
           resolve(Nex);

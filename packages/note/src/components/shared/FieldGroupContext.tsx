@@ -5,6 +5,7 @@ import { nodesToString, parseHtml } from "#/util/general";
 import type { AnkiFields, AnkiFrontFields } from "#/util/types";
 import { useAnkiFieldContext } from "./AnkiFieldsContext";
 import { useCardContext } from "./CardContext";
+import { useGeneralContext } from "./GeneralContext";
 
 export type GroupStore = {
   sentenceField: string;
@@ -26,6 +27,7 @@ const FieldGroupContext = createContext<{
 export function FieldGroupContextProvider(props: { children: JSX.Element }) {
   const { ankiFields } = useAnkiFieldContext();
   const [$card] = useCardContext();
+  const [$general] = useGeneralContext();
 
   const sentenceField = () => {
     if ($card.side === "front") {
@@ -169,10 +171,10 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
       $setGroup("pictureField", pictureField ?? "");
 
       // biome-ignore lint format: this looks nicer
-      { KIKU_STATE.logger.info("[Groups] sentenceField:", sentenceField);
-        KIKU_STATE.logger.info("[Groups] sentenceAudioField:", sentenceAudioField,);
-        KIKU_STATE.logger.info("[Groups] miscInfoField:", miscInfoField);
-        KIKU_STATE.logger.info("[Groups] pictureField:", pictureField); }
+      { $general.logger.info("[Groups] sentenceField:", sentenceField);
+        $general.logger.info("[Groups] sentenceAudioField:", sentenceAudioField,);
+        $general.logger.info("[Groups] miscInfoField:", miscInfoField);
+        $general.logger.info("[Groups] pictureField:", pictureField); }
     }
   });
 

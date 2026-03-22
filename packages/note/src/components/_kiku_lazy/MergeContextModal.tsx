@@ -56,7 +56,7 @@ export default function MergeContextModal() {
         $general.toast.error(
           e instanceof Error ? e.message : "Failed to load notes",
         );
-        KIKU_STATE.logger.error(e);
+        $general.logger.error(e);
       }
     }
     setLoading(false);

@@ -69,7 +69,7 @@ export default function Settings() {
 
   const saveConfig = async () => {
     try {
-      KIKU_STATE.logger.debug("Saving config:", $config);
+      $general.logger.debug("Saving config:", $config);
       await AnkiConnect.saveConfig($config);
       $general.toast.success("Saved! Restart Anki to apply changes.");
     } catch (e) {
@@ -891,12 +891,12 @@ function DebugSettings() {
   const [logs, setLogs] = createSignal<string>();
   onMount(() => {
     const id = setInterval(() => {
-      setLogs(KIKU_STATE.logger.get());
+      setLogs($general.logger.get());
     }, 8000);
     onCleanup(() => {
       clearInterval(id);
     });
-    setLogs(KIKU_STATE.logger.get());
+    setLogs($general.logger.get());
   });
 
   function copyToClipboard(text: string) {
@@ -1092,7 +1092,7 @@ function DebugSettings() {
               <RefreshCwIcon
                 class="size-4 text-base-content-calm cursor-pointer"
                 on:click={() => {
-                  setLogs(KIKU_STATE.logger.get());
+                  setLogs($general.logger.get());
                 }}
               />
             </div>

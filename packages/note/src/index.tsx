@@ -27,7 +27,6 @@ import { Logger } from "./util/logger.ts";
 import type { AnkiDroidAPI } from "./util/types.ts";
 
 globalThis.KIKU_STATE = {
-  logger: new Logger(),
   nexClient: globalThis.KIKU_STATE?.nexClient,
 };
 
@@ -36,11 +35,13 @@ export async function init({
   ssr,
   aborter = new AbortController(),
   ankiDroidAPI,
+  logger = new Logger(),
 }: {
   side: "front" | "back";
   ssr?: boolean;
   aborter?: AbortController;
   ankiDroidAPI?: AnkiDroidAPI;
+  logger?: Logger;
 }) {
   const [startupTime, setStartupTime] = createSignal(0);
   //TODO: remove isAnkiDesktop
@@ -54,7 +55,7 @@ export async function init({
     let assetsPath = window.location.origin;
 
     if (isAnkiWeb) {
-      KIKU_STATE.logger.info("AnkiWeb detected");
+      logger.info("AnkiWeb detected");
       document.documentElement.setAttribute("data-theme", "none");
       assetsPath = `${window.location.origin}/study/media`;
       const kikuCss = document.getElementById("kiku-css");
@@ -80,7 +81,7 @@ export async function init({
     }
     root.part.add("root-part");
     KIKU_STATE.root = root;
-    KIKU_STATE.logger.debug("rootDataset", root.dataset);
+    logger.debug("rootDataset", root.dataset);
 
     const qa = document.querySelector("#qa");
     const shadowParent = document.createElement("div");
@@ -110,10 +111,10 @@ export async function init({
     try {
       const cache = sessionStorage.getItem(constants.key["kiku-config"]);
       if (cache) {
-        KIKU_STATE.logger.info("config cache hit:", cache);
+        logger.info("config cache hit:", cache);
         config$ = validateConfig(JSON.parse(cache));
       } else {
-        KIKU_STATE.logger.info("config cache miss");
+        logger.info("config cache miss");
         config$ = validateConfig(
           await (
             await fetch(constants.assets["_kiku_config.json"], {
@@ -128,7 +129,7 @@ export async function init({
         );
       }
     } catch {
-      KIKU_STATE.logger.warn("Failed to load config, using default config");
+      logger.warn("Failed to load config, using default config");
       config$ = defaultConfig;
     }
 
@@ -149,6 +150,7 @@ export async function init({
             ankiDroidAPI={ankiDroidAPI}
             startupTime={startupTime}
             assetsPath={assetsPath}
+            logger={logger}
           >
             <AnkiFieldContextProvider>
               <CardStoreContextProvider side="front">
@@ -182,6 +184,7 @@ export async function init({
           ankiDroidAPI={ankiDroidAPI}
           startupTime={startupTime}
           assetsPath={assetsPath}
+          logger={logger}
         >
           <AnkiFieldContextProvider>
             <CardStoreContextProvider side="back">
@@ -208,7 +211,7 @@ export async function init({
         dispose = render(App, root);
       }
     }
-    return { dispose };
+    return { dispose, logger };
   } catch (e) {
     sessionStorage.clear();
     Object.assign(document.body.style, {

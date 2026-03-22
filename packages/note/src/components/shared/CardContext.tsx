@@ -15,10 +15,12 @@ import {
   type PitchType,
 } from "#/util/types";
 import { useAnkiFieldContext } from "./AnkiFieldsContext";
+import { useGeneralContext } from "./GeneralContext";
 
 export type PitchState = ReturnType<typeof usePitchState>;
 export function usePitchState(nested: boolean | undefined) {
   const { ankiFields } = useAnkiFieldContext<"back">();
+  const [$general] = useGeneralContext();
 
   const pitchNumbers = createMemo(() => {
     const raw = ankiFields.PitchPosition;
@@ -29,7 +31,7 @@ export function usePitchState(nested: boolean | undefined) {
       .filter((value) => !Number.isNaN(value));
     const uniqueNumbers = unique(numbers);
     if (uniqueNumbers.length) {
-      KIKU_STATE.logger.info("Detected pitch number:", uniqueNumbers);
+      $general.logger.info("Detected pitch number:", uniqueNumbers);
     }
     return uniqueNumbers;
   });

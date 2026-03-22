@@ -1,5 +1,4 @@
 import type { NexClient } from "../worker/client";
-import type { Logger } from "./logger";
 
 export type AnkiFields = {
   Expression: string;
@@ -234,7 +233,6 @@ declare global {
   var KIKU_STATE: {
     relax?: boolean;
     root?: HTMLElement;
-    logger: Logger;
     nexClient?: NexClient;
   };
   var pycmd: () => void;
