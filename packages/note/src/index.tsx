@@ -15,6 +15,7 @@ import { constants } from "./util/general.ts";
 import "./styles/tailwind.css";
 import { Layout } from "./components/Layout.tsx";
 import { AnkiFieldContextProvider } from "./components/shared/AnkiFieldsContext.tsx";
+import { CacheContextProvider } from "./components/shared/CacheContext.tsx";
 import { CardStoreContextProvider } from "./components/shared/CardContext.tsx";
 import { ConfigContextProvider } from "./components/shared/ConfigContext.tsx";
 import { CtxContextProvider } from "./components/shared/CtxContext.tsx";
@@ -24,11 +25,7 @@ import {
 } from "./components/shared/FieldGroupContext.tsx";
 import { GeneralContextProvider } from "./components/shared/GeneralContext.tsx";
 import { Logger } from "./util/logger.ts";
-import type { AnkiDroidAPI } from "./util/types.ts";
-
-globalThis.KIKU_STATE = {
-  nexClient: globalThis.KIKU_STATE?.nexClient,
-};
+import type { AnkiDroidAPI, CacheStore } from "./util/types.ts";
 
 export async function init({
   side,
@@ -36,12 +33,14 @@ export async function init({
   aborter = new AbortController(),
   ankiDroidAPI,
   logger = new Logger(),
+  cacheStore,
 }: {
   side: "front" | "back";
   ssr?: boolean;
   aborter?: AbortController;
   ankiDroidAPI?: AnkiDroidAPI;
   logger?: Logger;
+  cacheStore?: CacheStore;
 }) {
   const [startupTime, setStartupTime] = createSignal(0);
   //TODO: remove isAnkiDesktop
@@ -141,32 +140,34 @@ export async function init({
     if (side === "front") {
       const App = () => (
         <BreakpointContextProvider>
-          <GeneralContextProvider
-            aborter={aborter}
-            isAnkiWeb={isAnkiWeb}
-            isAnkiDesktop={isAnkiDesktop}
-            ankiDroidAPI={ankiDroidAPI}
-            startupTime={startupTime}
-            assetsPath={assetsPath}
-            logger={logger}
-            root={root}
-          >
-            <AnkiFieldContextProvider>
-              <CardStoreContextProvider side="front">
-                <ConfigContextProvider value={[config, setConfig]}>
-                  <FieldGroupContextProvider>
-                    <RootFieldGroupContextProvider>
-                      <CtxContextProvider>
-                        <Layout>
-                          <Front />
-                        </Layout>
-                      </CtxContextProvider>
-                    </RootFieldGroupContextProvider>
-                  </FieldGroupContextProvider>
-                </ConfigContextProvider>
-              </CardStoreContextProvider>
-            </AnkiFieldContextProvider>
-          </GeneralContextProvider>
+          <CacheContextProvider cacheStore={cacheStore}>
+            <GeneralContextProvider
+              aborter={aborter}
+              isAnkiWeb={isAnkiWeb}
+              isAnkiDesktop={isAnkiDesktop}
+              ankiDroidAPI={ankiDroidAPI}
+              startupTime={startupTime}
+              assetsPath={assetsPath}
+              logger={logger}
+              root={root}
+            >
+              <AnkiFieldContextProvider>
+                <CardStoreContextProvider side="front">
+                  <ConfigContextProvider value={[config, setConfig]}>
+                    <FieldGroupContextProvider>
+                      <RootFieldGroupContextProvider>
+                        <CtxContextProvider>
+                          <Layout>
+                            <Front />
+                          </Layout>
+                        </CtxContextProvider>
+                      </RootFieldGroupContextProvider>
+                    </FieldGroupContextProvider>
+                  </ConfigContextProvider>
+                </CardStoreContextProvider>
+              </AnkiFieldContextProvider>
+            </GeneralContextProvider>
+          </CacheContextProvider>
         </BreakpointContextProvider>
       );
       if (ssr) {
@@ -176,34 +177,36 @@ export async function init({
       }
     } else if (side === "back") {
       const App = () => (
-        <GeneralContextProvider
-          aborter={aborter}
-          isAnkiWeb={isAnkiWeb}
-          isAnkiDesktop={isAnkiDesktop}
-          ankiDroidAPI={ankiDroidAPI}
-          startupTime={startupTime}
-          assetsPath={assetsPath}
-          logger={logger}
-          root={root}
-        >
-          <AnkiFieldContextProvider>
-            <CardStoreContextProvider side="back">
-              <BreakpointContextProvider>
-                <ConfigContextProvider value={[config, setConfig]}>
-                  <FieldGroupContextProvider>
-                    <RootFieldGroupContextProvider>
-                      <CtxContextProvider>
-                        <Layout>
-                          <Back />
-                        </Layout>
-                      </CtxContextProvider>
-                    </RootFieldGroupContextProvider>
-                  </FieldGroupContextProvider>
-                </ConfigContextProvider>
-              </BreakpointContextProvider>
-            </CardStoreContextProvider>
-          </AnkiFieldContextProvider>
-        </GeneralContextProvider>
+        <BreakpointContextProvider>
+          <CacheContextProvider cacheStore={cacheStore}>
+            <GeneralContextProvider
+              aborter={aborter}
+              isAnkiWeb={isAnkiWeb}
+              isAnkiDesktop={isAnkiDesktop}
+              ankiDroidAPI={ankiDroidAPI}
+              startupTime={startupTime}
+              assetsPath={assetsPath}
+              logger={logger}
+              root={root}
+            >
+              <AnkiFieldContextProvider>
+                <CardStoreContextProvider side="back">
+                  <ConfigContextProvider value={[config, setConfig]}>
+                    <FieldGroupContextProvider>
+                      <RootFieldGroupContextProvider>
+                        <CtxContextProvider>
+                          <Layout>
+                            <Back />
+                          </Layout>
+                        </CtxContextProvider>
+                      </RootFieldGroupContextProvider>
+                    </FieldGroupContextProvider>
+                  </ConfigContextProvider>
+                </CardStoreContextProvider>
+              </AnkiFieldContextProvider>
+            </GeneralContextProvider>
+          </CacheContextProvider>
+        </BreakpointContextProvider>
       );
       if (ssr) {
         dispose = hydrate(App, root);

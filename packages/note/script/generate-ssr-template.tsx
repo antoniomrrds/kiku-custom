@@ -3,6 +3,7 @@ import { generateHydrationScript, renderToString } from "solid-js/web";
 import { Front } from "#/components/Front";
 import { Layout } from "#/components/Layout";
 import { AnkiFieldContextProvider } from "#/components/shared/AnkiFieldsContext";
+import { CacheContextProvider } from "#/components/shared/CacheContext";
 import { CardStoreContextProvider } from "#/components/shared/CardContext";
 import { ConfigContextProvider } from "#/components/shared/ConfigContext";
 import { CtxContextProvider } from "#/components/shared/CtxContext";
@@ -21,67 +22,69 @@ const [config, setConfig] = createStore(defaultConfig);
 const logger = new Logger();
 const aborter = new AbortController();
 
-globalThis.KIKU_STATE = {};
-
 export function generateSsrTemplate() {
   const frontSsrTemplate = renderToString(() => (
     <BreakpointContextProvider>
-      <GeneralContextProvider
-        aborter={aborter}
-        isAnkiWeb={false}
-        isAnkiDesktop={false}
-        ankiDroidAPI={undefined}
-        startupTime={() => 0}
-        assetsPath=""
-        logger={logger}
-        root={undefined}
-      >
-        <AnkiFieldContextProvider>
-          <CardStoreContextProvider side="front">
-            <ConfigContextProvider value={[config, setConfig]}>
-              <FieldGroupContextProvider>
-                <RootFieldGroupContextProvider>
-                  <CtxContextProvider>
-                    <Layout>
-                      <Front />
-                    </Layout>
-                  </CtxContextProvider>
-                </RootFieldGroupContextProvider>
-              </FieldGroupContextProvider>
-            </ConfigContextProvider>
-          </CardStoreContextProvider>
-        </AnkiFieldContextProvider>
-      </GeneralContextProvider>
+      <CacheContextProvider cacheStore={undefined}>
+        <GeneralContextProvider
+          aborter={aborter}
+          isAnkiWeb={false}
+          isAnkiDesktop={false}
+          ankiDroidAPI={undefined}
+          startupTime={() => 0}
+          assetsPath=""
+          logger={logger}
+          root={undefined}
+        >
+          <AnkiFieldContextProvider>
+            <CardStoreContextProvider side="front">
+              <ConfigContextProvider value={[config, setConfig]}>
+                <FieldGroupContextProvider>
+                  <RootFieldGroupContextProvider>
+                    <CtxContextProvider>
+                      <Layout>
+                        <Front />
+                      </Layout>
+                    </CtxContextProvider>
+                  </RootFieldGroupContextProvider>
+                </FieldGroupContextProvider>
+              </ConfigContextProvider>
+            </CardStoreContextProvider>
+          </AnkiFieldContextProvider>
+        </GeneralContextProvider>
+      </CacheContextProvider>
     </BreakpointContextProvider>
   ));
   const backSsrTemplate = renderToString(() => (
     <BreakpointContextProvider>
-      <GeneralContextProvider
-        aborter={aborter}
-        isAnkiWeb={false}
-        isAnkiDesktop={false}
-        ankiDroidAPI={undefined}
-        startupTime={() => 0}
-        assetsPath=""
-        logger={logger}
-        root={undefined}
-      >
-        <AnkiFieldContextProvider>
-          <CardStoreContextProvider side="back">
-            <ConfigContextProvider value={[config, setConfig]}>
-              <FieldGroupContextProvider>
-                <RootFieldGroupContextProvider>
-                  <CtxContextProvider>
-                    <Layout>
-                      <Back />
-                    </Layout>
-                  </CtxContextProvider>
-                </RootFieldGroupContextProvider>
-              </FieldGroupContextProvider>
-            </ConfigContextProvider>
-          </CardStoreContextProvider>
-        </AnkiFieldContextProvider>
-      </GeneralContextProvider>
+      <CacheContextProvider cacheStore={undefined}>
+        <GeneralContextProvider
+          aborter={aborter}
+          isAnkiWeb={false}
+          isAnkiDesktop={false}
+          ankiDroidAPI={undefined}
+          startupTime={() => 0}
+          assetsPath=""
+          logger={logger}
+          root={undefined}
+        >
+          <AnkiFieldContextProvider>
+            <CardStoreContextProvider side="back">
+              <ConfigContextProvider value={[config, setConfig]}>
+                <FieldGroupContextProvider>
+                  <RootFieldGroupContextProvider>
+                    <CtxContextProvider>
+                      <Layout>
+                        <Back />
+                      </Layout>
+                    </CtxContextProvider>
+                  </RootFieldGroupContextProvider>
+                </FieldGroupContextProvider>
+              </ConfigContextProvider>
+            </CardStoreContextProvider>
+          </AnkiFieldContextProvider>
+        </GeneralContextProvider>
+      </CacheContextProvider>
     </BreakpointContextProvider>
   ));
 

@@ -5,6 +5,23 @@ import type { NexApi } from "./_kiku_worker.ts";
 
 export type { NexApi } from "./_kiku_worker.ts";
 
+export type NexPromise = PromiseWithResolvers<NexApi> & {
+  resolved: boolean;
+};
+
+export function createNexPromise(): NexPromise {
+  const nex = Promise.withResolvers<NexApi>() as NexPromise;
+  nex.resolved = false;
+
+  const resolve = nex.resolve.bind(nex);
+  nex.resolve = (value) => {
+    nex.resolved = true;
+    resolve(value);
+  };
+
+  return nex;
+}
+
 export function wrap<T>(worker: Worker, logger: Logger) {
   let msgId = 0;
   const pending = new Map();
@@ -38,23 +55,24 @@ export function wrap<T>(worker: Worker, logger: Logger) {
 }
 
 export async function createNex(
-  payload: {
+  opts: {
     env: Constants;
     assetsPath: string;
     config: KikuConfig;
     preferAnkiConnect: boolean;
   },
   logger: Logger,
+  existingNex?: NexApi,
 ) {
-  if (KIKU_STATE.nexClient) {
-    const nex = KIKU_STATE.nexClient;
-    await nex.init(payload);
+  if (existingNex) {
+    const nex = existingNex;
+    await nex.init(opts);
     return nex;
   }
 
   let worker: Worker;
-  if (payload.assetsPath !== window.location.origin && !import.meta.env.DEV) {
-    worker = new Worker(`${payload.assetsPath}/_kiku_worker.js`, {
+  if (opts.assetsPath !== window.location.origin && !import.meta.env.DEV) {
+    worker = new Worker(`${opts.assetsPath}/_kiku_worker.js`, {
       type: "module",
     });
   } else {
@@ -64,7 +82,6 @@ export async function createNex(
   }
 
   const nex = wrap<NexApi>(worker, logger);
-  await nex.init(payload);
-  KIKU_STATE.nexClient = nex;
+  await nex.init(opts);
   return nex;
 }

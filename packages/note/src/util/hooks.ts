@@ -2,6 +2,7 @@ import { createEffect } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { useAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
 import { useBreakpointContext } from "#/components/shared/BreakpointContext";
+import { useCacheContext } from "#/components/shared/CacheContext";
 import { useCardContext } from "#/components/shared/CardContext";
 import { useConfigContext } from "#/components/shared/ConfigContext";
 import { useGeneralContext } from "#/components/shared/GeneralContext";
@@ -100,6 +101,7 @@ export function useKanji() {
   const [$card, $setCard] = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$general, $setGeneral] = useGeneralContext();
+  const cacheStore = useCacheContext();
 
   let set = false;
   async function setKanji() {
@@ -119,17 +121,18 @@ export function useKanji() {
         ? [ankiFields.Expression]
         : [];
 
-      const nex = await createNex(
-        {
-          env: constants,
-          config: unwrap($config),
-          assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
-          preferAnkiConnect:
-            $config.preferAnkiConnect && !!$general.isAnkiDesktop,
-        },
-        $general.logger,
-      );
+      const opts = {
+        env: constants,
+        config: unwrap($config),
+        assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
+        preferAnkiConnect:
+          $config.preferAnkiConnect && !!$general.isAnkiDesktop,
+      };
+      const nex = await createNex(opts, $general.logger, cacheStore?.nex);
       $general.nex.resolve(nex);
+      if (cacheStore && !cacheStore.nex) {
+        cacheStore.nex = nex;
+      }
       const { kanjiResult, readingResult, expressionResult } =
         await nex.queryShared({
           kanjiList,

@@ -1,4 +1,4 @@
-import type { NexApi } from "../worker/client";
+import type { NexApi } from "#/worker/_kiku_worker";
 
 export type AnkiFields = {
   Expression: string;
@@ -230,12 +230,13 @@ export type AnkiDroidAPI = {
 };
 
 declare global {
-  var KIKU_STATE: {
-    nexClient?: NexApi;
-  };
   var pycmd: () => void;
   var AnkiDroidJS: {
     new (contract: { version: string; developer?: string }): AnkiDroidAPI;
     prototype: AnkiDroidAPI;
   };
 }
+
+export type CacheStore = {
+  nex?: NexApi;
+};

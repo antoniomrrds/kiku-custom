@@ -93,6 +93,8 @@ export function GeneralContextProvider(props: {
     });
   }
 
+  const nex = Promise.withResolvers<NexApi>();
+
   const [$general, $setGeneral] = createStore<GeneralStore>({
     logger: props.logger,
     plugin: undefined,
@@ -118,7 +120,7 @@ export function GeneralContextProvider(props: {
     SAME_READING: Symbol.for("SAME_READING"),
     SAME_EXPRESSION: Symbol.for("SAME_EXPRESSION"),
     lookupKanjiCache: new Map(),
-    nex: Promise.withResolvers(),
+    nex,
     checkAnkiConnect,
     useCheckAnkiConnect,
   });

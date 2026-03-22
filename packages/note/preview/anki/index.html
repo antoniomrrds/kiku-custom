@@ -111,6 +111,7 @@
           aborter,
           ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
           logger: globalThis.KIKU.logger,
+          cacheStore: globalThis.KIKU,
         }).then((res) => {
           Object.assign(globalThis.KIKU, res);
           if (res.root) {
