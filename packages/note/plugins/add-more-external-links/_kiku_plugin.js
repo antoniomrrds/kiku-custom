@@ -8,6 +8,8 @@
 export const plugin = {
   ExternalLinks: (props) => {
     const h = props.ctx.h;
+    const useGeneralContext = props.ctx.useGeneralContext;
+    const [$general] = useGeneralContext();
 
     // Create an arbitrary link
     const NadeshikoLink = h(
@@ -32,11 +34,9 @@ export const plugin = {
       {
         class: "text-sm btn btn-sm",
         "on:click": () => {
-          props.ctx
-            .ankiDroidAPI()
-            ?.ankiSearchCard(
-              `("note:Kiku" OR "note:Lapis") AND "Expression:*${props.ctx.ankiFields.Expression}*"`,
-            );
+          $general.ankiDroidAPI?.ankiSearchCard(
+            `("note:Kiku" OR "note:Lapis") AND "Expression:*${props.ctx.ankiFields.Expression}*"`,
+          );
         },
       },
       "Browse",

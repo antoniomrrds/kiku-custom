@@ -170,17 +170,29 @@ if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
 
 const aborter = new AbortController();
 
-if (!globalThis.KIKU?.unload) {
-  const unload = () => {
+globalThis.KIKU ??= {};
+globalThis.KIKU.aborter = aborter;
+
+if (!globalThis.KIKU.unload) {
+  globalThis.KIKU.unload = () => {
     if (typeof pycmd !== "undefined") sessionStorage.clear();
   };
-  window.addEventListener("unload", unload);
-  globalThis.KIKU = { unload, aborter };
-} else {
-  globalThis.KIKU.aborter = aborter;
+  window.addEventListener("unload", globalThis.KIKU.unload);
 }
 
-init({ side: "front", ssr: true, aborter }).then((res) => {
+if (!globalThis.KIKU.ankiDroidAPI && typeof AnkiDroidJS !== "undefined") {
+  globalThis.KIKU.ankiDroidAPI = new AnkiDroidJS({
+    version: "0.0.3",
+    developer: "youyoumu",
+  });
+}
+
+init({
+  side: "front",
+  ssr: true,
+  aborter,
+  ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
+}).then((res) => {
   Object.assign(globalThis.KIKU, res);
 });
 </script>

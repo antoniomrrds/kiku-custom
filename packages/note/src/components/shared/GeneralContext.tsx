@@ -1,10 +1,10 @@
-import { createContext, createEffect, onMount, useContext } from "solid-js";
+import { createContext, onMount, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { isServer } from "solid-js/web";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import { constants } from "#/util/general";
-import type { KanjiInfo, KikuNotesManifest } from "#/util/types";
+import type { AnkiDroidAPI, KanjiInfo, KikuNotesManifest } from "#/util/types";
 import type { NexClient } from "#/worker/client";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useBreakpointContext } from "./BreakpointContext";
@@ -14,6 +14,7 @@ type GeneralStore = {
   isThemeChanged: boolean;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
+  ankiDroidAPI: AnkiDroidAPI | undefined;
   startupTime: () => number;
   assetsPath: string;
   aborter: AbortController;
@@ -44,6 +45,7 @@ export function GeneralContextProvider(props: {
   children: JSX.Element;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
+  ankiDroidAPI: AnkiDroidAPI | undefined;
   startupTime: () => number;
   assetsPath: string;
   aborter: AbortController;
@@ -90,12 +92,12 @@ export function GeneralContextProvider(props: {
     isThemeChanged: isServer
       ? false
       : JSON.parse(
-          sessionStorage.getItem(
-            constants.key["kiku-is-theme-changed"],
-          ) ?? "false",
+          sessionStorage.getItem(constants.key["kiku-is-theme-changed"]) ??
+            "false",
         ),
     isAnkiWeb: props.isAnkiWeb,
     isAnkiDesktop: props.isAnkiDesktop,
+    ankiDroidAPI: props.ankiDroidAPI,
     startupTime: props.startupTime,
     assetsPath: props.assetsPath,
     aborter: props.aborter,

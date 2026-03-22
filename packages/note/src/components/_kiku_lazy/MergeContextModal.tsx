@@ -1,8 +1,8 @@
 import { createEffect, createSignal, Match, Show, Switch } from "solid-js";
 import { Portal } from "solid-js/web";
-import { type AnkiNote, ankiFieldsSkeleton } from "#/util/types";
 import { nodesToString, parseHtml, unique } from "#/util/general";
 import { useNavigationTransition } from "#/util/hooks";
+import { type AnkiNote, ankiFieldsSkeleton } from "#/util/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCardContext } from "../shared/CardContext";
 import { useConfigContext } from "../shared/ConfigContext";

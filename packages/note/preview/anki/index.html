@@ -85,17 +85,32 @@
 
         const aborter = new AbortController();
 
-        if (!globalThis.KIKU?.unload) {
+        globalThis.KIKU ??= {};
+        globalThis.KIKU.aborter = aborter;
+
+        if (!globalThis.KIKU.unload) {
           const unload = () => {
             if (typeof pycmd !== "undefined") sessionStorage.clear();
           };
           window.addEventListener("unload", unload);
-          globalThis.KIKU = { unload, aborter };
-        } else {
-          globalThis.KIKU.aborter = aborter;
+          globalThis.KIKU.unload = unload;
         }
 
-        init({ side, aborter }).then((res) => {
+        if (
+          !globalThis.KIKU.ankiDroidAPI &&
+          typeof AnkiDroidJS !== "undefined"
+        ) {
+          globalThis.KIKU.ankiDroidAPI = new AnkiDroidJS({
+            version: "0.0.3",
+            developer: "youyoumu",
+          });
+        }
+
+        init({
+          side,
+          aborter,
+          ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
+        }).then((res) => {
           Object.assign(globalThis.KIKU, res);
           if (globalThis.KIKU_STATE?.root) {
             globalThis.KIKU_STATE.root.dataset.side = side;

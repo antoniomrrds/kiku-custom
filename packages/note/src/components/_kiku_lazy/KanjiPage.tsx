@@ -1,11 +1,11 @@
 import { createSignal, For, Match, onMount, Show, Switch } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
+import { useNavigationTransition } from "#/util/hooks";
 import {
   type AnkiFields,
   type AnkiNote,
   ankiFieldsSkeleton,
 } from "#/util/types";
-import { useNavigationTransition } from "#/util/hooks";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderKanjiPage from "./HeaderKanjiPage";

@@ -24,6 +24,7 @@ import {
 } from "./components/shared/FieldGroupContext.tsx";
 import { GeneralContextProvider } from "./components/shared/GeneralContext.tsx";
 import { Logger } from "./util/logger.ts";
+import type { AnkiDroidAPI } from "./util/types.ts";
 
 globalThis.KIKU_STATE = {
   logger: new Logger(),
@@ -34,10 +35,12 @@ export async function init({
   side,
   ssr,
   aborter = new AbortController(),
+  ankiDroidAPI,
 }: {
   side: "front" | "back";
   ssr?: boolean;
   aborter?: AbortController;
+  ankiDroidAPI?: AnkiDroidAPI;
 }) {
   const [startupTime, setStartupTime] = createSignal(0);
   //TODO: remove isAnkiDesktop
@@ -143,6 +146,7 @@ export async function init({
             aborter={aborter}
             isAnkiWeb={isAnkiWeb}
             isAnkiDesktop={isAnkiDesktop}
+            ankiDroidAPI={ankiDroidAPI}
             startupTime={startupTime}
             assetsPath={assetsPath}
           >
@@ -175,6 +179,7 @@ export async function init({
           aborter={aborter}
           isAnkiWeb={isAnkiWeb}
           isAnkiDesktop={isAnkiDesktop}
+          ankiDroidAPI={ankiDroidAPI}
           startupTime={startupTime}
           assetsPath={assetsPath}
         >

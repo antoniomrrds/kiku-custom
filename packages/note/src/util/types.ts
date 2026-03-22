@@ -235,7 +235,6 @@ declare global {
     relax?: boolean;
     root?: HTMLElement;
     logger: Logger;
-    ankiDroidAPI?: AnkiDroidAPI;
     nexClient?: NexClient;
   };
   var pycmd: () => void;

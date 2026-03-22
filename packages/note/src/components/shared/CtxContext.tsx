@@ -55,7 +55,6 @@ export function CtxContextProvider(props: { children: JSX.Element }) {
     createStore,
     //
     ankiFields,
-    ankiDroidAPI: () => KIKU_STATE.ankiDroidAPI,
     useAnkiFieldContext,
     useBreakpointContext,
     useCardContext,

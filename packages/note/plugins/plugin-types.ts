@@ -30,11 +30,7 @@ import type { UseCardContext } from "#/components/shared/CardContext";
 import type { UseConfigContext } from "#/components/shared/ConfigContext";
 import type { UseGeneralContext } from "#/components/shared/GeneralContext";
 import type { PitchInfo } from "#/util/hatsuon";
-import type {
-  AnkiBackFields,
-  AnkiDroidAPI,
-  AnkiFrontFields,
-} from "#/util/types";
+import type { AnkiBackFields, AnkiFrontFields } from "#/util/types";
 
 /**
  * The Plugin Context (Ctx) provides the essential building blocks for creating
@@ -107,11 +103,6 @@ export type Ctx = {
    * These are strings as defined in your Anki note type.
    */
   ankiFields: AnkiFrontFields | AnkiBackFields;
-  /**
-   * Accesses the AnkiDroid Java API if available (Android only).
-   * Returns undefined on desktop or iOS.
-   */
-  ankiDroidAPI: () => AnkiDroidAPI | undefined;
 
   // --- Kiku Hooks ---
   /** Provides reactive access to all Anki fields. */
