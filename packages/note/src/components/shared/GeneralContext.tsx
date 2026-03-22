@@ -5,7 +5,7 @@ import { isServer } from "solid-js/web";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import { constants } from "#/util/general";
 import type { Logger } from "#/util/logger";
-import type { AnkiDroidAPI, KanjiInfo, KikuNotesManifest } from "#/util/types";
+import type { AnkiDroidAPI, KikuNotesManifest } from "#/util/types";
 import type { NexApi } from "#/worker/client";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useBreakpointContext } from "./BreakpointContext";
@@ -27,7 +27,6 @@ type GeneralStore = {
   layoutRef: HTMLDivElement | undefined;
   contentRef: HTMLDivElement | undefined;
   toast: Toast;
-  lookupKanjiCache: Map<string, KanjiInfo | undefined>;
   nex: PromiseWithResolvers<NexApi>;
   checkAnkiConnect: () => Promise<void>;
   useCheckAnkiConnect: () => void;
@@ -115,7 +114,6 @@ export function GeneralContextProvider(props: {
     layoutRef: undefined,
     contentRef: undefined,
     toast: { success, error, message: undefined, type: "success" },
-    lookupKanjiCache: new Map(),
     nex,
     checkAnkiConnect,
     useCheckAnkiConnect,

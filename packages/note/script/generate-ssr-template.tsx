@@ -25,7 +25,7 @@ const aborter = new AbortController();
 export function generateSsrTemplate() {
   const frontSsrTemplate = renderToString(() => (
     <BreakpointContextProvider>
-      <CacheContextProvider cacheStore={undefined}>
+      <CacheContextProvider cacheStore={{}}>
         <GeneralContextProvider
           aborter={aborter}
           isAnkiWeb={false}
@@ -57,7 +57,7 @@ export function generateSsrTemplate() {
   ));
   const backSsrTemplate = renderToString(() => (
     <BreakpointContextProvider>
-      <CacheContextProvider cacheStore={undefined}>
+      <CacheContextProvider cacheStore={{}}>
         <GeneralContextProvider
           aborter={aborter}
           isAnkiWeb={false}

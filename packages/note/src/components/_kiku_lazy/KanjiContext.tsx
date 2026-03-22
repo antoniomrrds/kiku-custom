@@ -7,6 +7,7 @@ import {
 } from "solid-js/store";
 import type { AnkiNote, KanjiInfo } from "#/util/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
+import { useCacheContext } from "../shared/CacheContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 
 type FetchType = "composedOf" | "usedIn" | "visuallySimilar" | "related";
@@ -36,6 +37,7 @@ export function KanjiContextProvider(props: {
   children: JSX.Element;
 }) {
   const [$general, $setGeneral] = useGeneralContext();
+  const cacheStore = useCacheContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$kanji, $setKanji] = createStore<KanjiStore>({
     kanji: props.kanji,
@@ -49,7 +51,8 @@ export function KanjiContextProvider(props: {
     fetchNotes,
     fetched: new Set(),
   });
-  const lookupKanjiCache = $general.lookupKanjiCache;
+  const lookupKanji = cacheStore.lookupKanji ?? new Map();
+  if (!cacheStore.lookupKanji) cacheStore.lookupKanji = lookupKanji;
 
   async function fetchNotes(type: FetchType) {
     const nex = await $general.nex.promise;
@@ -77,10 +80,10 @@ export function KanjiContextProvider(props: {
   onMount(async () => {
     const nex = await $general.nex.promise;
     if (nex && props.kanji) {
-      let kanjiInfo = lookupKanjiCache.get(props.kanji);
+      let kanjiInfo = lookupKanji.get(props.kanji);
       if (!kanjiInfo) {
         kanjiInfo = await nex.lookupKanji(props.kanji);
-        lookupKanjiCache.set(props.kanji, kanjiInfo);
+        lookupKanji.set(props.kanji, kanjiInfo);
       }
       $setKanji("kanjiInfo", kanjiInfo);
     }

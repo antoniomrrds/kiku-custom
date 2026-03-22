@@ -2,11 +2,11 @@ import { createContext, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import type { CacheStore } from "#/util/types";
 
-const CacheContext = createContext<CacheStore | undefined>();
+const CacheContext = createContext<CacheStore>();
 
 export function CacheContextProvider(props: {
   children: JSX.Element;
-  cacheStore: CacheStore | undefined;
+  cacheStore: CacheStore;
 }) {
   return (
     <CacheContext.Provider value={props.cacheStore}>
@@ -16,7 +16,9 @@ export function CacheContextProvider(props: {
 }
 
 export function useCacheContext() {
-  return useContext(CacheContext);
+  const cacheStore = useContext(CacheContext);
+  if (!cacheStore) throw new Error("Missing CacheContext");
+  return cacheStore;
 }
 
 export type UseCacheContext = typeof useCacheContext;

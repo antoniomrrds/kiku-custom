@@ -239,4 +239,5 @@ declare global {
 
 export type CacheStore = {
   nex?: NexApi;
+  lookupKanji?: Map<string, KanjiInfo | undefined>;
 };

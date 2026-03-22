@@ -33,7 +33,7 @@ export async function init({
   aborter = new AbortController(),
   ankiDroidAPI,
   logger = new Logger(),
-  cacheStore,
+  cacheStore = {},
 }: {
   side: "front" | "back";
   ssr?: boolean;
