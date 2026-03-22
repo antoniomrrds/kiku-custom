@@ -136,7 +136,6 @@ export async function init({
     updateConfigState(root, config$);
 
     const [config, setConfig] = createStore(config$);
-    KIKU_STATE.relax = false;
 
     let dispose: (() => void) | undefined;
 

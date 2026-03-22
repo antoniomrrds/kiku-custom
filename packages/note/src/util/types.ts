@@ -231,7 +231,6 @@ export type AnkiDroidAPI = {
 
 declare global {
   var KIKU_STATE: {
-    relax?: boolean;
     root?: HTMLElement;
     nexClient?: NexClient;
   };

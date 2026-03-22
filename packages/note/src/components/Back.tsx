@@ -52,10 +52,10 @@ export function Back(props: { onExitNested?: () => void }) {
   useKanji();
 
   const owner = getOwner();
-  onMount(() => {
+    onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
-      KIKU_STATE.relax = true;
+      $setGeneral("relax", true);
 
       getPlugin($general.assetsPath).then((plugin) => {
         try {
@@ -113,7 +113,7 @@ export function Back(props: { onExitNested?: () => void }) {
             <div
               class="flex rounded-lg gap-4 flex-col sm:flex-row"
               classList={{
-                "animate-fade-in": KIKU_STATE.relax,
+                "animate-fade-in": $general.relax,
               }}
             >
               <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
