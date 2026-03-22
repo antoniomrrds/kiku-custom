@@ -22,8 +22,8 @@ export function ConfigContextProvider(props: {
     ({ ...$config });
     const [$general] = useGeneralContext();
     $general.logger.debug("Updating config:", $config);
-    if (!KIKU_STATE.root) throw new Error("Missing root");
-    updateConfigState(KIKU_STATE.root, $config);
+    if (!$general.root) throw new Error("Missing root");
+    updateConfigState($general.root, $config);
     AnkiConnect.changeAddress($config.ankiConnectAddress);
     $general.nexClientPromise.promise.then((nexClient) => {
       nexClient.nex.then((nex) => {

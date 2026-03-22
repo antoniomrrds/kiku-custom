@@ -80,7 +80,6 @@ export async function init({
       }
     }
     root.part.add("root-part");
-    KIKU_STATE.root = root;
     logger.debug("rootDataset", root.dataset);
 
     const qa = document.querySelector("#qa");
@@ -150,6 +149,7 @@ export async function init({
             startupTime={startupTime}
             assetsPath={assetsPath}
             logger={logger}
+            root={root}
           >
             <AnkiFieldContextProvider>
               <CardStoreContextProvider side="front">
@@ -184,6 +184,7 @@ export async function init({
           startupTime={startupTime}
           assetsPath={assetsPath}
           logger={logger}
+          root={root}
         >
           <AnkiFieldContextProvider>
             <CardStoreContextProvider side="back">
@@ -210,7 +211,7 @@ export async function init({
         dispose = render(App, root);
       }
     }
-    return { dispose, logger };
+    return { dispose, logger, root };
   } catch (e) {
     sessionStorage.clear();
     Object.assign(document.body.style, {

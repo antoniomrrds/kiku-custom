@@ -9,8 +9,9 @@ export const plugin = {
   onSettingsMount: () => {
     sessionStorage.setItem("settings-mounted", "true");
   },
-  onPluginLoad: () => {
-    const root = KIKU_STATE.root;
+  onPluginLoad: ({ ctx }) => {
+    const [$general] = ctx.useGeneralContext();
+    const root = $general.root;
     const settingsMounted = sessionStorage.getItem("settings-mounted");
     // stop if settings has ever been mounted
     if (settingsMounted) return;

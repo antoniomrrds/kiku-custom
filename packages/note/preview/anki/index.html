@@ -113,8 +113,8 @@
           logger: globalThis.KIKU.logger,
         }).then((res) => {
           Object.assign(globalThis.KIKU, res);
-          if (globalThis.KIKU_STATE?.root) {
-            globalThis.KIKU_STATE.root.dataset.side = side;
+          if (res.root) {
+            res.root.dataset.side = side;
           }
         });
         </script>

@@ -14,6 +14,7 @@ type GeneralStore = {
   logger: Logger;
   plugin: KikuPlugin | undefined;
   relax: boolean;
+  root: HTMLElement | undefined;
   isThemeChanged: boolean;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
@@ -53,6 +54,7 @@ export function GeneralContextProvider(props: {
   assetsPath: string;
   aborter: AbortController;
   logger: Logger;
+  root: HTMLElement | undefined;
 }) {
   let timeout: ReturnType<typeof setTimeout>;
   const success = (message: string) => {
@@ -95,6 +97,7 @@ export function GeneralContextProvider(props: {
     logger: props.logger,
     plugin: undefined,
     relax: false,
+    root: props.root,
     isThemeChanged: isServer
       ? false
       : JSON.parse(

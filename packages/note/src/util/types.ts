@@ -231,7 +231,6 @@ export type AnkiDroidAPI = {
 
 declare global {
   var KIKU_STATE: {
-    root?: HTMLElement;
     nexClient?: NexClient;
   };
   var pycmd: () => void;

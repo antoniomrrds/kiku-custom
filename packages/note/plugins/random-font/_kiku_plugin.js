@@ -7,7 +7,8 @@
  */
 export const plugin = {
   onPluginLoad: ({ ctx }) => {
-    const root = KIKU_STATE.root;
+    const [$general] = ctx.useGeneralContext();
+    const root = $general.root;
     const fontsPool = [
       "Hina Mincho",
       "Klee One",

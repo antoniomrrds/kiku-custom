@@ -34,6 +34,7 @@ export function generateSsrTemplate() {
         startupTime={() => 0}
         assetsPath=""
         logger={logger}
+        root={undefined}
       >
         <AnkiFieldContextProvider>
           <CardStoreContextProvider side="front">
@@ -63,6 +64,7 @@ export function generateSsrTemplate() {
         startupTime={() => 0}
         assetsPath=""
         logger={logger}
+        root={undefined}
       >
         <AnkiFieldContextProvider>
           <CardStoreContextProvider side="back">

@@ -28,7 +28,7 @@ apps/docs/.vitepress/cache
 __pycache__
 packages/addon/meta.json
 .env
-todo.txt
+.TODO.md
 AGENTS.md
 
 
