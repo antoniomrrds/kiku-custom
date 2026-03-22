@@ -1,5 +1,6 @@
 import { createSignal, For, Match, onMount, Show, Switch } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
+import { constants } from "#/util/general";
 import { useNavigationTransition } from "#/util/hooks";
 import {
   type AnkiFields,
@@ -182,7 +183,9 @@ function SameReadingCollapsible(props: { mode: "reading" | "expression" }) {
   const { ankiFields } = useAnkiFieldContext<"back">();
 
   const symbol =
-    props.mode === "reading" ? $general.SAME_READING : $general.SAME_EXPRESSION;
+    props.mode === "reading"
+      ? constants.SAME_READING
+      : constants.SAME_EXPRESSION;
 
   const title = props.mode === "reading" ? "Same Reading" : "Same Expression";
   const list =
@@ -315,9 +318,9 @@ function AnkiNoteItem(props: {
 
     if (props.mode) {
       if (props.mode === "reading") {
-        $setKanjiPage("focus", { kanji: $general.SAME_READING });
+        $setKanjiPage("focus", { kanji: constants.SAME_READING });
       } else {
-        $setKanjiPage("focus", { kanji: $general.SAME_EXPRESSION });
+        $setKanjiPage("focus", { kanji: constants.SAME_EXPRESSION });
       }
     } else {
       $setKanjiPage("focus", { kanji: $kanji.kanji });

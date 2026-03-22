@@ -1,4 +1,5 @@
 import { createUniqueId, Match, Show, Switch } from "solid-js";
+import { constants } from "#/util/general";
 import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
 import { nextTheme } from "#/util/theme";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
@@ -164,7 +165,7 @@ function KanjiPageIndicator() {
       <div
         class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
         on:click={() => {
-          onClick($general.SAME_READING);
+          onClick(constants.SAME_READING);
         }}
       >
         <span>読</span>
@@ -186,7 +187,7 @@ function KanjiPageIndicator() {
       <div
         class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
         on:click={() => {
-          onClick($general.SAME_EXPRESSION);
+          onClick(constants.SAME_EXPRESSION);
         }}
       >
         <span>同</span>
