@@ -13,7 +13,6 @@ import { useBreakpointContext } from "./BreakpointContext";
 type GeneralStore = {
   logger: Logger;
   plugin: KikuPlugin | undefined;
-  relax: boolean;
   root: HTMLElement | undefined;
   isThemeChanged: boolean;
   isAnkiWeb: boolean;
@@ -95,7 +94,6 @@ export function GeneralContextProvider(props: {
   const [$general, $setGeneral] = createStore<GeneralStore>({
     logger: props.logger,
     plugin: undefined,
-    relax: false,
     root: props.root,
     isThemeChanged: isServer
       ? false

@@ -172,6 +172,7 @@ const aborter = new AbortController();
 
 globalThis.KIKU ??= {};
 globalThis.KIKU.aborter = aborter;
+globalThis.KIKU.relax = false;
 
 if (!globalThis.KIKU.unload) {
   globalThis.KIKU.unload = () => {

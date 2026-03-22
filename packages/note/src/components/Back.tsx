@@ -23,6 +23,7 @@ import {
   AnkiFieldContextProvider,
   useAnkiFieldContext,
 } from "./shared/AnkiFieldsContext";
+import { useCacheContext } from "./shared/CacheContext";
 import { CtxContextProvider, useCtxContext } from "./shared/CtxContext";
 import { FieldGroupContextProvider } from "./shared/FieldGroupContext";
 import { useGeneralContext } from "./shared/GeneralContext";
@@ -47,6 +48,7 @@ export function Back(props: { onExitNested?: () => void }) {
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$general, $setGeneral] = useGeneralContext();
   const ctx = useCtxContext();
+  const cacheStore = useCacheContext();
 
   const tags = ankiFields.Tags.split(" ");
   useKanji();
@@ -55,7 +57,7 @@ export function Back(props: { onExitNested?: () => void }) {
   onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
-      $setGeneral("relax", true);
+      cacheStore.relax = true;
 
       getPlugin($general.assetsPath).then((plugin) => {
         try {
@@ -112,9 +114,7 @@ export function Back(props: { onExitNested?: () => void }) {
           <div class="flex flex-col gap-4 relative z-10">
             <div
               class="flex rounded-lg gap-4 flex-col sm:flex-row"
-              classList={{
-                "animate-fade-in": $general.relax,
-              }}
+              classList={{ "animate-fade-in": !!cacheStore.relax }}
             >
               <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
                 <ExpressionSection />
