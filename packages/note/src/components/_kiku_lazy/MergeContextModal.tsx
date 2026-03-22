@@ -514,13 +514,12 @@ function normalizeFields(fields: ContextField) {
 
   const pictureDoc = parseHtml(fields.Picture);
   const pictureWithGroup = pictureDoc.querySelectorAll("img[data-group-id]");
-  // NOTE: this only pick the first img from ungrouped img
-  const pictureWithoutGroup = pictureDoc.querySelector(
+  const pictureWithoutGroup = pictureDoc.querySelectorAll(
     "img:not([data-group-id])",
   );
-  if (pictureWithoutGroup) {
-    pictureWithoutGroup.setAttribute("data-group-id", newId.toString());
-  }
+  pictureWithoutGroup.forEach((img) => {
+    img.setAttribute("data-group-id", newId.toString());
+  });
 
   function wrapInSpan(html: string) {
     if (!html) return "";
@@ -548,7 +547,7 @@ function normalizeFields(fields: ContextField) {
 
   const Picture =
     nodesToString(Array.from(pictureWithGroup)).trim() +
-    (pictureWithoutGroup?.outerHTML ?? "");
+    nodesToString(Array.from(pictureWithoutGroup)).trim();
 
   return {
     Sentence,
