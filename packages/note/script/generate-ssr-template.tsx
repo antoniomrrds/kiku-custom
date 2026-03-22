@@ -19,17 +19,17 @@ import { defaultConfig } from "../src/util/default-config";
 const [config, setConfig] = createStore(defaultConfig);
 
 const logger = new Logger();
+const aborter = new AbortController();
 
 globalThis.KIKU_STATE = {
   logger,
-  aborter: new AbortController(),
 };
 
 export function generateSsrTemplate() {
   const frontSsrTemplate = renderToString(() => (
     <BreakpointContextProvider>
       <GeneralContextProvider
-        aborter={globalThis.KIKU_STATE.aborter}
+        aborter={aborter}
         isAnkiWeb={false}
         isAnkiDesktop={false}
         startupTime={() => 0}
@@ -56,7 +56,7 @@ export function generateSsrTemplate() {
   const backSsrTemplate = renderToString(() => (
     <BreakpointContextProvider>
       <GeneralContextProvider
-        aborter={globalThis.KIKU_STATE.aborter}
+        aborter={aborter}
         isAnkiWeb={false}
         isAnkiDesktop={false}
         startupTime={() => 0}

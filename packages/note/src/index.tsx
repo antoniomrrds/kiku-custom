@@ -28,34 +28,24 @@ import { Logger } from "./util/logger.ts";
 globalThis.KIKU_STATE = {
   logger: new Logger(),
   nexClient: globalThis.KIKU_STATE?.nexClient,
-  aborter: globalThis.KIKU_STATE?.aborter ?? new AbortController(),
 };
 
 export async function init({
   side,
   ssr,
+  aborter = new AbortController(),
 }: {
   side: "front" | "back";
   ssr?: boolean;
+  aborter?: AbortController;
 }) {
   const [startupTime, setStartupTime] = createSignal(0);
+  //TODO: remove isAnkiDesktop
   const isAnkiDesktop = typeof pycmd !== "undefined";
   const now = performance.now();
-  KIKU_STATE.aborter.abort();
-  KIKU_STATE.aborter = new AbortController();
-  const aborter = KIKU_STATE.aborter;
-  KIKU_STATE.dispose?.();
 
   try {
     if (!side) throw new Error("Side not set");
-
-    if (!KIKU_STATE.unload) {
-      KIKU_STATE.unload = () => {
-        console.log("unload");
-        if (isAnkiDesktop) sessionStorage.clear();
-      };
-      window.addEventListener("unload", KIKU_STATE.unload);
-    }
 
     const isAnkiWeb = window.location.origin.includes("ankiuser.net");
     let assetsPath = window.location.origin;
@@ -213,7 +203,7 @@ export async function init({
         dispose = render(App, root);
       }
     }
-    KIKU_STATE.dispose = dispose;
+    return { dispose };
   } catch (e) {
     sessionStorage.clear();
     Object.assign(document.body.style, {

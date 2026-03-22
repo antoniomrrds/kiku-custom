@@ -80,7 +80,23 @@
         const params = new URLSearchParams(window.location.search);
         const side = params.get("side") || "back";
 
-        init({ side }).then(() => {
+        if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
+        if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
+
+        const aborter = new AbortController();
+
+        if (!globalThis.KIKU?.unload) {
+          const unload = () => {
+            if (typeof pycmd !== "undefined") sessionStorage.clear();
+          };
+          window.addEventListener("unload", unload);
+          globalThis.KIKU = { unload, aborter };
+        } else {
+          globalThis.KIKU.aborter = aborter;
+        }
+
+        init({ side, aborter }).then((res) => {
+          Object.assign(globalThis.KIKU, res);
           if (globalThis.KIKU_STATE?.root) {
             globalThis.KIKU_STATE.root.dataset.side = side;
           }

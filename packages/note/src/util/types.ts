@@ -237,9 +237,6 @@ declare global {
     logger: Logger;
     ankiDroidAPI?: AnkiDroidAPI;
     nexClient?: NexClient;
-    aborter: AbortController;
-    dispose?: () => void;
-    unload?: () => void;
   };
   var pycmd: () => void;
   var AnkiDroidJS: {

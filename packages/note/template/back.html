@@ -172,5 +172,22 @@ data-mod-vertical="__DATA_MOD_VERTICAL__"
 <script type="module">
 import { init } from "./_kiku.js";
 
-init({ side: "back", ssr: true });
+if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
+if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
+
+const aborter = new AbortController();
+
+if (!globalThis.KIKU?.unload) {
+  const unload = () => {
+    if (typeof pycmd !== "undefined") sessionStorage.clear();
+  };
+  window.addEventListener("unload", unload);
+  globalThis.KIKU = { unload, aborter };
+} else {
+  globalThis.KIKU.aborter = aborter;
+}
+
+init({ side: "back", ssr: true, aborter }).then((res) => {
+  Object.assign(globalThis.KIKU, res);
+});
 </script>
