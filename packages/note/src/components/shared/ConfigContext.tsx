@@ -25,15 +25,12 @@ export function ConfigContextProvider(props: {
     if (!$general.root) throw new Error("Missing root");
     updateConfigState($general.root, $config);
     AnkiConnect.changeAddress($config.ankiConnectAddress);
-    $general.nexClientPromise.promise.then((nexClient) => {
-      nexClient.nex.then((nex) => {
-        nex.init({
-          env: constants,
-          config: unwrap($config),
-          assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
-          preferAnkiConnect:
-            $config.preferAnkiConnect && $general.isAnkiDesktop,
-        });
+    $general.nex.promise.then((nex) => {
+      nex.init({
+        env: constants,
+        config: unwrap($config),
+        assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
+        preferAnkiConnect: $config.preferAnkiConnect && $general.isAnkiDesktop,
       });
     });
 

@@ -5,7 +5,7 @@ import { useBreakpointContext } from "#/components/shared/BreakpointContext";
 import { useCardContext } from "#/components/shared/CardContext";
 import { useConfigContext } from "#/components/shared/ConfigContext";
 import { useGeneralContext } from "#/components/shared/GeneralContext";
-import { NexClient } from "#/worker/client";
+import { createNex } from "#/worker/client";
 import { constants, extractKanji } from "./general";
 import type { DaisyUITheme } from "./theme";
 
@@ -119,7 +119,7 @@ export function useKanji() {
         ? [ankiFields.Expression]
         : [];
 
-      const nexClient = new NexClient(
+      const nex = await createNex(
         {
           env: constants,
           config: unwrap($config),
@@ -129,9 +129,7 @@ export function useKanji() {
         },
         $general.logger,
       );
-      KIKU_STATE.nexClient = nexClient;
-      $general.nexClientPromise.resolve(nexClient);
-      const nex = await nexClient.nex;
+      $general.nex.resolve(nex);
       const { kanjiResult, readingResult, expressionResult } =
         await nex.queryShared({
           kanjiList,

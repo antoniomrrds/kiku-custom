@@ -6,7 +6,7 @@ import type { KikuPlugin } from "#/plugins/plugin-types";
 import { constants } from "#/util/general";
 import type { Logger } from "#/util/logger";
 import type { AnkiDroidAPI, KanjiInfo, KikuNotesManifest } from "#/util/types";
-import type { NexClient } from "#/worker/client";
+import type { NexApi } from "#/worker/client";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useBreakpointContext } from "./BreakpointContext";
 
@@ -30,7 +30,7 @@ type GeneralStore = {
   SAME_READING: symbol;
   SAME_EXPRESSION: symbol;
   lookupKanjiCache: Map<string, KanjiInfo | undefined>;
-  nexClientPromise: PromiseWithResolvers<NexClient>;
+  nex: PromiseWithResolvers<NexApi>;
   checkAnkiConnect: () => Promise<void>;
   useCheckAnkiConnect: () => void;
 };
@@ -118,7 +118,7 @@ export function GeneralContextProvider(props: {
     SAME_READING: Symbol.for("SAME_READING"),
     SAME_EXPRESSION: Symbol.for("SAME_EXPRESSION"),
     lookupKanjiCache: new Map(),
-    nexClientPromise: Promise.withResolvers(),
+    nex: Promise.withResolvers(),
     checkAnkiConnect,
     useCheckAnkiConnect,
   });

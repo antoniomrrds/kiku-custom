@@ -52,7 +52,7 @@ export function Back(props: { onExitNested?: () => void }) {
   useKanji();
 
   const owner = getOwner();
-    onMount(() => {
+  onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
       $setGeneral("relax", true);

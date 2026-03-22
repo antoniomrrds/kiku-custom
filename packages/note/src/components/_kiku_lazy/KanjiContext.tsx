@@ -52,7 +52,7 @@ export function KanjiContextProvider(props: {
   const lookupKanjiCache = $general.lookupKanjiCache;
 
   async function fetchNotes(type: FetchType) {
-    const nex = await (await $general.nexClientPromise.promise).nex;
+    const nex = await $general.nex.promise;
     const kanjiInfo = unwrap($kanji.kanjiInfo);
     if (!kanjiInfo) return;
     if ($kanji.fetched.has(type)) return;
@@ -75,7 +75,7 @@ export function KanjiContextProvider(props: {
   }
 
   onMount(async () => {
-    const nex = await (await $general.nexClientPromise.promise).nex;
+    const nex = await $general.nex.promise;
     if (nex && props.kanji) {
       let kanjiInfo = lookupKanjiCache.get(props.kanji);
       if (!kanjiInfo) {
