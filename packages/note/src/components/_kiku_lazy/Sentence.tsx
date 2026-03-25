@@ -36,7 +36,7 @@ export default function Sentence() {
   };
 
   const expressionPitchDataset = () => ({
-    "data-pitch-type": $card.pitchState.pitchType(),
+    "data-pitch-type": $card.pitch.type,
   });
 
   function DefaultSentence() {

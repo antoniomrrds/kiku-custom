@@ -15,7 +15,7 @@ import {
   useCardContext,
 } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/util/config";
-import { useKanji, useNavigationTransition } from "#/util/hooks";
+import { useKanji, useNavigationTransition, usePitch } from "#/util/hooks";
 import { getPlugin } from "#/util/plugin";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
@@ -52,6 +52,7 @@ export function Back(props: { onExitNested?: () => void }) {
 
   const tags = ankiFields.Tags.split(" ");
   useKanji();
+  usePitch();
 
   const owner = getOwner();
   onMount(() => {
@@ -196,7 +197,7 @@ function ExpressionSection() {
 
   onMount(() => {
     setDataPitchType({
-      "data-pitch-type": $card.pitchState.pitchType() ?? "",
+      "data-pitch-type": $card.pitch.type ?? "",
     });
   });
 

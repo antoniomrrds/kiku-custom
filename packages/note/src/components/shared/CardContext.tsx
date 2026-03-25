@@ -1,72 +1,18 @@
-import {
-  createContext,
-  createMemo,
-  createUniqueId,
-  useContext,
-} from "solid-js";
+import { createContext, createUniqueId, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { parseHtml, unique } from "#/util/general";
-import { getPitchPatternName, hatsuon } from "#/util/hatsuon";
+import type { PitchInfo } from "#/util/hatsuon";
 import {
   type AnkiFields,
   type AnkiNote,
   ankiFieldsSkeleton,
   type PitchType,
 } from "#/util/types";
-import { useAnkiFieldContext } from "./AnkiFieldsContext";
-import { useGeneralContext } from "./GeneralContext";
 
-export type PitchState = ReturnType<typeof usePitchState>;
-export function usePitchState(nested: boolean | undefined) {
-  const { ankiFields } = useAnkiFieldContext<"back">();
-  const [$general] = useGeneralContext();
-
-  const pitchNumbers = createMemo(() => {
-    const raw = ankiFields.PitchPosition;
-    if (!raw) return [];
-    const pitchPositionDoc = parseHtml(raw);
-    const numbers = Array.from(pitchPositionDoc.querySelectorAll("span"))
-      .map((el) => Number(el.innerText))
-      .filter((value) => !Number.isNaN(value));
-    const uniqueNumbers = unique(numbers);
-    if (uniqueNumbers.length) {
-      $general.logger.info("Detected pitch number:", uniqueNumbers);
-    }
-    return uniqueNumbers;
-  });
-
-  const reading = createMemo(() => {
-    if (nested) return ankiFields.ExpressionReading;
-    return ankiFields.ExpressionFurigana
-      ? ankiFields["kana:ExpressionFurigana"]
-      : ankiFields.ExpressionReading;
-  });
-
-  const pitchInfos = createMemo(() => {
-    const numbers = pitchNumbers();
-    if (!numbers.length) return [];
-    return numbers.map((pitchNum) => hatsuon({ reading: reading(), pitchNum }));
-  });
-
-  const pitchType = createMemo(() => {
-    const info = pitchInfos()[0];
-    if (!info) return undefined;
-    return getPitchPatternName(
-      info.morae.length,
-      info.pitchNum,
-      "EN",
-    ) as PitchType;
-  });
-
-  const hasPitch = createMemo(() => !!pitchNumbers().length);
-
-  return {
-    pitchInfos,
-    pitchType,
-    hasPitch,
-  };
-}
+export type PitchState = {
+  infos: PitchInfo[];
+  type: PitchType | undefined;
+};
 
 type Query = {
   status: "loading" | "success" | "error";
@@ -98,7 +44,7 @@ type CardStore = {
   nestedNoteId: number | undefined;
   nestedIsMergePreview: boolean;
   isMergePreview: boolean;
-  pitchState: PitchState;
+  pitch: PitchState;
 };
 
 const CardStoreContext =
@@ -110,7 +56,6 @@ export function CardStoreContextProvider(props: {
   isMergePreview?: boolean;
   side: "front" | "back";
 }) {
-  const pitchState = usePitchState(props.nested);
   const [$card, $setCard] = createStore<CardStore>({
     side: props.side,
     page: "main",
@@ -139,7 +84,10 @@ export function CardStoreContextProvider(props: {
     nestedNoteId: undefined,
     nestedIsMergePreview: false,
     isMergePreview: props.isMergePreview ?? false,
-    pitchState,
+    pitch: {
+      infos: [],
+      type: undefined,
+    },
   });
 
   return (

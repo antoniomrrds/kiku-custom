@@ -8,7 +8,7 @@ import { useGeneralContext } from "../shared/GeneralContext";
 
 export default function Pitches() {
   const [$card] = useCardContext();
-  return $card.pitchState.pitchInfos().map((pitchInfo, index) => {
+  return $card.pitch.infos.map((pitchInfo, index) => {
     return <Pitch pitchInfo={pitchInfo} index={index} />;
   });
 }

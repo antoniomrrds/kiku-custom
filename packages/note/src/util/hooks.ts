@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js";
+import { createEffect, createMemo } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { useAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
 import { useBreakpointContext } from "#/components/shared/BreakpointContext";
@@ -7,8 +7,10 @@ import { useCardContext } from "#/components/shared/CardContext";
 import { useConfigContext } from "#/components/shared/ConfigContext";
 import { useGeneralContext } from "#/components/shared/GeneralContext";
 import { createNex } from "#/worker/client";
-import { constants, extractKanji } from "./general";
+import { constants, extractKanji, parseHtml, unique } from "./general";
+import { getPitchPatternName, hatsuon } from "./hatsuon";
 import type { DaisyUITheme } from "./theme";
+import type { PitchType } from "./types";
 
 export function useViewTransition() {
   const [$general] = useGeneralContext();
@@ -73,6 +75,56 @@ export function useNavigationTransition() {
   }
 
   return { navigate, navigateBack };
+}
+
+export function usePitch() {
+  const [$card, $setCard] = useCardContext();
+  const { ankiFields } = useAnkiFieldContext<"back">();
+  const [$general] = useGeneralContext();
+
+  const pitchNumbers = createMemo(() => {
+    const raw = ankiFields.PitchPosition;
+    if (!raw) return [];
+    const pitchPositionDoc = parseHtml(raw);
+    const numbers = Array.from(pitchPositionDoc.querySelectorAll("span"))
+      .map((el) => Number(el.innerText))
+      .filter((value) => !Number.isNaN(value));
+    const uniqueNumbers = unique(numbers);
+    if (uniqueNumbers.length) {
+      $general.logger.info("Detected pitch number:", uniqueNumbers);
+    }
+    return uniqueNumbers;
+  });
+
+  const reading = createMemo(() => {
+    if ($card.nested) return ankiFields.ExpressionReading;
+    return ankiFields.ExpressionFurigana
+      ? ankiFields["kana:ExpressionFurigana"]
+      : ankiFields.ExpressionReading;
+  });
+
+  const pitchInfos = createMemo(() => {
+    const numbers = pitchNumbers();
+    if (!numbers.length) return [];
+    return numbers.map((pitchNum) => hatsuon({ reading: reading(), pitchNum }));
+  });
+
+  const pitchType = createMemo(() => {
+    const info = pitchInfos()[0];
+    if (!info) return undefined;
+    return getPitchPatternName(
+      info.morae.length,
+      info.pitchNum,
+      "EN",
+    ) as PitchType;
+  });
+
+  createEffect(() => {
+    $setCard("pitch", {
+      infos: pitchInfos(),
+      type: pitchType(),
+    });
+  });
 }
 
 export function useThemeTransition() {
