@@ -133,7 +133,12 @@ export default function Expression() {
             {char}
           </span>
         ))}
-        <Show when={ankiFields.ExpressionFurigana}>
+        <Show
+          when={
+            ankiFields.ExpressionFurigana &&
+            extractKanji(ankiFields.Expression).length > 0
+          }
+        >
           <rt>{ankiFields.ExpressionReading}</rt>
         </Show>
       </ruby>
