@@ -387,8 +387,8 @@ function KanjiKeyword(props: {
   const ready = () => !!props.noteList;
 
   return (
-    <div
-      class="inline-flex border border-base-content-subtle-100 transition-colors hover:border-base-content-subtle-200 tappable"
+    <button
+      class="inline-flex border border-base-content-subtle-100 transition-colors hover:border-base-content-subtle-200"
       classList={{
         "cursor-pointer": ready(),
         "cursor-not-allowed": !ready(),
@@ -397,13 +397,13 @@ function KanjiKeyword(props: {
       }}
       on:click={props.onClick}
     >
-      <div class=" px-1 text-lg sm:text-xl">{$kanji.kanji}</div>
+      <span class=" px-1 text-lg sm:text-xl">{$kanji.kanji}</span>
       <Show when={keyword()}>
-        <div class="bg-base-300 border-s border-base-300 px-1 text-base-content-soft flex items-center">
+        <span class="bg-base-300 border-s border-base-300 px-1 text-base-content-soft flex items-center">
           {capitalizeSentence(keyword())}
-        </div>
+        </span>
       </Show>
-    </div>
+    </button>
   );
 }
 

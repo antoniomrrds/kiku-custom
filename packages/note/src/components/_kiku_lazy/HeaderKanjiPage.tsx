@@ -8,12 +8,9 @@ export default function HeaderKanjiPage() {
   return (
     <HeaderLayout>
       <div class="flex flex-row justify-between items-center">
-        <div class="h-5">
-          <ArrowLeftIcon
-            class="h-full w-full cursor-pointer text-base-content-soft tappable"
-            on:click={navigateBack}
-          ></ArrowLeftIcon>
-        </div>
+        <button on:click={navigateBack}>
+          <ArrowLeftIcon class="size-5 cursor-pointer text-base-content-soft"></ArrowLeftIcon>
+        </button>
         <div class="flex flex-row gap-2 items-center"></div>
       </div>
     </HeaderLayout>

@@ -28,10 +28,9 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
       <div class="flex gap-1 sm:gap-2 items-center animate-fade-in-sm">
         <Switch>
           <Match when={$card.nested}>
-            <ArrowLeftIcon
-              class="size-5 cursor-pointer text-base-content-soft tappable"
-              on:click={props.onExitNested}
-            />
+            <button on:click={props.onExitNested}>
+              <ArrowLeftIcon class="size-5 cursor-pointer text-base-content-soft" />
+            </button>
             <MergeContextModal />
           </Match>
           <Match when={!$card.nested}>
@@ -44,19 +43,22 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
                     : undefined
                 }
               >
-                <BoltIcon
-                  class="size-5 tappable"
-                  classList={{
-                    "text-base-content-soft cursor-pointer":
-                      $card.side === "back",
-                    "text-base-content-subtle-100": $card.side === "front",
-                  }}
+                <button
                   on:click={() => {
                     navigate("settings", "forward", () =>
                       navigate("main", "back"),
                     );
                   }}
-                ></BoltIcon>
+                >
+                  <BoltIcon
+                    class="size-5"
+                    classList={{
+                      "text-base-content-soft cursor-pointer":
+                        $card.side === "back",
+                      "text-base-content-subtle-100": $card.side === "front",
+                    }}
+                  ></BoltIcon>
+                </button>
               </div>
 
               <Show when={$general.isThemeChanged}>
@@ -64,18 +66,18 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
               </Show>
             </div>
             <Show when={$config.showTheme}>
-              <div
-                class="flex gap-1 sm:gap-2 items-center cursor-pointer tappable"
+              <button
+                class="flex gap-1 sm:gap-2 items-center cursor-pointer"
                 on:click={() => {
                   changeTheme(nextTheme());
                 }}
                 on:touchend={(e) => e.stopPropagation()}
               >
                 <PaintbrushIcon class="size-5 cursor-pointer text-base-content-soft"></PaintbrushIcon>
-                <div class="text-base-content-soft text-xs sm:text-sm">
+                <span class="text-base-content-soft text-xs sm:text-sm">
                   {capitalize($config.theme)}
-                </div>
-              </div>
+                </span>
+              </button>
             </Show>
             <Show when={$config.showStartupTime}>
               <div class="text-base-content-soft bg-warning/10 rounded-sm px-px sm:px-1 text-xs sm:text-sm">
@@ -139,8 +141,8 @@ function KanjiPageIndicator() {
   function KanjiIndicator() {
     return $card.query.noteList.map(([kanji, data]) => {
       return (
-        <div
-          class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors tappable"
+        <button
+          class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
           on:click={() => {
             onClick(kanji);
           }}
@@ -155,15 +157,15 @@ function KanjiPageIndicator() {
           >
             {data.length}
           </span>
-        </div>
+        </button>
       );
     });
   }
 
   function SameReadingIndicator() {
     return (
-      <div
-        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors tappable"
+      <button
+        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
         on:click={() => {
           onClick(constants.SAME_READING);
         }}
@@ -178,14 +180,14 @@ function KanjiPageIndicator() {
         >
           {$card.query.sameReading?.length ?? 0}
         </span>
-      </div>
+      </button>
     );
   }
 
   function SameExpressionIndicator() {
     return (
-      <div
-        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors tappable"
+      <button
+        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
         on:click={() => {
           onClick(constants.SAME_EXPRESSION);
         }}
@@ -200,7 +202,7 @@ function KanjiPageIndicator() {
         >
           {$card.query.sameExpression?.length ?? 0}
         </span>
-      </div>
+      </button>
     );
   }
 

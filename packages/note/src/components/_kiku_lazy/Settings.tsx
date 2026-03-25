@@ -584,20 +584,23 @@ function FontSettings() {
           >
             <legend class="fieldset-legend">
               System Font
-              <UndoIcon
-                class="h-4 w-4 cursor-pointer tappable"
-                classList={{
-                  hidden:
-                    $config.systemFontPrimary ===
-                    defaultConfig.systemFontPrimary,
-                }}
+              <button
                 on:click={() => {
                   $setConfig(
                     "systemFontPrimary",
                     defaultConfig.systemFontPrimary,
                   );
                 }}
-              />
+              >
+                <UndoIcon
+                  class="size-4 cursor-pointer"
+                  classList={{
+                    hidden:
+                      $config.systemFontPrimary ===
+                      defaultConfig.systemFontPrimary,
+                  }}
+                />
+              </button>
             </legend>
             <input
               type="text"
@@ -674,20 +677,23 @@ function FontSettings() {
           >
             <legend class="fieldset-legend">
               System Font
-              <UndoIcon
-                class="h-4 w-4 cursor-pointer tappable"
-                classList={{
-                  hidden:
-                    $config.systemFontSecondary ===
-                    defaultConfig.systemFontSecondary,
-                }}
+              <button
                 on:click={() => {
                   $setConfig(
                     "systemFontSecondary",
                     defaultConfig.systemFontSecondary,
                   );
                 }}
-              />
+              >
+                <UndoIcon
+                  class="size-4 cursor-pointer"
+                  classList={{
+                    hidden:
+                      $config.systemFontSecondary ===
+                      defaultConfig.systemFontSecondary,
+                  }}
+                />
+              </button>
             </legend>
             <input
               type="text"
@@ -776,16 +782,19 @@ function FontSizeSettingsFieldset(props: {
       <fieldset class="fieldset">
         <legend class="fieldset-legend">
           {props.label}{" "}
-          <UndoIcon
-            class="h-4 w-4 cursor-pointer tappable"
-            classList={{
-              hidden:
-                $config[props.configKey] === defaultConfig[props.configKey],
-            }}
+          <button
             on:click={() => {
               $setConfig(props.configKey, defaultConfig[props.configKey]);
             }}
-          />
+          >
+            <UndoIcon
+              class="size-4 cursor-pointer"
+              classList={{
+                hidden:
+                  $config[props.configKey] === defaultConfig[props.configKey],
+              }}
+            />
+          </button>
         </legend>
 
         <div class="tooltip">
@@ -932,20 +941,23 @@ function DebugSettings() {
             <fieldset class="fieldset">
               <legend class="fieldset-legend">
                 AnkiConnect Address
-                <UndoIcon
-                  class="h-4 w-4 cursor-pointer tappable"
-                  classList={{
-                    hidden:
-                      $config.ankiConnectAddress ===
-                      defaultConfig.ankiConnectAddress,
-                  }}
+                <button
                   on:click={() => {
                     $setConfig(
                       "ankiConnectAddress",
                       defaultConfig.ankiConnectAddress,
                     );
                   }}
-                />
+                >
+                  <UndoIcon
+                    class="size-4 cursor-pointer"
+                    classList={{
+                      hidden:
+                        $config.ankiConnectAddress ===
+                        defaultConfig.ankiConnectAddress,
+                    }}
+                  />
+                </button>
               </legend>
               <input
                 type="text"
@@ -975,15 +987,18 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Expected Root Dataset</div>
-              <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer tappable"
-                classList={{
-                  hidden: typeof pycmd !== "undefined",
-                }}
+              <button
                 on:click={() => {
                   copyToClipboard(toDatasetString(rootDataset()));
                 }}
-              />
+              >
+                <ClipboardCopyIcon
+                  class="size-4 text-base-content-calm cursor-pointer"
+                  classList={{
+                    hidden: typeof pycmd !== "undefined",
+                  }}
+                />
+              </button>
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               <span class="opacity-25 select-none">{"<div\n"}</span>
@@ -995,15 +1010,18 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Expected CSS Variable</div>
-              <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer tappable"
-                classList={{
-                  hidden: typeof pycmd !== "undefined",
-                }}
+              <button
                 on:click={() => {
                   copyToClipboard(toCssVarString(cssVar()));
                 }}
-              />
+              >
+                <ClipboardCopyIcon
+                  class="size-4 text-base-content-calm cursor-pointer"
+                  classList={{
+                    hidden: typeof pycmd !== "undefined",
+                  }}
+                />
+              </button>
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               <span class="opacity-25 select-none">{":root, :host {\n"}</span>
@@ -1015,15 +1033,18 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Config</div>
-              <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer tappable"
-                classList={{
-                  hidden: typeof pycmd !== "undefined",
-                }}
+              <button
                 on:click={() => {
                   copyToClipboard(JSON.stringify({ ...$config }, null, 2));
                 }}
-              />
+              >
+                <ClipboardCopyIcon
+                  class="size-4 text-base-content-calm cursor-pointer"
+                  classList={{
+                    hidden: typeof pycmd !== "undefined",
+                  }}
+                />
+              </button>
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               {JSON.stringify({ ...$config }, null, 2)}
@@ -1033,15 +1054,18 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Anki Fields</div>
-              <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer tappable"
-                classList={{
-                  hidden: typeof pycmd !== "undefined",
-                }}
+              <button
                 on:click={() => {
                   copyToClipboard(JSON.stringify({ ...ankiFields }, null, 2));
                 }}
-              />
+              >
+                <ClipboardCopyIcon
+                  class="size-4 text-base-content-calm cursor-pointer"
+                  classList={{
+                    hidden: typeof pycmd !== "undefined",
+                  }}
+                />
+              </button>
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               {JSON.stringify({ ...ankiFields }, null, 2)}
@@ -1051,15 +1075,18 @@ function DebugSettings() {
             <div class="flex flex-col gap-2">
               <div class="flex gap-2 items-center">
                 <div class="text-lg">Kiku Files</div>
-                <ClipboardCopyIcon
-                  class="size-4 text-base-content-calm cursor-pointer tappable"
-                  classList={{
-                    hidden: typeof pycmd !== "undefined",
-                  }}
+                <button
                   on:click={() => {
                     copyToClipboard(kikuFiles() ?? "");
                   }}
-                />
+                >
+                  <ClipboardCopyIcon
+                    class="size-4 text-base-content-calm cursor-pointer"
+                    classList={{
+                      hidden: typeof pycmd !== "undefined",
+                    }}
+                  />
+                </button>
               </div>
 
               <Show when={missingFiles()}>
@@ -1079,22 +1106,26 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Logs</div>
-              <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer tappable"
-                classList={{
-                  hidden: typeof pycmd !== "undefined",
-                }}
+              <button
                 on:click={() => {
                   copyToClipboard(logs() ?? "");
                 }}
-              />
+              >
+                <ClipboardCopyIcon
+                  class="size-4 text-base-content-calm cursor-pointer"
+                  classList={{
+                    hidden: typeof pycmd !== "undefined",
+                  }}
+                />
+              </button>
 
-              <RefreshCwIcon
-                class="size-4 text-base-content-calm cursor-pointer tappable"
+              <button
                 on:click={() => {
                   setLogs($general.logger.get());
                 }}
-              />
+              >
+                <RefreshCwIcon class="size-4 text-base-content-calm cursor-pointer" />
+              </button>
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto max-h-[90svh]">
               {logs()}

@@ -34,15 +34,18 @@ export function NotePlayIcon(props: {
   color: "primary" | "secondary";
 }) {
   return (
-    <PlayIcon
-      class="bg-primary rounded-full text-primary-content p-1 w-8 h-8 cursor-pointer tappable"
-      classList={{
-        "bg-primary text-primary-content": props.color === "primary",
-        "bg-secondary text-secondary-content": props.color === "secondary",
-      }}
+    <button
       on:click={props["on:click"]}
       on:touchend={(e) => e.stopPropagation()}
-    />
+    >
+      <PlayIcon
+        class="bg-primary rounded-full text-primary-content p-1 w-8 h-8 cursor-pointer"
+        classList={{
+          "bg-primary text-primary-content": props.color === "primary",
+          "bg-secondary text-secondary-content": props.color === "secondary",
+        }}
+      />
+    </button>
   );
 }
 

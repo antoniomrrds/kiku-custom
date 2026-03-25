@@ -11,14 +11,13 @@ export default function HeaderSettings() {
 
   return (
     <HeaderLayout>
-      <div class="h-5">
-        <ArrowLeftIcon
-          class="h-full w-full cursor-pointer text-base-content-soft tappable"
-          on:click={() => {
-            navigateBack();
-          }}
-        />
-      </div>
+      <button
+        on:click={() => {
+          navigateBack();
+        }}
+      >
+        <ArrowLeftIcon class="size-5 cursor-pointer text-base-content-soft" />
+      </button>
       <div class="flex flex-row gap-2 items-center">
         {$general.isAnkiConnectAvailable && (
           <>
@@ -30,8 +29,7 @@ export default function HeaderSettings() {
         )}
         {!$general.isAnkiConnectAvailable && (
           <>
-            <RefreshCwIcon
-              class="size-4 cursor-pointer text-base-content-soft tappable"
+            <button
               on:click={async () => {
                 try {
                   await $general.checkAnkiConnect();
@@ -39,7 +37,9 @@ export default function HeaderSettings() {
                   $general.toast.error("AnkiConnect is not available");
                 }
               }}
-            />
+            >
+              <RefreshCwIcon class="size-4 cursor-pointer text-base-content-soft" />
+            </button>
             <div class="text-sm text-base-content-calm">
               AnkiConnect is not available
             </div>

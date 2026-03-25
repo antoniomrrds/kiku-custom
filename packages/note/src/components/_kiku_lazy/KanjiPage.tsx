@@ -362,12 +362,13 @@ function AnkiNoteItem(props: {
           innerHTML={sentenceInnerHtmlColorized()}
         ></div>
         <div class="flex justify-center items-center">
-          <ArrowLeftIcon
-            class="size-5 sm:size-8 text-base-content-soft rotate-180 cursor-pointer tappable"
+          <button
             on:click={() => {
               onNextClick();
             }}
-          ></ArrowLeftIcon>
+          >
+            <ArrowLeftIcon class="size-5 sm:size-8 text-base-content-soft rotate-180 cursor-pointer"></ArrowLeftIcon>
+          </button>
         </div>
       </li>
     </>

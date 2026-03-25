@@ -208,14 +208,15 @@ export default function MergeContextModal() {
         <Match
           when={$general.isAnkiConnectAvailable && rootNote() && currentNote()}
         >
-          <GitPullRequestArrow
-            class="size-4 cursor-pointer text-base-content-soft animate-fade-in-sm tappable"
+          <button
             on:click={() => {
               if (dialogRef) {
                 dialogRef.showModal();
               }
             }}
-          />
+          >
+            <GitPullRequestArrow class="size-4 cursor-pointer text-base-content-soft animate-fade-in-sm" />
+          </button>
         </Match>
         <Match
           when={
@@ -229,8 +230,7 @@ export default function MergeContextModal() {
         <Match when={!$general.isAnkiConnectAvailable}>
           <div class="indicator animate-fade-in-sm">
             <div class="place-items-center">
-              <RefreshCwIcon
-                class="size-4 cursor-pointer text-base-content-soft tappable"
+              <button
                 on:click={async () => {
                   try {
                     await $general.checkAnkiConnect();
@@ -238,7 +238,9 @@ export default function MergeContextModal() {
                     $general.toast.error("AnkiConnect is not available");
                   }
                 }}
-              />
+              >
+                <RefreshCwIcon class="size-4 cursor-pointer text-base-content-soft" />
+              </button>
             </div>
             <span class="status status-error animate-ping"></span>
           </div>
@@ -265,19 +267,22 @@ export default function MergeContextModal() {
                     )}
                   </Show>
                 </div>
-                <ArrowLeftIcon
-                  class="self-center text-base-content-calm size-10 cursor-pointer transition-transform tappable"
+                <button
                   on:click={() => {
                     // TODO: we can't update root while opening the note in anki browser. What to do??? https://github.com/FooSoft/anki-connect/issues/82
                     // setMergeDirection((prev) =>
                     //   prev === "toRoot" ? "toCurrent" : "toRoot",
                     // );
                   }}
-                  classList={{
-                    "rotate-0": mergeDirection() === "toRoot",
-                    "rotate-180": mergeDirection() === "toCurrent",
-                  }}
-                />
+                >
+                  <ArrowLeftIcon
+                    class="self-center text-base-content-calm size-10 cursor-pointer transition-transform"
+                    classList={{
+                      "rotate-0": mergeDirection() === "toRoot",
+                      "rotate-180": mergeDirection() === "toCurrent",
+                    }}
+                  />
+                </button>
                 <div class="flex flex-col items-center">
                   <div>Current</div>
                   <div class="text-base-content-calm text-xs">
