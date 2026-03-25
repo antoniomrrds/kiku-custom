@@ -106,7 +106,7 @@ export function Front() {
       {$card.ready && <Lazy.HeaderMain />}
       <div class="flex flex-col gap-4">
         <div
-          class="flex rounded-lg gap-4 flex-col sm:flex-row"
+          class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
           on:click={() => {
             setClicked((prev) => !prev);
             setHideExpression(false);

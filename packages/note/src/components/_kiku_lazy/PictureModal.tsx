@@ -62,7 +62,7 @@ export default function PictureModal(props: {
     <Portal mount={$general.layoutRef}>
       <div
         part="picture-modal"
-        class="z-20 top-0 left-0 w-full h-full p-4 sm:p-8 bg-black/75 flex flex-col transition-opacity overflow-auto"
+        class="z-20 top-0 left-0 w-full h-full p-4 sm:p-8 bg-black/75 flex flex-col transition-opacity overflow-auto tappable"
         classList={{
           fixed: !$general.isAnkiWeb,
           absolute: $general.isAnkiWeb,
@@ -96,7 +96,7 @@ export default function PictureModal(props: {
                 <For each={allPictures()}>
                   {(pic) => (
                     <div
-                      class="aspect-square relative rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:scale-105 transition-transform group"
+                      class="aspect-square relative rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:scale-105 transition-transform group tappable"
                       on:click={(e) => {
                         e.stopPropagation();
                         setImg(pic.html);

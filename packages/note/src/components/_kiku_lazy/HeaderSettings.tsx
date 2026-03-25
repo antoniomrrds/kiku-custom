@@ -13,7 +13,7 @@ export default function HeaderSettings() {
     <HeaderLayout>
       <div class="h-5">
         <ArrowLeftIcon
-          class="h-full w-full cursor-pointer text-base-content-soft"
+          class="h-full w-full cursor-pointer text-base-content-soft tappable"
           on:click={() => {
             navigateBack();
           }}
@@ -31,7 +31,7 @@ export default function HeaderSettings() {
         {!$general.isAnkiConnectAvailable && (
           <>
             <RefreshCwIcon
-              class="size-4 cursor-pointer text-base-content-soft"
+              class="size-4 cursor-pointer text-base-content-soft tappable"
               on:click={async () => {
                 try {
                   await $general.checkAnkiConnect();

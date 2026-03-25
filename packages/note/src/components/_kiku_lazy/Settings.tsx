@@ -494,7 +494,7 @@ function ThemeSettings() {
         {daisyUIThemes.map((theme) => {
           return (
             <div
-              class="border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline-2 outline-offset-2"
+              class="border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline-2 outline-offset-2 tappable"
               classList={{
                 "outline-2": theme === $config.theme,
               }}
@@ -585,7 +585,7 @@ function FontSettings() {
             <legend class="fieldset-legend">
               System Font
               <UndoIcon
-                class="h-4 w-4 cursor-pointer"
+                class="h-4 w-4 cursor-pointer tappable"
                 classList={{
                   hidden:
                     $config.systemFontPrimary ===
@@ -675,7 +675,7 @@ function FontSettings() {
             <legend class="fieldset-legend">
               System Font
               <UndoIcon
-                class="h-4 w-4 cursor-pointer"
+                class="h-4 w-4 cursor-pointer tappable"
                 classList={{
                   hidden:
                     $config.systemFontSecondary ===
@@ -777,7 +777,7 @@ function FontSizeSettingsFieldset(props: {
         <legend class="fieldset-legend">
           {props.label}{" "}
           <UndoIcon
-            class="h-4 w-4 cursor-pointer"
+            class="h-4 w-4 cursor-pointer tappable"
             classList={{
               hidden:
                 $config[props.configKey] === defaultConfig[props.configKey],
@@ -933,7 +933,7 @@ function DebugSettings() {
               <legend class="fieldset-legend">
                 AnkiConnect Address
                 <UndoIcon
-                  class="h-4 w-4 cursor-pointer"
+                  class="h-4 w-4 cursor-pointer tappable"
                   classList={{
                     hidden:
                       $config.ankiConnectAddress ===
@@ -976,7 +976,7 @@ function DebugSettings() {
             <div class="flex gap-2 items-center">
               <div class="text-lg">Expected Root Dataset</div>
               <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer"
+                class="size-4 text-base-content-calm cursor-pointer tappable"
                 classList={{
                   hidden: typeof pycmd !== "undefined",
                 }}
@@ -996,7 +996,7 @@ function DebugSettings() {
             <div class="flex gap-2 items-center">
               <div class="text-lg">Expected CSS Variable</div>
               <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer"
+                class="size-4 text-base-content-calm cursor-pointer tappable"
                 classList={{
                   hidden: typeof pycmd !== "undefined",
                 }}
@@ -1016,7 +1016,7 @@ function DebugSettings() {
             <div class="flex gap-2 items-center">
               <div class="text-lg">Config</div>
               <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer"
+                class="size-4 text-base-content-calm cursor-pointer tappable"
                 classList={{
                   hidden: typeof pycmd !== "undefined",
                 }}
@@ -1034,7 +1034,7 @@ function DebugSettings() {
             <div class="flex gap-2 items-center">
               <div class="text-lg">Anki Fields</div>
               <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer"
+                class="size-4 text-base-content-calm cursor-pointer tappable"
                 classList={{
                   hidden: typeof pycmd !== "undefined",
                 }}
@@ -1052,7 +1052,7 @@ function DebugSettings() {
               <div class="flex gap-2 items-center">
                 <div class="text-lg">Kiku Files</div>
                 <ClipboardCopyIcon
-                  class="size-4 text-base-content-calm cursor-pointer"
+                  class="size-4 text-base-content-calm cursor-pointer tappable"
                   classList={{
                     hidden: typeof pycmd !== "undefined",
                   }}
@@ -1080,7 +1080,7 @@ function DebugSettings() {
             <div class="flex gap-2 items-center">
               <div class="text-lg">Logs</div>
               <ClipboardCopyIcon
-                class="size-4 text-base-content-calm cursor-pointer"
+                class="size-4 text-base-content-calm cursor-pointer tappable"
                 classList={{
                   hidden: typeof pycmd !== "undefined",
                 }}
@@ -1090,7 +1090,7 @@ function DebugSettings() {
               />
 
               <RefreshCwIcon
-                class="size-4 text-base-content-calm cursor-pointer"
+                class="size-4 text-base-content-calm cursor-pointer tappable"
                 on:click={() => {
                   setLogs($general.logger.get());
                 }}

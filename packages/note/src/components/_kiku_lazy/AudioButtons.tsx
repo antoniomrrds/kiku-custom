@@ -35,7 +35,7 @@ export function NotePlayIcon(props: {
 }) {
   return (
     <PlayIcon
-      class="bg-primary rounded-full text-primary-content p-1 w-8 h-8 cursor-pointer"
+      class="bg-primary rounded-full text-primary-content p-1 w-8 h-8 cursor-pointer tappable"
       classList={{
         "bg-primary text-primary-content": props.color === "primary",
         "bg-secondary text-secondary-content": props.color === "secondary",

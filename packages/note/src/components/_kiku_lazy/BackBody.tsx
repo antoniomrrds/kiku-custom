@@ -134,7 +134,7 @@ export default function BackBody(props: {
         <div class="animate-fade-in" {...definitionDataset()}>
           {pages().length > 1 && (
             <div
-              class="flex justify-between text-base-content-calm text-sm cursor-pointer hover:text-base-content transition-colors mb-1"
+              class="flex justify-between text-base-content-calm text-sm cursor-pointer hover:text-base-content transition-colors mb-1 tappable"
               on:click={() => modalRef?.showModal()}
             >
               <div

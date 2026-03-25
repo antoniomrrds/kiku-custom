@@ -388,7 +388,7 @@ function KanjiKeyword(props: {
 
   return (
     <div
-      class="inline-flex border border-base-content-subtle-100 transition-colors hover:border-base-content-subtle-200"
+      class="inline-flex border border-base-content-subtle-100 transition-colors hover:border-base-content-subtle-200 tappable"
       classList={{
         "cursor-pointer": ready(),
         "cursor-not-allowed": !ready(),

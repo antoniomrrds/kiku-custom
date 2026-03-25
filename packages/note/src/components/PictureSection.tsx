@@ -52,7 +52,7 @@ export function PictureSection() {
 
   return (
     <div
-      class="sm:max-w-1/2 bg-base-200 flex sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic"
+      class="sm:max-w-1/2 bg-base-200 flex sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic tappable"
       on:click={() => {
         setClicked((prev) => !prev);
       }}
@@ -68,7 +68,7 @@ export function PictureSection() {
         {isServer ? "{{Picture}}" : undefined}
       </div>
       <div
-        class="picture-field"
+        class="picture-field tappable"
         style={{
           opacity: clicked() ? 1 : undefined,
         }}

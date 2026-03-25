@@ -209,7 +209,7 @@ export default function MergeContextModal() {
           when={$general.isAnkiConnectAvailable && rootNote() && currentNote()}
         >
           <GitPullRequestArrow
-            class="size-4 cursor-pointer text-base-content-soft animate-fade-in-sm"
+            class="size-4 cursor-pointer text-base-content-soft animate-fade-in-sm tappable"
             on:click={() => {
               if (dialogRef) {
                 dialogRef.showModal();
@@ -230,7 +230,7 @@ export default function MergeContextModal() {
           <div class="indicator animate-fade-in-sm">
             <div class="place-items-center">
               <RefreshCwIcon
-                class="size-4 cursor-pointer text-base-content-soft"
+                class="size-4 cursor-pointer text-base-content-soft tappable"
                 on:click={async () => {
                   try {
                     await $general.checkAnkiConnect();
@@ -266,7 +266,7 @@ export default function MergeContextModal() {
                   </Show>
                 </div>
                 <ArrowLeftIcon
-                  class="self-center text-base-content-calm size-10 cursor-pointer transition-transform"
+                  class="self-center text-base-content-calm size-10 cursor-pointer transition-transform tappable"
                   on:click={() => {
                     // TODO: we can't update root while opening the note in anki browser. What to do??? https://github.com/FooSoft/anki-connect/issues/82
                     // setMergeDirection((prev) =>

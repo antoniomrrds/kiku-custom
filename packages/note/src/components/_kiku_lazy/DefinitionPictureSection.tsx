@@ -49,7 +49,7 @@ export default function DefinitionPictureSection(props: {
   return (
     <Show when={definitionPictures().length > 0}>
       <div
-        class="max-w-1/3 float-right [&_img]:rounded-sm px-2 cursor-pointer relative group/defpic"
+        class="max-w-1/3 float-right [&_img]:rounded-sm px-2 cursor-pointer relative group/defpic tappable"
         on:click={() => {
           const picture = currentDefPic();
           if (picture) props.onDefinitionPictureClick?.(picture);

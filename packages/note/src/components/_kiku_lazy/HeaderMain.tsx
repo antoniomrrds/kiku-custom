@@ -29,7 +29,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
         <Switch>
           <Match when={$card.nested}>
             <ArrowLeftIcon
-              class="size-5 cursor-pointer text-base-content-soft"
+              class="size-5 cursor-pointer text-base-content-soft tappable"
               on:click={props.onExitNested}
             />
             <MergeContextModal />
@@ -45,7 +45,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
                 }
               >
                 <BoltIcon
-                  class="size-5"
+                  class="size-5 tappable"
                   classList={{
                     "text-base-content-soft cursor-pointer":
                       $card.side === "back",
@@ -65,7 +65,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
             </div>
             <Show when={$config.showTheme}>
               <div
-                class="flex gap-1 sm:gap-2 items-center cursor-pointer"
+                class="flex gap-1 sm:gap-2 items-center cursor-pointer tappable"
                 on:click={() => {
                   changeTheme(nextTheme());
                 }}
@@ -140,7 +140,7 @@ function KanjiPageIndicator() {
     return $card.query.noteList.map(([kanji, data]) => {
       return (
         <div
-          class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
+          class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors tappable"
           on:click={() => {
             onClick(kanji);
           }}
@@ -163,7 +163,7 @@ function KanjiPageIndicator() {
   function SameReadingIndicator() {
     return (
       <div
-        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
+        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors tappable"
         on:click={() => {
           onClick(constants.SAME_READING);
         }}
@@ -185,7 +185,7 @@ function KanjiPageIndicator() {
   function SameExpressionIndicator() {
     return (
       <div
-        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
+        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors tappable"
         on:click={() => {
           onClick(constants.SAME_EXPRESSION);
         }}

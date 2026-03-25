@@ -147,7 +147,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
         }}
       />
       <div
-        class="collapse-title justify-between flex items-center ps-2 sm:ps-4 pe-2 sm:pe-4 py-2 sm:py-4"
+        class="collapse-title justify-between flex items-center ps-2 sm:ps-4 pe-2 sm:pe-4 py-2 sm:py-4 tappable"
         on:click={() => {
           setChecked(!checked());
         }}
@@ -363,7 +363,7 @@ function AnkiNoteItem(props: {
         ></div>
         <div class="flex justify-center items-center">
           <ArrowLeftIcon
-            class="size-5 sm:size-8 text-base-content-soft rotate-180 cursor-pointer"
+            class="size-5 sm:size-8 text-base-content-soft rotate-180 cursor-pointer tappable"
             on:click={() => {
               onNextClick();
             }}

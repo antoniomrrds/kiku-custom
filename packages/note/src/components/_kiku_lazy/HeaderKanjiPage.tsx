@@ -10,7 +10,7 @@ export default function HeaderKanjiPage() {
       <div class="flex flex-row justify-between items-center">
         <div class="h-5">
           <ArrowLeftIcon
-            class="h-full w-full cursor-pointer text-base-content-soft"
+            class="h-full w-full cursor-pointer text-base-content-soft tappable"
             on:click={navigateBack}
           ></ArrowLeftIcon>
         </div>
