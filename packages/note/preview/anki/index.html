@@ -75,50 +75,12 @@
     <div id="qa">
       <div id="kiku-root">
         <script type="module">
-        import { init } from "../../src/index.tsx";
+        import { initAnki } from "../../src/index.tsx";
 
         const params = new URLSearchParams(window.location.search);
-        const side = params.get("side") || "back";
+        const side = (params.get("side") || "back");
 
-        if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
-        if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
-
-        const aborter = new AbortController();
-
-        globalThis.KIKU ??= {};
-        globalThis.KIKU.aborter = aborter;
-        globalThis.KIKU.relax = false;
-
-        if (!globalThis.KIKU.unload) {
-          const unload = () => {
-            if (typeof pycmd !== "undefined") sessionStorage.clear();
-          };
-          window.addEventListener("unload", unload);
-          globalThis.KIKU.unload = unload;
-        }
-
-        if (
-          !globalThis.KIKU.ankiDroidAPI &&
-          typeof AnkiDroidJS !== "undefined"
-        ) {
-          globalThis.KIKU.ankiDroidAPI = new AnkiDroidJS({
-            version: "0.0.3",
-            developer: "youyoumu",
-          });
-        }
-
-        init({
-          side,
-          aborter,
-          ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
-          logger: globalThis.KIKU.logger,
-          cacheStore: globalThis.KIKU,
-        }).then((res) => {
-          Object.assign(globalThis.KIKU, res);
-          if (res.root) {
-            res.root.dataset.side = side;
-          }
-        });
+        initAnki({ side });
         </script>
       </div>
     </div>

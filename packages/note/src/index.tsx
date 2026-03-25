@@ -241,3 +241,63 @@ export async function init({
     setStartupTime(performance.now() - now);
   }
 }
+
+export async function initAnki({
+  side,
+  ssr,
+}: {
+  side: "front" | "back";
+  ssr?: boolean;
+}) {
+  if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
+  if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
+
+  const aborter = new AbortController();
+
+  globalThis.KIKU ??= {};
+  globalThis.KIKU.aborter = aborter;
+  globalThis.KIKU.relax = false;
+
+  if (!globalThis.KIKU.unload) {
+    globalThis.KIKU.unload = () => {
+      if (typeof pycmd !== "undefined") sessionStorage.clear();
+    };
+    window.addEventListener("unload", globalThis.KIKU.unload);
+  }
+
+  if (!globalThis.KIKU.ankiDroidAPI && typeof AnkiDroidJS !== "undefined") {
+    globalThis.KIKU.ankiDroidAPI = new AnkiDroidJS({
+      version: "0.0.3",
+      developer: "youyoumu",
+    });
+  }
+
+  let assetsPath = window.location.origin;
+  const isAnkiWeb = window.location.origin.includes("ankiuser.net");
+  if (isAnkiWeb) {
+    assetsPath = `${window.location.origin}/study/media`;
+    document.documentElement.setAttribute("data-theme", "none");
+    const kikuCss = document.getElementById("kiku-css");
+    kikuCss?.remove();
+  }
+
+  const res = await init({
+    side,
+    ssr,
+    aborter,
+    ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
+    logger: globalThis.KIKU.logger,
+    cacheStore: globalThis.KIKU,
+    assetsPath,
+    isAnkiWeb,
+  });
+
+  if (res) {
+    Object.assign(globalThis.KIKU, res);
+    if (res.root) {
+      res.root.dataset.side = side;
+    }
+  }
+
+  return res;
+}

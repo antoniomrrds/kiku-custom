@@ -1,4 +1,5 @@
 import type { NexApi } from "#/worker/_kiku_worker";
+import type { Logger } from "./logger";
 
 export type AnkiFields = {
   Expression: string;
@@ -242,6 +243,16 @@ declare global {
     new (contract: { version: string; developer?: string }): AnkiDroidAPI;
     prototype: AnkiDroidAPI;
   };
+
+  var KIKU:
+    | (CacheStore & {
+        aborter?: AbortController;
+        dispose?: () => void;
+        unload?: () => void;
+        ankiDroidAPI?: AnkiDroidAPI;
+        logger?: Logger;
+      })
+    | undefined;
 }
 
 export type CacheStore = {
