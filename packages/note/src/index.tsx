@@ -34,6 +34,7 @@ export async function init({
   ankiDroidAPI,
   logger = new Logger(),
   cacheStore = {},
+  isAnkiDesktop = typeof pycmd !== "undefined",
 }: {
   side: "front" | "back";
   ssr?: boolean;
@@ -41,10 +42,9 @@ export async function init({
   ankiDroidAPI?: AnkiDroidAPI;
   logger?: Logger;
   cacheStore?: CacheStore;
+  isAnkiDesktop?: boolean;
 }) {
   const [startupTime, setStartupTime] = createSignal(0);
-  //TODO: remove isAnkiDesktop
-  const isAnkiDesktop = typeof pycmd !== "undefined";
   const now = performance.now();
 
   try {

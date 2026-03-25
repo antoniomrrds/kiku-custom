@@ -834,6 +834,35 @@ function FontSizeSettingsFieldset(props: {
   );
 }
 
+function ClipboardCopyButton(props: { text: string | (() => string) }) {
+  const [$general] = useGeneralContext();
+
+  function copyToClipboard() {
+    const text = typeof props.text === "function" ? props.text() : props.text;
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        $general.toast.success("Copied to clipboard!");
+      })
+      .catch(() => {
+        $general.toast.error(
+          "Copy to clipboard is not supported, you can select and CTRL+C manually.",
+        );
+      });
+  }
+
+  return (
+    <button
+      on:click={copyToClipboard}
+      classList={{
+        hidden: $general.isAnkiDesktop,
+      }}
+    >
+      <ClipboardCopyIcon class="size-4 text-base-content-calm cursor-pointer" />
+    </button>
+  );
+}
+
 function AnkiDroidSettings() {
   const [$config, $setConfig] = useConfigContext();
 
@@ -908,19 +937,6 @@ function DebugSettings() {
     setLogs($general.logger.get());
   });
 
-  function copyToClipboard(text: string) {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        $general.toast.success("Copied to clipboard!");
-      })
-      .catch(() => {
-        $general.toast.error(
-          "Copy to clipboard is not supported, you can select and CTRL+C manually.",
-        );
-      });
-  }
-
   const rootDataset = () => {
     return Object.fromEntries(
       Object.entries($config).filter(([key]) => {
@@ -987,18 +1003,9 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Expected Root Dataset</div>
-              <button
-                on:click={() => {
-                  copyToClipboard(toDatasetString(rootDataset()));
-                }}
-              >
-                <ClipboardCopyIcon
-                  class="size-4 text-base-content-calm cursor-pointer"
-                  classList={{
-                    hidden: typeof pycmd !== "undefined",
-                  }}
-                />
-              </button>
+              <ClipboardCopyButton
+                text={() => toDatasetString(rootDataset())}
+              />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               <span class="opacity-25 select-none">{"<div\n"}</span>
@@ -1010,18 +1017,7 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Expected CSS Variable</div>
-              <button
-                on:click={() => {
-                  copyToClipboard(toCssVarString(cssVar()));
-                }}
-              >
-                <ClipboardCopyIcon
-                  class="size-4 text-base-content-calm cursor-pointer"
-                  classList={{
-                    hidden: typeof pycmd !== "undefined",
-                  }}
-                />
-              </button>
+              <ClipboardCopyButton text={() => toCssVarString(cssVar())} />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               <span class="opacity-25 select-none">{":root, :host {\n"}</span>
@@ -1033,18 +1029,9 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Config</div>
-              <button
-                on:click={() => {
-                  copyToClipboard(JSON.stringify({ ...$config }, null, 2));
-                }}
-              >
-                <ClipboardCopyIcon
-                  class="size-4 text-base-content-calm cursor-pointer"
-                  classList={{
-                    hidden: typeof pycmd !== "undefined",
-                  }}
-                />
-              </button>
+              <ClipboardCopyButton
+                text={() => JSON.stringify({ ...$config }, null, 2)}
+              />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               {JSON.stringify({ ...$config }, null, 2)}
@@ -1054,18 +1041,9 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Anki Fields</div>
-              <button
-                on:click={() => {
-                  copyToClipboard(JSON.stringify({ ...ankiFields }, null, 2));
-                }}
-              >
-                <ClipboardCopyIcon
-                  class="size-4 text-base-content-calm cursor-pointer"
-                  classList={{
-                    hidden: typeof pycmd !== "undefined",
-                  }}
-                />
-              </button>
+              <ClipboardCopyButton
+                text={() => JSON.stringify({ ...ankiFields }, null, 2)}
+              />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               {JSON.stringify({ ...ankiFields }, null, 2)}
@@ -1075,18 +1053,7 @@ function DebugSettings() {
             <div class="flex flex-col gap-2">
               <div class="flex gap-2 items-center">
                 <div class="text-lg">Kiku Files</div>
-                <button
-                  on:click={() => {
-                    copyToClipboard(kikuFiles() ?? "");
-                  }}
-                >
-                  <ClipboardCopyIcon
-                    class="size-4 text-base-content-calm cursor-pointer"
-                    classList={{
-                      hidden: typeof pycmd !== "undefined",
-                    }}
-                  />
-                </button>
+                <ClipboardCopyButton text={() => kikuFiles() ?? ""} />
               </div>
 
               <Show when={missingFiles()}>
@@ -1106,18 +1073,7 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Logs</div>
-              <button
-                on:click={() => {
-                  copyToClipboard(logs() ?? "");
-                }}
-              >
-                <ClipboardCopyIcon
-                  class="size-4 text-base-content-calm cursor-pointer"
-                  classList={{
-                    hidden: typeof pycmd !== "undefined",
-                  }}
-                />
-              </button>
+              <ClipboardCopyButton text={() => logs() ?? ""} />
 
               <button
                 on:click={() => {
