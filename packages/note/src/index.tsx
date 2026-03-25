@@ -34,6 +34,8 @@ export async function init({
   ankiDroidAPI,
   logger = new Logger(),
   cacheStore = {},
+  assetsPath = window.location.origin,
+  isAnkiWeb = false,
   isAnkiDesktop = typeof pycmd !== "undefined",
 }: {
   side: "front" | "back";
@@ -42,25 +44,14 @@ export async function init({
   ankiDroidAPI?: AnkiDroidAPI;
   logger?: Logger;
   cacheStore?: CacheStore;
+  assetsPath?: string;
+  isAnkiWeb?: boolean;
   isAnkiDesktop?: boolean;
 }) {
   const [startupTime, setStartupTime] = createSignal(0);
   const now = performance.now();
 
   try {
-    if (!side) throw new Error("Side not set");
-
-    const isAnkiWeb = window.location.origin.includes("ankiuser.net");
-    let assetsPath = window.location.origin;
-
-    if (isAnkiWeb) {
-      logger.info("AnkiWeb detected");
-      document.documentElement.setAttribute("data-theme", "none");
-      assetsPath = `${window.location.origin}/study/media`;
-      const kikuCss = document.getElementById("kiku-css");
-      kikuCss?.remove();
-    }
-
     let root = document.getElementById("kiku-root");
     if (!root) {
       if (aborter.signal.aborted) return;

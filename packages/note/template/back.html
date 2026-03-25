@@ -195,6 +195,15 @@ if (!globalThis.KIKU.ankiDroidAPI && typeof AnkiDroidJS !== "undefined") {
   });
 }
 
+let assetsPath = window.location.origin;
+const isAnkiWeb = window.location.origin.includes("ankiuser.net");
+if (isAnkiWeb) {
+  assetsPath = `${window.location.origin}/study/media`;
+  document.documentElement.setAttribute("data-theme", "none");
+  const kikuCss = document.getElementById("kiku-css");
+  kikuCss?.remove();
+}
+
 init({
   side: "back",
   ssr: true,
@@ -202,6 +211,8 @@ init({
   ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
   logger: globalThis.KIKU.logger,
   cacheStore: globalThis.KIKU,
+  assetsPath,
+  isAnkiWeb,
 }).then((res) => {
   Object.assign(globalThis.KIKU, res);
 });
