@@ -155,6 +155,13 @@ export type PitchType =
   | "nakadaka"
   | "odaka"
   | "kifuku";
+export const pitchTypes: PitchType[] = [
+  "heiban",
+  "atamadaka",
+  "nakadaka",
+  "odaka",
+  "kifuku",
+];
 
 type AnkiResponse<T = unknown> = {
   success: boolean;

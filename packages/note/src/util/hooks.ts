@@ -8,9 +8,9 @@ import { useConfigContext } from "#/components/shared/ConfigContext";
 import { useGeneralContext } from "#/components/shared/GeneralContext";
 import { createNex } from "#/worker/client";
 import { constants, extractKanji, parseHtml, unique } from "./general";
-import { getPitchPatternName, hatsuon } from "./hatsuon";
+import { hatsuon } from "./hatsuon";
 import type { DaisyUITheme } from "./theme";
-import type { PitchType } from "./types";
+import { type PitchType, pitchTypes } from "./types";
 
 export function useViewTransition() {
   const [$general] = useGeneralContext();
@@ -106,17 +106,28 @@ export function usePitch() {
   const pitchInfos = createMemo(() => {
     const numbers = pitchNumbers();
     if (!numbers.length) return [];
-    return numbers.map((pitchNum) => hatsuon({ reading: reading(), pitchNum }));
+    const pitchCategories = ankiFields.PitchCategories.split(",").map((s) => {
+      let pitchCategory: string | null = s.trim().toLowerCase();
+      if (pitchCategory === "平板") pitchCategory = "heiban";
+      if (pitchCategory === "頭高") pitchCategory = "atamadaka";
+      if (pitchCategory === "中高") pitchCategory = "nakadaka";
+      if (pitchCategory === "尾高") pitchCategory = "odaka";
+      if (pitchCategory === "起伏") pitchCategory = "kifuku";
+      if (!pitchTypes.includes(pitchCategory as PitchType))
+        pitchCategory = null;
+      return pitchCategory;
+    });
+    return numbers.map((pitchNum, i) => {
+      const result = hatsuon({ reading: reading(), pitchNum, locale: "EN" });
+      result.patternName = pitchCategories[i] ?? result.patternName;
+      return result;
+    });
   });
 
   const pitchType = createMemo(() => {
     const info = pitchInfos()[0];
     if (!info) return undefined;
-    return getPitchPatternName(
-      info.morae.length,
-      info.pitchNum,
-      "EN",
-    ) as PitchType;
+    return info.patternName as PitchType;
   });
 
   createEffect(() => {

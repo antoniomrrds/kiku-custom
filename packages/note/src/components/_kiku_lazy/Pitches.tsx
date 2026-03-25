@@ -1,6 +1,6 @@
 import { ErrorBoundary, Show } from "solid-js";
 import type { DatasetProp } from "#/util/config";
-import { getPitchPatternName, type PitchInfo } from "#/util/hatsuon";
+import type { PitchInfo } from "#/util/hatsuon";
 import type { PitchType } from "#/util/types";
 import { useCardContext } from "../shared/CardContext";
 import { useCtxContext } from "../shared/CtxContext";
@@ -44,27 +44,35 @@ export function DefaultPitch(props: {
   index: number;
   ref?: (ref: HTMLDivElement) => void;
 }) {
-  const pitchInfo = props.pitchInfo;
-  const pitchType = getPitchPatternName(
-    pitchInfo.morae.length,
-    pitchInfo.pitchNum,
-    "EN",
-  );
-
   const pitchDataset: DatasetProp = {
-    "data-pitch-type": pitchType as PitchType,
+    "data-pitch-type": props.pitchInfo.patternName as PitchType,
+  };
+
+  const pitchTypeJA = (pitchType: string) => {
+    switch (pitchType) {
+      case "heiban":
+        return "平板";
+      case "atamadaka":
+        return "頭高";
+      case "nakadaka":
+        return "中高";
+      case "odaka":
+        return "尾高";
+      case "kifuku":
+        return "起伏";
+    }
   };
 
   return (
     <div
       class="tooltip"
-      data-tip={pitchInfo.patternName}
+      data-tip={pitchTypeJA(props.pitchInfo.patternName)}
       ref={props.ref}
       {...pitchDataset}
     >
       <div class="flex items-start gap-1 animate-fade-in-sm">
         <div>
-          {pitchInfo.morae.map((mora, i) => {
+          {props.pitchInfo.morae.map((mora, i) => {
             return (
               <span
                 style={{
@@ -72,10 +80,10 @@ export function DefaultPitch(props: {
                   color: "var(--pitch-color)",
                 }}
                 classList={{
-                  "border-t-2": pitchInfo.pattern[i] === 1,
+                  "border-t-2": props.pitchInfo.pattern[i] === 1,
                   "pitch-segment":
-                    pitchInfo.pattern[i] === 1 &&
-                    pitchInfo.pattern[i + 1] === 0,
+                    props.pitchInfo.pattern[i] === 1 &&
+                    props.pitchInfo.pattern[i + 1] === 0,
                 }}
               >
                 {mora}
@@ -90,7 +98,7 @@ export function DefaultPitch(props: {
             color: "var(--pitch-content-color)",
           }}
         >
-          {pitchInfo.pitchNum}
+          {props.pitchInfo.pitchNum}
         </div>
       </div>
     </div>

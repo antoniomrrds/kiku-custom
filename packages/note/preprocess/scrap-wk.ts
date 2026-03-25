@@ -235,7 +235,6 @@ class WkScraper {
       });
     }
 
-    console.log("DEBUG[1227]: vocabItems=", vocabItems, vocabItems.length);
     await writeFile(
       paths["@/.wk/all_vocab.json"],
       JSON.stringify(Array.from(new Set(vocabItems)), null, 2),
