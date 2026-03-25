@@ -9,7 +9,7 @@ import {
   Suspense,
   Switch,
 } from "solid-js";
-import { isServer, render } from "solid-js/web";
+import { isServer } from "solid-js/web";
 import {
   CardStoreContextProvider,
   useCardContext,
@@ -174,6 +174,9 @@ function ExpressionSection() {
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [ref1, setRef1] = createSignal<HTMLSpanElement>();
   const [ref2, setRef2] = createSignal<HTMLSpanElement>();
+  const [dataPitchType, setDataPitchType] = createSignal({
+    "data-pitch-type": "{{PitchCategories}}",
+  });
 
   const expressionInnerHtml = () => {
     if ($card.nested) {
@@ -192,10 +195,9 @@ function ExpressionSection() {
   };
 
   onMount(() => {
-    const el2 = ref2();
-    if (el2) {
-      render(Lazy.Expression, el2);
-    }
+    setDataPitchType({
+      "data-pitch-type": $card.pitchState.pitchType() ?? "",
+    });
   });
 
   createEffect(() => {
@@ -207,11 +209,6 @@ function ExpressionSection() {
     }
   });
 
-  const expressionPitchDataset = () => ({
-    "data-pitch-type": isServer
-      ? "{{PitchCategories}}"
-      : $card.pitchState.pitchType(),
-  });
   const expressionStyle = () => ({ color: "var(--pitch-color)" });
 
   return (
@@ -221,21 +218,23 @@ function ExpressionSection() {
         class="expression font-secondary text-center vertical-rl transition-colors"
         style={expressionStyle()}
         innerHTML={expressionInnerHtml()}
-        {...expressionPitchDataset()}
+        {...dataPitchType()}
       >
         {isServer
           ? "{{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}{{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}"
           : undefined}
       </div>
       <div
+        ref={(ref) => setRef2(ref)}
         class="expression font-secondary text-center vertical-rl"
-        {...expressionPitchDataset()}
+        {...dataPitchType()}
         style={{
           display: "none",
           ...expressionStyle(),
         }}
-        ref={(ref) => setRef2(ref)}
-      ></div>
+      >
+        {$card.ready && <Lazy.Expression />}
+      </div>
     </>
   );
 }
