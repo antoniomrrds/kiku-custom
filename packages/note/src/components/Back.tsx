@@ -173,8 +173,6 @@ export function Back(props: { onExitNested?: () => void }) {
 function ExpressionSection() {
   const [$card] = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [ref1, setRef1] = createSignal<HTMLSpanElement>();
-  const [ref2, setRef2] = createSignal<HTMLSpanElement>();
   const [dataPitchType, setDataPitchType] = createSignal({
     "data-pitch-type": "{{PitchCategories}}",
   });
@@ -201,23 +199,14 @@ function ExpressionSection() {
     });
   });
 
-  createEffect(() => {
-    const el1 = ref1();
-    const el2 = ref2();
-    if ($card.expressionReady && el1 && el2) {
-      el1.style.display = "none";
-      el2.style.display = "";
-    }
-  });
-
-  const expressionStyle = () => ({ color: "var(--pitch-color)" });
-
   return (
     <>
       <div
-        ref={(ref) => setRef1(ref)}
         class="expression font-secondary text-center vertical-rl transition-colors"
-        style={expressionStyle()}
+        style={{
+          color: "var(--pitch-color)",
+          display: $card.expressionReady ? "none" : "block",
+        }}
         innerHTML={expressionInnerHtml()}
         {...dataPitchType()}
       >
@@ -226,12 +215,11 @@ function ExpressionSection() {
           : undefined}
       </div>
       <div
-        ref={(ref) => setRef2(ref)}
         class="expression font-secondary text-center vertical-rl"
         {...dataPitchType()}
         style={{
-          display: "none",
-          ...expressionStyle(),
+          color: "var(--pitch-color)",
+          display: $card.expressionReady ? "block" : "none",
         }}
       >
         {$card.ready && <Lazy.Expression />}
