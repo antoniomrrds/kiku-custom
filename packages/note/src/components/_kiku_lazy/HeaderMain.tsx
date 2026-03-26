@@ -55,7 +55,8 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
                     classList={{
                       "text-base-content-soft cursor-pointer":
                         $card.side === "back",
-                      "text-base-content-subtle-100": $card.side === "front",
+                      "text-base-content-subtle-100 cursor-not-allowed":
+                        $card.side === "front",
                     }}
                   ></BoltIcon>
                 </button>
@@ -142,7 +143,7 @@ function KanjiPageIndicator() {
     return $card.query.noteList.map(([kanji, data]) => {
       return (
         <button
-          class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
+          class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
           on:click={() => {
             onClick(kanji);
           }}
@@ -165,7 +166,7 @@ function KanjiPageIndicator() {
   function SameReadingIndicator() {
     return (
       <button
-        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
+        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
         on:click={() => {
           onClick(constants.SAME_READING);
         }}
@@ -187,7 +188,7 @@ function KanjiPageIndicator() {
   function SameExpressionIndicator() {
     return (
       <button
-        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors"
+        class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
         on:click={() => {
           onClick(constants.SAME_EXPRESSION);
         }}
