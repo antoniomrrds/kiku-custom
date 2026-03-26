@@ -141,15 +141,81 @@ export default function Settings() {
   );
 }
 
+function KikuVersion() {
+  const [latestVersion, setLatestVersion] = createSignal<string | null>(
+    (() => {
+      const cached = sessionStorage.getItem(
+        constants.key["kiku-latest-version"],
+      );
+      return cached && cached !== constants.KIKU_VERSION ? cached : null;
+    })(),
+  );
+
+  onMount(async () => {
+    try {
+      if (
+        sessionStorage.getItem(constants.key["kiku-latest-version-checked"])
+      ) {
+        return;
+      }
+
+      const res = await fetch(
+        "https://api.github.com/repos/youyoumu/kiku/releases/latest",
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+      sessionStorage.setItem(
+        constants.key["kiku-latest-version-checked"],
+        "true",
+      );
+      if (data?.tag_name) {
+        const v = data.tag_name.replace(/^v/, "");
+        sessionStorage.setItem(constants.key["kiku-latest-version"], v);
+        if (v !== constants.KIKU_VERSION) {
+          setLatestVersion(v);
+        }
+      }
+    } catch (e) {
+      // Ignore
+    }
+  });
+
+  return (
+    <div class="flex flex-col items-center text-base-content-faint justify-center">
+      <div class="text-base-content-subtle-200 text-6xl">菊</div>
+      <div class="flex items-center gap-1.5">
+        <div
+          classList={{ tooltip: !!latestVersion() }}
+          class="tooltip-bottom tooltip-info"
+          data-tip={
+            latestVersion()
+              ? `Update Available: v${latestVersion()}`
+              : undefined
+          }
+        >
+          <a
+            href="https://github.com/youyoumu/kiku/releases/latest"
+            target="_blank"
+            rel="noreferrer"
+            class="text-sm"
+          >
+            Kiku Note v{constants.KIKU_VERSION}
+          </a>
+        </div>
+        <Show when={latestVersion()}>
+          <span class="status status-info"></span>
+        </Show>
+      </div>
+    </div>
+  );
+}
+
 function GeneralSettings() {
   const [$config, $setConfig] = useConfigContext();
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in relative">
-      <div class="flex flex-col items-center text-base-content-faint justify-center">
-        <div class="text-base-content-subtle-200 text-6xl">菊</div>
-        <div class="text-sm">Kiku Note v{constants.KIKU_VERSION}</div>
-      </div>
+      <KikuVersion />
 
       <div class="flex gap-2 items-center justify-between">
         <div class="text-2xl font-bold">General</div>

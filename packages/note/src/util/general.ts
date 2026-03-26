@@ -37,6 +37,8 @@ export const constants = {
   key: {
     "kiku-config": "kiku-config",
     "kiku-is-theme-changed": "kiku-is-theme-changed",
+    "kiku-latest-version": "kiku-latest-version",
+    "kiku-latest-version-checked": "kiku-latest-version-checked",
   },
   assets,
   tar: {
