@@ -1,5 +1,5 @@
 @plugin "daisyui" {
-  root: ":root:not([data-theme='none'])";
+  root: ":root";
   themes: all;
   include:
     properties, reset, rootcolor, rootscrollgutter, rootscrolllock, svg, scrollbar, button, input,

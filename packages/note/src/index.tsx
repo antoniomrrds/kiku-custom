@@ -122,7 +122,7 @@ export async function init({
       config$ = defaultConfig;
     }
 
-    updateConfigState(root, config$);
+    updateConfigState(root, config$, !isAnkiWeb);
 
     const [config, setConfig] = createStore(config$);
 
@@ -276,7 +276,6 @@ export async function initAnki({
   const isAnkiWeb = window.location.origin.includes("ankiuser.net");
   if (isAnkiWeb) {
     assetsPath = `${window.location.origin}/study/media`;
-    document.documentElement.setAttribute("data-theme", "none");
     const kikuCss = document.getElementById("kiku-css");
     kikuCss?.remove();
   }

@@ -77,10 +77,8 @@ export const colorBase100Map: Record<DaisyUITheme, string> = {
   silk: "oklch(97% .0035 67.78)",
 };
 
-export function nextTheme(): DaisyUITheme {
-  const current = document.documentElement.getAttribute(
-    "data-theme",
-  ) as DaisyUITheme;
+export function nextTheme(root: HTMLElement): DaisyUITheme {
+  const current = root.getAttribute("data-theme") as DaisyUITheme;
   const index = daisyUIThemes.indexOf(current);
   return daisyUIThemes[(index + 1) % daisyUIThemes.length];
 }

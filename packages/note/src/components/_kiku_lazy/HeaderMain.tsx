@@ -70,7 +70,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
               <button
                 class="flex gap-1 sm:gap-2 items-center cursor-pointer"
                 on:click={() => {
-                  changeTheme(nextTheme());
+                  if ($general.root) changeTheme(nextTheme($general.root));
                 }}
                 on:touchend={(e) => e.stopPropagation()}
               >

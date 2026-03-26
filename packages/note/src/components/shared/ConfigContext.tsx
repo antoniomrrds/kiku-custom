@@ -23,7 +23,7 @@ export function ConfigContextProvider(props: {
     const [$general] = useGeneralContext();
     $general.logger.debug("Updating config:", $config);
     if (!$general.root) throw new Error("Missing root");
-    updateConfigState($general.root, $config);
+    updateConfigState($general.root, $config, !$general.isAnkiWeb);
     AnkiConnect.changeAddress($config.ankiConnectAddress);
     $general.nex.promise.then((nex) => {
       nex.init({

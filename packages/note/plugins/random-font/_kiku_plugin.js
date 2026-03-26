@@ -26,7 +26,6 @@ export const plugin = {
       sessionStorage.setItem("random-font", font);
     }
 
-    document.documentElement.style.setProperty("--font-secondary", font);
     if (root) root.style.setProperty("--font-secondary", font);
 
     // wait until the font is loaded

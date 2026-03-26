@@ -230,10 +230,11 @@ export function getCssVar(config: KikuConfig) {
   return cssVar;
 }
 
-export function updateConfigState(el: HTMLElement, config: KikuConfig) {
-  if (document.documentElement.getAttribute("data-theme") !== "none") {
-    document.documentElement.setAttribute("data-theme", config.theme);
-  }
+export function updateConfigState(
+  el: HTMLElement,
+  config: KikuConfig,
+  updateDocument: boolean,
+) {
   el.dataset.theme = config.theme;
   el.dataset.blurNsfw = config.blurNsfw ? "true" : "false";
   el.dataset.pictureOnFront = config.pictureOnFront ? "true" : "false";
@@ -241,7 +242,9 @@ export function updateConfigState(el: HTMLElement, config: KikuConfig) {
 
   const cssVar = getCssVar(config);
   Object.entries(cssVar).forEach(([key, value]) => {
-    document.documentElement.style.setProperty(key, value);
+    if (updateDocument) {
+      document.documentElement.style.setProperty(key, value);
+    }
     el.style.setProperty(key, value);
   });
 }
