@@ -321,7 +321,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
       const composedOfRef = $checkboxRef.composedOf;
       const visuallySimilarLength = $kanji.kanjiInfo?.visuallySimilar.length;
       if (composedOfRef) {
-        if (!visuallySimilarLength) composedOfRef.checked = true;
+        if (!visuallySimilarLength) $setCheckbox("composedOf", true);
       }
     });
 
