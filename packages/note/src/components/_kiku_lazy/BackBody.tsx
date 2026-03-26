@@ -107,8 +107,8 @@ export default function BackBody(props: {
 
   onMount(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") changePage(-1);
-      if (e.key === "ArrowRight") changePage(1);
+      if (e.key === $config.keybindDefinitionPrev) changePage(-1);
+      if (e.key === $config.keybindDefinitionNext) changePage(1);
     };
 
     window.addEventListener("keydown", handler);

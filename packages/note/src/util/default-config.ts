@@ -36,4 +36,8 @@ export const defaultConfig: KikuConfig = {
   fontSizeSmMiscInfo: "sm",
   fontSizeSmHint: "2xl",
   layoutMaxWidth: "4xl",
+  keybindDefinitionPrev: "ArrowLeft",
+  keybindDefinitionNext: "ArrowRight",
+  keybindFieldGroupPrev: "h",
+  keybindFieldGroupNext: "l",
 };

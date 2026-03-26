@@ -38,6 +38,10 @@ export type KikuConfig = {
   fontSizeSmMiscInfo: TailwindSize;
   fontSizeSmHint: TailwindSize;
   layoutMaxWidth: TailwindContainerSize;
+  keybindDefinitionPrev: string;
+  keybindDefinitionNext: string;
+  keybindFieldGroupPrev: string;
+  keybindFieldGroupNext: string;
 };
 
 //biome-ignore format: this looks nicer
@@ -130,6 +134,10 @@ export function validateConfig(config: KikuConfig): KikuConfig {
       fontSizeSmHint: tailwindSize.includes(config.fontSizeSmHint) ? config.fontSizeSmHint : defaultConfig.fontSizeSmHint,
 
       layoutMaxWidth: tailwindContainerSize.includes(config.layoutMaxWidth) ? config.layoutMaxWidth : defaultConfig.layoutMaxWidth,
+      keybindDefinitionPrev: typeof config.keybindDefinitionPrev === "string" ? config.keybindDefinitionPrev : defaultConfig.keybindDefinitionPrev,
+      keybindDefinitionNext: typeof config.keybindDefinitionNext === "string" ? config.keybindDefinitionNext : defaultConfig.keybindDefinitionNext,
+      keybindFieldGroupPrev: typeof config.keybindFieldGroupPrev === "string" ? config.keybindFieldGroupPrev : defaultConfig.keybindFieldGroupPrev,
+      keybindFieldGroupNext: typeof config.keybindFieldGroupNext === "string" ? config.keybindFieldGroupNext : defaultConfig.keybindFieldGroupNext,
     };
 
     return valid;

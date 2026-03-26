@@ -1,4 +1,5 @@
 import { onCleanup, onMount } from "solid-js";
+import { useConfigContext } from "../shared/ConfigContext";
 import { useCardContext } from "../shared/CardContext";
 import { useFieldGroupContext } from "../shared/FieldGroupContext";
 import { ArrowLeftIcon } from "./Icons";
@@ -6,11 +7,12 @@ import { ArrowLeftIcon } from "./Icons";
 export default function FieldGroupPagination() {
   const { $group, $next, $prev } = useFieldGroupContext();
   const [$card, $setCard] = useCardContext();
+  const [$config] = useConfigContext();
 
   onMount(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "h") onPrevClick();
-      if (e.key === "l") onNextClick();
+      if (e.key === $config.keybindFieldGroupPrev) onPrevClick();
+      if (e.key === $config.keybindFieldGroupNext) onNextClick();
     };
     window.addEventListener("keydown", handler);
     onCleanup(() => window.removeEventListener("keydown", handler));

@@ -104,6 +104,8 @@ export default function Settings() {
         <div class="divider"></div>
         <AnkiDroidSettings />
         <div class="divider"></div>
+        <KeybindSettings />
+        <div class="divider"></div>
         <DebugSettings />
         <div class="divider"></div>
         <div class="pb-16"></div>
@@ -970,6 +972,75 @@ function AnkiDroidSettings() {
         </div>
       </div>
     </div>
+  );
+}
+
+function KeybindSettings() {
+  return (
+    <div class="flex flex-col gap-4 animate-fade-in relative">
+      <div class="text-2xl font-bold">Keybind</div>
+
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
+        <div>
+          <div class="text-lg font-bold">Definition Page</div>
+          <div class="grid grid-cols-2 gap-4">
+            <KeybindInput label="Previous" configKey="keybindDefinitionPrev" />
+            <KeybindInput label="Next" configKey="keybindDefinitionNext" />
+          </div>
+        </div>
+        <div>
+          <div class="text-lg font-bold">Field Group</div>
+          <div class="grid grid-cols-2 gap-4">
+            <KeybindInput label="Previous" configKey="keybindFieldGroupPrev" />
+            <KeybindInput label="Next" configKey="keybindFieldGroupNext" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
+  const [$config, $setConfig] = useConfigContext();
+  const [isRecording, setIsRecording] = createSignal(false);
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (!isRecording()) return;
+    e.preventDefault();
+    $setConfig(props.configKey, e.key);
+    setIsRecording(false);
+  };
+
+  return (
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        {props.label}{" "}
+        <button
+          on:click={() => {
+            $setConfig(props.configKey, defaultConfig[props.configKey]);
+          }}
+        >
+          <UndoIcon
+            class="size-4 cursor-pointer"
+            classList={{
+              hidden:
+                $config[props.configKey] === defaultConfig[props.configKey],
+            }}
+          />
+        </button>
+      </legend>
+      <button
+        type="button"
+        class="btn btn-sm w-full font-mono"
+        classList={{ "btn-primary": isRecording() }}
+        on:click={() => setIsRecording(!isRecording())}
+        on:keydown={onKeyDown}
+      >
+        {isRecording()
+          ? "Press any key..."
+          : ($config[props.configKey] as string)}
+      </button>
+    </fieldset>
   );
 }
 
