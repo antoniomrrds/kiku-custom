@@ -1,6 +1,5 @@
 import { createContext, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
-import { getAnkiFields } from "#/util/general";
 import type { AnkiBackFields, AnkiFields, AnkiFrontFields } from "#/util/types";
 
 const AnkiFieldsContext = createContext<{
@@ -10,13 +9,13 @@ const AnkiFieldsContext = createContext<{
 
 export function AnkiFieldContextProvider(props: {
   children: JSX.Element;
-  ankiFields?: AnkiFields;
+  ankiFields: AnkiFields;
   noteId?: number;
 }) {
-  const ankiFields = props.ankiFields ?? getAnkiFields();
-
   return (
-    <AnkiFieldsContext.Provider value={{ ankiFields, noteId: props.noteId }}>
+    <AnkiFieldsContext.Provider
+      value={{ ankiFields: props.ankiFields, noteId: props.noteId }}
+    >
       {props.children}
     </AnkiFieldsContext.Provider>
   );

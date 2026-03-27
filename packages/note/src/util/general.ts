@@ -1,6 +1,4 @@
 import { isServer } from "solid-js/web";
-import { type AnkiFields, ankiFieldsSkeleton } from "#/util/types";
-import { exampleFields } from "./examples";
 
 const version: string =
   // @ts-expect-error: injected by vite
@@ -77,29 +75,6 @@ export function extractKanji(str: string): string[] {
   // Match all CJK Unified Ideographs (Kanji range)
   const matches = str.match(/\p{Script=Han}/gu);
   return matches ? Array.from(new Set(matches)) : [];
-}
-
-export function getAnkiFields() {
-  let divs: NodeListOf<Element> | Element[] | undefined = isServer
-    ? undefined
-    : document.querySelectorAll("#anki-fields > div");
-  if (import.meta.env.DEV && !isServer) {
-    divs = Object.entries(exampleFields).map(([key, value]) => {
-      const div = document.createElement("div");
-      div.dataset.field = key;
-      div.innerHTML = value;
-      return div;
-    });
-  }
-  const ankiFields = divs
-    ? Object.fromEntries(
-        Array.from(divs).map((el) => [
-          (el as HTMLDivElement).dataset.field,
-          el.innerHTML.trim(),
-        ]),
-      )
-    : ankiFieldsSkeleton;
-  return ankiFields as AnkiFields;
 }
 
 export function isHtmlEffectivelyEmpty(html: string): boolean {

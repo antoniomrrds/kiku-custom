@@ -13,6 +13,7 @@ import {
 } from "#/components/shared/FieldGroupContext";
 import { GeneralContextProvider } from "#/components/shared/GeneralContext";
 import { Logger } from "#/util/logger";
+import { ankiFieldsSkeleton } from "#/util/types";
 import { Back } from "../src/components/Back";
 import { BreakpointContextProvider } from "../src/components/shared/BreakpointContext";
 import { defaultConfig } from "../src/util/default-config";
@@ -36,7 +37,7 @@ export function generateSsrTemplate() {
           logger={logger}
           root={undefined}
         >
-          <AnkiFieldContextProvider>
+          <AnkiFieldContextProvider ankiFields={ankiFieldsSkeleton}>
             <CardStoreContextProvider side="front">
               <ConfigContextProvider value={[config, setConfig]}>
                 <FieldGroupContextProvider>
@@ -68,7 +69,7 @@ export function generateSsrTemplate() {
           logger={logger}
           root={undefined}
         >
-          <AnkiFieldContextProvider>
+          <AnkiFieldContextProvider ankiFields={ankiFieldsSkeleton}>
             <CardStoreContextProvider side="back">
               <ConfigContextProvider value={[config, setConfig]}>
                 <FieldGroupContextProvider>

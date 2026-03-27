@@ -245,13 +245,13 @@ declare global {
   };
 
   var KIKU:
-    | (CacheStore & {
+    | ({
         aborter?: AbortController;
         dispose?: () => void;
         unload?: () => void;
         ankiDroidAPI?: AnkiDroidAPI;
         logger?: Logger;
-      })
+      } & CacheStore)
     | undefined;
 }
 

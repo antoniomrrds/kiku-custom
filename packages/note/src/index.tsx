@@ -24,12 +24,19 @@ import {
   RootFieldGroupContextProvider,
 } from "./components/shared/FieldGroupContext.tsx";
 import { GeneralContextProvider } from "./components/shared/GeneralContext.tsx";
+import { exampleFields } from "./util/examples.ts";
 import { Logger } from "./util/logger.ts";
-import type { AnkiDroidAPI, CacheStore } from "./util/types.ts";
+import {
+  type AnkiDroidAPI,
+  type AnkiFields,
+  ankiFieldsSkeleton,
+  type CacheStore,
+} from "./util/types.ts";
 
 export async function init({
   root,
   side,
+  ankiFields,
   ssr,
   config = defaultConfig,
   aborter = new AbortController(),
@@ -42,6 +49,7 @@ export async function init({
 }: {
   root: HTMLElement;
   side: "front" | "back";
+  ankiFields: AnkiFields;
   ssr?: boolean;
   config?: KikuConfig;
   aborter?: AbortController;
@@ -73,7 +81,7 @@ export async function init({
           logger={logger}
           root={root}
         >
-          <AnkiFieldContextProvider>
+          <AnkiFieldContextProvider ankiFields={ankiFields}>
             <CardStoreContextProvider side={side}>
               <ConfigContextProvider value={[$config, $setConfig]}>
                 <FieldGroupContextProvider>
@@ -202,9 +210,29 @@ export async function initAnki({
       }
     } catch {}
 
+    let divs: NodeListOf<Element> | Element[] | undefined =
+      document.querySelectorAll("#anki-fields > div");
+    if (import.meta.env.DEV) {
+      divs = Object.entries(exampleFields).map(([key, value]) => {
+        const div = document.createElement("div");
+        div.dataset.field = key;
+        div.innerHTML = value;
+        return div;
+      });
+    }
+    const ankiFields = divs
+      ? Object.fromEntries(
+          Array.from(divs).map((el) => [
+            (el as HTMLDivElement).dataset.field,
+            el.innerHTML.trim(),
+          ]),
+        )
+      : ankiFieldsSkeleton;
+
     const res = await init({
       root,
       side,
+      ankiFields,
       ssr,
       config,
       aborter,
