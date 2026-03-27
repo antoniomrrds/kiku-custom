@@ -20,7 +20,6 @@ export function ConfigContextProvider(props: {
   let initialTheme: DaisyUITheme | undefined;
   createEffect(() => {
     ({ ...$config });
-    const [$general] = useGeneralContext();
     $general.logger.debug("Updating config:", $config);
     if (!$general.root) throw new Error("Missing root");
     updateConfigState($general.root, $config, !$general.isAnkiWeb);

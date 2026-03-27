@@ -37,9 +37,9 @@ export function generateSsrTemplate() {
           logger={logger}
           root={undefined}
         >
-          <AnkiFieldContextProvider ankiFields={ankiFieldsSkeleton}>
-            <CardStoreContextProvider side="front">
-              <ConfigContextProvider value={[config, setConfig]}>
+          <ConfigContextProvider value={[config, setConfig]}>
+            <AnkiFieldContextProvider ankiFields={ankiFieldsSkeleton}>
+              <CardStoreContextProvider side="front">
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
                     <CtxContextProvider>
@@ -49,9 +49,9 @@ export function generateSsrTemplate() {
                     </CtxContextProvider>
                   </RootFieldGroupContextProvider>
                 </FieldGroupContextProvider>
-              </ConfigContextProvider>
-            </CardStoreContextProvider>
-          </AnkiFieldContextProvider>
+              </CardStoreContextProvider>
+            </AnkiFieldContextProvider>
+          </ConfigContextProvider>
         </GeneralContextProvider>
       </CacheContextProvider>
     </BreakpointContextProvider>
@@ -69,9 +69,9 @@ export function generateSsrTemplate() {
           logger={logger}
           root={undefined}
         >
-          <AnkiFieldContextProvider ankiFields={ankiFieldsSkeleton}>
-            <CardStoreContextProvider side="back">
-              <ConfigContextProvider value={[config, setConfig]}>
+          <ConfigContextProvider value={[config, setConfig]}>
+            <AnkiFieldContextProvider ankiFields={ankiFieldsSkeleton}>
+              <CardStoreContextProvider side="back">
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
                     <CtxContextProvider>
@@ -81,9 +81,9 @@ export function generateSsrTemplate() {
                     </CtxContextProvider>
                   </RootFieldGroupContextProvider>
                 </FieldGroupContextProvider>
-              </ConfigContextProvider>
-            </CardStoreContextProvider>
-          </AnkiFieldContextProvider>
+              </CardStoreContextProvider>
+            </AnkiFieldContextProvider>
+          </ConfigContextProvider>
         </GeneralContextProvider>
       </CacheContextProvider>
     </BreakpointContextProvider>

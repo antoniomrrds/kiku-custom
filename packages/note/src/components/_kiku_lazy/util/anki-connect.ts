@@ -9,15 +9,14 @@ export const base64 = {
     base64.encode(new TextEncoder().encode(s).buffer),
 };
 
-let ankiConnectAddress = "";
-
 export const AnkiConnect = {
+  address: "",
   changeAddress: (address: string) => {
-    ankiConnectAddress = address;
+    AnkiConnect.address = address;
   },
 
   invoke: async (action: string, params: Record<string, unknown> = {}) => {
-    const res = await fetch(ankiConnectAddress, {
+    const res = await fetch(AnkiConnect.address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action, version: 6, params }),

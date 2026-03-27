@@ -81,9 +81,9 @@ export async function init({
           logger={logger}
           root={root}
         >
-          <AnkiFieldContextProvider ankiFields={ankiFields}>
-            <CardStoreContextProvider side={side}>
-              <ConfigContextProvider value={[$config, $setConfig]}>
+          <ConfigContextProvider value={[$config, $setConfig]}>
+            <AnkiFieldContextProvider ankiFields={ankiFields}>
+              <CardStoreContextProvider side={side}>
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
                     <CtxContextProvider>
@@ -91,9 +91,9 @@ export async function init({
                     </CtxContextProvider>
                   </RootFieldGroupContextProvider>
                 </FieldGroupContextProvider>
-              </ConfigContextProvider>
-            </CardStoreContextProvider>
-          </AnkiFieldContextProvider>
+              </CardStoreContextProvider>
+            </AnkiFieldContextProvider>
+          </ConfigContextProvider>
         </GeneralContextProvider>
       </CacheContextProvider>
     </BreakpointContextProvider>
