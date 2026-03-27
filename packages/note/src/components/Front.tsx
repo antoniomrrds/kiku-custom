@@ -68,12 +68,11 @@ export function Front() {
       $card.sentenceFieldRef &&
       $group.sentenceField
     ) {
-      $card.sentenceFieldRef.innerHTML =
-        $card.sentenceFieldRef.innerHTML.replaceAll(
-          //TODO: this doesn't handle conjugation
-          ankiFields.Expression,
-          "<span class='text-base-content-primary'>[...]<span>",
-        );
+      const boldElements = $card.sentenceFieldRef.querySelectorAll("b");
+      boldElements.forEach((el) => {
+        el.innerHTML = "[...]";
+        el.classList.add("text-base-content-primary");
+      });
     }
   });
 
