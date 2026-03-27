@@ -158,8 +158,11 @@ export async function initAnki({
     shadowParent.setAttribute("id", "kiku-shadow-parent");
     qa.appendChild(shadowParent);
     const shadow = shadowParent.attachShadow({ mode: "open" });
+
     const style = qa.querySelector("style");
     if (style) shadow.appendChild(style.cloneNode(true));
+    if (isAnkiWeb) style?.remove();
+
     if (import.meta.env.DEV) {
       const tailwind = document.querySelector(
         'style[type="text/css"][data-vite-dev-id$="tailwind.css"]',
@@ -172,10 +175,12 @@ export async function initAnki({
       kikuCss.href = "./_kiku.css";
       shadow.prepend(kikuCss);
     }
+
     const kikuPluginCss = document.createElement("link");
     kikuPluginCss.rel = "stylesheet";
     kikuPluginCss.href = "./_kiku_plugin.css";
     shadow.prepend(kikuPluginCss);
+
     shadow.appendChild(root);
 
     let config: KikuConfig | undefined;
