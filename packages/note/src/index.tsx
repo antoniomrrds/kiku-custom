@@ -28,8 +28,10 @@ import { Logger } from "./util/logger.ts";
 import type { AnkiDroidAPI, CacheStore } from "./util/types.ts";
 
 export async function init({
+  root,
   side,
   ssr,
+  config = defaultConfig,
   aborter = new AbortController(),
   ankiDroidAPI,
   logger = new Logger(),
@@ -38,8 +40,10 @@ export async function init({
   isAnkiWeb = false,
   isAnkiDesktop = typeof pycmd !== "undefined",
 }: {
+  root: HTMLElement;
   side: "front" | "back";
   ssr?: boolean;
+  config?: KikuConfig;
   aborter?: AbortController;
   ankiDroidAPI?: AnkiDroidAPI;
   logger?: Logger;
@@ -51,195 +55,45 @@ export async function init({
   const [startupTime, setStartupTime] = createSignal(0);
   const now = performance.now();
 
-  try {
-    let root = document.getElementById("kiku-root");
-    if (!root) {
-      if (aborter.signal.aborted) return;
-      const shadowParent = document.querySelector("#kiku-shadow-parent");
-      if (shadowParent) {
-        const existingRoot = shadowParent.shadowRoot?.querySelector(
-          "#kiku-root",
-        ) as HTMLElement | undefined | null;
-        if (existingRoot && existingRoot.innerHTML.trim() === "") {
-          root = existingRoot;
-        } else {
-          return;
-        }
-      } else {
-        throw new Error("root not found");
-      }
-    }
-    root.part.add("root-part");
-    logger.debug("rootDataset", root.dataset);
+  root.part.add("root-part");
 
-    const qa = document.querySelector("#qa");
-    const shadowParent = document.createElement("div");
-    shadowParent.setAttribute("id", "kiku-shadow-parent");
-    qa?.appendChild(shadowParent);
-    const shadow = shadowParent.attachShadow({ mode: "open" });
-    const style = qa?.querySelector("style");
-    if (style) shadow?.appendChild(style.cloneNode(true));
-    const tailwind = document.querySelector(
-      'style[type="text/css"][data-vite-dev-id$="tailwind.css"]',
-    );
-    if (tailwind) {
-      shadow?.appendChild(tailwind.cloneNode(true));
-    } else {
-      const kikuCss = document.createElement("link");
-      kikuCss.rel = "stylesheet";
-      kikuCss.href = "./_kiku.css";
-      shadow?.prepend(kikuCss);
-    }
-    const kikuPluginCss = document.createElement("link");
-    kikuPluginCss.rel = "stylesheet";
-    kikuPluginCss.href = "./_kiku_plugin.css";
-    shadow?.prepend(kikuPluginCss);
-    shadow?.appendChild(root);
+  updateConfigState(root, config, !isAnkiWeb);
+  const [$config, $setConfig] = createStore(config);
 
-    let config$: KikuConfig;
-    try {
-      const cache = sessionStorage.getItem(constants.key["kiku-config"]);
-      if (cache) {
-        logger.info("config cache hit:", cache);
-        config$ = validateConfig(JSON.parse(cache));
-      } else {
-        logger.info("config cache miss");
-        config$ = validateConfig(
-          await (
-            await fetch(constants.assets["_kiku_config.json"], {
-              cache: "no-store",
-            })
-          ).json(),
-        );
-        if (aborter.signal.aborted) return;
-        sessionStorage.setItem(
-          constants.key["kiku-config"],
-          JSON.stringify(config$),
-        );
-      }
-    } catch {
-      logger.warn("Failed to load config, using default config");
-      config$ = defaultConfig;
-    }
+  const App = () => (
+    <BreakpointContextProvider>
+      <CacheContextProvider cacheStore={cacheStore}>
+        <GeneralContextProvider
+          aborter={aborter}
+          isAnkiWeb={isAnkiWeb}
+          isAnkiDesktop={isAnkiDesktop}
+          ankiDroidAPI={ankiDroidAPI}
+          startupTime={startupTime}
+          assetsPath={assetsPath}
+          logger={logger}
+          root={root}
+        >
+          <AnkiFieldContextProvider>
+            <CardStoreContextProvider side={side}>
+              <ConfigContextProvider value={[$config, $setConfig]}>
+                <FieldGroupContextProvider>
+                  <RootFieldGroupContextProvider>
+                    <CtxContextProvider>
+                      <Layout>{side === "front" ? <Front /> : <Back />}</Layout>
+                    </CtxContextProvider>
+                  </RootFieldGroupContextProvider>
+                </FieldGroupContextProvider>
+              </ConfigContextProvider>
+            </CardStoreContextProvider>
+          </AnkiFieldContextProvider>
+        </GeneralContextProvider>
+      </CacheContextProvider>
+    </BreakpointContextProvider>
+  );
 
-    updateConfigState(root, config$, !isAnkiWeb);
-
-    const [config, setConfig] = createStore(config$);
-
-    let dispose: (() => void) | undefined;
-
-    if (side === "front") {
-      const App = () => (
-        <BreakpointContextProvider>
-          <CacheContextProvider cacheStore={cacheStore}>
-            <GeneralContextProvider
-              aborter={aborter}
-              isAnkiWeb={isAnkiWeb}
-              isAnkiDesktop={isAnkiDesktop}
-              ankiDroidAPI={ankiDroidAPI}
-              startupTime={startupTime}
-              assetsPath={assetsPath}
-              logger={logger}
-              root={root}
-            >
-              <AnkiFieldContextProvider>
-                <CardStoreContextProvider side="front">
-                  <ConfigContextProvider value={[config, setConfig]}>
-                    <FieldGroupContextProvider>
-                      <RootFieldGroupContextProvider>
-                        <CtxContextProvider>
-                          <Layout>
-                            <Front />
-                          </Layout>
-                        </CtxContextProvider>
-                      </RootFieldGroupContextProvider>
-                    </FieldGroupContextProvider>
-                  </ConfigContextProvider>
-                </CardStoreContextProvider>
-              </AnkiFieldContextProvider>
-            </GeneralContextProvider>
-          </CacheContextProvider>
-        </BreakpointContextProvider>
-      );
-      if (ssr) {
-        dispose = hydrate(App, root);
-      } else {
-        dispose = render(App, root);
-      }
-    } else if (side === "back") {
-      const App = () => (
-        <BreakpointContextProvider>
-          <CacheContextProvider cacheStore={cacheStore}>
-            <GeneralContextProvider
-              aborter={aborter}
-              isAnkiWeb={isAnkiWeb}
-              isAnkiDesktop={isAnkiDesktop}
-              ankiDroidAPI={ankiDroidAPI}
-              startupTime={startupTime}
-              assetsPath={assetsPath}
-              logger={logger}
-              root={root}
-            >
-              <AnkiFieldContextProvider>
-                <CardStoreContextProvider side="back">
-                  <ConfigContextProvider value={[config, setConfig]}>
-                    <FieldGroupContextProvider>
-                      <RootFieldGroupContextProvider>
-                        <CtxContextProvider>
-                          <Layout>
-                            <Back />
-                          </Layout>
-                        </CtxContextProvider>
-                      </RootFieldGroupContextProvider>
-                    </FieldGroupContextProvider>
-                  </ConfigContextProvider>
-                </CardStoreContextProvider>
-              </AnkiFieldContextProvider>
-            </GeneralContextProvider>
-          </CacheContextProvider>
-        </BreakpointContextProvider>
-      );
-      if (ssr) {
-        dispose = hydrate(App, root);
-      } else {
-        dispose = render(App, root);
-      }
-    }
-    return { dispose, logger, root };
-  } catch (e) {
-    sessionStorage.clear();
-    Object.assign(document.body.style, {
-      margin: 0,
-      padding: 0,
-      height: "100vh",
-      width: "100vw",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#000",
-      color: "#f00",
-      textAlign: "center",
-    });
-
-    const isError = e instanceof Error;
-
-    document.body.innerHTML = isError
-      ? `
-        <span>Failed to render card.</span>
-        <span><b>Error Name:</b> ${e.name}</span>
-        <span><b>Error Message:</b> ${e.message}</span>
-        <span><b>Error Cause:</b> ${e.cause ?? "N/A"}</span>
-        <span><b>Error Stack:</b><br>
-          <pre style="white-space: pre-wrap; background: #f3f4f6; padding: 8px;">
-            ${e.stack}
-          </pre>
-        </span>
-      `
-      : `<span>Something went wrong.</span>`;
-  } finally {
-    setStartupTime(performance.now() - now);
-  }
+  const dispose = ssr ? hydrate(App, root) : render(App, root);
+  setStartupTime(performance.now() - now);
+  return { dispose, logger };
 }
 
 export async function initAnki({
@@ -258,7 +112,7 @@ export async function initAnki({
   globalThis.KIKU.aborter = aborter;
   globalThis.KIKU.relax = false;
 
-  if (!globalThis.KIKU.unload) {
+  if (!globalThis.KIKU.unload && !import.meta.env.DEV) {
     globalThis.KIKU.unload = () => {
       if (typeof pycmd !== "undefined") sessionStorage.clear();
     };
@@ -280,23 +134,125 @@ export async function initAnki({
     kikuCss?.remove();
   }
 
-  const res = await init({
-    side,
-    ssr,
-    aborter,
-    ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
-    logger: globalThis.KIKU.logger,
-    cacheStore: globalThis.KIKU,
-    assetsPath,
-    isAnkiWeb,
-  });
-
-  if (res) {
-    Object.assign(globalThis.KIKU, res);
-    if (res.root) {
-      res.root.dataset.side = side;
+  try {
+    let root = document.getElementById("kiku-root");
+    if (!root) {
+      const shadowParent = document.querySelector("#kiku-shadow-parent");
+      if (shadowParent) {
+        const existingRoot = shadowParent.shadowRoot?.querySelector(
+          "#kiku-root",
+        ) as HTMLElement | undefined | null;
+        if (existingRoot && existingRoot.innerHTML.trim() === "") {
+          root = existingRoot;
+        } else {
+          return;
+        }
+      } else {
+        throw new Error("root not found");
+      }
     }
-  }
 
-  return res;
+    const qa = document.querySelector("#qa");
+    if (!qa) throw new Error("qa not found");
+    const shadowParent = document.createElement("div");
+    shadowParent.setAttribute("id", "kiku-shadow-parent");
+    qa.appendChild(shadowParent);
+    const shadow = shadowParent.attachShadow({ mode: "open" });
+    const style = qa.querySelector("style");
+    if (style) shadow.appendChild(style.cloneNode(true));
+    if (import.meta.env.DEV) {
+      const tailwind = document.querySelector(
+        'style[type="text/css"][data-vite-dev-id$="tailwind.css"]',
+      );
+      if (!tailwind) throw new Error("tailwind not found");
+      shadow.appendChild(tailwind.cloneNode(true));
+    } else {
+      const kikuCss = document.createElement("link");
+      kikuCss.rel = "stylesheet";
+      kikuCss.href = "./_kiku.css";
+      shadow.prepend(kikuCss);
+    }
+    const kikuPluginCss = document.createElement("link");
+    kikuPluginCss.rel = "stylesheet";
+    kikuPluginCss.href = "./_kiku_plugin.css";
+    shadow.prepend(kikuPluginCss);
+    shadow.appendChild(root);
+
+    let config: KikuConfig | undefined;
+    try {
+      const cache = sessionStorage.getItem(constants.key["kiku-config"]);
+      if (cache) {
+        config = validateConfig(JSON.parse(cache));
+      } else {
+        const res = await fetch(constants.assets["_kiku_config.json"], {
+          cache: "no-store",
+        });
+        const json = await res.json();
+        config = validateConfig(json);
+        if (aborter.signal.aborted) return;
+        sessionStorage.setItem(
+          constants.key["kiku-config"],
+          JSON.stringify(config),
+        );
+      }
+    } catch {}
+
+    const res = await init({
+      root,
+      side,
+      ssr,
+      config,
+      aborter,
+      ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
+      logger: globalThis.KIKU.logger,
+      cacheStore: globalThis.KIKU,
+      assetsPath,
+      isAnkiWeb,
+    });
+
+    Object.assign(globalThis.KIKU, res);
+    if (import.meta.env.DEV) root.dataset.side = side;
+  } catch (e) {
+    sessionStorage.clear();
+    Object.assign(document.body.style, {
+      margin: 0,
+      padding: 0,
+      height: "100vh",
+      width: "100vw",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "oklch(21.15% .012 254.09)",
+      color: "oklch(71% .194 13.428)",
+      textAlign: "center",
+    });
+    const isError = e instanceof Error;
+    const outdatedAnki = typeof Promise.withResolvers !== "function";
+    const updateNotice = `
+        <span>Update Anki to at least 
+          <a 
+            href='https://apps.ankiweb.net/' 
+            target='_blank'
+            style='color: aqua; text-decoration: underline'
+          >
+            25.09
+          </a>
+        </span>`;
+    document.body.innerHTML = isError
+      ? `
+        <span>Failed to render card.</span>
+        <span><b>Error Name:</b> ${e.name}</span>
+        <span><b>Error Message:</b> ${e.message}</span>
+        <span><b>Error Cause:</b> ${e.cause ?? "N/A"}</span>
+        <span><b>Error Stack:</b><br>
+          <pre style="white-space: pre-wrap; background: oklch(82% .189 84.429); color: oklch(41% .112 45.904); padding: 8px;">
+            ${e.stack}
+          </pre>
+        </span><br>
+        ${outdatedAnki ? updateNotice : ""}
+        <span>If you feel you messed up something, try to reinstall Kiku.</span>
+      `
+      : `<span>Something went wrong.</span>`;
+  }
 }
