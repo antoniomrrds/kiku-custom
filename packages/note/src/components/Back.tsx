@@ -1,5 +1,4 @@
 import {
-  createEffect,
   createSignal,
   getOwner,
   lazy,
@@ -179,12 +178,14 @@ function ExpressionSection() {
 
   const expressionInnerHtml = () => {
     if ($card.nested) {
-      if (ankiFields.Expression && ankiFields.ExpressionReading) {
-        //TODO: this is incorrect
-        return `<ruby>${ankiFields.Expression}<rt>${ankiFields.ExpressionReading}</rt></ruby>`;
+      if (
+        ankiFields.Expression &&
+        ankiFields.ExpressionFurigana &&
+        ankiFields.ExpressionFurigana.includes("[")
+      ) {
+        return `<ruby>${ankiFields.Expression}<rt>${"\u200b"}</rt></ruby>`;
       }
       if (ankiFields.Expression) return ankiFields.Expression;
-      return ankiFields.ExpressionReading;
     }
     return isServer
       ? undefined
