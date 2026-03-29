@@ -53,7 +53,7 @@ describe("parseFurigana", () => {
   });
 
   it("should handle furigana for punctuation/other characters if preceded by kanji", () => {
-    // This tests the behavior of the current implementation where anything between [ ] 
+    // This tests the behavior of the current implementation where anything between [ ]
     // is treated as furigana for the preceding kanji buffer.
     const input = "漢[ ]";
     const result = parseFurigana(input);
@@ -73,5 +73,64 @@ describe("parseFurigana", () => {
     const input = "[かんじ]漢字";
     const result = parseFurigana(input);
     expect(result).toEqual([{ type: "text", text: "漢字" }]);
+  });
+
+  it("should handle 為す術もない[なすすべもない]", () => {
+    const input = "為す術もない[なすすべもない]";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
+    ]);
+  });
+
+  it("should handle 為す術もない[なすすべもない] with a leading space", () => {
+    const input = " 為す術もない[なすすべもない]";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
+    ]);
+  });
+
+  it("should handle mixed text with space-delimited ruby in the middle", () => {
+    const input = "この 為す術もない[なすすべもない]状態";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "text", text: "この" },
+      { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
+      { type: "text", text: "状態" },
+    ]);
+  });
+
+  it("should handle space-delimited ruby followed by text", () => {
+    const input = " 為す術もない[なすすべもない]です";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
+      { type: "text", text: "です" },
+    ]);
+  });
+
+  it("should handle 為す術もない[なすすべもない]", () => {
+    const input = "為す術もない[なすすべもない]";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
+    ]);
+  });
+
+  it("should still correctly handle standard kanji furigana when mixed with kana", () => {
+    const input = "私は田中[たなか]です";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "text", text: "私は" },
+      { type: "ruby", text: "田中", reading: "たなか" },
+      { type: "text", text: "です" },
+    ]);
+  });
+
+  it("should handle 食べる[たべる]", () => {
+    const input = "食べる[たべる]";
+    const result = parseFurigana(input);
+    expect(result).toEqual([{ type: "ruby", text: "食べる", reading: "たべる" }]);
   });
 });
