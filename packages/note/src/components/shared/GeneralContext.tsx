@@ -1,9 +1,8 @@
 import { createContext, onMount, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { isServer } from "solid-js/web";
 import type { KikuPlugin } from "#/plugins/plugin-types";
-import { constants } from "#/util/general";
+import type { RootDataset } from "#/util/config";
 import type { Logger } from "#/util/logger";
 import type { AnkiDroidAPI, KikuNotesManifest } from "#/util/types";
 import type { NexApi } from "#/worker/client";
@@ -14,7 +13,8 @@ type GeneralStore = {
   logger: Logger;
   plugin: KikuPlugin | undefined;
   root: HTMLElement | undefined;
-  isThemeChanged: boolean;
+  isConfigOutOfSync: boolean;
+  templateDataset: RootDataset;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
   ankiDroidAPI: AnkiDroidAPI | undefined;
@@ -45,6 +45,7 @@ export function GeneralContextProvider(props: {
   children: JSX.Element;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
+  templateDataset: RootDataset;
   ankiDroidAPI: AnkiDroidAPI | undefined;
   startupTime: () => number;
   assetsPath: string;
@@ -95,12 +96,8 @@ export function GeneralContextProvider(props: {
     logger: props.logger,
     plugin: undefined,
     root: props.root,
-    isThemeChanged: isServer
-      ? false
-      : JSON.parse(
-          sessionStorage.getItem(constants.key["kiku-is-theme-changed"]) ??
-            "false",
-        ),
+    isConfigOutOfSync: false,
+    templateDataset: props.templateDataset,
     isAnkiWeb: props.isAnkiWeb,
     isAnkiDesktop: props.isAnkiDesktop,
     ankiDroidAPI: props.ankiDroidAPI,

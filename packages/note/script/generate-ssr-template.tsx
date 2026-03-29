@@ -31,6 +31,7 @@ export function generateSsrTemplate() {
           aborter={aborter}
           isAnkiWeb={false}
           isAnkiDesktop={false}
+          templateDataset={{}}
           ankiDroidAPI={undefined}
           startupTime={() => 0}
           assetsPath=""
@@ -63,6 +64,7 @@ export function generateSsrTemplate() {
           aborter={aborter}
           isAnkiWeb={false}
           isAnkiDesktop={false}
+          templateDataset={{}}
           ankiDroidAPI={undefined}
           startupTime={() => 0}
           assetsPath=""

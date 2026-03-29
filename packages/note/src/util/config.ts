@@ -77,7 +77,12 @@ export const tailwindContainerSizeVar = {
   "7xl": { maxWidth: "var(--container-7xl)" },
 };
 
-const rootDatasetArray = ["theme", "blurNsfw", "modVertical"] as const;
+const rootDatasetArray = [
+  "theme",
+  "blurNsfw",
+  "pictureOnFront",
+  "modVertical",
+] as const;
 export type RootDatasetKey = (typeof rootDatasetArray)[number];
 export type RootDataset = Partial<Record<RootDatasetKey, string>>;
 export const rootDatasetConfigWhitelist = new Set<RootDatasetKey>(
@@ -195,6 +200,15 @@ export type Dataset = {
 
 export type DatasetProp = Partial<Dataset>;
 
+export function getRootDatasetConfig(config: KikuConfig): RootDataset {
+  return {
+    theme: config.theme,
+    blurNsfw: config.blurNsfw ? "true" : "false",
+    pictureOnFront: config.pictureOnFront ? "true" : "false",
+    modVertical: config.modVertical ? "true" : "false",
+  };
+}
+
 export function getCssVar(config: KikuConfig) {
   //biome-ignore format: this looks nicer
   const cssVar: CssVar = {
@@ -235,10 +249,11 @@ export function updateConfigState(
   config: KikuConfig,
   updateDocument: boolean,
 ) {
-  el.dataset.theme = config.theme;
-  el.dataset.blurNsfw = config.blurNsfw ? "true" : "false";
-  el.dataset.pictureOnFront = config.pictureOnFront ? "true" : "false";
-  el.dataset.modVertical = config.modVertical ? "true" : "false";
+  const dataset = getRootDatasetConfig(config);
+  el.dataset.theme = dataset.theme;
+  el.dataset.blurNsfw = dataset.blurNsfw;
+  el.dataset.pictureOnFront = dataset.pictureOnFront;
+  el.dataset.modVertical = dataset.modVertical;
 
   const cssVar = getCssVar(config);
   Object.entries(cssVar).forEach(([key, value]) => {

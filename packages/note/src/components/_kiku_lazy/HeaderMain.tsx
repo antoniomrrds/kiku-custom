@@ -62,7 +62,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
                 </button>
               </div>
 
-              <Show when={$general.isThemeChanged}>
+              <Show when={$general.isConfigOutOfSync}>
                 <div class="status status-warning absolute top-0 right-0 translate-x-0.5 -translate-y-0.5"></div>
               </Show>
             </div>

@@ -1,9 +1,12 @@
 import { createContext, createEffect, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { type SetStoreFunction, type Store, unwrap } from "solid-js/store";
-import { type KikuConfig, updateConfigState } from "#/util/config";
+import {
+  getRootDatasetConfig,
+  type KikuConfig,
+  updateConfigState,
+} from "#/util/config";
 import { constants } from "#/util/general";
-import type { DaisyUITheme } from "#/util/theme";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useGeneralContext } from "./GeneralContext";
 
@@ -17,7 +20,6 @@ export function ConfigContextProvider(props: {
   const [$config] = props.value;
   const [$general, $setGeneral] = useGeneralContext();
 
-  let initialTheme: DaisyUITheme | undefined;
   createEffect(() => {
     ({ ...$config });
     $general.logger.debug("Updating config:", $config);
@@ -37,12 +39,15 @@ export function ConfigContextProvider(props: {
       constants.key["kiku-config"],
       JSON.stringify($config),
     );
-    if (!initialTheme) {
-      initialTheme = $config.theme;
-    } else if (initialTheme && initialTheme !== $config.theme) {
-      sessionStorage.setItem(constants.key["kiku-is-theme-changed"], "true");
-      $setGeneral("isThemeChanged", true);
-    }
+    const rootDataset = getRootDatasetConfig($config);
+    const isConfigOutOfSync = Object.entries(rootDataset).some(
+      ([key, value]) => {
+        return (
+          $general.templateDataset[key as keyof typeof rootDataset] !== value
+        );
+      },
+    );
+    $setGeneral("isConfigOutOfSync", isConfigOutOfSync);
   });
 
   return (

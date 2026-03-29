@@ -131,6 +131,8 @@ describe("parseFurigana", () => {
   it("should handle 食べる[たべる]", () => {
     const input = "食べる[たべる]";
     const result = parseFurigana(input);
-    expect(result).toEqual([{ type: "ruby", text: "食べる", reading: "たべる" }]);
+    expect(result).toEqual([
+      { type: "ruby", text: "食べる", reading: "たべる" },
+    ]);
   });
 });

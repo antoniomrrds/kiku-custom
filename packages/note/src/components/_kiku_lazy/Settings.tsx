@@ -213,12 +213,22 @@ function KikuVersion() {
 }
 
 function GeneralSettings() {
+  const [$general] = useGeneralContext();
   const [$config, $setConfig] = useConfigContext();
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in relative">
       <KikuVersion />
 
+      <Show when={$general.isConfigOutOfSync}>
+        <div role="alert" class="alert alert-warning">
+          <span>
+            The card template is out of sync with your current theme or display
+            settings. Until you click Save and restart Anki, there might be a
+            flash of the wrong theme.
+          </span>
+        </div>
+      </Show>
       <div class="flex gap-2 items-center justify-between">
         <div class="text-2xl font-bold">General</div>
       </div>
@@ -542,22 +552,12 @@ function ModSettings() {
 }
 
 function ThemeSettings() {
-  const [$general] = useGeneralContext();
   const [$config, _$setConfig] = useConfigContext();
   const changeTheme = useThemeTransition();
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in">
       <div class="text-2xl font-bold">Theme</div>
-
-      <Show when={$general.isThemeChanged}>
-        <div role="alert" class="alert alert-warning">
-          <span>
-            A quick flash of the wrong theme may occur until you click Save and
-            restart Anki.
-          </span>
-        </div>
-      </Show>
       <div class="grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] rounded-box gap-4">
         {daisyUIThemes.map((theme) => {
           return (

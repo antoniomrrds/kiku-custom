@@ -1,6 +1,6 @@
 import { onCleanup, onMount } from "solid-js";
-import { useConfigContext } from "../shared/ConfigContext";
 import { useCardContext } from "../shared/CardContext";
+import { useConfigContext } from "../shared/ConfigContext";
 import { useFieldGroupContext } from "../shared/FieldGroupContext";
 import { ArrowLeftIcon } from "./Icons";
 

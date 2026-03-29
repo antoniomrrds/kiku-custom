@@ -7,6 +7,7 @@ import { Front } from "./components/Front.tsx";
 import { BreakpointContextProvider } from "./components/shared/BreakpointContext.tsx";
 import {
   type KikuConfig,
+  type RootDataset,
   updateConfigState,
   validateConfig,
 } from "./util/config.ts";
@@ -46,6 +47,7 @@ export async function init({
   assetsPath = window.location.origin,
   isAnkiWeb = false,
   isAnkiDesktop = typeof pycmd !== "undefined",
+  rootDataset,
 }: {
   root: HTMLElement;
   side: "front" | "back";
@@ -59,6 +61,7 @@ export async function init({
   assetsPath?: string;
   isAnkiWeb?: boolean;
   isAnkiDesktop?: boolean;
+  rootDataset?: RootDataset;
 }) {
   const [startupTime, setStartupTime] = createSignal(0);
   const now = performance.now();
@@ -75,6 +78,7 @@ export async function init({
           aborter={aborter}
           isAnkiWeb={isAnkiWeb}
           isAnkiDesktop={isAnkiDesktop}
+          templateDataset={rootDataset ?? {}}
           ankiDroidAPI={ankiDroidAPI}
           startupTime={startupTime}
           assetsPath={assetsPath}
@@ -159,6 +163,12 @@ export async function initAnki({
         throw new Error("root not found");
       }
     }
+    const rootDataset = {
+      theme: root.dataset.theme,
+      blurNsfw: root.dataset.blurNsfw,
+      pictureOnFront: root.dataset.pictureOnFront,
+      modVertical: root.dataset.modVertical,
+    } satisfies RootDataset;
 
     const qa = document.querySelector("#qa");
     if (!qa) throw new Error("qa not found");
@@ -241,6 +251,7 @@ export async function initAnki({
       cacheStore: globalThis.KIKU,
       assetsPath,
       isAnkiWeb,
+      rootDataset,
     });
 
     Object.assign(globalThis.KIKU, res);
