@@ -1,22 +1,13 @@
-import {
-  createEffect,
-  createSignal,
-  getOwner,
-  lazy,
-  onMount,
-  runWithOwner,
-} from "solid-js";
+import { createEffect, createSignal, lazy, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/util/config";
-import { getPlugin } from "#/util/plugin";
+import { useLoadPlugin } from "#/util/hooks";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useConfigContext } from "./shared/ConfigContext";
-import { useCtxContext } from "./shared/CtxContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
-import { useGeneralContext } from "./shared/GeneralContext";
 
 // biome-ignore format: this looks nicer
 const Lazy = {
@@ -34,22 +25,12 @@ export function Front() {
   const [hideExpression, setHideExpression] = createSignal(false);
   const { $group } = useFieldGroupContext();
   const [$config] = useConfigContext();
-  const [$general, $setGeneral] = useGeneralContext();
-  const ctx = useCtxContext();
+  const loadPlugin = useLoadPlugin();
 
-  const owner = getOwner();
   onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
-
-      getPlugin($general.assetsPath).then((plugin) => {
-        try {
-          runWithOwner(owner, () => {
-            plugin?.onPluginLoad?.({ ctx });
-          });
-        } catch {}
-        $setGeneral("plugin", plugin);
-      });
+      loadPlugin();
     }, 0);
 
     const tags = ankiFields.Tags.split(" ");

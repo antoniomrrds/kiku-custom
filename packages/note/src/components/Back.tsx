@@ -1,21 +1,16 @@
-import {
-  createSignal,
-  getOwner,
-  lazy,
-  Match,
-  onMount,
-  runWithOwner,
-  Suspense,
-  Switch,
-} from "solid-js";
+import { createSignal, lazy, Match, onMount, Suspense, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
 import {
   CardStoreContextProvider,
   useCardContext,
 } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/util/config";
-import { useKanji, useNavigationTransition, usePitch } from "#/util/hooks";
-import { getPlugin } from "#/util/plugin";
+import {
+  useKanji,
+  useLoadPlugin,
+  useNavigationTransition,
+  usePitch,
+} from "#/util/hooks";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import {
@@ -23,9 +18,8 @@ import {
   useAnkiFieldContext,
 } from "./shared/AnkiFieldsContext";
 import { useCacheContext } from "./shared/CacheContext";
-import { CtxContextProvider, useCtxContext } from "./shared/CtxContext";
+import { CtxContextProvider } from "./shared/CtxContext";
 import { FieldGroupContextProvider } from "./shared/FieldGroupContext";
-import { useGeneralContext } from "./shared/GeneralContext";
 
 // biome-ignore format: this looks nicer
 const Lazy = {
@@ -45,28 +39,18 @@ export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
   const [$card, $setCard] = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [$general, $setGeneral] = useGeneralContext();
-  const ctx = useCtxContext();
   const cacheStore = useCacheContext();
+  const loadPlugin = useLoadPlugin();
 
   const tags = ankiFields.Tags.split(" ");
   useKanji();
   usePitch();
 
-  const owner = getOwner();
   onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
       cacheStore.relax = true;
-
-      getPlugin($general.assetsPath).then((plugin) => {
-        try {
-          runWithOwner(owner, () => {
-            plugin?.onPluginLoad?.({ ctx });
-          });
-        } catch {}
-        $setGeneral("plugin", plugin);
-      });
+      loadPlugin();
     }, 0);
 
     const tags = ankiFields.Tags.split(" ");

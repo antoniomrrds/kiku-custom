@@ -1,4 +1,4 @@
-import { createEffect, createMemo } from "solid-js";
+import { createEffect, createMemo, getOwner, runWithOwner } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { isServer } from "solid-js/web";
 import { useAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
@@ -6,7 +6,9 @@ import { useBreakpointContext } from "#/components/shared/BreakpointContext";
 import { useCacheContext } from "#/components/shared/CacheContext";
 import { useCardContext } from "#/components/shared/CardContext";
 import { useConfigContext } from "#/components/shared/ConfigContext";
+import { useCtxContext } from "#/components/shared/CtxContext";
 import { useGeneralContext } from "#/components/shared/GeneralContext";
+import type { KikuPlugin } from "#/plugins/plugin-types";
 import { createNex } from "#/worker/client";
 import { constants, extractKanji, parseHtml, unique } from "./general";
 import { hatsuon } from "./hatsuon";
@@ -267,4 +269,35 @@ export function useCollectGlossaryImgs() {
   }
 
   return collectGlossaryImgs;
+}
+
+export function useLoadPlugin() {
+  const [$general, $setGeneral] = useGeneralContext();
+  const ctx = useCtxContext();
+  const owner = getOwner();
+
+  async function getPlugin(assetsPath: string) {
+    try {
+      const plugin = (
+        await import(
+          /* @vite-ignore */
+          `${assetsPath}/${constants.assets["_kiku_plugin.js"]}`
+        )
+      ).plugin as KikuPlugin;
+      return plugin;
+    } catch {}
+  }
+
+  function loadPlugin() {
+    getPlugin($general.assetsPath).then((plugin) => {
+      try {
+        runWithOwner(owner, () => {
+          plugin?.onPluginLoad?.({ ctx });
+        });
+      } catch {}
+      $setGeneral("plugin", plugin);
+    });
+  }
+
+  return loadPlugin;
 }
