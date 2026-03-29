@@ -1,5 +1,5 @@
 @plugin "daisyui" {
-  root: ".kiku-root";
+  root: ":root";
   themes: all;
   include:
     properties, reset, rootcolor, rootscrollgutter, rootscrolllock, svg, scrollbar, button, input,

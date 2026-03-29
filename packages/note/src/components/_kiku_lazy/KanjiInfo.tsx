@@ -318,11 +318,8 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 
   function DefaultKanjiInfoExtra() {
     createEffect(() => {
-      const composedOfRef = $checkboxRef.composedOf;
-      const visuallySimilarLength = $kanji.kanjiInfo?.visuallySimilar.length;
-      if (composedOfRef) {
-        if (!visuallySimilarLength) $setCheckbox("composedOf", true);
-      }
+      $setCheckbox("visuallySimilar", true);
+      $setCheckbox("composedOf", true);
     });
 
     return (
