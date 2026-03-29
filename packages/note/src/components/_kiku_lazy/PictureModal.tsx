@@ -7,8 +7,8 @@ import {
   Switch,
 } from "solid-js";
 import { Portal } from "solid-js/web";
-import { collectGlossaryImgs, parseHtml } from "#/util/general";
-import { useViewTransition } from "#/util/hooks";
+import { parseHtml } from "#/util/general";
+import { useCollectGlossaryImgs, useViewTransition } from "#/util/hooks";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 
@@ -21,6 +21,7 @@ export default function PictureModal(props: {
   const [img, setImg] = createSignal(props.img);
   const [showAll, setShowAll] = createSignal(false);
   const startViewTransition = useViewTransition();
+  const collectGlossaryImgs = useCollectGlossaryImgs();
 
   createEffect(() => {
     props.img;
@@ -48,10 +49,7 @@ export default function PictureModal(props: {
     addImages(parseHtml(ankiFields.DefinitionPicture));
 
     // Glossary field
-    for (const pic of collectGlossaryImgs(
-      ankiFields.Glossary,
-      $general.plugin?.glossaryImagesFilter,
-    )) {
+    for (const pic of collectGlossaryImgs(ankiFields.Glossary)) {
       pics.set(pic.src, pic.html);
     }
 

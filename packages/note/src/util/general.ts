@@ -1,5 +1,3 @@
-import { isServer } from "solid-js/web";
-
 const version: string =
   // @ts-expect-error: injected by vite
   typeof __VERSION__ !== "undefined" ? __VERSION__ : "unknown";
@@ -106,12 +104,6 @@ export function isHtmlEffectivelyEmpty(html: string): boolean {
   return !meaningfulSelectors.some((sel) => doc.body.querySelector(sel));
 }
 
-export function isSvg(src: string | null) {
-  if (!src) return false;
-  const s = src.toLowerCase();
-  return s.endsWith(".svg") || s.startsWith("data:image/svg+xml");
-}
-
 export function parseHtml(html: string) {
   return new DOMParser().parseFromString(html, "text/html");
 }
@@ -129,43 +121,4 @@ export function nodesToString(nodes: Node[]) {
 
 export function unique<T>(arr: readonly T[]): T[] {
   return Array.from(new Set(arr));
-}
-
-export function collectGlossaryImgs(
-  glossaryHtml: string,
-  filter?: (img: HTMLImageElement) => boolean,
-) {
-  if (isServer) return [];
-
-  const doc = parseHtml(glossaryHtml);
-
-  return Array.from(doc.querySelectorAll("img"))
-    .filter((img) => {
-      const src = img.getAttribute("src");
-      const defaultFilterResult = !!(
-        src &&
-        !isSvg(src) &&
-        (img.height === 0 || img.height > 100) &&
-        (img.width === 0 || img.width > 100) &&
-        !img.closest('span[data-sc-pixiv="read-more-link"] a')
-      );
-      if (!defaultFilterResult) return false;
-      if (filter) {
-        try {
-          return filter(img);
-        } catch {
-          return true;
-        }
-      }
-      return true;
-    })
-    .map((img) => {
-      const src = img.getAttribute("src") ?? "";
-      const newImg = document.createElement("img");
-      newImg.setAttribute("src", src);
-      return {
-        src,
-        html: newImg.outerHTML,
-      };
-    });
 }

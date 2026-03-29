@@ -1,9 +1,9 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { isServer } from "solid-js/web";
-import { collectGlossaryImgs, parseHtml } from "#/util/general";
+import { parseHtml } from "#/util/general";
+import { useCollectGlossaryImgs } from "#/util/hooks";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useConfigContext } from "../shared/ConfigContext";
-import { useGeneralContext } from "../shared/GeneralContext";
 
 export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;
@@ -11,7 +11,7 @@ export default function DefinitionPictureSection(props: {
 }) {
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$config] = useConfigContext();
-  const [$general] = useGeneralContext();
+  const collectGlossaryImgs = useCollectGlossaryImgs();
 
   const definitionPictures = createMemo(() => {
     if (isServer) return [];
@@ -31,10 +31,7 @@ export default function DefinitionPictureSection(props: {
     );
 
     const glossaryPics = $config.definitionPictureFromGlossary
-      ? collectGlossaryImgs(
-          ankiFields.Glossary,
-          $general.plugin?.glossaryImagesFilter,
-        )
+      ? collectGlossaryImgs(ankiFields.Glossary)
           .filter((pic) => !displayedImages.has(pic.src))
           .map((pic) => pic.html)
       : [];
