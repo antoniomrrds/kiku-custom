@@ -13,21 +13,12 @@ import type { DaisyUITheme } from "./theme";
 import { type PitchType, pitchTypes } from "./types";
 
 export function useViewTransition() {
-  const [$general] = useGeneralContext();
   function startViewTransition(
     callback: () => void,
-    {
-      beforeCallback,
-    }: {
-      beforeCallback?: () => void;
-    } = {},
+    opts: { beforeCallback?: () => void } = {},
   ) {
-    if (
-      document.startViewTransition &&
-      !$general.isAnkiDesktop &&
-      !$general.isAnkiWeb
-    ) {
-      beforeCallback?.();
+    if (document.startViewTransition) {
+      opts.beforeCallback?.();
       return document.startViewTransition(callback);
     } else {
       callback();
@@ -139,12 +130,13 @@ export function usePitch() {
 }
 
 export function useThemeTransition() {
+  const [$general] = useGeneralContext();
   const [$config, $setConfig] = useConfigContext();
   const startViewTransition = useViewTransition();
   const [$card, $setCard] = useCardContext();
 
   function changeTheme(theme: DaisyUITheme) {
-    if ($card.query.status === "loading") {
+    if ($card.query.status === "loading" || $general.isAnkiDesktop) {
       $setConfig("theme", theme);
     } else {
       startViewTransition(() => $setConfig("theme", theme), {
