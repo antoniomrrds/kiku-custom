@@ -74,6 +74,9 @@ export default function PictureModal(props: {
           <button
             type="button"
             class="btn btn-sm btn-neutral"
+            classList={{
+              hidden: allPictures().length < 2,
+            }}
             on:click={(e) => {
               e.stopPropagation();
               setShowAll((prev) => !prev);
