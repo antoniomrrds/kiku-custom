@@ -6,6 +6,7 @@
     "package": "turbo run package",
     "dev": "turbo run dev --env-mode=loose",
     "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
     "format": "biome format .",
     "format:write": "biome format --write .",
     "lint": "biome lint .",
