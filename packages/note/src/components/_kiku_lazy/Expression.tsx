@@ -14,6 +14,8 @@ import { parseFurigana } from "./util/parse-furigana";
 export default function Expression() {
   const [$card, $setCard] = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
+  const [activeKey, setActiveKey] = createSignal<string | null>(null);
+  let timeout: ReturnType<typeof setTimeout>;
 
   onMount(() => {
     setTimeout(() => {
@@ -23,18 +25,35 @@ export default function Expression() {
 
   function CharSpan(props: { char: string; i: number; j: number }) {
     const [anchorRef, setAnchorRef] = createSignal<HTMLSpanElement>();
-    const [show, setShow] = createSignal(false);
+    const key = `${props.char}-${props.i}-${props.j}`;
+    const show = () => activeKey() === key;
+
+    const handleMouseEnter = () => {
+      clearTimeout(timeout);
+      setActiveKey(key);
+    };
+
+    const handleMouseLeave = () => {
+      timeout = setTimeout(() => {
+        setActiveKey(null);
+      }, 50);
+    };
 
     return (
       <span
         ref={setAnchorRef}
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
-        onFocus={() => setShow(true)}
-        onBlur={() => setShow(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleMouseEnter}
+        onBlur={handleMouseLeave}
       >
         <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
-          <KanjiTooltip show={show()} anchor={anchorRef()} />
+          <KanjiTooltip
+            show={show()}
+            anchor={anchorRef()}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          />
         </KanjiContextProvider>
         {props.char}
       </span>
@@ -141,6 +160,8 @@ export default function Expression() {
 function KanjiTooltip(props: {
   show: boolean;
   anchor: HTMLElement | undefined;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }) {
   const [$general] = useGeneralContext();
   const [$kanji] = useKanjiContext();
@@ -199,6 +220,8 @@ function KanjiTooltip(props: {
       <div
         class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip"
         ref={setTooltipRef}
+        onMouseEnter={props.onMouseEnter}
+        onMouseLeave={props.onMouseLeave}
         style={{
           display: props.show ? "block" : "none",
           left: `${position.x}px`,
