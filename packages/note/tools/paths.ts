@@ -22,6 +22,7 @@ export const paths = {
   "@/preprocess/":                             p("preprocess/"),
   "@/script/":                                 p("script/"),
   "@/tools/":                                  p("tools/"),
+  "@/.anki-build/":                            p(".anki-build/"),
 
   "@/src/index.tsx":                           p("src/index.tsx"),
 
@@ -32,12 +33,25 @@ export const paths = {
   "@/template/_kiku_plugin.js":                p("template/_kiku_plugin.js"),
   "@/template/_kiku_plugin.css":               p("template/_kiku_plugin.css"),
 
-  "@/dist/_kiku_front.html":                   p("dist/_kiku_front.html"),
-  "@/dist/_kiku_back.html":                    p("dist/_kiku_back.html"),
-  "@/dist/_kiku_style.css":                    p("dist/_kiku_style.css"),
+  "@/dist/_kiku.js":                           p("dist/_kiku.js"),
+  "@/dist/_kiku_lazy.js":                      p("dist/_kiku_lazy.js"),
+  "@/dist/_kiku_libs.js":                      p("dist/_kiku_libs.js"),
+  "@/dist/_kiku_shared.js":                    p("dist/_kiku_shared.js"),
+  "@/dist/_kiku_worker.js":                    p("dist/_kiku_worker.js"),
   "@/dist/_kiku.css":                          p("dist/_kiku.css"),
-  "@/dist/_kiku_plugin.js":                    p("dist/_kiku_plugin.js"),
-  "@/dist/_kiku_plugin.css":                   p("dist/_kiku_plugin.css"),
+
+  "@/.anki-build/_kiku_front.html":            p(".anki-build/_kiku_front.html"),
+  "@/.anki-build/_kiku_back.html":             p(".anki-build/_kiku_back.html"),
+  "@/.anki-build/_kiku_style.css":             p(".anki-build/_kiku_style.css"),
+  "@/.anki-build/_kiku.css":                   p(".anki-build/_kiku.css"),
+  "@/.anki-build/_kiku_plugin.js":             p(".anki-build/_kiku_plugin.js"),
+  "@/.anki-build/_kiku_plugin.css":            p(".anki-build/_kiku_plugin.css"),
+
+  "@/.anki-build/_kiku.js":                    p(".anki-build/_kiku.js"),
+  "@/.anki-build/_kiku_lazy.js":               p(".anki-build/_kiku_lazy.js"),
+  "@/.anki-build/_kiku_libs.js":               p(".anki-build/_kiku_libs.js"),
+  "@/.anki-build/_kiku_shared.js":             p(".anki-build/_kiku_shared.js"),
+  "@/.anki-build/_kiku_worker.js":             p(".anki-build/_kiku_worker.js"),
 
   "@/.collection.media/":                      p(".collection.media/"),
 

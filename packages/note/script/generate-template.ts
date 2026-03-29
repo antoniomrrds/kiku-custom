@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { paths } from "../tools/paths.ts";
 import { getVersion, log } from "../tools/util.js";
 import { generateSsrTemplate } from "./generate-ssr-template.js";
@@ -9,37 +9,36 @@ class Script {
     BACK_SRC: paths["@/template/back.html"],
     STYLE_SRC: paths["@/template/style.css"],
 
-    FRONT_DEST: paths["@/dist/_kiku_front.html"],
-    BACK_DEST: paths["@/dist/_kiku_back.html"],
-    STYLE_DEST: paths["@/dist/_kiku_style.css"],
-
-    CSS_SRC: paths["@/dist/_kiku.css"],
-    CSS_DEST: paths["@/dist/_kiku.css"],
+    FRONT_DEST: paths["@/.anki-build/_kiku_front.html"],
+    BACK_DEST: paths["@/.anki-build/_kiku_back.html"],
+    STYLE_DEST: paths["@/.anki-build/_kiku_style.css"],
 
     PLUGIN_SRC: paths["@/template/_kiku_plugin.js"],
-    PLUGIN_DEST: paths["@/dist/_kiku_plugin.js"],
+    PLUGIN_DEST: paths["@/.anki-build/_kiku_plugin.js"],
 
     CSS_PLUGIN_SRC: paths["@/template/_kiku_plugin.css"],
-    CSS_PLUGIN_DEST: paths["@/dist/_kiku_plugin.css"],
+    CSS_PLUGIN_DEST: paths["@/.anki-build/_kiku_plugin.css"],
   };
 
+  async ensureDestDir() {
+    await mkdir(paths["@/.anki-build/"], { recursive: true });
+  }
+
   async loadSources() {
-    const [front, back, style, css, plugin, cssPlugin] = await Promise.all([
+    const [front, back, style, plugin, cssPlugin] = await Promise.all([
       readFile(this.PATHS.FRONT_SRC, "utf8"),
       readFile(this.PATHS.BACK_SRC, "utf8"),
       readFile(this.PATHS.STYLE_SRC, "utf8"),
-      readFile(this.PATHS.CSS_SRC, "utf8"),
       readFile(this.PATHS.PLUGIN_SRC, "utf8"),
       readFile(this.PATHS.CSS_PLUGIN_SRC, "utf8"),
     ]);
-    return { front, back, style, css, plugin, cssPlugin };
+    return { front, back, style, plugin, cssPlugin };
   }
 
   async buildTemplates(src: {
     front: string;
     back: string;
     style: string;
-    css: string;
     plugin: string;
     cssPlugin: string;
   }) {
@@ -63,18 +62,16 @@ class Script {
       .replace("<!-- SSR_TEMPLATE -->", backSsrTemplate)
       .replace("<!-- HYDRATION_SCRIPT -->", hydrationScript);
     const style = src.style.replace("__VERSION__", version);
-    const css = src.css;
     const plugin = src.plugin;
     const cssPlugin = src.cssPlugin;
 
-    return { front, back, style, css, plugin, cssPlugin };
+    return { front, back, style, plugin, cssPlugin };
   }
 
   async writeOutputs(templates: {
     front: string;
     back: string;
     style: string;
-    css: string;
     plugin: string;
     cssPlugin: string;
   }) {
@@ -82,13 +79,13 @@ class Script {
       writeFile(this.PATHS.FRONT_DEST, templates.front),
       writeFile(this.PATHS.BACK_DEST, templates.back),
       writeFile(this.PATHS.STYLE_DEST, templates.style),
-      writeFile(this.PATHS.CSS_DEST, templates.css),
       writeFile(this.PATHS.PLUGIN_DEST, templates.plugin),
       writeFile(this.PATHS.CSS_PLUGIN_DEST, templates.cssPlugin),
     ]);
   }
 
   async run() {
+    await this.ensureDestDir();
     const sources = await this.loadSources();
     const templates = await this.buildTemplates(sources);
     await this.writeOutputs(templates);

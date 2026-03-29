@@ -4,23 +4,38 @@ import { env } from "../tools/env.ts";
 import { paths } from "../tools/paths.ts";
 
 class Script {
-  ANKI_MEDIA_DIR = env.ANKI_COLLECTION_MEDIA_PATH;
-
   async ensureAnkiDir() {
-    await stat(this.ANKI_MEDIA_DIR);
+    await stat(env.ANKI_COLLECTION_MEDIA_PATH);
+  }
+
+  async copyAssetsFromDistToAnkiBuild() {
+    const ASSETS = [
+      [paths["@/dist/_kiku.js"], paths["@/.anki-build/_kiku.js"]],
+      [paths["@/dist/_kiku_lazy.js"], paths["@/.anki-build/_kiku_lazy.js"]],
+      [paths["@/dist/_kiku_libs.js"], paths["@/.anki-build/_kiku_libs.js"]],
+      [paths["@/dist/_kiku_shared.js"], paths["@/.anki-build/_kiku_shared.js"]],
+      [paths["@/dist/_kiku_worker.js"], paths["@/.anki-build/_kiku_worker.js"]],
+      [paths["@/dist/_kiku.css"], paths["@/.anki-build/_kiku.css"]],
+    ] as const;
+
+    console.log("\n📁 Copying assets from dist to .anki-build...");
+    for (const [src, dest] of ASSETS) {
+      await cp(src, dest);
+      console.log(`✅ Copied ${basename(src)} to .anki-build`);
+    }
   }
 
   async copyFiles(files: string[], srcDir: string) {
     for (const file of files) {
       const src = join(srcDir, file);
       await stat(src);
-      const dest = join(this.ANKI_MEDIA_DIR, file);
+      const dest = join(env.ANKI_COLLECTION_MEDIA_PATH, file);
       await cp(src, dest);
       console.log(`✅ Copied ${basename(src)}`);
     }
   }
 
-  async copyDist() {
+  async copyAnkiBuild() {
     const FILES = [
       "_kiku_front.html",
       "_kiku_back.html",
@@ -35,8 +50,8 @@ class Script {
       "_kiku_plugin.css",
     ];
 
-    console.log("\n📁 Copying DIST files...");
-    await this.copyFiles(FILES, paths["@/dist/"]);
+    console.log("\n📁 Copying ANKI BUILD files...");
+    await this.copyFiles(FILES, paths["@/.anki-build/"]);
   }
 
   async copyFonts() {
@@ -58,9 +73,12 @@ class Script {
   }
 
   async run() {
-    console.log(`🔍 Checking Anki collection at: ${this.ANKI_MEDIA_DIR}`);
+    console.log(
+      `🔍 Checking Anki collection at: ${env.ANKI_COLLECTION_MEDIA_PATH}`,
+    );
     await this.ensureAnkiDir();
-    await this.copyDist();
+    await this.copyAssetsFromDistToAnkiBuild();
+    await this.copyAnkiBuild();
     await this.copyFonts();
     await this.copyDatabases();
     console.log("\n🎉 Done!");
