@@ -1,10 +1,12 @@
 import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom";
 import { createEffect, createSignal, type JSX, onMount, Show } from "solid-js";
 import { createStore } from "solid-js/store";
+import { Portal } from "solid-js/web";
 import { extractKanji, parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useBreakpointContext } from "../shared/BreakpointContext";
 import { useCardContext } from "../shared/CardContext";
+import { useGeneralContext } from "../shared/GeneralContext";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
 import { parseFurigana } from "./util/parse-furigana";
@@ -25,7 +27,6 @@ export default function Expression() {
 
     return (
       <span
-        class="relative"
         ref={setAnchorRef}
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}
@@ -141,6 +142,7 @@ function KanjiTooltip(props: {
   show: boolean;
   anchor: HTMLElement | undefined;
 }) {
+  const [$general] = useGeneralContext();
   const [$kanji] = useKanjiContext();
   if (!$kanji.kanji) return null;
 
@@ -193,35 +195,37 @@ function KanjiTooltip(props: {
   });
 
   return (
-    <div
-      class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip"
-      ref={setTooltipRef}
-      style={{
-        display: props.show ? "block" : "none",
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-      }}
-    >
+    <Portal mount={$general.layoutRef}>
       <div
-        ref={setArrowRef}
-        class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
+        class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip"
+        ref={setTooltipRef}
         style={{
-          left: `${position.arrowX}px`,
-          top: `${position.arrowY}px`,
-          right: "",
-          bottom: "",
-          ...(position.staticSide ? { [position.staticSide]: "-4px" } : {}),
+          display: props.show ? "block" : "none",
+          left: `${position.x}px`,
+          top: `${position.y}px`,
         }}
-      ></div>
-      <div
-        class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
-        style={{ color: "initial" }}
       >
-        <KanjiInfo />
-        <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
-          <KanjiInfoExtra />
+        <div
+          ref={setArrowRef}
+          class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
+          style={{
+            left: `${position.arrowX}px`,
+            top: `${position.arrowY}px`,
+            right: "",
+            bottom: "",
+            ...(position.staticSide ? { [position.staticSide]: "-4px" } : {}),
+          }}
+        ></div>
+        <div
+          class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
+          style={{ color: "initial" }}
+        >
+          <KanjiInfo />
+          <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
+            <KanjiInfoExtra />
+          </div>
         </div>
       </div>
-    </div>
+    </Portal>
   );
 }
