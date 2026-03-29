@@ -1,5 +1,5 @@
 import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom";
-import { type JSX, onMount, Show } from "solid-js";
+import { createEffect, createSignal, type JSX, onMount, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { extractKanji, parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
@@ -12,112 +12,28 @@ import { parseFurigana } from "./util/parse-furigana";
 export default function Expression() {
   const [$card, $setCard] = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const bp = useBreakpointContext();
-  const [$kanjiEl, $setKanjiEl] = createStore<{
-    el: {
-      kanji: Record<string, HTMLSpanElement | undefined>;
-      tooltip: Record<string, HTMLSpanElement | undefined>;
-      arrow: Record<string, HTMLDivElement | undefined>;
-    };
-  }>({
-    el: {
-      kanji: {},
-      tooltip: {},
-      arrow: {},
-    },
-  });
-
-  function showEl(el: HTMLElement) {
-    el.style.display = "block";
-    applyTooltip();
-  }
-
-  function hideEl(el: HTMLElement) {
-    el.style.display = "";
-  }
-
-  function applyTooltip() {
-    const charEls = Object.entries($kanjiEl.el.kanji);
-    charEls.forEach(([char, kanji]) => {
-      const tooltip = $kanjiEl.el.tooltip[char];
-      const arrowEl = $kanjiEl.el.arrow[char];
-      if (kanji && tooltip && arrowEl) {
-        computePosition(kanji, tooltip, {
-          placement: bp.isAtLeast("sm") ? "bottom-start" : "bottom",
-          middleware: [
-            offset({ mainAxis: -5, crossAxis: 0 }),
-            flip(),
-            shift({ padding: 5 }),
-            arrow({
-              element: arrowEl,
-            }),
-          ],
-        }).then(({ x, y, placement, middlewareData }) => {
-          Object.assign(tooltip.style, {
-            left: `${x}px`,
-            top: `${y}px`,
-          });
-
-          const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {
-            x: 0,
-            y: 0,
-          };
-          const staticSide =
-            {
-              top: "bottom",
-              right: "left",
-              bottom: "top",
-              left: "right",
-            }[placement.split("-")[0]] ?? "never";
-
-          Object.assign(arrowEl.style, {
-            left: arrowX != null ? `${arrowX}px` : "",
-            top: arrowY != null ? `${arrowY}px` : "",
-            right: "",
-            bottom: "",
-            [staticSide]: "-4px",
-          });
-        });
-      }
-    });
-  }
 
   onMount(() => {
-    applyTooltip();
-    const pairs: [string, (el: HTMLElement) => void][] = [
-      ["mouseenter", showEl],
-      ["mouseleave", hideEl],
-      ["focus", showEl],
-      ["blur", hideEl],
-    ];
-
-    pairs.forEach(([event, listener]) => {
-      const charEls = Object.entries($kanjiEl.el.kanji);
-      charEls.forEach(([char, kanji]) => {
-        const tooltip = $kanjiEl.el.tooltip[char];
-        if (kanji && tooltip) {
-          kanji.addEventListener(event, () => {
-            listener(tooltip);
-          });
-        }
-      });
-    });
-
     setTimeout(() => {
       $setCard("expressionReady", true);
     }, 100);
   });
 
   function CharSpan(props: { char: string; i: number; j: number }) {
-    const key = props.char + props.i + "-" + props.j;
+    const [anchorRef, setAnchorRef] = createSignal<HTMLSpanElement>();
+    const [show, setShow] = createSignal(false);
 
     return (
-      <span class="relative" ref={(el) => $setKanjiEl("el", "kanji", key, el)}>
+      <span
+        class="relative"
+        ref={setAnchorRef}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onFocus={() => setShow(true)}
+        onBlur={() => setShow(false)}
+      >
         <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
-          <KanjiTooltip
-            arrowRef={(el) => $setKanjiEl("el", "arrow", key, el)}
-            ref={(el) => $setKanjiEl("el", "tooltip", key, el)}
-          />
+          <KanjiTooltip show={show()} anchor={anchorRef()} />
         </KanjiContextProvider>
         {props.char}
       </span>
@@ -178,20 +94,7 @@ export default function Expression() {
     return (
       <ruby>
         {ankiFields.Expression.split("").map((char, i) => (
-          <span
-            class="relative"
-            ref={(el) => {
-              $setKanjiEl("el", "kanji", char + i, el);
-            }}
-          >
-            <KanjiContextProvider kanji={extractKanji(char)[0] ?? ""}>
-              <KanjiTooltip
-                arrowRef={(el) => $setKanjiEl("el", "arrow", char + i, el)}
-                ref={(el) => $setKanjiEl("el", "tooltip", char + i, el)}
-              />
-            </KanjiContextProvider>
-            {char}
-          </span>
+          <CharSpan char={char} i={i} j={0} />
         ))}
         <Show
           when={
@@ -235,20 +138,80 @@ export default function Expression() {
 }
 
 function KanjiTooltip(props: {
-  ref: (ref: HTMLDivElement) => void;
-  arrowRef: (ref: HTMLDivElement) => void;
+  show: boolean;
+  anchor: HTMLElement | undefined;
 }) {
-  const [$kanji, $setKanji] = useKanjiContext();
+  const [$kanji] = useKanjiContext();
   if (!$kanji.kanji) return null;
+
+  const [tooltipRef, setTooltipRef] = createSignal<HTMLDivElement>();
+  const [arrowRef, setArrowRef] = createSignal<HTMLDivElement>();
+
+  const [position, setPosition] = createStore({
+    x: 0,
+    y: 0,
+    arrowX: 0,
+    arrowY: 0,
+    staticSide: "",
+  });
+
+  const bp = useBreakpointContext();
+
+  createEffect(() => {
+    const tooltip = tooltipRef();
+    const arrowEl = arrowRef();
+    if (props.show && props.anchor && tooltip && arrowEl) {
+      computePosition(props.anchor, tooltip, {
+        placement: bp.isAtLeast("sm") ? "bottom-start" : "bottom",
+        middleware: [
+          offset({ mainAxis: -5, crossAxis: 0 }),
+          flip(),
+          shift({ padding: 5 }),
+          arrow({
+            element: arrowEl,
+          }),
+        ],
+      }).then(({ x, y, placement, middlewareData }) => {
+        const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
+        const staticSide =
+          {
+            top: "bottom",
+            right: "left",
+            bottom: "top",
+            left: "right",
+          }[placement.split("-")[0]] ?? "";
+
+        setPosition({
+          x,
+          y,
+          arrowX: arrowX ?? 0,
+          arrowY: arrowY ?? 0,
+          staticSide,
+        });
+      });
+    }
+  });
 
   return (
     <div
-      class="absolute z-10 overflow-hidden hidden rounded-lg horizontal-tb text-start tooltip"
-      ref={props.ref}
+      class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip"
+      ref={setTooltipRef}
+      style={{
+        display: props.show ? "block" : "none",
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+      }}
     >
       <div
-        ref={props.arrowRef}
+        ref={setArrowRef}
         class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
+        style={{
+          left: `${position.arrowX}px`,
+          top: `${position.arrowY}px`,
+          right: "",
+          bottom: "",
+          ...(position.staticSide ? { [position.staticSide]: "-4px" } : {}),
+        }}
       ></div>
       <div
         class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
