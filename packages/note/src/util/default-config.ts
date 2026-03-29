@@ -10,7 +10,7 @@ export const defaultConfig: KikuConfig = {
   systemFontSecondary: "'Hiragino Mincho ProN', 'Noto Serif CJK JP', 'Noto Serif JP', 'Yu Mincho', HanaMinA, HanaMinB, serif",
   useSystemFontSecondary: true,
   blurNsfw: true,
-  muteNsfw: true,
+  muteNsfw: false,
   pictureOnFront: false,
   showTheme: true,
   showStartupTime: true,

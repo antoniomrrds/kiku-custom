@@ -284,7 +284,15 @@ function GeneralSettings() {
           </label>
         </fieldset>
         <fieldset class="fieldset py-0">
-          <legend class="fieldset-legend">Mute NSFW</legend>
+          <legend class="fieldset-legend">
+            Mute NSFW
+            <div
+              class="tooltip"
+              data-tip="Prevent SentenceAudio from playing on NSFW cards. Has known problem with old AnkiDroid study screen"
+            >
+              <InfoIcon class="size-4 text-base-content-calm" />
+            </div>
+          </legend>
           <label class="label">
             <input
               type="checkbox"

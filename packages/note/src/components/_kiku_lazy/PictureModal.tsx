@@ -56,10 +56,6 @@ export default function PictureModal(props: {
     return Array.from(pics.entries()).map(([src, html]) => ({ src, html }));
   });
 
-  createEffect(() => {
-    console.log(allPictures());
-  });
-
   return (
     <Portal mount={$general.layoutRef}>
       <div

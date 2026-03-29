@@ -42,7 +42,7 @@ export default defineConfig({
         "_kiku_font_ibm-plex-sans-jp.woff2",
       ],
       output: {
-        advancedChunks: {
+        codeSplitting: {
           groups: [
             {
               test: (id) => {
