@@ -58,6 +58,10 @@ export default function PictureModal(props: {
     return Array.from(pics.entries()).map(([src, html]) => ({ src, html }));
   });
 
+  createEffect(() => {
+    console.log(allPictures());
+  });
+
   return (
     <Portal mount={$general.layoutRef}>
       <div
@@ -108,7 +112,7 @@ export default function PictureModal(props: {
                     >
                       <div
                         class="absolute inset-0 bg-cover bg-center blur-lg brightness-50 scale-110"
-                        style={{ "background-image": `url(${pic.src})` }}
+                        style={{ "background-image": `url("${pic.src}")` }}
                       />
                       <div
                         class="relative z-10 w-full h-full [&_img]:w-full [&_img]:h-full [&_img]:object-contain"
