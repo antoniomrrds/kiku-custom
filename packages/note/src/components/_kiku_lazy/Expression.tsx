@@ -1,7 +1,7 @@
 import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom";
-import { onMount, Show } from "solid-js";
+import { type JSX, onMount, Show } from "solid-js";
 import { createStore } from "solid-js/store";
-import { extractKanji } from "#/util/general";
+import { extractKanji, parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useBreakpointContext } from "../shared/BreakpointContext";
 import { useCardContext } from "../shared/CardContext";
@@ -108,6 +108,66 @@ export default function Expression() {
     }, 100);
   });
 
+  function CharSpan(props: { char: string; i: number; j: number }) {
+    const key = props.char + props.i + "-" + props.j;
+
+    return (
+      <span class="relative" ref={(el) => $setKanjiEl("el", "kanji", key, el)}>
+        <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
+          <KanjiTooltip
+            arrowRef={(el) => $setKanjiEl("el", "arrow", key, el)}
+            ref={(el) => $setKanjiEl("el", "tooltip", key, el)}
+          />
+        </KanjiContextProvider>
+        {props.char}
+      </span>
+    );
+  }
+
+  const doc = parseHtml(ankiFields.ExpressionFurigana);
+  const isRuby = doc.querySelector("ruby");
+
+  if (isRuby) {
+    let groupIndex = 0;
+    const renderNode = (node: Node): JSX.Element => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const i = groupIndex++;
+        return node.textContent
+          ?.split("")
+          .map((char, j) => <CharSpan char={char} i={i} j={j} />);
+      }
+
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node as HTMLElement;
+        const tagName = el.tagName.toLowerCase();
+
+        if (tagName === "rt") {
+          return <rt innerHTML={el.innerHTML} />;
+        }
+        if (tagName === "rp") {
+          return <rp innerHTML={el.innerHTML} />;
+        }
+
+        const children = Array.from(el.childNodes);
+        if (tagName === "ruby") {
+          return <ruby>{children.map((child) => renderNode(child))}</ruby>;
+        }
+        if (tagName === "rb") {
+          // <rb> is deprecated
+          // return <rb>{children.map((child) => renderNode(child))}</rb>;
+          return children.map((child) => renderNode(child));
+        }
+
+        return <span innerHTML={el.outerHTML} />;
+      }
+      return null;
+    };
+
+    return (
+      <>{Array.from(doc.body.childNodes).map((node) => renderNode(node))}</>
+    );
+  }
+
   const furiganaData = parseFurigana(ankiFields.ExpressionFurigana);
 
   if (
@@ -142,22 +202,6 @@ export default function Expression() {
           <rt>{ankiFields.ExpressionReading}</rt>
         </Show>
       </ruby>
-    );
-  }
-
-  function CharSpan(props: { char: string; i: number; j: number }) {
-    const key = props.char + props.i + "-" + props.j;
-
-    return (
-      <span class="relative" ref={(el) => $setKanjiEl("el", "kanji", key, el)}>
-        <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
-          <KanjiTooltip
-            arrowRef={(el) => $setKanjiEl("el", "arrow", key, el)}
-            ref={(el) => $setKanjiEl("el", "tooltip", key, el)}
-          />
-        </KanjiContextProvider>
-        {props.char}
-      </span>
     );
   }
 
