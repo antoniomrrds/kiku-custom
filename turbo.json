@@ -13,6 +13,9 @@
     "typecheck": {
       "dependsOn": ["^typecheck"]
     },
+    "test": {
+      "dependsOn": ["^test"]
+    },
     "package": {
       "dependsOn": ["^package"]
     },
