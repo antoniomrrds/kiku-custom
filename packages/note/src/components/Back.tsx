@@ -161,16 +161,6 @@ function ExpressionSection() {
   });
 
   const expressionInnerHtml = () => {
-    if ($card.nested) {
-      if (
-        ankiFields.Expression &&
-        ankiFields.ExpressionFurigana &&
-        ankiFields.ExpressionFurigana.includes("[")
-      ) {
-        return `<ruby>${ankiFields.Expression}<rt>${"\u200b"}</rt></ruby>`;
-      }
-      if (ankiFields.Expression) return ankiFields.Expression;
-    }
     return isServer
       ? undefined
       : ankiFields.ExpressionFurigana
@@ -183,6 +173,20 @@ function ExpressionSection() {
       "data-pitch-type": $card.pitch.type ?? "",
     });
   });
+
+  if ($card.nested) {
+    return (
+      <div
+        class="expression font-secondary text-center vertical-rl transition-colors"
+        {...dataPitchType()}
+        style={{
+          color: "var(--pitch-color)",
+        }}
+      >
+        {$card.ready && <Lazy.Expression />}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -200,7 +204,7 @@ function ExpressionSection() {
           : undefined}
       </div>
       <div
-        class="expression font-secondary text-center vertical-rl"
+        class="expression font-secondary text-center vertical-rl transition-colors"
         {...dataPitchType()}
         style={{
           color: "var(--pitch-color)",

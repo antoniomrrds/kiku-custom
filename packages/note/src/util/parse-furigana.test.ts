@@ -53,8 +53,6 @@ describe("parseFurigana", () => {
   });
 
   it("should handle furigana for punctuation/other characters if preceded by kanji", () => {
-    // This tests the behavior of the current implementation where anything between [ ]
-    // is treated as furigana for the preceding kanji buffer.
     const input = "漢[ ]";
     const result = parseFurigana(input);
     expect(result).toEqual([{ type: "ruby", text: "漢", reading: " " }]);
@@ -107,14 +105,6 @@ describe("parseFurigana", () => {
     expect(result).toEqual([
       { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
       { type: "text", text: "です" },
-    ]);
-  });
-
-  it("should handle 為す術もない[なすすべもない]", () => {
-    const input = "為す術もない[なすすべもない]";
-    const result = parseFurigana(input);
-    expect(result).toEqual([
-      { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
     ]);
   });
 

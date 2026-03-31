@@ -3,13 +3,13 @@ import { createEffect, createSignal, type JSX, onMount, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import { extractKanji, parseHtml } from "#/util/general";
+import { parseFurigana } from "#/util/parse-furigana";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useBreakpointContext } from "../shared/BreakpointContext";
 import { useCardContext } from "../shared/CardContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
-import { parseFurigana } from "./util/parse-furigana";
 
 export default function Expression() {
   const [$card, $setCard] = useCardContext();
@@ -108,7 +108,6 @@ export default function Expression() {
 
   if (
     furiganaData.length === 0 ||
-    ankiFields.ExpressionFurigana.includes("<ruby") ||
     !ankiFields.ExpressionFurigana.includes("[")
   ) {
     return (

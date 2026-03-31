@@ -5,7 +5,6 @@ type Token =
   | { type: "space" };
 
 const isKanji = (char: string) => /[\u4E00-\u9FFF\u3005]/.test(char);
-const isKana = (char: string) => /[\u3040-\u30FF]/.test(char);
 const trailingNumericKanjiPattern = /[0-9０-９]+[\u4E00-\u9FFF\u3005]+$/u;
 
 function tokenize(input: string): Token[] {
@@ -15,17 +14,15 @@ function tokenize(input: string): Token[] {
   while (i < input.length) {
     const char = input[i];
 
-    // Furigana block
     if (char === "[") {
       let value = "";
-      i++; // skip '['
+      i++;
 
       while (i < input.length && input[i] !== "]") {
         value += input[i];
         i++;
       }
 
-      // skip ']'
       if (input[i] === "]") i++;
 
       tokens.push({ type: "furigana", value });
@@ -37,7 +34,6 @@ function tokenize(input: string): Token[] {
     } else if (isKanji(char)) {
       tokens.push({ type: "kanji", value: char });
     } else {
-      // kana or fallback (latin, punctuation, etc.)
       tokens.push({ type: "kana", value: char });
     }
 
@@ -47,16 +43,16 @@ function tokenize(input: string): Token[] {
   return tokens;
 }
 
-type RenderItem =
+export type FuriganaRenderItem =
   | { type: "ruby"; text: string; reading: string }
   | { type: "text"; text: string };
 
-function tokensToRenderItems(tokens: Token[]): RenderItem[] {
-  const result: RenderItem[] = [];
+function tokensToRenderItems(tokens: Token[]): FuriganaRenderItem[] {
+  const result: FuriganaRenderItem[] = [];
 
   let textBuffer = "";
-  let kanjiBuffer = ""; // Accumulates consecutive kanji
-  let mixedBuffer = ""; // Accumulates everything (kanji + kana) since last reset
+  let kanjiBuffer = "";
+  let mixedBuffer = "";
   let lastTokenType: Token["type"] | null = null;
   let hasSpaceBefore = false;
 
@@ -92,7 +88,7 @@ function tokensToRenderItems(tokens: Token[]): RenderItem[] {
       }
 
       case "kana": {
-        kanjiBuffer = ""; // break consecutive kanji
+        kanjiBuffer = "";
         mixedBuffer += token.value;
         break;
       }
@@ -101,18 +97,14 @@ function tokensToRenderItems(tokens: Token[]): RenderItem[] {
         let base = "";
 
         if (hasSpaceBefore) {
-          // Explicit space delimiter: take everything in mixedBuffer
           base = mixedBuffer;
           if (textBuffer.endsWith(" ")) {
             textBuffer = textBuffer.slice(0, -1);
           }
         } else if (lastTokenType === "kanji") {
-          // Ends in Kanji: take only consecutive kanji
           base = mixedBuffer.match(trailingNumericKanjiPattern)?.[0] ?? kanjiBuffer;
-          // Prepend the rest of mixedBuffer to textBuffer
           textBuffer += mixedBuffer.slice(0, -base.length);
         } else if (lastTokenType === "kana") {
-          // Ends in Kana: take everything in mixedBuffer (the "greedy" case)
           base = mixedBuffer;
         }
 
@@ -126,8 +118,6 @@ function tokensToRenderItems(tokens: Token[]): RenderItem[] {
           mixedBuffer = "";
           kanjiBuffer = "";
           hasSpaceBefore = false;
-        } else {
-          // No base found, treat as literal brackets if desired (not implemented here)
         }
         break;
       }
@@ -140,6 +130,6 @@ function tokensToRenderItems(tokens: Token[]): RenderItem[] {
   return result;
 }
 
-export function parseFurigana(input: string): RenderItem[] {
+export function parseFurigana(input: string): FuriganaRenderItem[] {
   return tokensToRenderItems(tokenize(input));
 }
