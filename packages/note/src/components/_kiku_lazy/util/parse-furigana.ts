@@ -6,6 +6,7 @@ type Token =
 
 const isKanji = (char: string) => /[\u4E00-\u9FFF\u3005]/.test(char);
 const isKana = (char: string) => /[\u3040-\u30FF]/.test(char);
+const trailingNumericKanjiPattern = /[0-9０-９]+[\u4E00-\u9FFF\u3005]+$/u;
 
 function tokenize(input: string): Token[] {
   const tokens: Token[] = [];
@@ -107,9 +108,9 @@ function tokensToRenderItems(tokens: Token[]): RenderItem[] {
           }
         } else if (lastTokenType === "kanji") {
           // Ends in Kanji: take only consecutive kanji
-          base = kanjiBuffer;
+          base = mixedBuffer.match(trailingNumericKanjiPattern)?.[0] ?? kanjiBuffer;
           // Prepend the rest of mixedBuffer to textBuffer
-          textBuffer += mixedBuffer.slice(0, -kanjiBuffer.length);
+          textBuffer += mixedBuffer.slice(0, -base.length);
         } else if (lastTokenType === "kana") {
           // Ends in Kana: take everything in mixedBuffer (the "greedy" case)
           base = mixedBuffer;

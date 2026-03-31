@@ -135,4 +135,30 @@ describe("parseFurigana", () => {
       { type: "ruby", text: "食べる", reading: "たべる" },
     ]);
   });
+
+  it("should handle full-width numbers followed by kanji with furigana", () => {
+    const input = "１０日[とおか]";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "ruby", text: "１０日", reading: "とおか" },
+    ]);
+  });
+
+  it("should handle half-width numbers followed by kanji with furigana", () => {
+    const input = "10日[とおか]";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "ruby", text: "10日", reading: "とおか" },
+    ]);
+  });
+
+  it("should handle number-kanji ruby in mixed text", () => {
+    const input = "次の１０日[とおか]に会う";
+    const result = parseFurigana(input);
+    expect(result).toEqual([
+      { type: "text", text: "次の" },
+      { type: "ruby", text: "１０日", reading: "とおか" },
+      { type: "text", text: "に会う" },
+    ]);
+  });
 });
