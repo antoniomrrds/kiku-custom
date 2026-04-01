@@ -1,6 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import circularDpendency from "vite-plugin-circular-dependency";
+import dts from "vite-plugin-dts";
 import solid from "vite-plugin-solid";
 import { paths } from "./tools/paths.js";
 import { getVersion } from "./tools/util.js";
@@ -15,6 +16,7 @@ export default defineConfig({
       outputFilePath: "./.circularDependency.json",
       circleImportThrowErr: true,
     }),
+    dts({ tsconfigPath: "./tsconfig.app.json", outDir: "./dist/types" }),
   ],
   resolve: {
     alias: {

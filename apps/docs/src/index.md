@@ -22,3 +22,11 @@ features:
   - title: Settings Panel
     details: Adjust your theme, font, size, and other configuration options directly within the note.
 ---
+
+## Live Demo
+
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<KikuEmbed />
+
+<KikuEmbed side="back"/>
+</div>

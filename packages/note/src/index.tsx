@@ -4,18 +4,9 @@ import { createStore } from "solid-js/store";
 import { hydrate, render } from "solid-js/web";
 import { Back } from "./components/Back.tsx";
 import { Front } from "./components/Front.tsx";
-import { BreakpointContextProvider } from "./components/shared/BreakpointContext.tsx";
-import {
-  type KikuConfig,
-  type RootDataset,
-  updateConfigState,
-  validateConfig,
-} from "./util/config.ts";
-import { defaultConfig } from "./util/default-config";
-import { constants } from "./util/general.ts";
-import "./styles/tailwind.css";
 import { Layout } from "./components/Layout.tsx";
 import { AnkiFieldContextProvider } from "./components/shared/AnkiFieldsContext.tsx";
+import { BreakpointContextProvider } from "./components/shared/BreakpointContext.tsx";
 import { CacheContextProvider } from "./components/shared/CacheContext.tsx";
 import { CardStoreContextProvider } from "./components/shared/CardContext.tsx";
 import { ConfigContextProvider } from "./components/shared/ConfigContext.tsx";
@@ -25,7 +16,15 @@ import {
   RootFieldGroupContextProvider,
 } from "./components/shared/FieldGroupContext.tsx";
 import { GeneralContextProvider } from "./components/shared/GeneralContext.tsx";
+import {
+  type KikuConfig,
+  type RootDataset,
+  updateConfigState,
+  validateConfig,
+} from "./util/config.ts";
+import { defaultConfig } from "./util/default-config";
 import { exampleFields } from "./util/examples.ts";
+import { constants } from "./util/general.ts";
 import { Logger } from "./util/logger.ts";
 import {
   type AnkiDroidAPI,
@@ -33,6 +32,7 @@ import {
   ankiFieldsSkeleton,
   type CacheStore,
 } from "./util/types.ts";
+import "./styles/tailwind.css";
 
 export async function init({
   root,
@@ -53,7 +53,7 @@ export async function init({
   side: "front" | "back";
   ankiFields: AnkiFields;
   ssr?: boolean;
-  config?: KikuConfig;
+  config?: KikuConfig | ((defaultConfig: KikuConfig) => KikuConfig);
   aborter?: AbortController;
   ankiDroidAPI?: AnkiDroidAPI;
   logger?: Logger;
@@ -68,6 +68,7 @@ export async function init({
 
   root.part.add("root-part");
 
+  config = typeof config === "function" ? config(defaultConfig) : config;
   updateConfigState(root, config, !isAnkiWeb);
   const [$config, $setConfig] = createStore(config);
 
