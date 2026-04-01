@@ -12,9 +12,17 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "jsx": "preserve",
-    "allowJs": true
+    "allowJs": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["src/**/*", ".vitepress/**/*"],
+  "include": [
+    "mds/**/*",
+    ".vitepress/**/*",
+    "vitepress.config.ts",
+    "vitepress.theme.ts",
+    "src/**/*"
+  ],
   "exclude": [
     "node_modules",
     ".vitepress/cache",
