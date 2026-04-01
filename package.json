@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "package": "turbo run package",
+    "package": "turbo run package --force",
     "dev": "turbo run dev --env-mode=loose",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
@@ -16,8 +16,7 @@
     "copy-dist": "turbo run copy-dist",
     "update-note-type": "turbo run update-note-type",
     "generate-template": "turbo run generate-template",
-    "apply": "turbo run apply",
-    "apply:force": "turbo run apply --force"
+    "apply": "turbo run apply --force"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.2",
