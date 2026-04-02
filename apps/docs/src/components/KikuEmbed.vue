@@ -47,6 +47,17 @@ const kikuDemoFields = {
   "kana:SentenceFurigana": "",
 };
 
+const cardFieldNames = [
+  "IsWordAndSentenceCard",
+  "IsClickCard",
+  "IsSentenceCard",
+  "IsAudioCard",
+] as const;
+
+type CardFieldName = (typeof cardFieldNames)[number];
+
+const selectedCardField = ref<CardFieldName | "">("");
+
 const host = ref<HTMLElement>();
 const currentSide = ref<"front" | "back">(props.side ?? "front");
 const toggleLabel = computed(() =>
@@ -60,6 +71,7 @@ async function renderKiku(): Promise<void> {
   dispose?.();
 
   const isDark = document.documentElement.classList.contains("dark");
+  const theme = isDark ? "dark" : "light";
   const assetsPath = window.location.origin;
   const shadowRoot =
     host.value.shadowRoot ?? host.value.attachShadow({ mode: "open" });
@@ -86,24 +98,31 @@ async function renderKiku(): Promise<void> {
   root.innerHTML = "";
   root.dataset.side = currentSide.value;
 
+  const ankiFields = {
+    ...kikuDemoFields,
+    ...Object.fromEntries(
+      cardFieldNames.map((fieldName) => [
+        fieldName,
+        selectedCardField.value === fieldName ? "x" : "",
+      ]),
+    ),
+  };
+
   const res = await init({
     root,
     side: currentSide.value,
-    ankiFields: kikuDemoFields,
+    ankiFields,
     assetsPath,
     rootDataset: {
       blurNsfw: "true",
       modVertical: "false",
       pictureOnFront: "false",
-      theme: isDark ? "dark" : "light",
+      theme,
     },
     ssr: false,
     isAnkiWeb: true,
     workerPath: kikuWorkerUrl,
-    config: (defaultConfig) => ({
-      ...defaultConfig,
-      theme: isDark ? "dark" : "light",
-    }),
+    config: (defaultConfig) => ({ ...defaultConfig, theme }),
   });
 
   dispose = res.dispose;
@@ -121,6 +140,10 @@ watch(currentSide, async () => {
   await renderKiku();
 });
 
+watch(selectedCardField, async () => {
+  await renderKiku();
+});
+
 watch(
   () => props.side,
   (side) => {
@@ -135,10 +158,46 @@ onBeforeUnmount(() => {
 
 <template>
   <div style="display: grid; gap: 0.75rem">
-    <div style="display: flex">
+    <div
+      style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center"
+    >
       <VPButton theme="alt" text="" @click="toggleSide">
         {{ toggleLabel }}
       </VPButton>
+      <label
+        style="
+          display: inline-flex;
+          gap: 0.4rem;
+          align-items: center;
+          cursor: pointer;
+        "
+      >
+        <input
+          v-model="selectedCardField"
+          type="radio"
+          value=""
+          style="margin: 0"
+        />
+        <span>Default</span>
+      </label>
+      <label
+        v-for="fieldName in cardFieldNames"
+        :key="fieldName"
+        style="
+          display: inline-flex;
+          gap: 0.4rem;
+          align-items: center;
+          cursor: pointer;
+        "
+      >
+        <input
+          v-model="selectedCardField"
+          type="radio"
+          :value="fieldName"
+          style="margin: 0"
+        />
+        <span>{{ fieldName }}</span>
+      </label>
     </div>
     <div style="max-height: 85vh; overflow: auto">
       <div ref="host" />
