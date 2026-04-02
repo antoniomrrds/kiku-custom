@@ -8,6 +8,10 @@
       "import": "./dist/_kiku.js",
       "types": "./dist/types/src/index.d.ts"
     },
+    "./_kiku_worker.js": {
+      "import": "./dist/_kiku_worker.js",
+      "types": "./dist/types/src/worker/_kiku_worker.d.ts"
+    },
     "./_kiku.css": "./dist/_kiku.css"
   },
   "scripts": {

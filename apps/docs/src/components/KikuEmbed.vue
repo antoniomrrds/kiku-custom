@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { init } from "@repo/note";
-import kikuCss from "@repo/note/_kiku.css?url";
+import kikuCssUrl from "@repo/note/_kiku.css?url";
+import kikuWorkerUrl from "@repo/note/_kiku_worker.js?url";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
 const props = defineProps<{ side?: "front" | "back" }>();
@@ -58,7 +59,7 @@ onMounted(async () => {
 
   const link = document.createElement("link");
   link.rel = "stylesheet";
-  link.href = kikuCss;
+  link.href = kikuCssUrl;
   shadowRoot.append(link);
 
   const root = document.createElement("div");
@@ -72,9 +73,15 @@ onMounted(async () => {
     side: props.side ?? "front",
     ankiFields: kikuDemoFields,
     assetsPath,
-    rootDataset: {},
+    rootDataset: {
+      blurNsfw: "true",
+      modVertical: "false",
+      pictureOnFront: "false",
+      theme: isDark ? "dark" : "light",
+    },
     ssr: false,
     isAnkiWeb: true,
+    workerPath: kikuWorkerUrl,
     config: (defaultConfig) => ({
       ...defaultConfig,
       theme: isDark ? "dark" : "light",

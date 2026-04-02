@@ -183,8 +183,8 @@ export function useKanji() {
         env: constants,
         config: unwrap($config),
         assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
-        preferAnkiConnect:
-          $config.preferAnkiConnect && !!$general.isAnkiDesktop,
+        preferAnkiConnect: $config.preferAnkiConnect && $general.isAnkiDesktop,
+        workerPath: $general.workerPath,
       };
       const nex = await createNex(opts, $general.logger, cacheStore?.nex);
       $general.nex.resolve(nex);

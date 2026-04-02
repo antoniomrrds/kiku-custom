@@ -60,6 +60,7 @@ export async function createNex(
     assetsPath: string;
     config: KikuConfig;
     preferAnkiConnect: boolean;
+    workerPath?: string;
   },
   logger: Logger,
   existingNex?: NexApi,
@@ -75,6 +76,8 @@ export async function createNex(
     worker = new Worker(`${opts.assetsPath}/_kiku_worker.js`, {
       type: "module",
     });
+  } else if (opts.workerPath) {
+    worker = new Worker(opts.workerPath, { type: "module" });
   } else {
     worker = new Worker(new URL("./_kiku_worker.ts", import.meta.url), {
       type: "module",

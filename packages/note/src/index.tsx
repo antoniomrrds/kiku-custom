@@ -47,6 +47,7 @@ export async function init({
   assetsPath = window.location.origin,
   isAnkiWeb = false,
   isAnkiDesktop = typeof pycmd !== "undefined",
+  workerPath,
   rootDataset,
 }: {
   root: HTMLElement;
@@ -61,6 +62,7 @@ export async function init({
   assetsPath?: string;
   isAnkiWeb?: boolean;
   isAnkiDesktop?: boolean;
+  workerPath?: string;
   rootDataset?: RootDataset;
 }) {
   const [startupTime, setStartupTime] = createSignal(0);
@@ -79,6 +81,7 @@ export async function init({
           aborter={aborter}
           isAnkiWeb={isAnkiWeb}
           isAnkiDesktop={isAnkiDesktop}
+          workerPath={workerPath}
           templateDataset={rootDataset ?? {}}
           ankiDroidAPI={ankiDroidAPI}
           startupTime={startupTime}

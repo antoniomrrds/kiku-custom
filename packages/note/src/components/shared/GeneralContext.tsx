@@ -17,6 +17,7 @@ type GeneralStore = {
   templateDataset: RootDataset;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
+  workerPath: string | undefined;
   ankiDroidAPI: AnkiDroidAPI | undefined;
   startupTime: () => number;
   assetsPath: string;
@@ -45,6 +46,7 @@ export function GeneralContextProvider(props: {
   children: JSX.Element;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
+  workerPath: string | undefined;
   templateDataset: RootDataset;
   ankiDroidAPI: AnkiDroidAPI | undefined;
   startupTime: () => number;
@@ -100,6 +102,7 @@ export function GeneralContextProvider(props: {
     templateDataset: props.templateDataset,
     isAnkiWeb: props.isAnkiWeb,
     isAnkiDesktop: props.isAnkiDesktop,
+    workerPath: props.workerPath,
     ankiDroidAPI: props.ankiDroidAPI,
     startupTime: props.startupTime,
     assetsPath: props.assetsPath,
