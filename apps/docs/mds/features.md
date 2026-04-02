@@ -4,6 +4,10 @@ outline: deep
 
 # Features
 
+:::info
+Some of the videos are outdated.
+:::
+
 ## Some highlighted features
 
 ### Kanji View
@@ -45,16 +49,11 @@ The settings are saved in the `_kiku_config.json` file under your Anki `collecti
 
 ### AnkiDroid support
 
-AnkiDroid is supported. There is also a gesture feature for AnkiDroid.
 Swipe to the right to answer with `Good`, swipe to the left to answer with `Again`. The gesture direction can be inverted in the settings.
 
 <video controls style="height: 720px;">
   <source src="/media/feature-ankidroid.mp4" type="video/mp4"  />
 </video>
-
-:::info AnkiWeb
-AnkiWeb is supported, but it hasn't been tested heavily. Please open an issue if you encounter any problems.
-:::
 
 :::info AnkiMobile
 AnkiMobile needs some adjustments to work properly. Unfortunately, I don't have any iOS device to test it.

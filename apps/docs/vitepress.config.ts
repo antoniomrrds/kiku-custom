@@ -74,10 +74,6 @@ export default defineConfig({
             link: "/custom-dictionary-style",
           },
           {
-            text: "Custom Pitch Color",
-            link: "/custom-pitch-color",
-          },
-          {
             text: "Custom Theme",
             link: "/custom-theme",
           },

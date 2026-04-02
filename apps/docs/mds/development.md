@@ -34,7 +34,9 @@ Kiku Note is a TypeScript project that uses [Vite](https://vitejs.dev/) as the b
 ├──  .db                      # Databases used by Kiku
 ├──  .fonts                   # Default web fonts used by Kiku
 ├──  dist
+├──  plugins                  # Plugin types and plugin examples
 ├──  preprocess
+├──  preview                  # Previewers (Anki)
 ├──  script
 ├──  template                 # Templates to generate Anki note files
 │   ├──  _kiku_plugin.css     # Template to generate _kiku_plugin.css
@@ -45,13 +47,10 @@ Kiku Note is a TypeScript project that uses [Vite](https://vitejs.dev/) as the b
 ├──  tools                    # Shared tools and configuration
 ├── 󰣞 src
 │   ├──  components
-│   ├──  plugins              # Plugin types and plugin examples
 │   ├──  styles               # The actual CSS files
 │   ├──  util
 │   ├──  worker
-│   ├──  index.tsx            # Entry point for the JavaScript bundle
-│   └──  types.ts
-├──  index.html
+│   └──  index.tsx            # Entry point for the JavaScript bundle
 ├──  package.json
 ├──  tsconfig.json
 └──  vite.config.ts
@@ -65,7 +64,7 @@ Kiku Note is a TypeScript project that uses [Vite](https://vitejs.dev/) as the b
 
 ### Preprocess
 
-- Run `preprocess/download-fonts.ts` to download the web fonts used by Kiku.
+- Run `preprocess/download-fonts.ts` (with `npx vite-node`) to download the web fonts used by Kiku.
 - Create a `.env` file in `packages/note` from `.env.example` and configure your Anki path there.
 - For packaging, prepare a deck named "Kiku" in Anki.
 
@@ -87,15 +86,15 @@ Some scripts require Anki with AnkiConnect to be running.
 
 - `pnpm run build` to build the JavaScript and CSS bundles.
 - `pnpm generate-template` to generate the Front, Back, and Styling templates and post-process the build output.
-- `pnpm copy-dist` to copy the generated files to your Anki `collection.media` directory.
+- `pnpm copy-anki-build` to copy the generated files to your Anki `collection.media` directory.
 - `pnpm update-note-type` to update the Kiku note type without re-importing the `.apkg`.
-- `pnpm apply` to run `build`, `generate-template`, `copy-dist`, and `update-note-type` in sequence.
+- `pnpm apply` to run `build`, `generate-template`, `copy-anki-build`, and `update-note-type` in sequence.
 - `pnpm package` to package the `.apkg`.
 
 ### Developing with the Vite Dev Server
 
 Simply run `pnpm run dev` to start the Vite dev server on port `5173`.
-This loads `index.html`, which is designed to mimic Anki's WebView output.
+This loads `preview/anki/index.html`, which is designed to mimic Anki's WebView output.
 The dev server also serves your Anki `collection.media` directory.
 
 Switch between `http://localhost:5173/?side=back#` and `http://localhost:5173/?side=front#` to switch between the back and front sides.
