@@ -2,7 +2,7 @@
 import { init } from "@repo/note";
 import kikuCssUrl from "@repo/note/_kiku.css?url";
 import kikuWorkerUrl from "@repo/note/_kiku_worker.js?url";
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 const props = defineProps<{ side?: "front" | "back" }>();
 
@@ -47,31 +47,48 @@ const kikuDemoFields = {
   "kana:SentenceFurigana": "",
 };
 
-const host = ref();
-let dispose: () => void;
+const host = ref<HTMLElement>();
+const currentSide = ref<"front" | "back">(props.side ?? "front");
+const toggleLabel = computed(() =>
+  currentSide.value === "front" ? "Show back" : "Show front",
+);
+let dispose: (() => void) | undefined;
 
-onMounted(async () => {
+async function renderKiku(): Promise<void> {
   if (!host.value) return;
+
+  dispose?.();
 
   const isDark = document.documentElement.classList.contains("dark");
   const assetsPath = window.location.origin;
-  const shadowRoot = host.value.attachShadow({ mode: "open" });
+  const shadowRoot =
+    host.value.shadowRoot ?? host.value.attachShadow({ mode: "open" });
 
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = kikuCssUrl;
-  shadowRoot.append(link);
+  let link = shadowRoot.querySelector(
+    'link[data-kiku-docs-style="true"]',
+  ) as HTMLLinkElement | null;
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = kikuCssUrl;
+    link.dataset.kikuDocsStyle = "true";
+    shadowRoot.append(link);
+  }
 
-  const root = document.createElement("div");
-  root.id = "kiku-root";
-  root.dataset.side = props.side;
-  root.style.minHeight = "720px";
+  let root = shadowRoot.querySelector("#kiku-root") as HTMLDivElement | null;
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "kiku-root";
+    root.style.minHeight = "720px";
+    shadowRoot.append(root);
+  }
 
-  shadowRoot.append(root);
+  root.innerHTML = "";
+  root.dataset.side = currentSide.value;
 
   const res = await init({
     root,
-    side: props.side ?? "front",
+    side: currentSide.value,
     ankiFields: kikuDemoFields,
     assetsPath,
     rootDataset: {
@@ -90,7 +107,26 @@ onMounted(async () => {
   });
 
   dispose = res.dispose;
+}
+
+function toggleSide(): void {
+  currentSide.value = currentSide.value === "front" ? "back" : "front";
+}
+
+onMounted(async () => {
+  await renderKiku();
 });
+
+watch(currentSide, async () => {
+  await renderKiku();
+});
+
+watch(
+  () => props.side,
+  (side) => {
+    if (side) currentSide.value = side;
+  },
+);
 
 onBeforeUnmount(() => {
   dispose?.();
@@ -98,7 +134,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div style="max-height: 85vh; overflow: auto">
-    <div ref="host" />
+  <div style="display: grid; gap: 0.75rem">
+    <div style="display: flex">
+      <VPButton theme="alt" text="" @click="toggleSide">
+        {{ toggleLabel }}
+      </VPButton>
+    </div>
+    <div style="max-height: 85vh; overflow: auto">
+      <div ref="host" />
+    </div>
   </div>
 </template>
