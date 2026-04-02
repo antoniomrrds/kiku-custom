@@ -98,7 +98,7 @@ async function renderKiku(): Promise<void> {
   root.innerHTML = "";
   root.dataset.side = currentSide.value;
 
-  const ankiFields = {
+  const ankiFields: typeof kikuDemoFields = {
     ...kikuDemoFields,
     ...Object.fromEntries(
       cardFieldNames.map((fieldName) => [
@@ -106,6 +106,10 @@ async function renderKiku(): Promise<void> {
         selectedCardField.value === fieldName ? "x" : "",
       ]),
     ),
+    ExpressionAudio:
+      selectedCardField.value === "IsAudioCard" && currentSide.value === "front"
+        ? ""
+        : kikuDemoFields.ExpressionAudio,
   };
 
   const res = await init({
