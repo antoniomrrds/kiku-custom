@@ -1,0 +1,20 @@
+[data-pitch-type^="heiban"] {
+  --pitch-color: #3b82f6; /* Blue */
+  --pitch-content-color: #ffffff;
+}
+[data-pitch-type^="atamadaka"] {
+  --pitch-color: #ef4444; /* Red */
+  --pitch-content-color: #ffffff;
+}
+[data-pitch-type^="nakadaka"] {
+  --pitch-color: #f59e0b; /* Amber */
+  --pitch-content-color: #ffffff;
+}
+[data-pitch-type^="odaka"] {
+  --pitch-color: #10b981; /* Emerald */
+  --pitch-content-color: #ffffff;
+}
+[data-pitch-type^="kifuku"] {
+  --pitch-color: #8b5cf6; /* Violet */
+  --pitch-content-color: #ffffff;
+}

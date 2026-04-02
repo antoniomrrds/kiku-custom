@@ -77,6 +77,10 @@ export default defineConfig({
             text: "Custom Theme",
             link: "/custom-theme",
           },
+          {
+            text: "Custom Pitch Accent Color",
+            link: "/custom-pitch-accent-color",
+          },
         ],
       },
     ],
