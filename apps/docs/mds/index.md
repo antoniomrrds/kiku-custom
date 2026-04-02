@@ -16,7 +16,7 @@ hero:
 
 features:
   - title: Built-in Themes
-    details: Instantly switch between 35 ready-to-use themes, ranging from light and minimal to dark and focused.
+    details: Instantly switch between 35 ready-to-use themes, ranging from light and minimal to dark.
   - title: Kanji View
     details: Explore notes that share the same or similar kanji, and quickly jump between related expressions.
   - title: Settings Panel
@@ -25,8 +25,4 @@ features:
 
 ## Live Demo
 
-<div style="display: flex; flex-direction: column; gap: 1rem;">
 <KikuEmbed />
-
-<KikuEmbed side="back"/>
-</div>

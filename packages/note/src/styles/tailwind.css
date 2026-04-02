@@ -66,6 +66,16 @@
   --color-pitch-kifuku: var(--color-accent);
 }
 
+@layer base {
+  [data-theme] {
+    --color-pitch-heiban: var(--color-info);
+    --color-pitch-atamadaka: var(--color-error);
+    --color-pitch-nakadaka: var(--color-warning);
+    --color-pitch-odaka: var(--color-success);
+    --color-pitch-kifuku: var(--color-accent);
+  }
+}
+
 @custom-variant hover (&:hover);
 
 @utility gutter-stable {
