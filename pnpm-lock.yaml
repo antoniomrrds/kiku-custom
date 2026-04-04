@@ -19,10 +19,11 @@ importers:
         version: 5.9.3
 
   apps/docs:
-    devDependencies:
+    dependencies:
       '@repo/note':
         specifier: workspace:*
         version: link:../../packages/note
+    devDependencies:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
