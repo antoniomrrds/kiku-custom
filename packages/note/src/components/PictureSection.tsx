@@ -81,7 +81,7 @@ export function PictureSection() {
         {isServer ? "{{Picture}}" : undefined}
       </div>
 
-      <Show when={pictures().length > 1}>
+      <Show when={pictures().length > 1 && $card.ready}>
         <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
           <button
             type="button"
