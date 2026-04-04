@@ -6,8 +6,10 @@
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
+  "dependencies": {
+    "@repo/note": "workspace:*"
+  },
   "devDependencies": {
-    "@repo/note": "workspace:*",
     "vitepress": "2.0.0-alpha.12",
     "typescript": "~5.9.3",
     "vue": "^3.5.22"
