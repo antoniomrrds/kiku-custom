@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { init } from "@repo/note";
-import kikuCssUrl from "@repo/note/_kiku.css?url";
 import kikuWorkerUrl from "@repo/note/_kiku_worker.js?url";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
@@ -76,15 +75,29 @@ async function renderKiku(): Promise<void> {
   const shadowRoot =
     host.value.shadowRoot ?? host.value.attachShadow({ mode: "open" });
 
-  let link = shadowRoot.querySelector(
-    'link[data-kiku-docs-style="true"]',
-  ) as HTMLLinkElement | null;
-  if (!link) {
-    link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = kikuCssUrl;
-    link.dataset.kikuDocsStyle = "true";
-    shadowRoot.append(link);
+  if (import.meta.env.DEV) {
+    let style = shadowRoot.querySelector(
+      'style[data-kiku-docs-style="true"]',
+    ) as HTMLStyleElement | null;
+    if (!style) {
+      const kikuCss = await import("@repo/note/_kiku.css?inline");
+      style = document.createElement("style");
+      style.innerHTML = kikuCss.default;
+      style.dataset.kikuDocsStyle = "true";
+      shadowRoot.append(style);
+    }
+  } else {
+    const kikuCssUrl = new URL("/_kiku.css", import.meta.url);
+    let link = shadowRoot.querySelector(
+      'link[data-kiku-docs-style="true"]',
+    ) as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = kikuCssUrl.toString();
+      link.dataset.kikuDocsStyle = "true";
+      shadowRoot.append(link);
+    }
   }
 
   let root = shadowRoot.querySelector("#kiku-root") as HTMLDivElement | null;

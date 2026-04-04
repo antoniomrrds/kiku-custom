@@ -4,14 +4,16 @@
   "scripts": {
     "dev": "vitepress dev --port 5174",
     "build": "vitepress build",
-    "preview": "vitepress preview"
+    "preview": "vitepress preview",
+    "start": "vitepress build && vitepress preview"
   },
   "dependencies": {
     "@repo/note": "workspace:*"
   },
   "devDependencies": {
-    "vitepress": "2.0.0-alpha.12",
     "typescript": "~5.9.3",
+    "vite": "^8.0.0",
+    "vitepress": "2.0.0-alpha.12",
     "vue": "^3.5.22"
   }
 }
