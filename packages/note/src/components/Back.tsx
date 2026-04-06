@@ -33,6 +33,7 @@ const Lazy = {
   KanjiPage: lazy(async () => ({ default: (await import("./_kiku_lazy")).KanjiPage, })),
   UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid, })),
   Expression: lazy(async () => ({ default: (await import("./_kiku_lazy")).Expression, })),
+  AnkiMobileDebug: lazy(async () => ({ default: (await import("./_kiku_lazy")).AnkiMobileDebug, })),
 };
 
 export function Back(props: { onExitNested?: () => void }) {
@@ -139,6 +140,7 @@ export function Back(props: { onExitNested?: () => void }) {
             <>
               <Lazy.BackFooter tags={tags} />
               <Lazy.AudioButtons position={2} />
+              <Lazy.AnkiMobileDebug />
             </>
           )}
         </Match>

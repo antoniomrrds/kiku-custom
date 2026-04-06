@@ -1,3 +1,4 @@
+import AnkiMobileDebug from "./AnkiMobileDebug";
 import AudioButtons from "./AudioButtons";
 import BackBody from "./BackBody";
 import BackFooter from "./BackFooter";
@@ -24,4 +25,5 @@ export {
   UseAnkiDroid,
   Sentence,
   Expression,
+  AnkiMobileDebug,
 };
