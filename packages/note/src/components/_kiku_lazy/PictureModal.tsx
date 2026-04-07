@@ -67,6 +67,7 @@ export default function PictureModal(props: {
           hidden: !img(),
         }}
         on:click={props["on:click"]}
+        on:touchend={(e) => e.stopPropagation()}
       >
         <div class="flex justify-end items-center mb-4 sticky top-0 rounded-lg z-10">
           <button
@@ -79,6 +80,7 @@ export default function PictureModal(props: {
               e.stopPropagation();
               setShowAll((prev) => !prev);
             }}
+            on:touchend={(e) => e.stopPropagation()}
           >
             {showAll() ? "Show current" : "Show all"}
           </button>
@@ -103,6 +105,7 @@ export default function PictureModal(props: {
                         setImg(pic.html);
                         setShowAll(false);
                       }}
+                      on:touchend={(e) => e.stopPropagation()}
                     >
                       <div
                         class="absolute inset-0 bg-cover bg-center blur-lg brightness-50 scale-110"

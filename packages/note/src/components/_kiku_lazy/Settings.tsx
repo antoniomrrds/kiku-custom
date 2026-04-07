@@ -119,7 +119,11 @@ export default function Settings() {
           >
             <div class="mx-auto w-full relative layout-max-width">
               <div class="flex flex-row gap-2 justify-end animate-fade-in mb-4 px-2 sm:px-4">
-                <button class="btn" on:click={() => navigateBack()}>
+                <button
+                  class="btn"
+                  on:click={() => navigateBack()}
+                  on:touchend={(e) => e.stopPropagation()}
+                >
                   Back
                 </button>
                 <button
@@ -131,6 +135,7 @@ export default function Settings() {
                   }}
                   disabled={!$general.isAnkiConnectAvailable}
                   on:click={saveConfig}
+                  on:touchend={(e) => e.stopPropagation()}
                 >
                   Save
                 </button>
@@ -577,6 +582,7 @@ function ThemeSettings() {
               on:click={() => {
                 changeTheme(theme);
               }}
+              on:touchend={(e) => e.stopPropagation()}
             >
               <div class="bg-base-100 text-base-content w-full cursor-pointer">
                 <div class="grid grid-cols-5 grid-rows-3" data-theme={theme}>
@@ -667,6 +673,7 @@ function FontSettings() {
                     defaultConfig.systemFontPrimary,
                   );
                 }}
+                on:touchend={(e) => e.stopPropagation()}
               >
                 <UndoIcon
                   class="size-4 cursor-pointer"
@@ -760,6 +767,7 @@ function FontSettings() {
                     defaultConfig.systemFontSecondary,
                   );
                 }}
+                on:touchend={(e) => e.stopPropagation()}
               >
                 <UndoIcon
                   class="size-4 cursor-pointer"
@@ -862,6 +870,7 @@ function FontSizeSettingsFieldset(props: {
             on:click={() => {
               $setConfig(props.configKey, defaultConfig[props.configKey]);
             }}
+            on:touchend={(e) => e.stopPropagation()}
           >
             <UndoIcon
               class="size-4 cursor-pointer"
@@ -930,6 +939,7 @@ function ClipboardCopyButton(props: { text: string | (() => string) }) {
   return (
     <button
       on:click={copyToClipboard}
+      on:touchend={(e) => e.stopPropagation()}
       classList={{
         hidden: $general.isAnkiDesktop,
       }}
@@ -1027,6 +1037,7 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
           on:click={() => {
             $setConfig(props.configKey, defaultConfig[props.configKey]);
           }}
+          on:touchend={(e) => e.stopPropagation()}
         >
           <UndoIcon
             class="size-4 cursor-pointer"
@@ -1042,6 +1053,7 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
         class="btn btn-sm w-full font-mono"
         classList={{ "btn-primary": isRecording() }}
         on:click={() => setIsRecording(!isRecording())}
+        on:touchend={(e) => e.stopPropagation()}
         on:keydown={onKeyDown}
       >
         {isRecording()
@@ -1109,6 +1121,7 @@ function DebugSettings() {
                       defaultConfig.ankiConnectAddress,
                     );
                   }}
+                  on:touchend={(e) => e.stopPropagation()}
                 >
                   <UndoIcon
                     class="size-4 cursor-pointer"
@@ -1224,6 +1237,7 @@ function DebugSettings() {
                 on:click={() => {
                   setLogs($general.logger.get());
                 }}
+                on:touchend={(e) => e.stopPropagation()}
               >
                 <RefreshCwIcon class="size-4 text-base-content-calm cursor-pointer" />
               </button>

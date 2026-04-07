@@ -28,7 +28,10 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
       <div class="flex gap-1 sm:gap-2 items-center animate-fade-in-sm">
         <Switch>
           <Match when={$card.nested}>
-            <button on:click={props.onExitNested}>
+            <button
+              on:click={props.onExitNested}
+              on:touchend={(e) => e.stopPropagation()}
+            >
               <ArrowLeftIcon class="size-5 cursor-pointer text-base-content-soft" />
             </button>
             <MergeContextModal />
@@ -49,6 +52,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
                       navigate("main", "back"),
                     );
                   }}
+                  on:touchend={(e) => e.stopPropagation()}
                 >
                   <BoltIcon
                     class="size-5"
@@ -147,6 +151,7 @@ function KanjiPageIndicator() {
           on:click={() => {
             onClick(kanji);
           }}
+          on:touchend={(e) => e.stopPropagation()}
         >
           <span>{kanji}</span>
           <span
@@ -170,6 +175,7 @@ function KanjiPageIndicator() {
         on:click={() => {
           onClick(constants.SAME_READING);
         }}
+        on:touchend={(e) => e.stopPropagation()}
       >
         <span>読</span>
         <span
@@ -192,6 +198,7 @@ function KanjiPageIndicator() {
         on:click={() => {
           onClick(constants.SAME_EXPRESSION);
         }}
+        on:touchend={(e) => e.stopPropagation()}
       >
         <span>同</span>
         <span

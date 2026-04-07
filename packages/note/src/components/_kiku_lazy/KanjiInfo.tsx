@@ -393,6 +393,7 @@ function KanjiKeyword(props: {
         "text-base-content-soft": !ready(),
       }}
       on:click={props.onClick}
+      on:touchend={(e) => e.stopPropagation()}
     >
       <span class=" px-1 text-lg sm:text-xl">{$kanji.kanji}</span>
       <Show when={keyword()}>

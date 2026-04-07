@@ -15,6 +15,7 @@ export default function HeaderSettings() {
         on:click={() => {
           navigateBack();
         }}
+        on:touchend={(e) => e.stopPropagation()}
       >
         <ArrowLeftIcon class="size-5 cursor-pointer text-base-content-soft" />
       </button>
@@ -37,6 +38,7 @@ export default function HeaderSettings() {
                   $general.toast.error("AnkiConnect is not available");
                 }
               }}
+              on:touchend={(e) => e.stopPropagation()}
             >
               <RefreshCwIcon class="size-4 cursor-pointer text-base-content-soft" />
             </button>

@@ -136,6 +136,7 @@ export default function BackBody(props: {
             <div
               class="flex justify-between text-base-content-calm text-sm cursor-pointer hover:text-base-content transition-colors mb-1 tappable"
               on:click={() => modalRef?.showModal()}
+              on:touchend={(e) => e.stopPropagation()}
             >
               <div
                 style={{
@@ -168,11 +169,13 @@ export default function BackBody(props: {
                   type="button"
                   class="h-full w-6 hover:bg-base-content/10 cursor-pointer pointer-events-auto transition-colors rounded-l-lg"
                   on:click={() => changePage(-1)}
+                  on:touchend={(e) => e.stopPropagation()}
                 />
                 <button
                   type="button"
                   class="h-full w-6 hover:bg-base-content/10 cursor-pointer pointer-events-auto transition-colors rounded-r-lg"
                   on:click={() => changePage(1)}
+                  on:touchend={(e) => e.stopPropagation()}
                 />
               </div>
             )}
@@ -197,6 +200,7 @@ export default function BackBody(props: {
                     setDefinitionIndex(i());
                     modalRef?.close();
                   }}
+                  on:touchend={(e) => e.stopPropagation()}
                 >
                   <span class="truncate">
                     {i() + 1}. {page.name}

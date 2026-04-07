@@ -151,6 +151,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
         on:click={() => {
           setChecked(!checked());
         }}
+        on:touchend={(e) => e.stopPropagation()}
       >
         <KanjiText />
         <div class="flex gap-1 sm:gap-2 absolute top-2 right-2 sm:top-4 sm:right-4">
@@ -366,6 +367,7 @@ function AnkiNoteItem(props: {
             on:click={() => {
               onNextClick();
             }}
+            on:touchend={(e) => e.stopPropagation()}
           >
             <ArrowLeftIcon class="size-5 sm:size-8 text-base-content-soft rotate-180 cursor-pointer"></ArrowLeftIcon>
           </button>

@@ -137,9 +137,7 @@ describe("parseFurigana", () => {
   it("should handle half-width numbers followed by kanji with furigana", () => {
     const input = "10日[とおか]";
     const result = parseFurigana(input);
-    expect(result).toEqual([
-      { type: "ruby", text: "10日", reading: "とおか" },
-    ]);
+    expect(result).toEqual([{ type: "ruby", text: "10日", reading: "とおか" }]);
   });
 
   it("should handle number-kanji ruby in mixed text", () => {

@@ -51,6 +51,7 @@ export default function DefinitionPictureSection(props: {
           const picture = currentDefPic();
           if (picture) props.onDefinitionPictureClick?.(picture);
         }}
+        on:touchend={(e) => e.stopPropagation()}
       >
         <div innerHTML={currentDefPic()}></div>
 
@@ -67,6 +68,7 @@ export default function DefinitionPictureSection(props: {
                     definitionPictures().length,
                 );
               }}
+              on:touchend={(e) => e.stopPropagation()}
             />
             <button
               type="button"
@@ -77,6 +79,7 @@ export default function DefinitionPictureSection(props: {
                   (prev) => (prev + 1) % definitionPictures().length,
                 );
               }}
+              on:touchend={(e) => e.stopPropagation()}
             />
           </div>
           <div class="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5 pointer-events-none opacity-0 group-hover/defpic:opacity-100 transition-opacity">

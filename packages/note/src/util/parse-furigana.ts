@@ -102,7 +102,8 @@ function tokensToRenderItems(tokens: Token[]): FuriganaRenderItem[] {
             textBuffer = textBuffer.slice(0, -1);
           }
         } else if (lastTokenType === "kanji") {
-          base = mixedBuffer.match(trailingNumericKanjiPattern)?.[0] ?? kanjiBuffer;
+          base =
+            mixedBuffer.match(trailingNumericKanjiPattern)?.[0] ?? kanjiBuffer;
           textBuffer += mixedBuffer.slice(0, -base.length);
         } else if (lastTokenType === "kana") {
           base = mixedBuffer;

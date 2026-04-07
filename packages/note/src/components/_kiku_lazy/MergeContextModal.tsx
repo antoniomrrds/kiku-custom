@@ -214,6 +214,7 @@ export default function MergeContextModal() {
                 dialogRef.showModal();
               }
             }}
+            on:touchend={(e) => e.stopPropagation()}
           >
             <GitPullRequestArrow class="size-4 cursor-pointer text-base-content-soft animate-fade-in-sm" />
           </button>
@@ -238,6 +239,7 @@ export default function MergeContextModal() {
                     $general.toast.error("AnkiConnect is not available");
                   }
                 }}
+                on:touchend={(e) => e.stopPropagation()}
               >
                 <RefreshCwIcon class="size-4 cursor-pointer text-base-content-soft" />
               </button>
@@ -274,6 +276,7 @@ export default function MergeContextModal() {
                     //   prev === "toRoot" ? "toCurrent" : "toRoot",
                     // );
                   }}
+                  on:touchend={(e) => e.stopPropagation()}
                 >
                   <ArrowLeftIcon
                     class="self-center text-base-content-calm size-10 cursor-pointer transition-transform"
@@ -380,7 +383,11 @@ export default function MergeContextModal() {
               <form method="dialog">
                 <button class="btn">Close</button>
               </form>
-              <button class="btn btn-secondary" on:click={onPreviewClick}>
+              <button
+                class="btn btn-secondary"
+                on:click={onPreviewClick}
+                on:touchend={(e) => e.stopPropagation()}
+              >
                 Preview
               </button>
               <button
@@ -391,6 +398,7 @@ export default function MergeContextModal() {
                   "btn-error": deleteRootNote(),
                 }}
                 on:click={onMergeClick}
+                on:touchend={(e) => e.stopPropagation()}
               >
                 Merge
               </button>

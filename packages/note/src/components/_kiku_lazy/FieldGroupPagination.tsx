@@ -55,6 +55,7 @@ export default function FieldGroupPagination() {
           type="button"
           class="btn btn-ghost btn-circle btn-sm sm:btn-md"
           on:click={onPrevClick}
+          on:touchend={(e) => e.stopPropagation()}
         >
           <ArrowLeftIcon class="size-5 sm:size-8 hover:text-base-content-calm transition-colors" />
         </button>
@@ -66,6 +67,7 @@ export default function FieldGroupPagination() {
           type="button"
           class="btn btn-ghost btn-circle btn-sm sm:btn-md"
           on:click={onNextClick}
+          on:touchend={(e) => e.stopPropagation()}
         >
           <ArrowLeftIcon class="size-5 sm:size-8 rotate-180 hover:text-base-content-calm transition-colors" />
         </button>

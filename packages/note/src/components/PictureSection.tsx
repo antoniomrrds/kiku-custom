@@ -56,6 +56,7 @@ export function PictureSection() {
       on:click={() => {
         setClicked((prev) => !prev);
       }}
+      on:touchend={(e) => e.stopPropagation()}
       {...dataSet1()}
     >
       <div
@@ -75,6 +76,7 @@ export function PictureSection() {
         on:click={() => {
           $setCard("pictureModal", currentPicture());
         }}
+        on:touchend={(e) => e.stopPropagation()}
         {...pictureFieldDataset()}
         innerHTML={isServer ? undefined : currentPicture()}
       >
@@ -87,11 +89,13 @@ export function PictureSection() {
             type="button"
             class="h-full w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
             on:click={prev}
+            on:touchend={(e) => e.stopPropagation()}
           />
           <button
             type="button"
             class="h-full w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
             on:click={next}
+            on:touchend={(e) => e.stopPropagation()}
           />
         </div>
         <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none opacity-0 group-hover/pic:opacity-100 transition-opacity">
