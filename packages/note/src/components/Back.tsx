@@ -140,6 +140,7 @@ export function Back(props: { onExitNested?: () => void }) {
             <>
               <Lazy.BackFooter tags={tags} />
               <Lazy.AudioButtons position={2} />
+              <Lazy.AnkiMobileDebug />
             </>
           )}
         </Match>
