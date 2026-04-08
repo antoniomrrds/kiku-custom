@@ -48,6 +48,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
               >
                 <button
                   on:click={() => {
+                    if ($card.side === "front") return;
                     navigate("settings", "forward", () =>
                       navigate("main", "back"),
                     );

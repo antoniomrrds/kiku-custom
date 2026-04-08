@@ -28,12 +28,12 @@ export default function Expression() {
     const key = `${props.char}-${props.i}-${props.j}`;
     const show = () => activeKey() === key;
 
-    const handleMouseEnter = () => {
+    const handleActive = () => {
       clearTimeout(timeout);
       setActiveKey(key);
     };
 
-    const handleMouseLeave = () => {
+    const handleInactive = () => {
       timeout = setTimeout(() => {
         setActiveKey(null);
       }, 50);
@@ -42,17 +42,19 @@ export default function Expression() {
     return (
       <span
         ref={setAnchorRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onFocus={handleMouseEnter}
-        onBlur={handleMouseLeave}
+        on:mouseenter={handleActive}
+        on:mouseleave={handleInactive}
+        on:focus={handleActive}
+        on:blur={handleInactive}
+        on:touchstart={handleActive}
+        on:touchend={(e) => e.stopPropagation()}
       >
         <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
           <KanjiTooltip
             show={show()}
             anchor={anchorRef()}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onActive={handleActive}
+            onInactive={handleInactive}
           />
         </KanjiContextProvider>
         {props.char}
@@ -159,8 +161,8 @@ export default function Expression() {
 function KanjiTooltip(props: {
   show: boolean;
   anchor: HTMLElement | undefined;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
+  onActive: () => void;
+  onInactive: () => void;
 }) {
   const [$general] = useGeneralContext();
   const [$kanji] = useKanjiContext();
@@ -219,8 +221,12 @@ function KanjiTooltip(props: {
       <div
         class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip"
         ref={setTooltipRef}
-        onMouseEnter={props.onMouseEnter}
-        onMouseLeave={props.onMouseLeave}
+        on:mouseenter={props.onActive}
+        on:mouseleave={props.onInactive}
+        on:focus={props.onActive}
+        on:blur={props.onInactive}
+        on:touchstart={props.onActive}
+        on:touchend={(e) => e.stopPropagation()}
         style={{
           display: props.show ? "block" : "none",
           left: `${position.x}px`,
