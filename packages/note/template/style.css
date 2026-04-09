@@ -153,6 +153,11 @@ body {
   position: relative;
 }
 
+[data-kiku-cloak] {
+  visibility: hidden;
+  opacity: 0;
+}
+
 /* AnkiDroid */
 .android body > div#content {
   margin: 0;
