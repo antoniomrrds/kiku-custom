@@ -158,6 +158,15 @@ body {
   margin: 0;
 }
 
+/* AnkiMobile */
+.iphone,
+.ipad {
+  --anki-mobile-display: none;
+}
+[data-side="front"] [data-anki-mobile-hide="true"] {
+  display: var(--anki-mobile-display);
+}
+
 /* apply initial background-color before the card render */
 .card {
   background-color: var(--color-base-100) !important;
