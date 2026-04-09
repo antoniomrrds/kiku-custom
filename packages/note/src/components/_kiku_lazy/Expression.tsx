@@ -140,8 +140,9 @@ export default function Expression() {
               {chars.map((char, j) => (
                 <CharSpan char={char} i={i} j={j} />
               ))}
-
-              {item.reading.trim() !== "" && <rt>{item.reading}</rt>}
+              <Show when={item.reading.trim() !== "" || item.reading === " "}>
+                <rt>{item.reading}</rt>
+              </Show>
             </ruby>
           );
         }
