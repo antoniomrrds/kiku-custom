@@ -42,6 +42,8 @@ export default function Expression() {
     return (
       <span
         ref={setAnchorRef}
+        tabindex={0}
+        class="tappable"
         on:mouseenter={handleActive}
         on:mouseleave={handleInactive}
         on:focus={handleActive}
@@ -220,8 +222,10 @@ function KanjiTooltip(props: {
   return (
     <Portal mount={$general.layoutRef}>
       <div
-        class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip"
         ref={setTooltipRef}
+        class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable"
+        tabindex={0}
+        data-kanji-tooltip
         on:mouseenter={props.onActive}
         on:mouseleave={props.onInactive}
         on:focus={props.onActive}

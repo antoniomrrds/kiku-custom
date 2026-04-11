@@ -258,6 +258,16 @@ export async function initAnki({
       rootDataset,
     });
 
+    //NOTE: AnkiMobile Kanji Tooltip hack https://github.com/youyoumu/kiku/issues/12#issuecomment-4216160200
+    setTimeout(() => {
+      const kanjiTooltips = root?.querySelectorAll<HTMLSpanElement>(
+        "[data-kanji-tooltip]",
+      );
+      Array.from(kanjiTooltips ?? []).forEach((el) => {
+        el.style.display = "none";
+      });
+    }, 50);
+
     Object.assign(globalThis.KIKU, res);
     if (import.meta.env.DEV) root.dataset.side = side;
   } catch (e) {
