@@ -37,7 +37,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
             <MergeContextModal />
           </Match>
           <Match when={!$card.nested}>
-            <div class="relative" data-anki-mobile-hide="true">
+            <div class="relative" data-anki-mobile-hide="front">
               <div
                 class="tooltip tooltip-bottom flex items-center"
                 data-tip={

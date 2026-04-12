@@ -8,6 +8,7 @@ import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useBreakpointContext } from "../shared/BreakpointContext";
 import { useCardContext } from "../shared/CardContext";
 import { useGeneralContext } from "../shared/GeneralContext";
+import { XIcon } from "./Icons";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
 
@@ -249,6 +250,14 @@ function KanjiTooltip(props: {
             ...(position.staticSide ? { [position.staticSide]: "-4px" } : {}),
           }}
         ></div>
+        <button
+          data-anki-mobile-only="block"
+          class="absolute z-20 top-2 right-2"
+          on:click={props.onInactive}
+          on:touchend={(e) => e.stopPropagation()}
+        >
+          <XIcon class="size-5 cursor-pointer text-base-content-soft" />
+        </button>
         <div
           class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
           style={{ color: "initial" }}
