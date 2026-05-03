@@ -405,6 +405,7 @@ export class Nex {
     if (this.cache.has(key)) return this.cache.get(key);
     const res = await fetch(
       `${this.assetsPath}/${this.env.assets["_kiku_db_main_manifest.json"]}`,
+      { cache: "no-store" },
     );
     if (!res.ok) {
       logger.error("Failed to load db main manifest");
@@ -420,6 +421,7 @@ export class Nex {
     if (this.cache.has(key)) return this.cache.get(key);
     const res = await fetch(
       `${this.assetsPath}/${this.env.assets["_kiku_notes_manifest.json"]}`,
+      { cache: "no-store" },
     );
     if (!res.ok) {
       logger.error("Failed to load manifest");
