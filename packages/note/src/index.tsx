@@ -1,4 +1,5 @@
 /* @refresh reload */
+import "./util/polyfill.ts";
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { hydrate, render } from "solid-js/web";

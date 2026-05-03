@@ -1,3 +1,4 @@
+import "#/util/polyfill";
 import type { KikuConfig } from "#/util/config";
 import type { Constants } from "#/util/general";
 import type {
