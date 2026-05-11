@@ -20,17 +20,72 @@ const logger = {
   error: (...args: unknown[]) => postMessage({ log: { level: "error", args } }),
 };
 
+export type FetchJsonArgs = [url: string, init?: RequestInit];
+export type FetchArrayBufferArgs = [
+  url: string,
+  init?: RequestInit,
+  options?: {
+    range?: {
+      start: number;
+      end: number;
+      size: number;
+    };
+  },
+];
+
+export type MainThreadRequest =
+  | {
+      requestId: number;
+      fn: "fetchJson";
+      args: FetchJsonArgs;
+    }
+  | {
+      requestId: number;
+      fn: "fetchArrayBuffer";
+      args: FetchArrayBufferArgs;
+    };
+
+const pendingMainThreadRequests = new Map<
+  number,
+  {
+    resolve: (value: unknown) => void;
+    reject: (reason?: unknown) => void;
+  }
+>();
+
+let nextMainThreadRequestId = 0;
+
+function requestMainThread<T>(
+  fn: "fetchJson",
+  ...args: FetchJsonArgs
+): Promise<T>;
+function requestMainThread(
+  fn: "fetchArrayBuffer",
+  ...args: FetchArrayBufferArgs
+): Promise<ArrayBuffer>;
+function requestMainThread<T>(
+  fn: MainThreadRequest["fn"],
+  ...args: FetchJsonArgs | FetchArrayBufferArgs
+): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const requestId = ++nextMainThreadRequestId;
+    pendingMainThreadRequests.set(requestId, {
+      resolve: resolve as (value: unknown) => void,
+      reject,
+    });
+    postMessage({ requestId, fn, args });
+  });
+}
+
 const AnkiConnect = {
   invoke: async (action: string, params: Record<string, unknown> = {}) => {
-    const res = await fetch(ankiConnectAddress, {
+    const result = (await requestMainThread("fetchJson", ankiConnectAddress, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action, version: 6, params }),
-    });
-
-    const result = await res.json();
+    })) as { error?: string; result: unknown };
     if (result.error) throw new Error(result.error);
-    return result;
+    return result.result;
   },
 
   batchFindNotes: async (queries: string[]) => {
@@ -176,8 +231,11 @@ export class Nex {
       for (const chunk of manifest.chunks) {
         let notes = this.chunkCache.get(chunk.file);
         if (!notes) {
-          const res = await fetch(`${this.assetsPath}/${chunk.file}`);
-          const text = await Nex.gunzip(res).text();
+          const buf = await requestMainThread(
+            "fetchArrayBuffer",
+            `${this.assetsPath}/${chunk.file}`,
+          );
+          const text = await Nex.gunzipArrayBuffer(buf).text();
           notes = JSON.parse(text) as AnkiNote[];
           this.chunkCache.set(chunk.file, notes);
         }
@@ -371,23 +429,22 @@ export class Nex {
       const manifest = await this.dbMainManifest();
       const file =
         manifest.files[this.env.tar["kiku_db_kanji_compact.json.gz"]];
-      let res = await fetch(
+      const buf = await requestMainThread(
+        "fetchArrayBuffer",
         `${this.assetsPath}/${this.env.assets["_kiku_db_main.tar"]}`,
         {
           headers: { Range: `bytes=${file.start}-${file.end}` },
         },
+        {
+          range: {
+            start: file.start,
+            end: file.end,
+            size: file.size,
+          },
+        },
       );
-      if (res.status === 200) {
-        res = Nex.sliceBytes(await res.arrayBuffer(), file.start, file.end);
-      } else {
-        let buf = await res.arrayBuffer();
-        if (buf.byteLength > file.size) {
-          buf = buf.slice(0, file.size);
-        }
-        res = new Response(buf);
-      }
 
-      const text = await Nex.gunzip(res).text();
+      const text = await Nex.gunzipArrayBuffer(buf).text();
       const dbKanjiCompact = JSON.parse(text);
       const dbKanji: Record<string, KanjiInfo> = {};
       for (const kanji of Object.keys(dbKanjiCompact)) {
@@ -404,15 +461,17 @@ export class Nex {
   async dbMainManifest(): Promise<KikuDbMainManifest> {
     const key = this.dbMainManifest.name;
     if (this.cache.has(key)) return this.cache.get(key);
-    const res = await fetch(
-      `${this.assetsPath}/${this.env.assets["_kiku_db_main_manifest.json"]}`,
-      { cache: "no-store" },
-    );
-    if (!res.ok) {
+    let manifest: KikuDbMainManifest;
+    try {
+      manifest = await requestMainThread<KikuDbMainManifest>(
+        "fetchJson",
+        `${this.assetsPath}/${this.env.assets["_kiku_db_main_manifest.json"]}`,
+        { cache: "no-store" },
+      );
+    } catch {
       logger.error("Failed to load db main manifest");
-      throw new Error(`Failed to load db main manifest`);
+      throw new Error("Failed to load db main manifest");
     }
-    const manifest = await res.json();
     this.cache.set(key, manifest);
     return manifest;
   }
@@ -420,15 +479,17 @@ export class Nex {
   async notesManifest(): Promise<KikuNotesManifest> {
     const key = this.notesManifest.name;
     if (this.cache.has(key)) return this.cache.get(key);
-    const res = await fetch(
-      `${this.assetsPath}/${this.env.assets["_kiku_notes_manifest.json"]}`,
-      { cache: "no-store" },
-    );
-    if (!res.ok) {
+    let manifest: KikuNotesManifest;
+    try {
+      manifest = await requestMainThread<KikuNotesManifest>(
+        "fetchJson",
+        `${this.assetsPath}/${this.env.assets["_kiku_notes_manifest.json"]}`,
+        { cache: "no-store" },
+      );
+    } catch {
       logger.error("Failed to load manifest");
-      throw new Error(`Failed to load manifest`);
+      throw new Error("Failed to load manifest");
     }
-    const manifest = await res.json();
     this.cache.set(key, manifest);
     return manifest;
   }
@@ -449,25 +510,33 @@ export class Nex {
     };
   }
 
-  static gunzip(res: Response) {
+  static gunzipArrayBuffer(buf: ArrayBuffer) {
+    if (buf.byteLength === 0) {
+      logger.error("No body for empty buffer");
+      throw new Error("No body for empty buffer");
+    }
+    const res = new Response(buf);
     if (!res.body) {
-      logger.error("No body for", res.url);
-      throw new Error(`No body for ${res.url}`);
+      logger.error("No body for buffer");
+      throw new Error("No body for buffer");
     }
     const ds = new DecompressionStream("gzip");
     const decompressed = res.body.pipeThrough(ds);
     return new Response(decompressed);
   }
-
-  static sliceBytes(buf: ArrayBuffer, start: number, end: number): Response {
-    const slice = buf.slice(start, end + 1);
-    return new Response(slice);
-  }
 }
 
 function expose(api: Record<string, unknown>) {
   self.onmessage = async (e) => {
-    const { id, fn, args } = e.data;
+    const { id, requestId, fn, args, result: responseResult, error } = e.data;
+    if (requestId) {
+      const pending = pendingMainThreadRequests.get(requestId);
+      if (!pending) return;
+      pendingMainThreadRequests.delete(requestId);
+      error ? pending.reject(error) : pending.resolve(responseResult);
+      return;
+    }
+
     let result: unknown;
     try {
       const maybeFn = api[fn];
