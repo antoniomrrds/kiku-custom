@@ -63,18 +63,16 @@ export const AnkiConnect = {
       styleRes.text(),
     ]);
 
-    //biome-ignore format: this looks nicer
     const frontTemplate = frontSrc
       .replace("__DATA_THEME__", config.theme)
-      .replace("__DATA_BLUR_NSFW__", config.blurNsfw ? "true" : "false")
-      .replace("__DATA_PICTURE_ON_FRONT__", config.pictureOnFront ? "true" : "false")
-      .replace("__DATA_MOD_VERTICAL__", config.modVertical ? "true" : "false");
-    //biome-ignore format: this looks nicer
+      .replace("__DATA_BLUR_NSFW__", config.blurNsfw.toString())
+      .replace("__DATA_PICTURE_ON_FRONT__", config.pictureOnFront.toString())
+      .replace("__DATA_MOD_VERTICAL__", config.modVertical.toString());
     const backTemplate = backSrc
       .replace("__DATA_THEME__", config.theme)
-      .replace("__DATA_BLUR_NSFW__", config.blurNsfw ? "true" : "false")
-      .replace("__DATA_PICTURE_ON_FRONT__", config.pictureOnFront ? "true" : "false")
-      .replace("__DATA_MOD_VERTICAL__", config.modVertical ? "true" : "false");
+      .replace("__DATA_BLUR_NSFW__", config.blurNsfw.toString())
+      .replace("__DATA_PICTURE_ON_FRONT__", config.pictureOnFront.toString())
+      .replace("__DATA_MOD_VERTICAL__", config.modVertical.toString());
     const cssVar = getCssVar(config);
     const cssVarTemplate = generateCssVars(cssVar);
     const styleTemplate = styleSrc.replace(
