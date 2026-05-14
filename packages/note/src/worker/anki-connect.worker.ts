@@ -24,23 +24,21 @@ export class AnkiConnect {
   }
 
   async batchFindNotes(queries: string[]) {
-    const res = (await this.invoke("multi", {
+    return (await this.invoke("multi", {
       actions: queries.map((query) => ({
         action: "findNotes",
         params: { query },
       })),
-    })) as { result: Array<number[]> };
-    return res.result;
+    })) as Array<number[]>;
   }
 
   async batchNotesInfo(noteIdsList: number[][]) {
-    const res = (await this.invoke("multi", {
+    return (await this.invoke("multi", {
       actions: noteIdsList.map((ids) => ({
         action: "notesInfo",
         params: { notes: ids },
       })),
-    })) as { result: Array<AnkiNote[]> };
-    return res.result;
+    })) as Array<AnkiNote[]>;
   }
 
   async queryFieldContains({
