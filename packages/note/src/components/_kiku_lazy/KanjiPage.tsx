@@ -33,10 +33,10 @@ export default function KanjiPage() {
       sameReading={$card.query.sameReading}
       sameExpression={$card.query.sameExpression}
       focus={{
-        type: $card.focus.type,
         kanji: $card.focus.kanji,
         noteId: $card.focus.noteId,
       }}
+      initialTab={$card.initialTab}
       id={$card.uniqueId}
     >
       <Page />
@@ -47,7 +47,6 @@ export default function KanjiPage() {
 function Page() {
   const [$general, $setGeneral] = useGeneralContext();
   const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
-  const [tab, setTab] = createSignal<"kanji" | "reading" | "same">("kanji");
   const hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
   const hasSameReading = createMemo(
     () => $kanjiPage.sameReading && $kanjiPage.sameReading.length > 0,
@@ -64,10 +63,10 @@ function Page() {
           sameReading={[]}
           sameExpression={[]}
           focus={{
-            type: $kanjiPage.nestedFocus.type,
             kanji: $kanjiPage.nestedFocus.kanji,
             noteId: $kanjiPage.nestedFocus.noteId,
           }}
+          initialTab="kanji"
           id={$kanjiPage.nestedId}
           contextLabel={$kanjiPage.nestedContextLabel}
         >
@@ -82,11 +81,11 @@ function Page() {
               role="tab"
               class="tab"
               classList={{
-                "tab-active": tab() === "kanji",
+                "tab-active": $kanjiPage.tab === "kanji",
                 "cursor-not-allowed": !hasSameKanji(),
               }}
               on:click={() => {
-                if (hasSameKanji()) setTab("kanji");
+                if (hasSameKanji()) $setKanjiPage("tab", "kanji");
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
@@ -96,11 +95,11 @@ function Page() {
               role="tab"
               class="tab gap-1"
               classList={{
-                "tab-active": tab() === "reading",
+                "tab-active": $kanjiPage.tab === "reading",
                 "cursor-not-allowed": !hasSameReading(),
               }}
               on:click={() => {
-                if (hasSameReading()) setTab("reading");
+                if (hasSameReading()) $setKanjiPage("tab", "reading");
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
@@ -113,11 +112,11 @@ function Page() {
               role="tab"
               class="tab gap-1"
               classList={{
-                "tab-active": tab() === "same",
+                "tab-active": $kanjiPage.tab === "same",
                 "cursor-not-allowed": !hasSameExpression(),
               }}
               on:click={() => {
-                if (hasSameExpression()) setTab("same");
+                if (hasSameExpression()) $setKanjiPage("tab", "same");
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
@@ -152,7 +151,7 @@ function Page() {
           </Show>
 
           <div class="flex flex-col gap-2 sm:gap-4 ">
-            <Show when={tab() === "kanji"}>
+            <Show when={$kanjiPage.tab === "kanji"}>
               <For each={$kanjiPage.noteList}>
                 {([kanji, data]) => {
                   return (
@@ -167,7 +166,7 @@ function Page() {
               when={
                 $kanjiPage.sameReading &&
                 $kanjiPage.sameReading.length > 0 &&
-                tab() === "reading"
+                $kanjiPage.tab === "reading"
               }
             >
               <KanjiContextProvider kanji="">
@@ -178,7 +177,7 @@ function Page() {
               when={
                 $kanjiPage.sameExpression &&
                 $kanjiPage.sameExpression.length > 0 &&
-                tab() === "same"
+                $kanjiPage.tab === "same"
               }
             >
               <KanjiContextProvider kanji="">
@@ -207,8 +206,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
   const [$kanji, $setKanji] = useKanjiContext();
   const data = () => props.data;
   const [checked, setChecked] = createSignal(
-    $kanjiPage.focus.type === "usedIn" &&
-      $kanjiPage.focus.kanji === $kanji.kanji,
+    $kanjiPage.focus.kanji === $kanji.kanji,
   );
 
   const loading = () => {
@@ -376,13 +374,11 @@ function AnkiNoteItem(props: {
 
     if (props.mode) {
       $setKanjiPage("focus", {
-        type: sectionType,
         kanji: undefined,
         noteId: data().noteId,
       });
     } else {
       $setKanjiPage("focus", {
-        type: "usedIn",
         kanji: $kanji.kanji,
         noteId: data().noteId,
       });
@@ -445,7 +441,6 @@ function KanjiText() {
   onMount(() => {
     if (
       ref &&
-      $kanjiPage.focus.type === "usedIn" &&
       $kanjiPage.focus.kanji === $kanji.kanji &&
       !$kanjiPage.focus.noteId
     ) {

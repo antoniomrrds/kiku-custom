@@ -6,7 +6,6 @@ import {
   Show,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import type { KanjiFocusType } from "../shared/CardContext";
 import { useNavigationTransition } from "#/util/hooks";
 import type { AnkiNote } from "#/util/types";
 import { useCtxContext } from "../shared/CtxContext";
@@ -129,7 +128,6 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
                         parentKanji={$kanji.kanji}
                         noteList={$kanji.visuallySimilar}
                         nestedFocus={{
-                          type: "usedIn",
                           kanji: kanji,
                           noteId: undefined,
                         }}
@@ -175,7 +173,6 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
                         parentKanji={$kanji.kanji}
                         noteList={$kanji.composedOf}
                         nestedFocus={{
-                          type: "usedIn",
                           kanji: kanji,
                           noteId: undefined,
                         }}
@@ -221,7 +218,6 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
                         parentKanji={$kanji.kanji}
                         noteList={$kanji.usedIn}
                         nestedFocus={{
-                          type: "usedIn",
                           kanji: kanji,
                           noteId: undefined,
                         }}
@@ -301,7 +297,6 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
                         parentKanji={$kanji.kanji}
                         noteList={$kanji.related}
                         nestedFocus={{
-                          type: "usedIn",
                           kanji: kanji,
                           noteId: undefined,
                         }}
@@ -373,7 +368,6 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 function KanjiKeyword(props: {
   noteList?: [string, AnkiNote[]][];
   nestedFocus: {
-    type: KanjiFocusType;
     kanji: string | undefined;
     noteId: number | undefined;
   };
@@ -414,7 +408,6 @@ function KanjiKeyword(props: {
 function KanjiKeywordKanjiPage(props: {
   noteList?: [string, AnkiNote[]][];
   nestedFocus: {
-    type: KanjiFocusType;
     kanji: string | undefined;
     noteId: number | undefined;
   };
@@ -432,12 +425,10 @@ function KanjiKeywordKanjiPage(props: {
         $setKanjiPage("nestedContextLabel", props.contextLabel);
         $setKanjiPage("nestedId", createUniqueId());
         $setKanjiPage("nestedFocus", {
-          type: props.nestedFocus.type,
           kanji: props.nestedFocus.kanji,
           noteId: props.nestedFocus.noteId,
         });
         $setKanjiPage("focus", {
-          type: "usedIn",
           kanji: props.parentKanji,
           noteId: undefined,
         });
