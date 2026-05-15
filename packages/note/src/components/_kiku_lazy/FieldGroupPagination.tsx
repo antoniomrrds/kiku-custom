@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from "./Icons";
 
 export default function FieldGroupPagination() {
   const { $group, $next, $prev } = useFieldGroupContext();
-  const { $card, $setCard } = useCardContext();
+  const { $card } = useCardContext();
   const { $config } = useConfigContext();
 
   onMount(() => {

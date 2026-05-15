@@ -1,6 +1,7 @@
 import { createContext, createUniqueId, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
+import { createCompatPair } from "#/util/context-compat";
 import type { PitchInfo } from "#/util/hatsuon";
 import {
   type AnkiFields,
@@ -8,7 +9,6 @@ import {
   ankiFieldsSkeleton,
   type PitchType,
 } from "#/util/types";
-import { createCompatPair } from "#/util/context-compat";
 
 export type PitchState = {
   infos: PitchInfo[];

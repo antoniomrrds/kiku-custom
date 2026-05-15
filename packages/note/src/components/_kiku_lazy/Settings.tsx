@@ -7,7 +7,6 @@ import {
   Show,
 } from "solid-js";
 import { Portal } from "solid-js/web";
-import { useCardContext } from "#/components/shared/CardContext";
 import {
   type DefinitionStyle,
   getCssVar,
@@ -63,8 +62,7 @@ function toCssVarString(obj: Record<string, string>) {
 
 export default function Settings() {
   const { $config } = useConfigContext();
-  const { $card, $setCard: _$setCard } = useCardContext();
-  const { $general, $setGeneral } = useGeneralContext();
+  const { $general } = useGeneralContext();
   const { navigateBack } = useNavigationTransition();
 
   const saveConfig = async () => {
@@ -1066,7 +1064,6 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
 
 function DebugSettings() {
   const { $config, $setConfig } = useConfigContext();
-  const { $card } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$kikuFiles, $setKikuFiles] = createSignal<string>();
   const [$missingFiles, $setMissingFiles] = createSignal<string>();

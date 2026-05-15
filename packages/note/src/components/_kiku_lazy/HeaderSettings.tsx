@@ -4,7 +4,7 @@ import HeaderLayout from "./HeaderLayout";
 import { ArrowLeftIcon, RefreshCwIcon } from "./Icons";
 
 export default function HeaderSettings() {
-  const { $general, $setGeneral } = useGeneralContext();
+  const { $general } = useGeneralContext();
   const { navigateBack } = useNavigationTransition();
 
   $general.useCheckAnkiConnect();

@@ -15,7 +15,7 @@ import { type ContextLabel, useKanjiPageContext } from "./KanjiPageContext";
 import { capitalizeSentence } from "./util/general";
 
 export function KanjiInfo() {
-  const { $kanji, $setKanji } = useKanjiContext();
+  const { $kanji } = useKanjiContext();
 
   return (
     <div class="flex flex-col text-xs sm:text-sm text-base-content-calm items-start z-10 relative">
@@ -67,7 +67,7 @@ export function KanjiInfo() {
 }
 
 export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
-  const { $kanji, $setKanji } = useKanjiContext();
+  const { $kanji } = useKanjiContext();
   const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 
@@ -375,7 +375,7 @@ function KanjiKeyword(props: {
   onClick?: () => void;
   parentKanji: string;
 }) {
-  const { $kanji, $setKanji } = useKanjiContext();
+  const { $kanji } = useKanjiContext();
 
   const keyword = () =>
     $kanji.kanjiInfo?.wkMeaning
@@ -414,7 +414,7 @@ function KanjiKeywordKanjiPage(props: {
   contextLabel?: ContextLabel;
   parentKanji: string;
 }) {
-  const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
+  const { $setKanjiPage } = useKanjiPageContext();
   const { navigate } = useNavigationTransition();
 
   const onClick = () => {

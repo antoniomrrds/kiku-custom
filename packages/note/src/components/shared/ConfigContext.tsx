@@ -6,10 +6,10 @@ import {
   type KikuConfig,
   updateConfigState,
 } from "#/util/config";
+import { createCompatPair } from "#/util/context-compat";
 import { constants } from "#/util/general";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useGeneralContext } from "./GeneralContext";
-import { createCompatPair } from "#/util/context-compat";
 
 type ConfigContextValue = {
   $config: Store<KikuConfig>;

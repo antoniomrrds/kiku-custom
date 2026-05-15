@@ -3,12 +3,12 @@ import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import type { RootDataset } from "#/util/config";
+import { createCompatPair } from "#/util/context-compat";
 import type { Logger } from "#/util/logger";
 import type { AnkiDroidAPI, KikuNotesManifest } from "#/util/types";
 import type { NexApi } from "#/worker/client";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useBreakpointContext } from "./BreakpointContext";
-import { createCompatPair } from "#/util/context-compat";
 
 type GeneralStore = {
   logger: Logger;

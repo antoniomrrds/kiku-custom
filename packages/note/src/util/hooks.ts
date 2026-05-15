@@ -124,9 +124,9 @@ export function usePitch() {
 
 export function useThemeTransition() {
   const { $general } = useGeneralContext();
-  const { $config, $setConfig } = useConfigContext();
+  const { $setConfig } = useConfigContext();
   const startViewTransition = useViewTransition();
-  const { $card, $setCard } = useCardContext();
+  const { $card } = useCardContext();
 
   function changeTheme(theme: DaisyUITheme) {
     if ($card.query.status === "loading" || $general.isAnkiDesktop) {

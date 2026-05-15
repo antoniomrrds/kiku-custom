@@ -3,7 +3,7 @@ import HeaderLayout from "./HeaderLayout";
 import { ArrowLeftIcon } from "./Icons";
 
 export default function HeaderKanjiPage() {
-  const { navigate, navigateBack } = useNavigationTransition();
+  const { navigateBack } = useNavigationTransition();
 
   return (
     <HeaderLayout>

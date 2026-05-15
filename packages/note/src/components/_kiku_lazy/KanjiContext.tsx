@@ -5,11 +5,11 @@ import {
   type Store,
   unwrap,
 } from "solid-js/store";
+import { createCompatPair } from "#/util/context-compat";
 import type { AnkiNote, KanjiInfo } from "#/util/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCacheContext } from "../shared/CacheContext";
 import { useGeneralContext } from "../shared/GeneralContext";
-import { createCompatPair } from "#/util/context-compat";
 
 type FetchType = "composedOf" | "usedIn" | "visuallySimilar" | "related";
 
@@ -41,7 +41,7 @@ export function KanjiContextProvider(props: {
   kanji: string;
   children: JSX.Element;
 }) {
-  const { $general, $setGeneral } = useGeneralContext();
+  const { $general } = useGeneralContext();
   const cacheStore = useCacheContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$kanji, $setKanji] = createStore<KanjiStore>({

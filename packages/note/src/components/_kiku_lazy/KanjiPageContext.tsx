@@ -6,8 +6,8 @@ import {
   useContext,
 } from "solid-js";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import type { AnkiNote } from "#/util/types";
 import { createCompatPair } from "#/util/context-compat";
+import type { AnkiNote } from "#/util/types";
 
 export type ContextLabel = {
   text: string;

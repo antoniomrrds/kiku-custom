@@ -13,8 +13,8 @@ import { AnkiConnect } from "./util/anki-connect";
 
 export default function MergeContextModal() {
   let dialogRef: HTMLDialogElement | undefined;
-  const { $general, $setGeneral } = useGeneralContext();
-  const { $config, $setConfig } = useConfigContext();
+  const { $general } = useGeneralContext();
+  const { $config } = useConfigContext();
   const { navigate } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
   const { ankiFields: rootAnkiFields } = useRootFieldGroupContext();
@@ -22,9 +22,7 @@ export default function MergeContextModal() {
 
   const [$rootNote, $setRootNote] = createSignal<AnkiNote>();
   const [$currentNote, $setCurrentNote] = createSignal<AnkiNote>();
-  const [$mergeDirection, $setMergeDirection] = createSignal<
-    "toRoot" | "toCurrent"
-  >("toCurrent");
+  const [$mergeDirection] = createSignal<"toRoot" | "toCurrent">("toCurrent");
   const [$deleteRootNote, $setDeleteRootNote] = createSignal(false);
   const [$loading, $setLoading] = createSignal(true);
 
