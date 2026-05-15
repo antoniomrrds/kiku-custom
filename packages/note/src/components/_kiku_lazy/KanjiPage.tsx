@@ -171,7 +171,7 @@ function Page() {
               }
             >
               <KanjiContextProvider kanji="">
-                <SameReadingCollapsible mode="reading" />
+                <NoteList mode="reading" />
               </KanjiContextProvider>
             </Show>
             <Show
@@ -182,7 +182,7 @@ function Page() {
               }
             >
               <KanjiContextProvider kanji="">
-                <SameReadingCollapsible mode="expression" />
+                <NoteList mode="expression" />
               </KanjiContextProvider>
             </Show>
           </div>
@@ -256,12 +256,9 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
   );
 }
 
-function SameReadingCollapsible(props: { mode: "reading" | "expression" }) {
-  const [$general] = useGeneralContext();
-  const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
+function NoteList(props: { mode: "reading" | "expression" }) {
+  const [$kanjiPage] = useKanjiPageContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const sectionType =
-    props.mode === "reading" ? "sameReading" : "sameExpression";
 
   const title = props.mode === "reading" ? "Same Reading" : "Same Expression";
   const list =
@@ -269,6 +266,7 @@ function SameReadingCollapsible(props: { mode: "reading" | "expression" }) {
       ? $kanjiPage.sameReading
       : $kanjiPage.sameExpression;
 
+  //TODO: use better parser
   const ExpressionFurigana = () => {
     if (ankiFields.Expression && ankiFields.ExpressionReading) {
       return (
@@ -283,42 +281,27 @@ function SameReadingCollapsible(props: { mode: "reading" | "expression" }) {
       : ankiFields.Expression;
   };
 
-  let ref: HTMLDivElement | undefined;
-  onMount(() => {
-    if (ref && $kanjiPage.focus.type === sectionType) {
-      ref.scrollIntoView({ block: "center" });
-    }
-  });
-
   return (
-    <div class="collapse bg-base-200 border border-base-300 animate-fade-in">
-      <input type="checkbox" checked={$kanjiPage.focus.type === sectionType} />
-      <div class="collapse-title justify-between flex items-center ps-2 sm:ps-4 pe-2 sm:pe-4 py-2 sm:py-4">
-        <span class="text-lg sm:text-2xl">
-          <span class="text-base-content-calm" ref={ref}>
-            {title}
-          </span>{" "}
-          <span class="font-secondary">
-            (
-            <ExpressionFurigana />)
-          </span>
-        </span>
+    <div class="flex flex-col gap-2 sm:gap-4">
+      <div class="flex-col flex justify-between items-center gap-2">
+        <div class="text-base-content-calm text-xl">{title}</div>
+        <div class="font-secondary expression">
+          <ExpressionFurigana />
+        </div>
       </div>
-      <div class="collapse-content text-sm px-2 sm:px-4 pb-2 sm:pb-4">
-        <ul class="list bg-base-100 rounded-box shadow-md">
-          <For each={list ?? []}>
-            {(data) => {
-              return (
-                <AnkiNoteItem
-                  data={data}
-                  reading={ankiFields.ExpressionReading}
-                  mode={props.mode}
-                />
-              );
-            }}
-          </For>
-        </ul>
-      </div>
+      <ul class="list bg-base-100 rounded-box shadow-md">
+        <For each={list ?? []}>
+          {(data) => {
+            return (
+              <AnkiNoteItem
+                data={data}
+                reading={ankiFields.ExpressionReading}
+                mode={props.mode}
+              />
+            );
+          }}
+        </For>
+      </ul>
     </div>
   );
 }
@@ -332,8 +315,7 @@ function AnkiNoteItem(props: {
   const reading = () => props.reading;
   const { navigate } = useNavigationTransition();
   const [$card, $setCard] = useCardContext();
-  const [$general, $setGeneral] = useGeneralContext();
-  const [$kanji, $setKanji] = useKanjiContext();
+  const [$kanji] = useKanjiContext();
   const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
   const sectionType =
     props.mode === "reading" ? "sameReading" : "sameExpression";
@@ -456,9 +438,8 @@ function AnkiNoteItem(props: {
 }
 
 function KanjiText() {
-  const [$card, $setCard] = useCardContext();
-  const [$kanji, $setKanji] = useKanjiContext();
-  const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
+  const [$kanji] = useKanjiContext();
+  const [$kanjiPage] = useKanjiPageContext();
 
   let ref: HTMLDivElement | undefined;
   onMount(() => {
