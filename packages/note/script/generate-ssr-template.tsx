@@ -18,7 +18,7 @@ import { Back } from "../src/components/Back";
 import { BreakpointContextProvider } from "../src/components/shared/BreakpointContext";
 import { defaultConfig } from "../src/util/default-config";
 
-const [config, setConfig] = createStore(defaultConfig);
+const [$config, $setConfig] = createStore(defaultConfig);
 
 const logger = new Logger();
 const aborter = new AbortController();
@@ -39,7 +39,7 @@ export function generateSsrTemplate() {
           logger={logger}
           root={undefined}
         >
-          <ConfigContextProvider value={[config, setConfig]}>
+          <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider ankiFields={ankiFieldsSkeleton}>
               <CardStoreContextProvider side="front">
                 <FieldGroupContextProvider>
@@ -73,7 +73,9 @@ export function generateSsrTemplate() {
           logger={logger}
           root={undefined}
         >
-          <ConfigContextProvider value={[config, setConfig]}>
+          <ConfigContextProvider
+            value={{ $config: $config, $setConfig: $setConfig }}
+          >
             <AnkiFieldContextProvider ankiFields={ankiFieldsSkeleton}>
               <CardStoreContextProvider side="back">
                 <FieldGroupContextProvider>

@@ -16,9 +16,9 @@ import MergeContextModal from "./MergeContextModal";
 import { capitalize } from "./util/general";
 
 export default function HeaderMain(props: { onExitNested?: () => void }) {
-  const [$card, $setCard] = useCardContext();
-  const [$config, $setConfig] = useConfigContext();
-  const [$general] = useGeneralContext();
+  const { $card, $setCard } = useCardContext();
+  const { $config, $setConfig } = useConfigContext();
+  const { $general } = useGeneralContext();
   const { navigate, navigateBack } = useNavigationTransition();
   const changeTheme = useThemeTransition();
 
@@ -124,8 +124,8 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
 }
 
 function KanjiPageIndicator() {
-  const [$general] = useGeneralContext();
-  const [$card, $setCard] = useCardContext();
+  const { $general } = useGeneralContext();
+  const { $card, $setCard } = useCardContext();
   const { navigate } = useNavigationTransition();
 
   const length = () =>

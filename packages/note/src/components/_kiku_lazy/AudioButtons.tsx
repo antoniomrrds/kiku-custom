@@ -10,7 +10,7 @@ import { useGeneralContext } from "../shared/GeneralContext";
 import { PlayIcon } from "./Icons";
 
 function AudioTag(props: { text: string }) {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
   // Find all `[sound:filename.mp3]` occurrences
   const matches = () => [...props.text.matchAll(/\[sound:([^\]]+)\]/g)];
   const sounds = () => matches().map((m) => m[1]);
@@ -50,11 +50,11 @@ export function NotePlayIcon(props: {
 }
 
 export default function AudioButtons(props: { position: 1 | 2 }) {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
-  const [$config] = useConfigContext();
+  const { $config } = useConfigContext();
   const bp = useBreakpointContext();
   const hiddenStyle = {
     width: "0",

@@ -10,15 +10,19 @@ import { constants } from "#/util/general";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useGeneralContext } from "./GeneralContext";
 
-const ConfigContext =
-  createContext<[Store<KikuConfig>, SetStoreFunction<KikuConfig>]>();
+type ConfigContextValue = {
+  $config: Store<KikuConfig>;
+  $setConfig: SetStoreFunction<KikuConfig>;
+};
+
+const ConfigContext = createContext<ConfigContextValue>();
 
 export function ConfigContextProvider(props: {
   children: JSX.Element;
-  value: [Store<KikuConfig>, SetStoreFunction<KikuConfig>];
+  value: ConfigContextValue;
 }) {
-  const [$config] = props.value;
-  const [$general, $setGeneral] = useGeneralContext();
+  const { $config } = props.value;
+  const { $general, $setGeneral } = useGeneralContext();
 
   createEffect(() => {
     ({ ...$config });

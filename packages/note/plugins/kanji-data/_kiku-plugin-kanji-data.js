@@ -248,7 +248,7 @@ export default (options) => {
      */
     KanjiInfoExtra: (props) => {
       const { h, createResource, Show, For } = props.ctx;
-      const [$kanji] = props.useKanjiContext();
+      const { $kanji } = props.useKanjiContext();
 
       /** @type {string} Set to a kanji to override for testing. */
       const TEST_KANJI = "";

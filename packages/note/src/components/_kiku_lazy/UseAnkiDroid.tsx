@@ -19,9 +19,9 @@ function snapTo4(n: number) {
 export default function UseAnkiDroid() {
   if (isServer) return;
   if (window.innerWidth > 768) return;
-  const [$config] = useConfigContext();
+  const { $config } = useConfigContext();
   if (!$config.ankiDroidEnableIntegration) return;
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
   const ankiDroidAPI = $general.ankiDroidAPI;
 
   if (!ankiDroidAPI && !import.meta.env.DEV) return;
@@ -30,7 +30,7 @@ export default function UseAnkiDroid() {
   let rightIconRef: SVGSVGElement | undefined;
   let leftIconRef: SVGSVGElement | undefined;
 
-  const [$card] = useCardContext();
+  const { $card } = useCardContext();
   const el$ = () => document.documentElement;
   const reverse = $config.ankiDroidReverseSwipeDirection;
 

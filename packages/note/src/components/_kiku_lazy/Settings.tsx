@@ -62,9 +62,9 @@ function toCssVarString(obj: Record<string, string>) {
 }
 
 export default function Settings() {
-  const [$config] = useConfigContext();
-  const [$card, _$setCard] = useCardContext();
-  const [$general, $setGeneral] = useGeneralContext();
+  const { $config } = useConfigContext();
+  const { $card, $setCard: _$setCard } = useCardContext();
+  const { $general, $setGeneral } = useGeneralContext();
   const { navigateBack } = useNavigationTransition();
 
   const saveConfig = async () => {
@@ -218,8 +218,8 @@ function KikuVersion() {
 }
 
 function GeneralSettings() {
-  const [$general] = useGeneralContext();
-  const [$config, $setConfig] = useConfigContext();
+  const { $general } = useGeneralContext();
+  const { $config, $setConfig } = useConfigContext();
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in relative">
@@ -401,7 +401,7 @@ function GeneralSettings() {
 }
 
 function DefinitionSettings() {
-  const [$config, $setConfig] = useConfigContext();
+  const { $config, $setConfig } = useConfigContext();
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in relative">
@@ -474,7 +474,7 @@ function DefinitionSettings() {
 }
 
 function ModSettings() {
-  const [$config, $setConfig] = useConfigContext();
+  const { $config, $setConfig } = useConfigContext();
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in relative">
@@ -565,7 +565,7 @@ function ModSettings() {
 }
 
 function ThemeSettings() {
-  const [$config, _$setConfig] = useConfigContext();
+  const { $config, $setConfig: _$setConfig } = useConfigContext();
   const changeTheme = useThemeTransition();
 
   return (
@@ -624,7 +624,7 @@ function ThemeSettings() {
 }
 
 function FontSettings() {
-  const [$config, $setConfig] = useConfigContext();
+  const { $config, $setConfig } = useConfigContext();
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in">
@@ -858,7 +858,7 @@ function FontSizeSettingsFieldset(props: {
   configKey: keyof KikuConfig;
   label: string;
 }) {
-  const [$config, $setConfig] = useConfigContext();
+  const { $config, $setConfig } = useConfigContext();
   const configValue = () => $config[props.configKey] as TailwindSize;
 
   return (
@@ -920,7 +920,7 @@ function FontSizeSettingsFieldset(props: {
 }
 
 function ClipboardCopyButton(props: { text: string | (() => string) }) {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
 
   function copyToClipboard() {
     const text = typeof props.text === "function" ? props.text() : props.text;
@@ -950,7 +950,7 @@ function ClipboardCopyButton(props: { text: string | (() => string) }) {
 }
 
 function AnkiDroidSettings() {
-  const [$config, $setConfig] = useConfigContext();
+  const { $config, $setConfig } = useConfigContext();
 
   return (
     <div class="flex flex-col gap-2 animate-fade-in">
@@ -1019,7 +1019,7 @@ function KeybindSettings() {
 }
 
 function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
-  const [$config, $setConfig] = useConfigContext();
+  const { $config, $setConfig } = useConfigContext();
   const [isRecording, setIsRecording] = createSignal(false);
 
   const onKeyDown = (e: KeyboardEvent) => {
@@ -1065,12 +1065,12 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
 }
 
 function DebugSettings() {
-  const [$config, $setConfig] = useConfigContext();
-  const [$card] = useCardContext();
+  const { $config, $setConfig } = useConfigContext();
+  const { $card } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [kikuFiles, setKikuFiles] = createSignal<string>();
   const [missingFiles, setMissingFiles] = createSignal<string>();
-  const [$general, _$setGeneral] = useGeneralContext();
+  const { $general, $setGeneral: _$setGeneral } = useGeneralContext();
 
   createEffect(async () => {
     if ($general.isAnkiConnectAvailable) {

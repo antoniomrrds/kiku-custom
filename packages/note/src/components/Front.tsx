@@ -19,12 +19,12 @@ const Lazy = {
 };
 
 export function Front() {
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"front">();
   const [clicked, setClicked] = createSignal(false);
   const [hideExpression, setHideExpression] = createSignal(false);
   const { $group } = useFieldGroupContext();
-  const [$config] = useConfigContext();
+  const { $config } = useConfigContext();
   const loadPlugin = useLoadPlugin();
 
   onMount(() => {

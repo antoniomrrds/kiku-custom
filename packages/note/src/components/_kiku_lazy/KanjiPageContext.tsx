@@ -33,15 +33,14 @@ type KanjiPageContextStore = {
   nestedContextLabel?: ContextLabel;
 };
 
-const KanjiPageContext =
-  createContext<
-    [Store<KanjiPageContextStore>, SetStoreFunction<KanjiPageContextStore>]
-  >();
+type KanjiPageContextValue = {
+  $kanjiPage: Store<KanjiPageContextStore>;
+  $setKanjiPage: SetStoreFunction<KanjiPageContextStore>;
+};
 
-const cache = new Map<
-  string,
-  [Store<KanjiPageContextStore>, SetStoreFunction<KanjiPageContextStore>]
->();
+const KanjiPageContext = createContext<KanjiPageContextValue>();
+
+const cache = new Map<string, KanjiPageContextValue>();
 
 export function KanjiPageContextProvider(props: {
   children: JSX.Element;
@@ -59,9 +58,13 @@ export function KanjiPageContextProvider(props: {
 }) {
   const saved = cache.get(props.id);
 
-  const [$kanjiPage, $setKanjiPage] =
-    saved ??
-    createStore<KanjiPageContextStore>({
+  let $kanjiPage: Store<KanjiPageContextStore>;
+  let $setKanjiPage: SetStoreFunction<KanjiPageContextStore>;
+  if (saved) {
+    $kanjiPage = saved.$kanjiPage;
+    $setKanjiPage = saved.$setKanjiPage;
+  } else {
+    [$kanjiPage, $setKanjiPage] = createStore<KanjiPageContextStore>({
       noteList: props.noteList,
       contextLabel: props.contextLabel,
       sameReading: props.sameReading,
@@ -80,13 +83,14 @@ export function KanjiPageContextProvider(props: {
       },
       nestedContextLabel: undefined,
     });
+  }
 
   onMount(() => {
-    cache.set(props.id, [$kanjiPage, $setKanjiPage]);
+    cache.set(props.id, { $kanjiPage, $setKanjiPage });
   });
 
   return (
-    <KanjiPageContext.Provider value={[$kanjiPage, $setKanjiPage]}>
+    <KanjiPageContext.Provider value={{ $kanjiPage, $setKanjiPage }}>
       {props.children}
     </KanjiPageContext.Provider>
   );

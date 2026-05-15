@@ -22,7 +22,7 @@ export default function BackBody(props: {
   let definitionEl: HTMLDivElement | undefined;
   let modalRef: HTMLDialogElement | undefined;
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [$config] = useConfigContext();
+  const { $config } = useConfigContext();
 
   const glossary = () => {
     // empty glossary if it's the same as main definition
@@ -253,7 +253,7 @@ function removeMainDefinitionFromGlossary(
 }
 
 function ExternalLinks() {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 
   return (

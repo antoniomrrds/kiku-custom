@@ -90,7 +90,7 @@ export async function init({
           logger={logger}
           root={root}
         >
-          <ConfigContextProvider value={[$config, $setConfig]}>
+          <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider ankiFields={ankiFields}>
               <CardStoreContextProvider side={side}>
                 <FieldGroupContextProvider>

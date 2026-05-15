@@ -7,7 +7,7 @@
  */
 export const plugin = {
   onPluginLoad: ({ ctx }) => {
-    const [$general] = ctx.useGeneralContext();
+    const { $general } = ctx.useGeneralContext();
     const root = $general.root;
     const fontsPool = [
       "'Hina Mincho'",
@@ -19,7 +19,7 @@ export const plugin = {
 
     const randomFont = fontsPool[Math.floor(Math.random() * fontsPool.length)];
 
-    const [$card, $setCard] = ctx.useCardContext();
+    const { $card, $setCard } = ctx.useCardContext();
     let font = sessionStorage.getItem("random-font") ?? randomFont;
     if ($card.side === "front") {
       font = randomFont;

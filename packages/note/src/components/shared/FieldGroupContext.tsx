@@ -26,8 +26,8 @@ const FieldGroupContext = createContext<{
 
 export function FieldGroupContextProvider(props: { children: JSX.Element }) {
   const { ankiFields } = useAnkiFieldContext();
-  const [$card] = useCardContext();
-  const [$general] = useGeneralContext();
+  const { $card } = useCardContext();
+  const { $general } = useGeneralContext();
 
   const sentenceField = () => {
     if ($card.side === "front") {

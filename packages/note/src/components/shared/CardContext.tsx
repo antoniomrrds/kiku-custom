@@ -48,8 +48,12 @@ type CardStore = {
   pitch: PitchState;
 };
 
-const CardStoreContext =
-  createContext<[Store<CardStore>, SetStoreFunction<CardStore>]>();
+type CardContextValue = {
+  $card: Store<CardStore>;
+  $setCard: SetStoreFunction<CardStore>;
+};
+
+const CardStoreContext = createContext<CardContextValue>();
 
 export function CardStoreContextProvider(props: {
   children: JSX.Element;
@@ -93,7 +97,7 @@ export function CardStoreContextProvider(props: {
   });
 
   return (
-    <CardStoreContext.Provider value={[$card, $setCard]}>
+    <CardStoreContext.Provider value={{ $card, $setCard }}>
       {props.children}
     </CardStoreContext.Provider>
   );

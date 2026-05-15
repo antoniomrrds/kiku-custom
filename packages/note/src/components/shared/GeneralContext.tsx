@@ -39,8 +39,12 @@ type Toast = {
   type: "success" | "error";
 };
 
-const GeneralContext =
-  createContext<[Store<GeneralStore>, SetStoreFunction<GeneralStore>]>();
+type GeneralContextValue = {
+  $general: Store<GeneralStore>;
+  $setGeneral: SetStoreFunction<GeneralStore>;
+};
+
+const GeneralContext = createContext<GeneralContextValue>();
 
 export function GeneralContextProvider(props: {
   children: JSX.Element;
@@ -118,7 +122,7 @@ export function GeneralContextProvider(props: {
   });
 
   return (
-    <GeneralContext.Provider value={[$general, $setGeneral]}>
+    <GeneralContext.Provider value={{ $general, $setGeneral }}>
       {props.children}
     </GeneralContext.Provider>
   );

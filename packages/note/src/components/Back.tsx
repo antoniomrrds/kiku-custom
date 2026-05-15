@@ -38,7 +38,7 @@ const Lazy = {
 
 export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
@@ -155,7 +155,7 @@ export function Back(props: { onExitNested?: () => void }) {
 }
 
 function ExpressionSection() {
-  const [$card] = useCardContext();
+  const { $card } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [dataPitchType, setDataPitchType] = createSignal({
     "data-pitch-type": "{{PitchCategories}}",

@@ -9,7 +9,7 @@ export const plugin = {
   ExternalLinks: (props) => {
     const h = props.ctx.h;
     const useGeneralContext = props.ctx.useGeneralContext;
-    const [$general] = useGeneralContext();
+    const { $general } = useGeneralContext();
 
     // Create an arbitrary link
     const NadeshikoLink = h(

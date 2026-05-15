@@ -7,14 +7,14 @@ import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 
 export default function Pitches() {
-  const [$card] = useCardContext();
+  const { $card } = useCardContext();
   return $card.pitch.infos.map((pitchInfo, index) => {
     return <Pitch pitchInfo={pitchInfo} index={index} />;
   });
 }
 
 function Pitch(props: { pitchInfo: PitchInfo; index: number }) {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 
   return (

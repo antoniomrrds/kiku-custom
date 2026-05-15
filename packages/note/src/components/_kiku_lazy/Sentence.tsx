@@ -6,9 +6,9 @@ import { useFieldGroupContext } from "../shared/FieldGroupContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 
 export default function Sentence() {
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const ctx = useCtxContext();
 

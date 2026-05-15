@@ -5,7 +5,7 @@ import { useGeneralContext } from "../shared/GeneralContext";
 import { InfoIcon } from "./Icons";
 
 export default function BackFooter(props: { tags: string[] }) {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
   const { $group } = useFieldGroupContext();
   const ctx = useCtxContext();
   const tags = () => props.tags.filter(Boolean);

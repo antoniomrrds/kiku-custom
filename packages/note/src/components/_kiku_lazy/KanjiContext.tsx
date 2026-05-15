@@ -29,14 +29,18 @@ type KanjiStore = {
   fetched: Set<FetchType>;
 };
 
-const KanjiContext =
-  createContext<[Store<KanjiStore>, SetStoreFunction<KanjiStore>]>();
+type KanjiContextValue = {
+  $kanji: Store<KanjiStore>;
+  $setKanji: SetStoreFunction<KanjiStore>;
+};
+
+const KanjiContext = createContext<KanjiContextValue>();
 
 export function KanjiContextProvider(props: {
   kanji: string;
   children: JSX.Element;
 }) {
-  const [$general, $setGeneral] = useGeneralContext();
+  const { $general, $setGeneral } = useGeneralContext();
   const cacheStore = useCacheContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [$kanji, $setKanji] = createStore<KanjiStore>({
@@ -90,7 +94,7 @@ export function KanjiContextProvider(props: {
   });
 
   return (
-    <KanjiContext.Provider value={[$kanji, $setKanji]}>
+    <KanjiContext.Provider value={{ $kanji, $setKanji }}>
       {props.children}
     </KanjiContext.Provider>
   );

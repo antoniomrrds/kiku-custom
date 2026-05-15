@@ -3,7 +3,7 @@ import { Portal } from "solid-js/web";
 import { useGeneralContext } from "../shared/GeneralContext";
 
 export default function HeaderLayout(props: { children: JSX.Element }) {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
 
   return (
     <Portal mount={$general.layoutRef}>

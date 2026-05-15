@@ -10,7 +10,7 @@ export default function DefinitionPictureSection(props: {
   currentHtml?: string;
 }) {
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [$config] = useConfigContext();
+  const { $config } = useConfigContext();
   const collectGlossaryImgs = useCollectGlossaryImgs();
 
   const definitionPictures = createMemo(() => {

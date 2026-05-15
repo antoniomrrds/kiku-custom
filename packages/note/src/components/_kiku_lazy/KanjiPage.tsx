@@ -26,7 +26,7 @@ import {
 } from "./KanjiPageContext";
 
 export default function KanjiPage() {
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   return (
     <KanjiPageContextProvider
       noteList={$card.query.noteList}
@@ -45,8 +45,8 @@ export default function KanjiPage() {
 }
 
 function Page() {
-  const [$general, $setGeneral] = useGeneralContext();
-  const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
+  const { $general, $setGeneral } = useGeneralContext();
+  const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
   const hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
   const hasSameReading = createMemo(
     () => $kanjiPage.sameReading && $kanjiPage.sameReading.length > 0,
@@ -204,8 +204,8 @@ function Page() {
 }
 
 function KanjiCollapsible(props: { data: AnkiNote[] }) {
-  const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
-  const [$kanji, $setKanji] = useKanjiContext();
+  const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
+  const { $kanji, $setKanji } = useKanjiContext();
   const data = () => props.data;
   const [checked, setChecked] = createSignal(
     $kanjiPage.focus.kanji === $kanji.kanji,
@@ -308,8 +308,8 @@ function AnkiNoteItem(props: {
   const data = () => props.data;
   const reading = () => props.reading;
   const { navigate } = useNavigationTransition();
-  const [$card, $setCard] = useCardContext();
-  const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
+  const { $card, $setCard } = useCardContext();
+  const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
 
   const leech = data().tags.includes("leech");
   const expressionInnerHtml = createMemo(() => {
@@ -419,8 +419,8 @@ function AnkiNoteItem(props: {
 }
 
 function KanjiText() {
-  const [$kanji] = useKanjiContext();
-  const [$kanjiPage] = useKanjiPageContext();
+  const { $kanji } = useKanjiContext();
+  const { $kanjiPage } = useKanjiPageContext();
 
   let ref: HTMLDivElement | undefined;
   onMount(() => {

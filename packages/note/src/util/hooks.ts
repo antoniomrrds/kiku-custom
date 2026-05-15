@@ -32,7 +32,7 @@ export function useViewTransition() {
 }
 
 export function useNavigationTransition() {
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const bp = useBreakpointContext();
   const startViewTransition = useViewTransition();
 
@@ -73,7 +73,7 @@ export function useNavigationTransition() {
 }
 
 export function usePitch() {
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
 
   const pitchNumbers = createMemo(() =>
@@ -123,10 +123,10 @@ export function usePitch() {
 }
 
 export function useThemeTransition() {
-  const [$general] = useGeneralContext();
-  const [$config, $setConfig] = useConfigContext();
+  const { $general } = useGeneralContext();
+  const { $config, $setConfig } = useConfigContext();
   const startViewTransition = useViewTransition();
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
 
   function changeTheme(theme: DaisyUITheme) {
     if ($card.query.status === "loading" || $general.isAnkiDesktop) {
@@ -145,10 +145,10 @@ export function useThemeTransition() {
 }
 
 export function useKanji() {
-  const [$config] = useConfigContext();
-  const [$card, $setCard] = useCardContext();
+  const { $config } = useConfigContext();
+  const { $card, $setCard } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [$general, $setGeneral] = useGeneralContext();
+  const { $general, $setGeneral } = useGeneralContext();
   const cacheStore = useCacheContext();
 
   let set = false;
@@ -238,7 +238,7 @@ const defaultFilter = (img: HTMLImageElement) => {
 };
 
 export function useCollectGlossaryImgs() {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
 
   function collectGlossaryImgs(glossaryHtml: string) {
     if (isServer) return [];
@@ -262,7 +262,7 @@ export function useCollectGlossaryImgs() {
 }
 
 export function useLoadPlugin() {
-  const [$general, $setGeneral] = useGeneralContext();
+  const { $general, $setGeneral } = useGeneralContext();
   const ctx = useCtxContext();
   const owner = getOwner();
 

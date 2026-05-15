@@ -10,10 +10,10 @@ export const plugin = {
     const h = props.ctx.h;
     const createSignal = props.ctx.createSignal;
     const [pressed, setPressed] = createSignal(false);
-    const [$general] = props.ctx.useGeneralContext();
-    const [$card, $setCard] = props.ctx.useCardContext();
+    const { $general } = props.ctx.useGeneralContext();
+    const { $card, $setCard } = props.ctx.useCardContext();
     const cardId = props.ctx.ankiFields.CardID;
-    const [config] = props.ctx.useConfigContext();
+    const { $config: config } = props.ctx.useConfigContext();
 
     function ToggleNsfwButton() {
       return h(

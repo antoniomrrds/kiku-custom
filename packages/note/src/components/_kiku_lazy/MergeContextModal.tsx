@@ -13,10 +13,10 @@ import { AnkiConnect } from "./util/anki-connect";
 
 export default function MergeContextModal() {
   let dialogRef: HTMLDialogElement | undefined;
-  const [$general, $setGeneral] = useGeneralContext();
-  const [$config, $setConfig] = useConfigContext();
+  const { $general, $setGeneral } = useGeneralContext();
+  const { $config, $setConfig } = useConfigContext();
   const { navigate } = useNavigationTransition();
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { ankiFields: rootAnkiFields } = useRootFieldGroupContext();
   const { noteId: currentNoteId } = useAnkiFieldContext<"back">();
 

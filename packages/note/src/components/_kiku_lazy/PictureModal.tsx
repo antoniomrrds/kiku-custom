@@ -16,7 +16,7 @@ export default function PictureModal(props: {
   img: string | undefined;
   "on:click"?: () => void;
 }) {
-  const [$general] = useGeneralContext();
+  const { $general } = useGeneralContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [img, setImg] = createSignal(props.img);
   const [showAll, setShowAll] = createSignal(false);

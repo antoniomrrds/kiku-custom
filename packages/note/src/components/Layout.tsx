@@ -3,7 +3,7 @@ import { Portal } from "solid-js/web";
 import { useGeneralContext } from "./shared/GeneralContext";
 
 export function Layout(props: { children: JSX.Element }) {
-  const [$general, $setGeneral] = useGeneralContext();
+  const { $general, $setGeneral } = useGeneralContext();
 
   return (
     <div

@@ -7,7 +7,7 @@ import { useCardContext } from "./shared/CardContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
 
 export function PictureSection() {
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { ankiFields } = useAnkiFieldContext();
   const [clicked, setClicked] = createSignal(false);

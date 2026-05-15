@@ -13,7 +13,7 @@ import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
 
 export default function Expression() {
-  const [$card, $setCard] = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const [activeKey, setActiveKey] = createSignal<string | null>(null);
   let timeout: ReturnType<typeof setTimeout>;
@@ -168,8 +168,8 @@ function KanjiTooltip(props: {
   onActive: () => void;
   onInactive: () => void;
 }) {
-  const [$general] = useGeneralContext();
-  const [$kanji] = useKanjiContext();
+  const { $general } = useGeneralContext();
+  const { $kanji } = useKanjiContext();
   if (!$kanji.kanji) return null;
 
   const [tooltipRef, setTooltipRef] = createSignal<HTMLDivElement>();
