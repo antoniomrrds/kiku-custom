@@ -30,18 +30,18 @@ function getBreakpoint(width: number) {
 }
 
 function createBreakpoint() {
-  const [breakpoint, setBreakpoint] = createSignal<Breakpoint>("base");
+  const [$breakpoint, $setBreakpoint] = createSignal<Breakpoint>("base");
 
   const update = () => {
-    const value = breakpoint();
+    const value = $breakpoint();
     const newValue = getBreakpoint(window.innerWidth);
     if (value !== newValue) {
-      setBreakpoint(newValue);
+      $setBreakpoint(newValue);
     }
   };
 
   onMount(() => {
-    setBreakpoint(getBreakpoint(window.innerWidth));
+    $setBreakpoint(getBreakpoint(window.innerWidth));
     window.addEventListener("resize", update);
     onCleanup(() => {
       window.removeEventListener("resize", update);
@@ -49,9 +49,9 @@ function createBreakpoint() {
   });
 
   const isAtLeast = (bp: Breakpoint) =>
-    order.indexOf(breakpoint()) >= order.indexOf(bp);
+    order.indexOf($breakpoint()) >= order.indexOf(bp);
 
-  return { breakpoint, isAtLeast };
+  return { breakpoint: $breakpoint, isAtLeast };
 }
 
 const BreakpointContext = createContext<{

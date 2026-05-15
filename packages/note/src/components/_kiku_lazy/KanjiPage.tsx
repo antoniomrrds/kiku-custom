@@ -47,11 +47,11 @@ export default function KanjiPage() {
 function Page() {
   const { $general, $setGeneral } = useGeneralContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
-  const hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
-  const hasSameReading = createMemo(
+  const $hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
+  const $hasSameReading = createMemo(
     () => $kanjiPage.sameReading && $kanjiPage.sameReading.length > 0,
   );
-  const hasSameExpression = createMemo(
+  const $hasSameExpression = createMemo(
     () => $kanjiPage.sameExpression && $kanjiPage.sameExpression.length > 0,
   );
 
@@ -82,10 +82,10 @@ function Page() {
               class="tab"
               classList={{
                 "tab-active": $kanjiPage.tab === "kanji",
-                "cursor-not-allowed": !hasSameKanji(),
+                "cursor-not-allowed": !$hasSameKanji(),
               }}
               on:click={() => {
-                if (hasSameKanji()) $setKanjiPage("tab", "kanji");
+                if ($hasSameKanji()) $setKanjiPage("tab", "kanji");
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
@@ -96,10 +96,10 @@ function Page() {
               class="tab gap-1"
               classList={{
                 "tab-active": $kanjiPage.tab === "reading",
-                "cursor-not-allowed": !hasSameReading(),
+                "cursor-not-allowed": !$hasSameReading(),
               }}
               on:click={() => {
-                if (hasSameReading()) $setKanjiPage("tab", "reading");
+                if ($hasSameReading()) $setKanjiPage("tab", "reading");
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
@@ -113,10 +113,10 @@ function Page() {
               class="tab gap-1"
               classList={{
                 "tab-active": $kanjiPage.tab === "same",
-                "cursor-not-allowed": !hasSameExpression(),
+                "cursor-not-allowed": !$hasSameExpression(),
               }}
               on:click={() => {
-                if (hasSameExpression()) $setKanjiPage("tab", "same");
+                if ($hasSameExpression()) $setKanjiPage("tab", "same");
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
@@ -207,7 +207,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
   const { $kanji, $setKanji } = useKanjiContext();
   const data = () => props.data;
-  const [checked, setChecked] = createSignal(
+  const [$checked, $setChecked] = createSignal(
     $kanjiPage.focus.kanji === $kanji.kanji,
   );
 
@@ -219,15 +219,15 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
     <div class="collapse bg-base-200 border border-base-300 animate-fade-in">
       <input
         type="checkbox"
-        checked={checked()}
+        checked={$checked()}
         on:change={(e) => {
-          setChecked(e.currentTarget.checked);
+          $setChecked(e.currentTarget.checked);
         }}
       />
       <div
         class="collapse-title justify-between flex items-center ps-2 sm:ps-4 pe-2 sm:pe-4 py-2 sm:py-4 tappable"
         on:click={() => {
-          setChecked(!checked());
+          $setChecked(!$checked());
         }}
         on:touchend={(e) => e.stopPropagation()}
       >
@@ -312,7 +312,7 @@ function AnkiNoteItem(props: {
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
 
   const leech = data().tags.includes("leech");
-  const expressionInnerHtml = createMemo(() => {
+  const $expressionInnerHtml = createMemo(() => {
     if (
       data().fields.Expression.value &&
       data().fields.ExpressionReading.value
@@ -323,26 +323,26 @@ function AnkiNoteItem(props: {
     return data().fields.ExpressionReading.value;
   });
 
-  const expressionInnerHtmlColorized = createMemo(() => {
+  const $expressionInnerHtmlColorized = createMemo(() => {
     const reading$ = reading();
-    if (!props.highlightedKanji && !reading$) return expressionInnerHtml();
+    if (!props.highlightedKanji && !reading$) return $expressionInnerHtml();
 
     if (props.highlightedKanji) {
-      return expressionInnerHtml().replaceAll(
+      return $expressionInnerHtml().replaceAll(
         props.highlightedKanji,
         `<span class="text-base-content-primary">${props.highlightedKanji}</span>`,
       );
     }
 
     if (reading$) {
-      return expressionInnerHtml().replaceAll(
+      return $expressionInnerHtml().replaceAll(
         reading$,
         `<span class="text-base-content-primary">${reading$}</span>`,
       );
     }
   });
 
-  const sentenceInnerHtmlColorized = createMemo(() => {
+  const $sentenceInnerHtmlColorized = createMemo(() => {
     if (!props.highlightedKanji) return data().fields.Sentence.value;
 
     return data().fields.Sentence.value.replaceAll(
@@ -387,7 +387,7 @@ function AnkiNoteItem(props: {
         <div class="flex gap-2 items-end">
           <div
             class=" font-secondary sentence"
-            innerHTML={expressionInnerHtmlColorized()}
+            innerHTML={$expressionInnerHtmlColorized()}
             ref={ref}
           ></div>
           <div class="text-base-content-calm">
@@ -401,7 +401,7 @@ function AnkiNoteItem(props: {
         <div></div>
         <div
           class="text-base sm:text-xl text-base-content-calm font-secondary"
-          innerHTML={sentenceInnerHtmlColorized()}
+          innerHTML={$sentenceInnerHtmlColorized()}
         ></div>
         <div class="flex justify-center items-center">
           <button

@@ -33,7 +33,7 @@ export default function BackBody(props: {
     );
   };
 
-  const pages = createMemo(() => {
+  const $pages = createMemo(() => {
     const p: { name: string; html: string }[] = [];
     const selection = !isHtmlEffectivelyEmpty(ankiFields.SelectionText)
       ? ankiFields.SelectionText
@@ -95,13 +95,13 @@ export default function BackBody(props: {
     return p;
   });
 
-  const [definitionIndex, setDefinitionIndex] = createSignal(0);
-  const currentPage = () => pages()[definitionIndex()];
+  const [$definitionIndex, $setDefinitionIndex] = createSignal(0);
+  const currentPage = () => $pages()[$definitionIndex()];
 
   function changePage(direction: 1 | -1) {
-    if (pages().length === 0) return;
-    setDefinitionIndex(
-      (prev) => (prev + direction + pages().length) % pages().length,
+    if ($pages().length === 0) return;
+    $setDefinitionIndex(
+      (prev) => (prev + direction + $pages().length) % $pages().length,
     );
   }
 
@@ -130,9 +130,9 @@ export default function BackBody(props: {
       <div class="flex flex-col justify-center gap-2 items-center text-center">
         <Sentence />
       </div>
-      {pages().length > 0 && (
+      {$pages().length > 0 && (
         <div class="animate-fade-in" {...definitionDataset()}>
-          {pages().length > 1 && (
+          {$pages().length > 1 && (
             <div
               class="flex justify-between text-base-content-calm text-sm cursor-pointer hover:text-base-content transition-colors mb-1 tappable"
               on:click={() => modalRef?.showModal()}
@@ -146,7 +146,7 @@ export default function BackBody(props: {
               >
                 {currentPage()?.name}
               </div>
-              <div class="text-base-content-soft">{`${definitionIndex() + 1}/${pages().length}`}</div>
+              <div class="text-base-content-soft">{`${$definitionIndex() + 1}/${$pages().length}`}</div>
             </div>
           )}
           <div
@@ -163,7 +163,7 @@ export default function BackBody(props: {
               />
               <div class="contents" innerHTML={currentPage()?.html}></div>
             </div>
-            {pages().length > 1 && (
+            {$pages().length > 1 && (
               <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
                 <button
                   type="button"
@@ -190,14 +190,14 @@ export default function BackBody(props: {
         <div class="modal-box max-w-sm max-h-[80svh] flex flex-col p-4 gap-2">
           <h3 class="font-bold text-lg px-2 text-center">Select Page</h3>
           <div class="flex flex-col gap-1 overflow-auto p-2">
-            <For each={pages()}>
+            <For each={$pages()}>
               {(page, i) => (
                 <button
                   type="button"
                   class="btn btn-ghost btn-sm justify-start font-normal text-left"
-                  classList={{ "btn-active": i() === definitionIndex() }}
+                  classList={{ "btn-active": i() === $definitionIndex() }}
                   on:click={() => {
-                    setDefinitionIndex(i());
+                    $setDefinitionIndex(i());
                     modalRef?.close();
                   }}
                   on:touchend={(e) => e.stopPropagation()}

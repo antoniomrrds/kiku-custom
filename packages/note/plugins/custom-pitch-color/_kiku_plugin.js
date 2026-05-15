@@ -40,9 +40,9 @@ export const plugin = {
       `;
     const style = h("style", css);
 
-    const [ref, setRef] = createSignal();
+    const [$ref, $setRef] = createSignal();
     onMount(() => {
-      const el = ref();
+      const el = $ref();
       if (!el) return;
 
       const spans = Array.from(el.querySelectorAll("[data-is-even] span"));
@@ -59,7 +59,7 @@ export const plugin = {
       DefaultPitch({
         index: props.index,
         pitchInfo: props.pitchInfo,
-        ref: setRef,
+        ref: $setRef,
       }),
       style(),
     ];

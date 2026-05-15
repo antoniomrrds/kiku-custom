@@ -21,8 +21,8 @@ const Lazy = {
 export function Front() {
   const { $card, $setCard } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"front">();
-  const [clicked, setClicked] = createSignal(false);
-  const [hideExpression, setHideExpression] = createSignal(false);
+  const [$clicked, $setClicked] = createSignal(false);
+  const [$hideExpression, $setHideExpression] = createSignal(false);
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
   const loadPlugin = useLoadPlugin();
@@ -38,7 +38,7 @@ export function Front() {
 
     if ($config.modHidden) {
       setTimeout(() => {
-        setHideExpression(true);
+        $setHideExpression(true);
       }, $config.modHiddenDuration);
     }
   });
@@ -66,7 +66,7 @@ export function Front() {
     ) {
       return false;
     }
-    if (ankiFields.IsClickCard && clicked()) {
+    if (ankiFields.IsClickCard && $clicked()) {
       return false;
     }
     return true;
@@ -88,8 +88,8 @@ export function Front() {
         <div
           class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
           on:click={() => {
-            setClicked((prev) => !prev);
-            setHideExpression(false);
+            $setClicked((prev) => !prev);
+            $setHideExpression(false);
           }}
           on:touchend={(e) => e.stopPropagation()}
         >
@@ -100,7 +100,7 @@ export function Front() {
                 "border-b-2 border-dotted border-base-content-soft":
                   !!ankiFields.IsClickCard,
                 "transition-opacity duration-[1000ms] opacity-0":
-                  hideExpression(),
+                  $hideExpression(),
               }}
               innerHTML={
                 isServer
@@ -123,7 +123,7 @@ export function Front() {
       <div
         class="flex flex-col gap-4 items-center text-center justify-center"
         classList={{
-          "transition-opacity duration-[1000ms] opacity-0": hideExpression(),
+          "transition-opacity duration-[1000ms] opacity-0": $hideExpression(),
         }}
       >
         {$card.ready && !hidden() && <Lazy.Sentence />}

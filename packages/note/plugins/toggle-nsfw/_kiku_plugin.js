@@ -9,7 +9,7 @@ export const plugin = {
   ExternalLinks: (props) => {
     const h = props.ctx.h;
     const createSignal = props.ctx.createSignal;
-    const [pressed, setPressed] = createSignal(false);
+    const [$pressed, $setPressed] = createSignal(false);
     const { $general } = props.ctx.useGeneralContext();
     const { $card, $setCard } = props.ctx.useCardContext();
     const cardId = props.ctx.ankiFields.CardID;
@@ -19,7 +19,7 @@ export const plugin = {
       return h(
         "button",
         {
-          disabled: pressed(),
+          disabled: $pressed(),
           class: `text-sm btn btn-xs ${$card.isNsfw ? "btn-error" : ""}`,
           "on:click": async () => {
             const address = config.ankiConnectAddress;
@@ -55,7 +55,7 @@ export const plugin = {
                 $setCard("isNsfw", true);
                 $general.toast.success("NSFW has been added!");
               }
-              setPressed(true);
+              $setPressed(true);
             } catch (e) {
               console.error("Failed to toggle NSFW:", e);
               $general.toast.error("Failed to toggle NSFW");

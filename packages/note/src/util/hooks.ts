@@ -76,19 +76,19 @@ export function usePitch() {
   const { $card, $setCard } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
 
-  const pitchNumbers = createMemo(() =>
+  const $pitchNumbers = createMemo(() =>
     extractPitchNumbers(ankiFields.PitchPosition),
   );
 
-  const reading = createMemo(() => {
+  const $reading = createMemo(() => {
     if ($card.nested) return ankiFields.ExpressionReading;
     return ankiFields.ExpressionFurigana
       ? ankiFields["kana:ExpressionFurigana"]
       : ankiFields.ExpressionReading;
   });
 
-  const pitchInfos = createMemo(() => {
-    const numbers = pitchNumbers();
+  const $pitchInfos = createMemo(() => {
+    const numbers = $pitchNumbers();
     if (!numbers.length) return [];
     const pitchCategories = ankiFields.PitchCategories.split(",").map((s) => {
       let pitchCategory: string | null = s.trim().toLowerCase();
@@ -102,22 +102,22 @@ export function usePitch() {
       return pitchCategory;
     });
     return numbers.map((pitchNum, i) => {
-      const result = hatsuon({ reading: reading(), pitchNum, locale: "EN" });
+      const result = hatsuon({ reading: $reading(), pitchNum, locale: "EN" });
       result.patternName = pitchCategories[i] ?? result.patternName;
       return result;
     });
   });
 
-  const pitchType = createMemo(() => {
-    const info = pitchInfos()[0];
+  const $pitchType = createMemo(() => {
+    const info = $pitchInfos()[0];
     if (!info) return undefined;
     return info.patternName as PitchType;
   });
 
   createEffect(() => {
     $setCard("pitch", {
-      infos: pitchInfos(),
-      type: pitchType(),
+      infos: $pitchInfos(),
+      type: $pitchType(),
     });
   });
 }

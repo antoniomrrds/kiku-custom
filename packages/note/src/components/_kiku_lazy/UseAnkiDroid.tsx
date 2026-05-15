@@ -45,9 +45,9 @@ export default function UseAnkiDroid() {
   let isSwiping = false;
   let isTouching = false;
 
-  const [rightIconOffset, setRightIconOffset] = createSignal(0);
-  const [leftIconOffset, setLeftIconOffset] = createSignal(0);
-  const [progress, setProgress] = createSignal(0);
+  const [$rightIconOffset, $setRightIconOffset] = createSignal(0);
+  const [$leftIconOffset, $setLeftIconOffset] = createSignal(0);
+  const [$progress, $setProgress] = createSignal(0);
 
   function handleTouchStart(e: TouchEvent) {
     const el = el$();
@@ -80,8 +80,8 @@ export default function UseAnkiDroid() {
       Math.abs(diffY) > Math.abs(diffX)
     ) {
       isScrolling = true;
-      setRightIconOffset(0);
-      setLeftIconOffset(0);
+      $setRightIconOffset(0);
+      $setLeftIconOffset(0);
       return;
     }
 
@@ -91,21 +91,21 @@ export default function UseAnkiDroid() {
       deltaX = diffX;
       const direction = diffX > 0 ? 1 : -1;
       const progress = Math.min(abs / THRESHOLD, 1);
-      setProgress(progress);
+      $setProgress(progress);
       const multiplier = easeOutQuad(Math.min(abs / THRESHOLD / 2, 1));
       const offset = multiplier * Math.min(abs, THRESHOLD);
 
       if (direction > 0) {
         requestAnimationFrame(() => {
           if (isScrolling || !isTouching) return;
-          setLeftIconOffset(snapTo4(Math.abs(offset)));
-          setRightIconOffset(0);
+          $setLeftIconOffset(snapTo4(Math.abs(offset)));
+          $setRightIconOffset(0);
         });
       } else {
         requestAnimationFrame(() => {
           if (isScrolling || !isTouching) return;
-          setRightIconOffset(snapTo4(Math.abs(offset)));
-          setLeftIconOffset(0);
+          $setRightIconOffset(snapTo4(Math.abs(offset)));
+          $setLeftIconOffset(0);
         });
       }
     }
@@ -117,8 +117,8 @@ export default function UseAnkiDroid() {
       if (isSwiping) return;
       ankiDroidAPI?.ankiShowAnswer();
     } else if ($card.side === "back") {
-      setRightIconOffset(0);
-      setLeftIconOffset(0);
+      $setRightIconOffset(0);
+      $setLeftIconOffset(0);
 
       if (isScrolling) return;
       if (Math.abs(deltaX) >= THRESHOLD) {
@@ -161,15 +161,15 @@ export default function UseAnkiDroid() {
         ref={leftIconRef}
         side="left"
         color={reverse ? "error" : "success"}
-        offset={leftIconOffset()}
-        progress={progress()}
+        offset={$leftIconOffset()}
+        progress={$progress()}
       />
       <Icon
         ref={rightIconRef}
         side="right"
         color={reverse ? "success" : "error"}
-        offset={rightIconOffset()}
-        progress={progress()}
+        offset={$rightIconOffset()}
+        progress={$progress()}
       />
     </Portal>
   );

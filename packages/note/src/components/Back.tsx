@@ -157,7 +157,7 @@ export function Back(props: { onExitNested?: () => void }) {
 function ExpressionSection() {
   const { $card } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [dataPitchType, setDataPitchType] = createSignal({
+  const [$dataPitchType, $setDataPitchType] = createSignal({
     "data-pitch-type": "{{PitchCategories}}",
   });
 
@@ -170,7 +170,7 @@ function ExpressionSection() {
   };
 
   onMount(() => {
-    setDataPitchType({
+    $setDataPitchType({
       "data-pitch-type": $card.pitch.type ?? "",
     });
   });
@@ -179,7 +179,7 @@ function ExpressionSection() {
     return (
       <div
         class="expression font-secondary text-center vertical-rl transition-colors"
-        {...dataPitchType()}
+        {...$dataPitchType()}
         style={{
           color: "var(--pitch-color)",
         }}
@@ -198,7 +198,7 @@ function ExpressionSection() {
           display: $card.expressionReady ? "none" : "block",
         }}
         innerHTML={expressionInnerHtml()}
-        {...dataPitchType()}
+        {...$dataPitchType()}
       >
         {isServer
           ? "{{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}{{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}"
@@ -206,7 +206,7 @@ function ExpressionSection() {
       </div>
       <div
         class="expression font-secondary text-center vertical-rl transition-colors"
-        {...dataPitchType()}
+        {...$dataPitchType()}
         style={{
           color: "var(--pitch-color)",
           display: $card.expressionReady ? "block" : "none",

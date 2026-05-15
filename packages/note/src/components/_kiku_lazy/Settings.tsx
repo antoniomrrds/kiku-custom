@@ -149,7 +149,7 @@ export default function Settings() {
 }
 
 function KikuVersion() {
-  const [latestVersion, setLatestVersion] = createSignal<string | null>(
+  const [$latestVersion, $setLatestVersion] = createSignal<string | null>(
     (() => {
       const cached = sessionStorage.getItem(
         constants.key["kiku-latest-version"],
@@ -179,7 +179,7 @@ function KikuVersion() {
         const v = data.tag_name.replace(/^v/, "");
         sessionStorage.setItem(constants.key["kiku-latest-version"], v);
         if (v !== constants.KIKU_VERSION) {
-          setLatestVersion(v);
+          $setLatestVersion(v);
         }
       }
     } catch (e) {
@@ -192,11 +192,11 @@ function KikuVersion() {
       <div class="text-base-content-subtle-200 text-6xl">菊</div>
       <div class="flex items-center gap-1.5">
         <div
-          classList={{ tooltip: !!latestVersion() }}
+          classList={{ tooltip: !!$latestVersion() }}
           class="tooltip-bottom tooltip-info"
           data-tip={
-            latestVersion()
-              ? `Update Available: v${latestVersion()}`
+            $latestVersion()
+              ? `Update Available: v${$latestVersion()}`
               : undefined
           }
         >
@@ -209,7 +209,7 @@ function KikuVersion() {
             Kiku Note v{constants.KIKU_VERSION}
           </a>
         </div>
-        <Show when={latestVersion()}>
+        <Show when={$latestVersion()}>
           <span class="status status-info"></span>
         </Show>
       </div>
@@ -1020,13 +1020,13 @@ function KeybindSettings() {
 
 function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
   const { $config, $setConfig } = useConfigContext();
-  const [isRecording, setIsRecording] = createSignal(false);
+  const [$isRecording, $setIsRecording] = createSignal(false);
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if (!isRecording()) return;
+    if (!$isRecording()) return;
     e.preventDefault();
     $setConfig(props.configKey, e.key);
-    setIsRecording(false);
+    $setIsRecording(false);
   };
 
   return (
@@ -1051,12 +1051,12 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
       <button
         type="button"
         class="btn btn-sm w-full font-mono"
-        classList={{ "btn-primary": isRecording() }}
-        on:click={() => setIsRecording(!isRecording())}
+        classList={{ "btn-primary": $isRecording() }}
+        on:click={() => $setIsRecording(!$isRecording())}
         on:touchend={(e) => e.stopPropagation()}
         on:keydown={onKeyDown}
       >
-        {isRecording()
+        {$isRecording()
           ? "Press any key..."
           : ($config[props.configKey] as string)}
       </button>
@@ -1068,30 +1068,30 @@ function DebugSettings() {
   const { $config, $setConfig } = useConfigContext();
   const { $card } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [kikuFiles, setKikuFiles] = createSignal<string>();
-  const [missingFiles, setMissingFiles] = createSignal<string>();
+  const [$kikuFiles, $setKikuFiles] = createSignal<string>();
+  const [$missingFiles, $setMissingFiles] = createSignal<string>();
   const { $general, $setGeneral: _$setGeneral } = useGeneralContext();
 
   createEffect(async () => {
     if ($general.isAnkiConnectAvailable) {
       const files = await AnkiConnect.getKikuFiles();
-      setKikuFiles(JSON.stringify(files, null, 2));
+      $setKikuFiles(JSON.stringify(files, null, 2));
       const missing = constants.KIKU_IMPORTANT_FILES.filter((file) => {
         return !files.includes(file);
       });
-      setMissingFiles(missing.join(", "));
+      $setMissingFiles(missing.join(", "));
     }
   });
 
-  const [logs, setLogs] = createSignal<string>();
+  const [$logs, $setLogs] = createSignal<string>();
   onMount(() => {
     const id = setInterval(() => {
-      setLogs($general.logger.get());
+      $setLogs($general.logger.get());
     }, 8000);
     onCleanup(() => {
       clearInterval(id);
     });
-    setLogs($general.logger.get());
+    $setLogs($general.logger.get());
   });
 
   const rootDataset = () => {
@@ -1207,35 +1207,35 @@ function DebugSettings() {
               {JSON.stringify({ ...ankiFields }, null, 2)}
             </pre>
           </div>
-          <Show when={kikuFiles()}>
+          <Show when={$kikuFiles()}>
             <div class="flex flex-col gap-2">
               <div class="flex gap-2 items-center">
                 <div class="text-lg">Kiku Files</div>
-                <ClipboardCopyButton text={() => kikuFiles() ?? ""} />
+                <ClipboardCopyButton text={() => $kikuFiles() ?? ""} />
               </div>
 
-              <Show when={missingFiles()}>
+              <Show when={$missingFiles()}>
                 <div role="alert" class="alert alert-warning">
                   <span>
                     Some files are missing, things may not work as expected.
                     <br />
-                    <span class="text-xs ">{missingFiles()}</span>
+                    <span class="text-xs ">{$missingFiles()}</span>
                   </span>
                 </div>
               </Show>
               <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
-                {kikuFiles()}
+                {$kikuFiles()}
               </pre>
             </div>
           </Show>
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Logs</div>
-              <ClipboardCopyButton text={() => logs() ?? ""} />
+              <ClipboardCopyButton text={() => $logs() ?? ""} />
 
               <button
                 on:click={() => {
-                  setLogs($general.logger.get());
+                  $setLogs($general.logger.get());
                 }}
                 on:touchend={(e) => e.stopPropagation()}
               >
@@ -1243,7 +1243,7 @@ function DebugSettings() {
               </button>
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto max-h-[90svh]">
-              {logs()}
+              {$logs()}
             </pre>
           </div>
         </div>

@@ -10,10 +10,10 @@ export function PictureSection() {
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { ankiFields } = useAnkiFieldContext();
-  const [clicked, setClicked] = createSignal(false);
-  const [subIndex, setSubIndex] = createSignal(0);
+  const [$clicked, $setClicked] = createSignal(false);
+  const [$subIndex, $setSubIndex] = createSignal(0);
 
-  const pictures = createMemo(() => {
+  const $pictures = createMemo(() => {
     if (isServer) return [];
     const doc = parseHtml($group.pictureField);
     return Array.from(doc.querySelectorAll("img")).map((img) => img.outerHTML);
@@ -21,10 +21,10 @@ export function PictureSection() {
 
   createEffect(() => {
     $group.pictureField;
-    setSubIndex(0);
+    $setSubIndex(0);
   });
 
-  const currentPicture = () => pictures()[subIndex()] || "";
+  const currentPicture = () => $pictures()[$subIndex()] || "";
 
   const pictureFieldDataset: () => DatasetProp = () => ({
     "data-transition": $card.ready ? "true" : undefined,
@@ -42,19 +42,21 @@ export function PictureSection() {
 
   const next = (e: MouseEvent) => {
     e.stopPropagation();
-    setSubIndex((prev) => (prev + 1) % pictures().length);
+    $setSubIndex((prev) => (prev + 1) % $pictures().length);
   };
 
   const prev = (e: MouseEvent) => {
     e.stopPropagation();
-    setSubIndex((prev) => (prev - 1 + pictures().length) % pictures().length);
+    $setSubIndex(
+      (prev) => (prev - 1 + $pictures().length) % $pictures().length,
+    );
   };
 
   return (
     <div
       class="sm:max-w-1/2 bg-base-200 flex sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic tappable"
       on:click={() => {
-        setClicked((prev) => !prev);
+        $setClicked((prev) => !prev);
       }}
       on:touchend={(e) => e.stopPropagation()}
       {...dataSet1()}
@@ -62,7 +64,7 @@ export function PictureSection() {
       <div
         class="picture-field-background"
         style={{
-          opacity: clicked() ? 1 : undefined,
+          opacity: $clicked() ? 1 : undefined,
         }}
         innerHTML={isServer ? undefined : currentPicture()}
       >
@@ -71,7 +73,7 @@ export function PictureSection() {
       <div
         class="picture-field tappable"
         style={{
-          opacity: clicked() ? 1 : undefined,
+          opacity: $clicked() ? 1 : undefined,
         }}
         on:click={() => {
           $setCard("pictureModal", currentPicture());
@@ -83,7 +85,7 @@ export function PictureSection() {
         {isServer ? "{{Picture}}" : undefined}
       </div>
 
-      <Show when={pictures().length > 1 && $card.ready}>
+      <Show when={$pictures().length > 1 && $card.ready}>
         <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
           <button
             type="button"
@@ -99,10 +101,10 @@ export function PictureSection() {
           />
         </div>
         <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none opacity-0 group-hover/pic:opacity-100 transition-opacity">
-          {pictures().map((_, i) => (
+          {$pictures().map((_, i) => (
             <div
               class="w-1.5 h-1.5 rounded-full bg-base-100/50"
-              classList={{ "bg-primary": i === subIndex() }}
+              classList={{ "bg-primary": i === $subIndex() }}
             />
           ))}
         </div>

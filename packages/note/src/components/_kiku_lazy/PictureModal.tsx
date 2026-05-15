@@ -18,19 +18,19 @@ export default function PictureModal(props: {
 }) {
   const { $general } = useGeneralContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [img, setImg] = createSignal(props.img);
-  const [showAll, setShowAll] = createSignal(false);
+  const [$img, $setImg] = createSignal(props.img);
+  const [$showAll, $setShowAll] = createSignal(false);
   const startViewTransition = useViewTransition();
   const collectGlossaryImgs = useCollectGlossaryImgs();
 
   createEffect(() => {
     props.img;
     startViewTransition(() => {
-      setImg(props.img);
+      $setImg(props.img);
     });
   });
 
-  const allPictures = createMemo(() => {
+  const $allPictures = createMemo(() => {
     const pics = new Map<string, string>(); // src -> html
 
     const addImages = (doc: Document) => {
@@ -64,7 +64,7 @@ export default function PictureModal(props: {
         classList={{
           fixed: !$general.isAnkiWeb,
           absolute: $general.isAnkiWeb,
-          hidden: !img(),
+          hidden: !$img(),
         }}
         on:click={props["on:click"]}
         on:touchend={(e) => e.stopPropagation()}
@@ -74,36 +74,36 @@ export default function PictureModal(props: {
             type="button"
             class="btn btn-sm btn-neutral"
             classList={{
-              hidden: allPictures().length < 2,
+              hidden: $allPictures().length < 2,
             }}
             on:click={(e) => {
               e.stopPropagation();
-              setShowAll((prev) => !prev);
+              $setShowAll((prev) => !prev);
             }}
             on:touchend={(e) => e.stopPropagation()}
           >
-            {showAll() ? "Show current" : "Show all"}
+            {$showAll() ? "Show current" : "Show all"}
           </button>
         </div>
 
         <div class="flex-1 flex justify-center items-center">
           <Switch>
-            <Match when={!showAll()}>
+            <Match when={!$showAll()}>
               <div
                 class="transition-all [&_img]:max-h-[85vh] sm:[&_img]:max-h-[95vh] [&_*:not(img)]:contents"
-                innerHTML={img() ?? ""}
+                innerHTML={$img() ?? ""}
               ></div>
             </Match>
-            <Match when={showAll()}>
+            <Match when={$showAll()}>
               <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,320px))] gap-4 w-full justify-center">
-                <For each={allPictures()}>
+                <For each={$allPictures()}>
                   {(pic) => (
                     <div
                       class="aspect-square relative rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:scale-105 transition-transform group tappable"
                       on:click={(e) => {
                         e.stopPropagation();
-                        setImg(pic.html);
-                        setShowAll(false);
+                        $setImg(pic.html);
+                        $setShowAll(false);
                       }}
                       on:touchend={(e) => e.stopPropagation()}
                     >

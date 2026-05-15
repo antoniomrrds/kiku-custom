@@ -66,7 +66,7 @@ export async function init({
   workerPath?: string;
   rootDataset?: RootDataset;
 }) {
-  const [startupTime, setStartupTime] = createSignal(0);
+  const [$startupTime, $setStartupTime] = createSignal(0);
   const now = performance.now();
 
   root.part.add("root-part");
@@ -85,7 +85,7 @@ export async function init({
           workerPath={workerPath}
           templateDataset={rootDataset ?? {}}
           ankiDroidAPI={ankiDroidAPI}
-          startupTime={startupTime}
+          startupTime={$startupTime}
           assetsPath={assetsPath}
           logger={logger}
           root={root}
@@ -109,7 +109,7 @@ export async function init({
   );
 
   const dispose = ssr ? hydrate(App, root) : render(App, root);
-  setStartupTime(performance.now() - now);
+  $setStartupTime(performance.now() - now);
   return { dispose, logger };
 }
 

@@ -48,7 +48,7 @@ export type Ctx = {
   h: typeof h;
 
   // --- Solid.js Reactive Primitives ---
-  /** Creates a reactive signal. [getter, setter] = createSignal(initialValue) */
+  /** Creates a reactive signal. [$state, $setState] = createSignal(initialValue) */
   createSignal: typeof createSignal;
   /** Creates a reactive effect that re-runs when its dependencies change. */
   createEffect: typeof createEffect;

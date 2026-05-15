@@ -20,13 +20,13 @@ export default function MergeContextModal() {
   const { ankiFields: rootAnkiFields } = useRootFieldGroupContext();
   const { noteId: currentNoteId } = useAnkiFieldContext<"back">();
 
-  const [rootNote, setRootNote] = createSignal<AnkiNote>();
-  const [currentNote, setCurrentNote] = createSignal<AnkiNote>();
-  const [mergeDirection, setMergeDirection] = createSignal<
+  const [$rootNote, $setRootNote] = createSignal<AnkiNote>();
+  const [$currentNote, $setCurrentNote] = createSignal<AnkiNote>();
+  const [$mergeDirection, $setMergeDirection] = createSignal<
     "toRoot" | "toCurrent"
   >("toCurrent");
-  const [deleteRootNote, setDeleteRootNote] = createSignal(false);
-  const [loading, setLoading] = createSignal(true);
+  const [$deleteRootNote, $setDeleteRootNote] = createSignal(false);
+  const [$loading, $setLoading] = createSignal(true);
 
   if ($card.isMergePreview) return null;
 
@@ -34,7 +34,7 @@ export default function MergeContextModal() {
 
   createEffect(async () => {
     if ($general.isAnkiConnectAvailable) {
-      setLoading(true);
+      $setLoading(true);
       try {
         const noteIds = await AnkiConnect.invoke("findNotes", {
           query: `cid:${rootAnkiFields.CardID}`,
@@ -50,8 +50,8 @@ export default function MergeContextModal() {
           throw new Error(
             "Failed to load current note, is your notes cache up to date?",
           );
-        setRootNote(rootNote);
-        setCurrentNote(currentNote);
+        $setRootNote(rootNote);
+        $setCurrentNote(currentNote);
       } catch (e) {
         $general.toast.error(
           e instanceof Error ? e.message : "Failed to load notes",
@@ -59,7 +59,7 @@ export default function MergeContextModal() {
         $general.logger.error(e);
       }
     }
-    setLoading(false);
+    $setLoading(false);
   });
 
   const merged = () => {
@@ -71,9 +71,9 @@ export default function MergeContextModal() {
       MiscInfo: note?.fields.MiscInfo.value ?? "",
       Picture: note?.fields.Picture.value ?? "",
     });
-    const root = toContextField(rootNote());
-    const current = toContextField(currentNote());
-    if (mergeDirection() === "toRoot") {
+    const root = toContextField($rootNote());
+    const current = toContextField($currentNote());
+    if ($mergeDirection() === "toRoot") {
       return mergeContext(root, current);
     } else {
       return mergeContext(current, root);
@@ -87,9 +87,9 @@ export default function MergeContextModal() {
     );
 
   const mergedAnkiFields = () => {
-    const direction = mergeDirection();
+    const direction = $mergeDirection();
     // ---- fields ----
-    const targetNote = direction === "toRoot" ? rootNote() : currentNote();
+    const targetNote = direction === "toRoot" ? $rootNote() : $currentNote();
     if (!targetNote) return ankiFieldsSkeleton;
     const targetFields = Object.fromEntries(
       Object.entries(targetNote.fields).map(([key, value]) => [
@@ -99,8 +99,8 @@ export default function MergeContextModal() {
     );
 
     // ---- tags ----
-    const rootTags = rootNote()?.tags ?? [];
-    const currentTags = currentNote()?.tags ?? [];
+    const rootTags = $rootNote()?.tags ?? [];
+    const currentTags = $currentNote()?.tags ?? [];
     let tags = unique([...rootTags, ...currentTags]);
     const targetTags = direction === "toRoot" ? rootTags : currentTags;
     const unwantedTags = ["leech", "marked", "potential_leech"];
@@ -118,9 +118,9 @@ export default function MergeContextModal() {
 
   const targetId = () => {
     const targetId =
-      mergeDirection() === "toRoot"
-        ? rootNote()?.noteId
-        : currentNote()?.noteId;
+      $mergeDirection() === "toRoot"
+        ? $rootNote()?.noteId
+        : $currentNote()?.noteId;
     if (!targetId) return;
     return targetId;
   };
@@ -172,8 +172,8 @@ export default function MergeContextModal() {
       .then(() => {
         $general.toast.success(`Note ${payload?.note.id} has been updated!`);
         if (dialogRef) dialogRef.close();
-        const rootNoteId = rootNote()?.noteId;
-        if (deleteRootNote() && rootNoteId) {
+        const rootNoteId = $rootNote()?.noteId;
+        if ($deleteRootNote() && rootNoteId) {
           setTimeout(() => {
             AnkiConnect.invoke("deleteNotes", {
               notes: [rootNoteId],
@@ -194,19 +194,21 @@ export default function MergeContextModal() {
   };
 
   createEffect(() => {
-    if (mergeDirection() === "toRoot") {
-      setDeleteRootNote(false);
+    if ($mergeDirection() === "toRoot") {
+      $setDeleteRootNote(false);
     }
   });
 
   return (
     <>
       <Switch>
-        <Match when={loading()}>
+        <Match when={$loading()}>
           <span class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"></span>
         </Match>
         <Match
-          when={$general.isAnkiConnectAvailable && rootNote() && currentNote()}
+          when={
+            $general.isAnkiConnectAvailable && $rootNote() && $currentNote()
+          }
         >
           <button
             on:click={() => {
@@ -221,7 +223,7 @@ export default function MergeContextModal() {
         </Match>
         <Match
           when={
-            $general.isAnkiConnectAvailable && (!rootNote() || !currentNote())
+            $general.isAnkiConnectAvailable && (!$rootNote() || !$currentNote())
           }
         >
           <span class="animate-fade-in-sm">
@@ -259,9 +261,9 @@ export default function MergeContextModal() {
                 <div class="flex flex-col items-center">
                   <div>Root</div>
                   <div class="text-base-content-calm text-xs">
-                    {rootNote()?.noteId}
+                    {$rootNote()?.noteId}
                   </div>
-                  <Show when={rootNote()?.noteId}>
+                  <Show when={$rootNote()?.noteId}>
                     {(id) => (
                       <div class="text-base-content-soft text-xs">
                         {new Date(id()).toLocaleDateString()}
@@ -281,17 +283,17 @@ export default function MergeContextModal() {
                   <ArrowLeftIcon
                     class="self-center text-base-content-calm size-10 cursor-pointer transition-transform"
                     classList={{
-                      "rotate-0": mergeDirection() === "toRoot",
-                      "rotate-180": mergeDirection() === "toCurrent",
+                      "rotate-0": $mergeDirection() === "toRoot",
+                      "rotate-180": $mergeDirection() === "toCurrent",
                     }}
                   />
                 </button>
                 <div class="flex flex-col items-center">
                   <div>Current</div>
                   <div class="text-base-content-calm text-xs">
-                    {currentNote()?.noteId}
+                    {$currentNote()?.noteId}
                   </div>
-                  <Show when={currentNote()?.noteId}>
+                  <Show when={$currentNote()?.noteId}>
                     {(id) => (
                       <div class="text-base-content-soft text-xs">
                         {new Date(id()).toLocaleDateString()}
@@ -303,10 +305,10 @@ export default function MergeContextModal() {
 
               <Show
                 when={
-                  rootNote()?.fields.Expression.value &&
-                  currentNote()?.fields.Expression.value &&
-                  rootNote()?.fields.Expression.value !==
-                    currentNote()?.fields.Expression.value
+                  $rootNote()?.fields.Expression.value &&
+                  $currentNote()?.fields.Expression.value &&
+                  $rootNote()?.fields.Expression.value !==
+                    $currentNote()?.fields.Expression.value
                 }
               >
                 <div role="alert" class="alert alert-warning">
@@ -350,8 +352,8 @@ export default function MergeContextModal() {
               <Show
                 when={
                   // only show if root note is not older than 1 day
-                  Date.now() - (rootNote()?.noteId ?? Date.now()) <
-                    1000 * 60 * 60 * 24 && mergeDirection() === "toCurrent"
+                  Date.now() - ($rootNote()?.noteId ?? Date.now()) <
+                    1000 * 60 * 60 * 24 && $mergeDirection() === "toCurrent"
                 }
               >
                 <fieldset class="fieldset">
@@ -359,10 +361,10 @@ export default function MergeContextModal() {
                   <label class="label">
                     <input
                       type="checkbox"
-                      checked={deleteRootNote()}
+                      checked={$deleteRootNote()}
                       class="toggle"
                       on:change={(e) => {
-                        setDeleteRootNote(e.target.checked);
+                        $setDeleteRootNote(e.target.checked);
                       }}
                     />
                   </label>
@@ -394,8 +396,8 @@ export default function MergeContextModal() {
                 class="btn"
                 disabled={!$config.preferAnkiConnect}
                 classList={{
-                  "btn-primary": !deleteRootNote(),
-                  "btn-error": deleteRootNote(),
+                  "btn-primary": !$deleteRootNote(),
+                  "btn-error": $deleteRootNote(),
                 }}
                 on:click={onMergeClick}
                 on:touchend={(e) => e.stopPropagation()}

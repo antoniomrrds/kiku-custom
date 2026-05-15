@@ -15,7 +15,7 @@ import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
 export default function Expression() {
   const { $card, $setCard } = useCardContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-  const [activeKey, setActiveKey] = createSignal<string | null>(null);
+  const [$activeKey, $setActiveKey] = createSignal<string | null>(null);
   let timeout: ReturnType<typeof setTimeout>;
 
   onMount(() => {
@@ -25,24 +25,24 @@ export default function Expression() {
   });
 
   function CharSpan(props: { char: string; i: number; j: number }) {
-    const [anchorRef, setAnchorRef] = createSignal<HTMLSpanElement>();
+    const [$anchorRef, $setAnchorRef] = createSignal<HTMLSpanElement>();
     const key = `${props.char}-${props.i}-${props.j}`;
-    const show = () => activeKey() === key;
+    const show = () => $activeKey() === key;
 
     const handleActive = () => {
       clearTimeout(timeout);
-      setActiveKey(key);
+      $setActiveKey(key);
     };
 
     const handleInactive = () => {
       timeout = setTimeout(() => {
-        setActiveKey(null);
+        $setActiveKey(null);
       }, 50);
     };
 
     return (
       <span
-        ref={setAnchorRef}
+        ref={$setAnchorRef}
         tabindex={0}
         class="tappable"
         on:mouseenter={handleActive}
@@ -55,7 +55,7 @@ export default function Expression() {
         <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
           <KanjiTooltip
             show={show()}
-            anchor={anchorRef()}
+            anchor={$anchorRef()}
             onActive={handleActive}
             onInactive={handleInactive}
           />
@@ -172,10 +172,10 @@ function KanjiTooltip(props: {
   const { $kanji } = useKanjiContext();
   if (!$kanji.kanji) return null;
 
-  const [tooltipRef, setTooltipRef] = createSignal<HTMLDivElement>();
-  const [arrowRef, setArrowRef] = createSignal<HTMLDivElement>();
+  const [$tooltipRef, $setTooltipRef] = createSignal<HTMLDivElement>();
+  const [$arrowRef, $setArrowRef] = createSignal<HTMLDivElement>();
 
-  const [position, setPosition] = createStore({
+  const [$position, $setPosition] = createStore({
     x: 0,
     y: 0,
     arrowX: 0,
@@ -186,8 +186,8 @@ function KanjiTooltip(props: {
   const bp = useBreakpointContext();
 
   createEffect(() => {
-    const tooltip = tooltipRef();
-    const arrowEl = arrowRef();
+    const tooltip = $tooltipRef();
+    const arrowEl = $arrowRef();
     if (props.show && props.anchor && tooltip && arrowEl) {
       computePosition(props.anchor, tooltip, {
         placement: bp.isAtLeast("sm") ? "bottom-start" : "bottom",
@@ -209,7 +209,7 @@ function KanjiTooltip(props: {
             left: "right",
           }[placement.split("-")[0]] ?? "";
 
-        setPosition({
+        $setPosition({
           x,
           y,
           arrowX: arrowX ?? 0,
@@ -223,7 +223,7 @@ function KanjiTooltip(props: {
   return (
     <Portal mount={$general.layoutRef}>
       <div
-        ref={setTooltipRef}
+        ref={$setTooltipRef}
         class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable"
         tabindex={0}
         data-kanji-tooltip
@@ -235,19 +235,19 @@ function KanjiTooltip(props: {
         on:touchend={(e) => e.stopPropagation()}
         style={{
           display: props.show ? "block" : "none",
-          left: `${position.x}px`,
-          top: `${position.y}px`,
+          left: `${$position.x}px`,
+          top: `${$position.y}px`,
         }}
       >
         <div
-          ref={setArrowRef}
+          ref={$setArrowRef}
           class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
           style={{
-            left: `${position.arrowX}px`,
-            top: `${position.arrowY}px`,
+            left: `${$position.arrowX}px`,
+            top: `${$position.arrowY}px`,
             right: "",
             bottom: "",
-            ...(position.staticSide ? { [position.staticSide]: "-4px" } : {}),
+            ...($position.staticSide ? { [$position.staticSide]: "-4px" } : {}),
           }}
         ></div>
         <button
