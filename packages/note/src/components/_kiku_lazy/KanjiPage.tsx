@@ -169,9 +169,10 @@ function Page() {
                 $kanjiPage.tab === "reading"
               }
             >
-              <KanjiContextProvider kanji="">
-                <NoteList mode="reading" />
-              </KanjiContextProvider>
+              <NoteList
+                list={$kanjiPage.sameReading ?? []}
+                title="Same Reading"
+              />
             </Show>
             <Show
               when={
@@ -180,9 +181,10 @@ function Page() {
                 $kanjiPage.tab === "same"
               }
             >
-              <KanjiContextProvider kanji="">
-                <NoteList mode="expression" />
-              </KanjiContextProvider>
+              <NoteList
+                list={$kanjiPage.sameExpression ?? []}
+                title="Same Expression"
+              />
             </Show>
           </div>
         </div>
@@ -245,7 +247,9 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
         <ul class="list bg-base-100 rounded-box shadow-md">
           <For each={data()}>
             {(data) => {
-              return <AnkiNoteItem data={data} />;
+              return (
+                <AnkiNoteItem data={data} highlightedKanji={$kanji.kanji} />
+              );
             }}
           </For>
         </ul>
@@ -254,15 +258,8 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
   );
 }
 
-function NoteList(props: { mode: "reading" | "expression" }) {
-  const [$kanjiPage] = useKanjiPageContext();
+function NoteList(props: { title: string; list: AnkiNote[] }) {
   const { ankiFields } = useAnkiFieldContext<"back">();
-
-  const title = props.mode === "reading" ? "Same Reading" : "Same Expression";
-  const list =
-    props.mode === "reading"
-      ? $kanjiPage.sameReading
-      : $kanjiPage.sameExpression;
 
   //TODO: use better parser
   const ExpressionFurigana = () => {
@@ -282,19 +279,18 @@ function NoteList(props: { mode: "reading" | "expression" }) {
   return (
     <div class="flex flex-col gap-2 sm:gap-4">
       <div class="flex-col flex justify-between items-center gap-2">
-        <div class="text-base-content-calm text-xl">{title}</div>
+        <div class="text-base-content-calm text-xl">{props.title}</div>
         <div class="font-secondary expression">
           <ExpressionFurigana />
         </div>
       </div>
       <ul class="list bg-base-100 rounded-box shadow-md">
-        <For each={list ?? []}>
+        <For each={props.list ?? []}>
           {(data) => {
             return (
               <AnkiNoteItem
                 data={data}
                 reading={ankiFields.ExpressionReading}
-                mode={props.mode}
               />
             );
           }}
@@ -307,19 +303,16 @@ function NoteList(props: { mode: "reading" | "expression" }) {
 function AnkiNoteItem(props: {
   data: AnkiNote;
   reading?: string;
-  mode?: "reading" | "expression";
+  highlightedKanji?: string;
 }) {
   const data = () => props.data;
   const reading = () => props.reading;
   const { navigate } = useNavigationTransition();
   const [$card, $setCard] = useCardContext();
-  const [$kanji] = useKanjiContext();
   const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
-  const sectionType =
-    props.mode === "reading" ? "sameReading" : "sameExpression";
 
   const leech = data().tags.includes("leech");
-  const expressionInnerHtml = () => {
+  const expressionInnerHtml = createMemo(() => {
     if (
       data().fields.Expression.value &&
       data().fields.ExpressionReading.value
@@ -328,36 +321,35 @@ function AnkiNoteItem(props: {
     }
     if (data().fields.Expression.value) return data().fields.Expression.value;
     return data().fields.ExpressionReading.value;
-  };
+  });
 
-  const expressionInnerHtmlColorized = () => {
-    const kanji$ = $kanji.kanji;
+  const expressionInnerHtmlColorized = createMemo(() => {
     const reading$ = reading();
-    if (!kanji$ && !reading$) return expressionInnerHtml();
+    if (!props.highlightedKanji && !reading$) return expressionInnerHtml();
 
-    if (kanji$) {
+    if (props.highlightedKanji) {
       return expressionInnerHtml().replaceAll(
-        kanji$,
-        `<span class="text-base-content-primary">${kanji$}</span>`,
+        props.highlightedKanji,
+        `<span class="text-base-content-primary">${props.highlightedKanji}</span>`,
       );
     }
+
     if (reading$) {
       return expressionInnerHtml().replaceAll(
         reading$,
         `<span class="text-base-content-primary">${reading$}</span>`,
       );
     }
-  };
+  });
 
-  const sentenceInnerHtmlColorized = () => {
-    const kanji$ = $kanji.kanji;
-    if (!kanji$) return data().fields.Sentence.value;
+  const sentenceInnerHtmlColorized = createMemo(() => {
+    if (!props.highlightedKanji) return data().fields.Sentence.value;
 
     return data().fields.Sentence.value.replaceAll(
-      kanji$,
-      `<span class="text-base-content-primary">${kanji$}</span>`,
+      props.highlightedKanji,
+      `<span class="text-base-content-primary">${props.highlightedKanji}</span>`,
     );
-  };
+  });
 
   const onNextClick = () => {
     const ankiFields: AnkiFields = {
@@ -372,17 +364,10 @@ function AnkiNoteItem(props: {
       Tags: data().tags.join(" "),
     };
 
-    if (props.mode) {
-      $setKanjiPage("focus", {
-        kanji: undefined,
-        noteId: data().noteId,
-      });
-    } else {
-      $setKanjiPage("focus", {
-        kanji: $kanji.kanji,
-        noteId: data().noteId,
-      });
-    }
+    $setKanjiPage("focus", {
+      kanji: props.highlightedKanji,
+      noteId: data().noteId,
+    });
 
     $setCard({ nestedAnkiFields: ankiFields });
     $setCard("nestedNoteId", data().noteId);
