@@ -8,6 +8,7 @@ import type { AnkiDroidAPI, KikuNotesManifest } from "#/util/types";
 import type { NexApi } from "#/worker/client";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useBreakpointContext } from "./BreakpointContext";
+import { createCompatPair } from "#/util/context-compat";
 
 type GeneralStore = {
   logger: Logger;
@@ -131,7 +132,12 @@ export function GeneralContextProvider(props: {
 export function useGeneralContext() {
   const generalContext = useContext(GeneralContext);
   if (!generalContext) throw new Error("Missing GeneralContext");
-  return generalContext;
+  return createCompatPair(
+    "$general",
+    "$setGeneral",
+    generalContext.$general,
+    generalContext.$setGeneral,
+  );
 }
 
 export type UseGeneralContext = typeof useGeneralContext;

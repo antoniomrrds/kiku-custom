@@ -8,6 +8,7 @@ import {
   ankiFieldsSkeleton,
   type PitchType,
 } from "#/util/types";
+import { createCompatPair } from "#/util/context-compat";
 
 export type PitchState = {
   infos: PitchInfo[];
@@ -106,7 +107,12 @@ export function CardStoreContextProvider(props: {
 export function useCardContext() {
   const cardStore = useContext(CardStoreContext);
   if (!cardStore) throw new Error("Missing CardStoreContext");
-  return cardStore;
+  return createCompatPair(
+    "$card",
+    "$setCard",
+    cardStore.$card,
+    cardStore.$setCard,
+  );
 }
 
 export type UseCardContext = typeof useCardContext;

@@ -7,6 +7,7 @@ import {
 } from "solid-js";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import type { AnkiNote } from "#/util/types";
+import { createCompatPair } from "#/util/context-compat";
 
 export type ContextLabel = {
   text: string;
@@ -99,5 +100,10 @@ export function KanjiPageContextProvider(props: {
 export function useKanjiPageContext() {
   const kanjiPageStore = useContext(KanjiPageContext);
   if (!kanjiPageStore) throw new Error("Missing KanjiPageContext");
-  return kanjiPageStore;
+  return createCompatPair(
+    "$kanjiPage",
+    "$setKanjiPage",
+    kanjiPageStore.$kanjiPage,
+    kanjiPageStore.$setKanjiPage,
+  );
 }

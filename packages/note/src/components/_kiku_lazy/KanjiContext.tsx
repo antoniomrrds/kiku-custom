@@ -9,6 +9,7 @@ import type { AnkiNote, KanjiInfo } from "#/util/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCacheContext } from "../shared/CacheContext";
 import { useGeneralContext } from "../shared/GeneralContext";
+import { createCompatPair } from "#/util/context-compat";
 
 type FetchType = "composedOf" | "usedIn" | "visuallySimilar" | "related";
 
@@ -103,7 +104,12 @@ export function KanjiContextProvider(props: {
 export function useKanjiContext() {
   const kanjiStore = useContext(KanjiContext);
   if (!kanjiStore) throw new Error("Missing KanjiContext");
-  return kanjiStore;
+  return createCompatPair(
+    "$kanji",
+    "$setKanji",
+    kanjiStore.$kanji,
+    kanjiStore.$setKanji,
+  );
 }
 
 export type UseKanjiContext = typeof useKanjiContext;

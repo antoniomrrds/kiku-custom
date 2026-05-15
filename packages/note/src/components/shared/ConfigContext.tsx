@@ -9,6 +9,7 @@ import {
 import { constants } from "#/util/general";
 import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useGeneralContext } from "./GeneralContext";
+import { createCompatPair } from "#/util/context-compat";
 
 type ConfigContextValue = {
   $config: Store<KikuConfig>;
@@ -64,7 +65,12 @@ export function ConfigContextProvider(props: {
 export function useConfigContext() {
   const config = useContext(ConfigContext);
   if (!config) throw new Error("Missing ConfigContext");
-  return config;
+  return createCompatPair(
+    "$config",
+    "$setConfig",
+    config.$config,
+    config.$setConfig,
+  );
 }
 
 export type UseConfigContext = typeof useConfigContext;
