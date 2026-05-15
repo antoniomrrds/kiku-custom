@@ -34,8 +34,7 @@ type CardStore = {
   sentenceAudios?: HTMLAnchorElement[] | HTMLAudioElement[];
   pictureModal?: string;
   query: Query;
-  //TODO: rename to initialFocus
-  focus: {
+  initialFocus: {
     kanji: string | undefined;
     noteId: number | undefined;
   };
@@ -76,7 +75,7 @@ export function CardStoreContextProvider(props: {
       sameExpression: undefined,
       noteList: [],
     },
-    focus: {
+    initialFocus: {
       kanji: undefined,
       noteId: undefined,
     },

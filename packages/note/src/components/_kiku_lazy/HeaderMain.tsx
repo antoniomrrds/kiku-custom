@@ -152,7 +152,7 @@ function KanjiPageIndicator() {
     if (!canOpen) return;
 
     $setCard("initialTab", initialTab);
-    $setCard("focus", { kanji, noteId: undefined });
+    $setCard("initialFocus", { kanji, noteId: undefined });
     $setCard("uniqueId", createUniqueId());
     navigate("kanji", "forward", () => navigate("main", "back"));
   };

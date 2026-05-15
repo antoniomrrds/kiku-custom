@@ -48,7 +48,7 @@ export function KanjiPageContextProvider(props: {
   noteList: [string, AnkiNote[]][];
   sameReading?: AnkiNote[];
   sameExpression?: AnkiNote[];
-  focus: {
+  initialFocus: {
     kanji: string | undefined;
     noteId: number | undefined;
   };
@@ -67,8 +67,8 @@ export function KanjiPageContextProvider(props: {
       sameReading: props.sameReading,
       sameExpression: props.sameExpression,
       focus: {
-        kanji: props.focus?.kanji,
-        noteId: props.focus?.noteId,
+        kanji: props.initialFocus?.kanji,
+        noteId: props.initialFocus?.noteId,
       },
       tab: props.initialTab,
       nested: props.nested ?? false,

@@ -32,9 +32,9 @@ export default function KanjiPage() {
       noteList={$card.query.noteList}
       sameReading={$card.query.sameReading}
       sameExpression={$card.query.sameExpression}
-      focus={{
-        kanji: $card.focus.kanji,
-        noteId: $card.focus.noteId,
+      initialFocus={{
+        kanji: $card.initialFocus.kanji,
+        noteId: $card.initialFocus.noteId,
       }}
       initialTab={$card.initialTab}
       id={$card.uniqueId}
@@ -62,7 +62,7 @@ function Page() {
           noteList={$kanjiPage.nestedNoteList}
           sameReading={[]}
           sameExpression={[]}
-          focus={{
+          initialFocus={{
             kanji: $kanjiPage.nestedFocus.kanji,
             noteId: $kanjiPage.nestedFocus.noteId,
           }}
