@@ -1,4 +1,12 @@
-import { createSignal, For, Match, onMount, Show, Switch } from "solid-js";
+import {
+  createMemo,
+  createSignal,
+  For,
+  Match,
+  onMount,
+  Show,
+  Switch,
+} from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
 import { useNavigationTransition } from "#/util/hooks";
 import {
@@ -39,6 +47,14 @@ export default function KanjiPage() {
 function Page() {
   const [$general, $setGeneral] = useGeneralContext();
   const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
+  const [tab, setTab] = createSignal<"kanji" | "reading" | "same">("kanji");
+  const hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
+  const hasSameReading = createMemo(
+    () => $kanjiPage.sameReading && $kanjiPage.sameReading.length > 0,
+  );
+  const hasSameExpression = createMemo(
+    () => $kanjiPage.sameExpression && $kanjiPage.sameExpression.length > 0,
+  );
 
   return (
     <Switch>
@@ -60,56 +76,116 @@ function Page() {
       </Match>
       <Match when={!$kanjiPage.nested}>
         <HeaderKanjiPage />
-        <Show when={$kanjiPage.contextLabel}>
-          <div class="flex flex-col items-center gap-2">
-            <div class="flex justify-center text-7xl font-secondary ">
-              {$kanjiPage.contextLabel?.text}
-            </div>
-            <Switch>
-              <Match when={$kanjiPage.contextLabel?.type === "similar"}>
-                <div class="text-lg text-base-content-calm">
-                  Visually Similar
-                </div>
-              </Match>
-              <Match when={$kanjiPage.contextLabel?.type === "composedOf"}>
-                <div class="text-lg text-base-content-calm">Composed of</div>
-              </Match>
-              <Match when={$kanjiPage.contextLabel?.type === "usedIn"}>
-                <div class="text-lg text-base-content-calm">Used in</div>
-              </Match>
-              <Match when={$kanjiPage.contextLabel?.type === "related"}>
-                <div class="text-lg text-base-content-calm">Related</div>
-              </Match>
-            </Switch>
+        <div class="flex flex-col gap-2 sm:gap-4">
+          <div role="tablist" class="tabs tabs-box">
+            <button
+              role="tab"
+              class="tab"
+              classList={{
+                "tab-active": tab() === "kanji",
+                "cursor-not-allowed": !hasSameKanji(),
+              }}
+              on:click={() => {
+                if (hasSameKanji()) setTab("kanji");
+              }}
+              on:touchend={(e) => e.stopPropagation()}
+            >
+              漢字
+            </button>
+            <button
+              role="tab"
+              class="tab gap-1"
+              classList={{
+                "tab-active": tab() === "reading",
+                "cursor-not-allowed": !hasSameReading(),
+              }}
+              on:click={() => {
+                if (hasSameReading()) setTab("reading");
+              }}
+              on:touchend={(e) => e.stopPropagation()}
+            >
+              読
+              <span class="text-base-content-soft bg-base-300 px-0.5 rounded-xs text-xs sm:text-sm">
+                {$kanjiPage.sameReading?.length ?? 0}
+              </span>
+            </button>
+            <button
+              role="tab"
+              class="tab gap-1"
+              classList={{
+                "tab-active": tab() === "same",
+                "cursor-not-allowed": !hasSameExpression(),
+              }}
+              on:click={() => {
+                if (hasSameExpression()) setTab("same");
+              }}
+              on:touchend={(e) => e.stopPropagation()}
+            >
+              同
+              <span class="text-base-content-soft bg-base-300 px-0.5 rounded-xs text-xs sm:text-sm">
+                {$kanjiPage.sameExpression?.length ?? 0}
+              </span>
+            </button>
           </div>
-        </Show>
+          <Show when={$kanjiPage.contextLabel}>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center text-7xl font-secondary ">
+                {$kanjiPage.contextLabel?.text}
+              </div>
+              <Switch>
+                <Match when={$kanjiPage.contextLabel?.type === "similar"}>
+                  <div class="text-lg text-base-content-calm">
+                    Visually Similar
+                  </div>
+                </Match>
+                <Match when={$kanjiPage.contextLabel?.type === "composedOf"}>
+                  <div class="text-lg text-base-content-calm">Composed of</div>
+                </Match>
+                <Match when={$kanjiPage.contextLabel?.type === "usedIn"}>
+                  <div class="text-lg text-base-content-calm">Used in</div>
+                </Match>
+                <Match when={$kanjiPage.contextLabel?.type === "related"}>
+                  <div class="text-lg text-base-content-calm">Related</div>
+                </Match>
+              </Switch>
+            </div>
+          </Show>
 
-        <div class="flex flex-col gap-2 sm:gap-4 ">
-          <For each={$kanjiPage.noteList}>
-            {([kanji, data]) => {
-              return (
-                <KanjiContextProvider kanji={kanji}>
-                  <KanjiCollapsible data={data} />
-                </KanjiContextProvider>
-              );
-            }}
-          </For>
-          <Show
-            when={$kanjiPage.sameReading && $kanjiPage.sameReading.length > 0}
-          >
-            <KanjiContextProvider kanji="">
-              <SameReadingCollapsible mode="reading" />
-            </KanjiContextProvider>
-          </Show>
-          <Show
-            when={
-              $kanjiPage.sameExpression && $kanjiPage.sameExpression.length > 0
-            }
-          >
-            <KanjiContextProvider kanji="">
-              <SameReadingCollapsible mode="expression" />
-            </KanjiContextProvider>
-          </Show>
+          <div class="flex flex-col gap-2 sm:gap-4 ">
+            <Show when={tab() === "kanji"}>
+              <For each={$kanjiPage.noteList}>
+                {([kanji, data]) => {
+                  return (
+                    <KanjiContextProvider kanji={kanji}>
+                      <KanjiCollapsible data={data} />
+                    </KanjiContextProvider>
+                  );
+                }}
+              </For>
+            </Show>
+            <Show
+              when={
+                $kanjiPage.sameReading &&
+                $kanjiPage.sameReading.length > 0 &&
+                tab() === "reading"
+              }
+            >
+              <KanjiContextProvider kanji="">
+                <SameReadingCollapsible mode="reading" />
+              </KanjiContextProvider>
+            </Show>
+            <Show
+              when={
+                $kanjiPage.sameExpression &&
+                $kanjiPage.sameExpression.length > 0 &&
+                tab() === "same"
+              }
+            >
+              <KanjiContextProvider kanji="">
+                <SameReadingCollapsible mode="expression" />
+              </KanjiContextProvider>
+            </Show>
+          </div>
         </div>
         <div class="flex justify-center items-center">
           <Show when={$general.notesManifest}>
@@ -144,7 +220,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
       <input
         type="checkbox"
         checked={checked()}
-        onChange={(e) => {
+        on:change={(e) => {
           setChecked(e.currentTarget.checked);
         }}
       />
