@@ -14,6 +14,8 @@ export type PitchState = {
   type: PitchType | undefined;
 };
 
+export type KanjiFocusType = "usedIn" | "sameReading" | "sameExpression";
+
 type Query = {
   status: "loading" | "success" | "error";
   sameReading: AnkiNote[] | undefined;
@@ -35,7 +37,8 @@ type CardStore = {
   pictureModal?: string;
   query: Query;
   focus: {
-    kanji: string | symbol | undefined;
+    type: KanjiFocusType;
+    kanji: string | undefined;
     noteId: number | undefined;
   };
   navigateBack: (() => void)[];
@@ -75,6 +78,7 @@ export function CardStoreContextProvider(props: {
       noteList: [],
     },
     focus: {
+      type: "usedIn",
       kanji: undefined,
       noteId: undefined,
     },

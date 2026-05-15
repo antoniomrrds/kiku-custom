@@ -1,6 +1,5 @@
 import { createSignal, For, Match, onMount, Show, Switch } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
-import { constants } from "#/util/general";
 import { useNavigationTransition } from "#/util/hooks";
 import {
   type AnkiFields,
@@ -26,6 +25,7 @@ export default function KanjiPage() {
       sameReading={$card.query.sameReading}
       sameExpression={$card.query.sameExpression}
       focus={{
+        type: $card.focus.type,
         kanji: $card.focus.kanji,
         noteId: $card.focus.noteId,
       }}
@@ -48,6 +48,7 @@ function Page() {
           sameReading={[]}
           sameExpression={[]}
           focus={{
+            type: $kanjiPage.nestedFocus.type,
             kanji: $kanjiPage.nestedFocus.kanji,
             noteId: $kanjiPage.nestedFocus.noteId,
           }}
@@ -130,7 +131,8 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
   const [$kanji, $setKanji] = useKanjiContext();
   const data = () => props.data;
   const [checked, setChecked] = createSignal(
-    $kanjiPage.focus.kanji === $kanji.kanji,
+    $kanjiPage.focus.type === "usedIn" &&
+      $kanjiPage.focus.kanji === $kanji.kanji,
   );
 
   const loading = () => {
@@ -182,11 +184,8 @@ function SameReadingCollapsible(props: { mode: "reading" | "expression" }) {
   const [$general] = useGeneralContext();
   const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
-
-  const symbol =
-    props.mode === "reading"
-      ? constants.SAME_READING
-      : constants.SAME_EXPRESSION;
+  const sectionType =
+    props.mode === "reading" ? "sameReading" : "sameExpression";
 
   const title = props.mode === "reading" ? "Same Reading" : "Same Expression";
   const list =
@@ -210,16 +209,14 @@ function SameReadingCollapsible(props: { mode: "reading" | "expression" }) {
 
   let ref: HTMLDivElement | undefined;
   onMount(() => {
-    if (ref) {
-      if ($kanjiPage.focus.kanji === symbol) {
-        ref.scrollIntoView({ block: "center" });
-      }
+    if (ref && $kanjiPage.focus.type === sectionType) {
+      ref.scrollIntoView({ block: "center" });
     }
   });
 
   return (
     <div class="collapse bg-base-200 border border-base-300 animate-fade-in">
-      <input type="checkbox" checked={$kanjiPage.focus.kanji === symbol} />
+      <input type="checkbox" checked={$kanjiPage.focus.type === sectionType} />
       <div class="collapse-title justify-between flex items-center ps-2 sm:ps-4 pe-2 sm:pe-4 py-2 sm:py-4">
         <span class="text-lg sm:text-2xl">
           <span class="text-base-content-calm" ref={ref}>
@@ -262,6 +259,8 @@ function AnkiNoteItem(props: {
   const [$general, $setGeneral] = useGeneralContext();
   const [$kanji, $setKanji] = useKanjiContext();
   const [$kanjiPage, $setKanjiPage] = useKanjiPageContext();
+  const sectionType =
+    props.mode === "reading" ? "sameReading" : "sameExpression";
 
   const leech = data().tags.includes("leech");
   const expressionInnerHtml = () => {
@@ -318,15 +317,18 @@ function AnkiNoteItem(props: {
     };
 
     if (props.mode) {
-      if (props.mode === "reading") {
-        $setKanjiPage("focus", { kanji: constants.SAME_READING });
-      } else {
-        $setKanjiPage("focus", { kanji: constants.SAME_EXPRESSION });
-      }
+      $setKanjiPage("focus", {
+        type: sectionType,
+        kanji: undefined,
+        noteId: data().noteId,
+      });
     } else {
-      $setKanjiPage("focus", { kanji: $kanji.kanji });
+      $setKanjiPage("focus", {
+        type: "usedIn",
+        kanji: $kanji.kanji,
+        noteId: data().noteId,
+      });
     }
-    $setKanjiPage("focus", { noteId: data().noteId });
 
     $setCard({ nestedAnkiFields: ankiFields });
     $setCard("nestedNoteId", data().noteId);
@@ -386,6 +388,7 @@ function KanjiText() {
   onMount(() => {
     if (
       ref &&
+      $kanjiPage.focus.type === "usedIn" &&
       $kanjiPage.focus.kanji === $kanji.kanji &&
       !$kanjiPage.focus.noteId
     ) {

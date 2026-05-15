@@ -6,6 +6,7 @@ import {
   useContext,
 } from "solid-js";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
+import type { KanjiFocusType } from "../shared/CardContext";
 import type { AnkiNote } from "#/util/types";
 
 export type ContextLabel = {
@@ -18,7 +19,8 @@ type KanjiPageContextStore = {
   sameReading?: AnkiNote[];
   sameExpression?: AnkiNote[];
   focus: {
-    kanji: string | symbol | undefined;
+    type: KanjiFocusType;
+    kanji: string | undefined;
     noteId: number | undefined;
   };
   contextLabel?: ContextLabel;
@@ -26,7 +28,8 @@ type KanjiPageContextStore = {
   nestedId: string;
   nestedNoteList: [string, AnkiNote[]][];
   nestedFocus: {
-    kanji: string | symbol | undefined;
+    type: KanjiFocusType;
+    kanji: string | undefined;
     noteId: number | undefined;
   };
   nestedContextLabel?: ContextLabel;
@@ -48,7 +51,8 @@ export function KanjiPageContextProvider(props: {
   sameReading?: AnkiNote[];
   sameExpression?: AnkiNote[];
   focus: {
-    kanji: string | symbol | undefined;
+    type: KanjiFocusType;
+    kanji: string | undefined;
     noteId: number | undefined;
   };
   contextLabel?: ContextLabel;
@@ -65,6 +69,7 @@ export function KanjiPageContextProvider(props: {
       sameReading: props.sameReading,
       sameExpression: props.sameExpression,
       focus: {
+        type: props.focus.type,
         kanji: props.focus?.kanji,
         noteId: props.focus?.noteId,
       },
@@ -72,6 +77,7 @@ export function KanjiPageContextProvider(props: {
       nestedId: createUniqueId(),
       nestedNoteList: [],
       nestedFocus: {
+        type: props.focus.type,
         kanji: undefined,
         noteId: undefined,
       },

@@ -1,9 +1,8 @@
 import { createUniqueId, Match, Show, Switch } from "solid-js";
-import { constants } from "#/util/general";
 import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
 import { nextTheme } from "#/util/theme";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
-import { useCardContext } from "../shared/CardContext";
+import { type KanjiFocusType, useCardContext } from "../shared/CardContext";
 import { useConfigContext } from "../shared/ConfigContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderLayout from "./HeaderLayout";
@@ -134,19 +133,25 @@ function KanjiPageIndicator() {
     ($card.query.sameReading?.length ? 1 : 0) +
     ($card.query.sameExpression?.length ? 1 : 0);
 
-  const onClick = (key: string | symbol) => {
+  const onClick = (focus: { type: KanjiFocusType; kanji?: string }) => {
     const isKanjiResult = $card.query.noteList.length > 0;
     const isSameReadingResult = ($card.query.sameReading?.length ?? 0) > 0;
-    if (
-      isKanjiResult ||
-      isSameReadingResult ||
-      key === constants.SAME_EXPRESSION ||
-      key === constants.SAME_READING
-    ) {
-      $setCard("focus", "kanji", key);
-      $setCard("uniqueId", createUniqueId());
-      navigate("kanji", "forward", () => navigate("main", "back"));
-    }
+    const isSameExpressionResult =
+      ($card.query.sameExpression?.length ?? 0) > 0;
+    const canOpen =
+      (focus.type === "usedIn" && isKanjiResult) ||
+      (focus.type === "sameReading" && isSameReadingResult) ||
+      (focus.type === "sameExpression" && isSameExpressionResult);
+
+    if (!canOpen) return;
+
+    $setCard("focus", {
+      type: focus.type,
+      kanji: focus.kanji,
+      noteId: undefined,
+    });
+    $setCard("uniqueId", createUniqueId());
+    navigate("kanji", "forward", () => navigate("main", "back"));
   };
 
   function KanjiIndicator() {
@@ -155,7 +160,7 @@ function KanjiPageIndicator() {
         <button
           class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
           on:click={() => {
-            onClick(kanji);
+            onClick({ type: "usedIn", kanji });
           }}
           on:touchend={(e) => e.stopPropagation()}
         >
@@ -179,7 +184,7 @@ function KanjiPageIndicator() {
       <button
         class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
         on:click={() => {
-          onClick(constants.SAME_READING);
+          onClick({ type: "sameReading" });
         }}
         on:touchend={(e) => e.stopPropagation()}
       >
@@ -202,7 +207,7 @@ function KanjiPageIndicator() {
       <button
         class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
         on:click={() => {
-          onClick(constants.SAME_EXPRESSION);
+          onClick({ type: "sameExpression" });
         }}
         on:touchend={(e) => e.stopPropagation()}
       >

@@ -61,9 +61,6 @@ export const constants = {
     assets["_kiku_db_main_manifest.json"],
     assets["_kiku_notes_manifest.json"],
   ],
-  //TODO: remove this
-  SAME_READING: "__SAME_READING__",
-  SAME_EXPRESSION: "__SAME_EXPRESSION__",
 };
 
 export type Constants = typeof constants;
