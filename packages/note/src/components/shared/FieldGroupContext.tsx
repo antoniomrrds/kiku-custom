@@ -25,15 +25,13 @@ const FieldGroupContext = createContext<{
 }>();
 
 export function FieldGroupContextProvider(props: { children: JSX.Element }) {
-  const { $ankiFields } = useAnkiFieldContext();
+  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $card } = useCardContext();
   const { $general } = useGeneralContext();
 
   const $sentenceField = createMemo(() => {
-    if ($card.side === "front") {
-      return $ankiFields["kanji:Sentence"];
-    }
-    if ($card.nested) return $ankiFields.Sentence;
+    if (!$isRootAnkiFields()) return $ankiFields.Sentence;
+    if ($card.side === "front") return $ankiFields["kanji:Sentence"];
     return $ankiFields["furigana:SentenceFurigana"]
       ? $ankiFields["furigana:SentenceFurigana"]
       : $ankiFields["kanji:Sentence"];

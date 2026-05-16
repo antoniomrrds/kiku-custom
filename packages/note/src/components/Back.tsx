@@ -190,6 +190,7 @@ function ExpressionSection() {
     });
   });
 
+  //TODO: remove early return
   if ($card.nested) {
     return (
       <div

@@ -148,7 +148,7 @@ export function useThemeTransition() {
 export function useKanji() {
   const { $config } = useConfigContext();
   const { $card, $setCard } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
   const { $general, $setGeneral } = useGeneralContext();
   const cacheStore = useCacheContext();
 
@@ -159,9 +159,9 @@ export function useKanji() {
       const ankiFields = unwrap($ankiFields);
       const kanjiList = extractKanji(
         ankiFields.ExpressionFurigana
-          ? $card.nested
-            ? ankiFields.Expression
-            : ankiFields["furigana:ExpressionFurigana"]
+          ? $isRootAnkiFields()
+            ? ankiFields["furigana:ExpressionFurigana"]
+            : ankiFields.Expression
           : ankiFields.Expression,
       );
       const readingList = ankiFields.ExpressionReading
