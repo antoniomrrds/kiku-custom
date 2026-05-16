@@ -13,6 +13,7 @@ import { createNex } from "#/worker/client";
 import { constants, extractKanji, parseHtml } from "./general";
 import { hatsuon } from "./hatsuon";
 import { extractPitchNumbers } from "./pitch";
+import { parseRelatedExpression } from "./parse-related-expression";
 import type { DaisyUITheme } from "./theme";
 import { type PitchType, pitchTypes } from "./types";
 
@@ -167,11 +168,9 @@ export function useKanji() {
       const readingList = ankiFields.ExpressionReading
         ? [ankiFields.ExpressionReading]
         : [];
-      const relatedExpressions = ankiFields.RelatedExpression
-        ? ankiFields.RelatedExpression.split(/\s*[,、;\uFF1B]\s*/).filter(
-            Boolean,
-          )
-        : [];
+      const relatedExpressions = parseRelatedExpression(
+        ankiFields.RelatedExpression,
+      );
       const expressionList = [
         ...(ankiFields.Expression ? [ankiFields.Expression] : []),
         ...relatedExpressions,

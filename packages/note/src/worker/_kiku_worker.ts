@@ -1,6 +1,7 @@
 import "#/util/polyfill";
 import type { KikuConfig } from "#/util/config";
 import type { Constants } from "#/util/general";
+import { parseRelatedExpression } from "#/util/parse-related-expression";
 import type {
   AnkiFields,
   AnkiNote,
@@ -111,9 +112,7 @@ export class WorkerThreadApi {
 
           // ------- Related Expression Search (contains) -------
           if (relatedExprValue) {
-            const relatedExprs = relatedExprValue
-              .split(/\s*[,、;\uFF1B]\s*/)
-              .filter(Boolean);
+            const relatedExprs = parseRelatedExpression(relatedExprValue);
             for (const rel of relatedExprs) {
               if (expressionSet.has(rel)) {
                 expressionListResult[rel] ??= [];

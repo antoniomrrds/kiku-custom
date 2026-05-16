@@ -1,3 +1,4 @@
+import { parseRelatedExpression } from "#/util/parse-related-expression";
 import type { AnkiNote } from "#/util/types";
 import type { MainThreadApi } from "./client";
 
@@ -101,7 +102,7 @@ export class AnkiConnect {
         if (n.fields.Expression?.value === e) return true;
         const related = n.fields.RelatedExpression?.value;
         if (related) {
-          const list = related.split(/\s*[,、;\uFF1B]\s*/).filter(Boolean);
+          const list = parseRelatedExpression(related);
           return list.includes(e);
         }
         return false;
