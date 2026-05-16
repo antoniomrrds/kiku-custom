@@ -6,12 +6,14 @@ export type AnkiFields = {
   ExpressionFurigana: string;
   ExpressionReading: string;
   ExpressionAudio: string;
+  RelatedExpression: string;
   SelectionText: string;
   MainDefinition: string;
   DefinitionPicture: string;
   Sentence: string;
   SentenceFurigana: string;
   SentenceAudio: string;
+  SentenceTranslation: string;
   Picture: string;
   Glossary: string;
   Hint: string;
@@ -126,11 +128,13 @@ export const ankiFieldsSkeleton: AnkiFields = {
   "ExpressionFurigana": "",
   "ExpressionReading": "",
   "ExpressionAudio": "",
+  "RelatedExpression": "",
   "SelectionText": "",
   "MainDefinition": "",
   "DefinitionPicture": "",
   "Sentence": "",
   "SentenceFurigana": "",
+  "SentenceTranslation": "",
   "SentenceAudio": "",
   "Picture": "",
   "Glossary": "",
