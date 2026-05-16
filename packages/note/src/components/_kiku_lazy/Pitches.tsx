@@ -1,4 +1,4 @@
-import { ErrorBoundary, Show } from "solid-js";
+import { ErrorBoundary, For, Show } from "solid-js";
 import type { DatasetProp } from "#/util/config";
 import type { PitchInfo } from "#/util/hatsuon";
 import type { PitchType } from "#/util/types";
@@ -8,9 +8,13 @@ import { useGeneralContext } from "../shared/GeneralContext";
 
 export default function Pitches() {
   const { $card } = useCardContext();
-  return $card.pitch.infos.map((pitchInfo, index) => {
-    return <Pitch pitchInfo={pitchInfo} index={index} />;
-  });
+  return (
+    <For each={$card.pitch.infos}>
+      {(pitchInfo, index) => {
+        return <Pitch pitchInfo={pitchInfo} index={index()} />;
+      }}
+    </For>
+  );
 }
 
 function Pitch(props: { pitchInfo: PitchInfo; index: number }) {
@@ -72,24 +76,26 @@ export function DefaultPitch(props: {
     >
       <div class="flex items-start gap-1 animate-fade-in-sm">
         <div>
-          {props.pitchInfo.morae.map((mora, i) => {
-            return (
-              <span
-                style={{
-                  "border-color": "var(--pitch-color)",
-                  color: "var(--pitch-color)",
-                }}
-                classList={{
-                  "border-t-2": props.pitchInfo.pattern[i] === 1,
-                  "pitch-segment":
-                    props.pitchInfo.pattern[i] === 1 &&
-                    props.pitchInfo.pattern[i + 1] === 0,
-                }}
-              >
-                {mora}
-              </span>
-            );
-          })}
+          <For each={props.pitchInfo.morae}>
+            {(mora, i) => {
+              return (
+                <span
+                  style={{
+                    "border-color": "var(--pitch-color)",
+                    color: "var(--pitch-color)",
+                  }}
+                  classList={{
+                    "border-t-2": props.pitchInfo.pattern[i()] === 1,
+                    "pitch-segment":
+                      props.pitchInfo.pattern[i()] === 1 &&
+                      props.pitchInfo.pattern[i() + 1] === 0,
+                  }}
+                >
+                  {mora}
+                </span>
+              );
+            }}
+          </For>
         </div>
         <div
           class="text-sm px-0.5 rounded-sm leading-tight"

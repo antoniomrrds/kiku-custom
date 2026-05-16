@@ -34,6 +34,7 @@ export type AnkiFields = {
   "kanji:Sentence": string;
   "furigana:SentenceFurigana": string;
   "kana:SentenceFurigana": string;
+  __IS_ROOT__?: boolean;
 };
 
 const frontKeys = [
@@ -60,7 +61,10 @@ const frontKeys = [
 
 type ExtractUsedFields<T, U extends readonly (keyof T)[]> = Pick<T, U[number]>;
 
-export type AnkiFrontFields = ExtractUsedFields<AnkiFields, typeof frontKeys>;
+export type AnkiFrontFields = ExtractUsedFields<
+  AnkiFields,
+  typeof frontKeys
+> & { __IS_ROOT__?: boolean };
 export type AnkiBackFields = AnkiFields;
 
 export type AnkiNote = {

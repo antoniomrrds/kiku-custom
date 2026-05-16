@@ -86,6 +86,7 @@ export function CardStoreContextProvider(props: {
     },
     initialTab: "kanji",
     navigateBack: [],
+    //TODO: switch partially to isRoot from anki fields context
     nested: props.nested ?? false,
     nestedAnkiFields: ankiFieldsSkeleton,
     nestedNoteId: undefined,

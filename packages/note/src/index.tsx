@@ -91,7 +91,7 @@ export async function init({
           root={root}
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
-            <AnkiFieldContextProvider ankiFields={ankiFields}>
+            <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
               <CardStoreContextProvider side={side}>
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
@@ -231,7 +231,7 @@ export async function initAnki({
       divs = Object.entries(exampleFields).map(([key, value]) => {
         const div = document.createElement("div");
         div.dataset.field = key;
-        div.innerHTML = value;
+        div.innerHTML = value.toString();
         return div;
       });
     }

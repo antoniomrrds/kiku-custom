@@ -73,15 +73,15 @@ export function useNavigationTransition() {
 }
 
 export function usePitch() {
-  const { $card, $setCard } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $setCard } = useCardContext();
+  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
 
   const $pitchNumbers = createMemo(() =>
     extractPitchNumbers($ankiFields.PitchPosition),
   );
 
   const $reading = createMemo(() => {
-    if ($card.nested) return $ankiFields.ExpressionReading;
+    if (!$isRootAnkiFields()) return $ankiFields.ExpressionReading;
     return $ankiFields.ExpressionFurigana
       ? $ankiFields["kana:ExpressionFurigana"]
       : $ankiFields.ExpressionReading;
@@ -89,6 +89,7 @@ export function usePitch() {
 
   const $pitchInfos = createMemo(() => {
     const numbers = $pitchNumbers();
+    const reading = $reading();
     if (!numbers.length) return [];
     const pitchCategories = $ankiFields.PitchCategories.split(",").map((s) => {
       let pitchCategory: string | null = s.trim().toLowerCase();
@@ -102,7 +103,7 @@ export function usePitch() {
       return pitchCategory;
     });
     return numbers.map((pitchNum, i) => {
-      const result = hatsuon({ reading: $reading(), pitchNum, locale: "EN" });
+      const result = hatsuon({ reading, pitchNum, locale: "EN" });
       result.patternName = pitchCategories[i] ?? result.patternName;
       return result;
     });
