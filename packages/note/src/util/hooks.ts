@@ -199,14 +199,29 @@ export function useKanji() {
 
       if ($general.aborter.signal.aborted) return;
 
+      const currentExpressionResults =
+        expressionResult[ankiFields.Expression] ?? [];
+      const sameExpression = currentExpressionResults.filter(
+        (n) => n.fields.Expression.value === ankiFields.Expression,
+      );
+      const incomingRelated = currentExpressionResults.filter(
+        (n) => n.fields.Expression.value !== ankiFields.Expression,
+      );
+      const outgoingRelated = relatedExpressions.flatMap(
+        (e) => expressionResult[e] ?? [],
+      );
+
+      const combinedRelated = [...incomingRelated, ...outgoingRelated];
+      const uniqueRelated = Array.from(
+        new Map(combinedRelated.map((n) => [n.noteId, n])).values(),
+      );
+
       $setCard("query", {
         status: "success",
         noteList: Object.entries(kanjiResult),
         sameReading: readingResult[ankiFields.ExpressionReading],
-        sameExpression: expressionResult[ankiFields.Expression],
-        relatedExpression: relatedExpressions.flatMap(
-          (e) => expressionResult[e] ?? [],
-        ),
+        sameExpression,
+        relatedExpression: uniqueRelated,
       });
 
       nex

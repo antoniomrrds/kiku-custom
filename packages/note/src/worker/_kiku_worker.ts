@@ -109,6 +109,7 @@ export class WorkerThreadApi {
             expressionListResult[expr].push(note);
           }
 
+          // ------- Related Expression Search (contains) -------
           if (relatedExprValue) {
             const relatedExprs = relatedExprValue
               .split(/\s*[,、;\uFF1B]\s*/)
