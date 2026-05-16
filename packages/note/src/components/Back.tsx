@@ -1,4 +1,12 @@
-import { createSignal, lazy, Match, onMount, Suspense, Switch } from "solid-js";
+import {
+  createMemo,
+  createSignal,
+  lazy,
+  Match,
+  onMount,
+  Suspense,
+  Switch,
+} from "solid-js";
 import { isServer } from "solid-js/web";
 import {
   CardStoreContextProvider,
@@ -34,6 +42,7 @@ const Lazy = {
   UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid, })),
   Expression: lazy(async () => ({ default: (await import("./_kiku_lazy")).Expression, })),
   AnkiMobileDebug: lazy(async () => ({ default: (await import("./_kiku_lazy")).AnkiMobileDebug, })),
+  RelatedExpression: lazy(async () => ({ default: (await import("./_kiku_lazy")).RelatedExpression, })),
 };
 
 export function Back(props: { onExitNested?: () => void }) {
@@ -81,7 +90,7 @@ export function Back(props: { onExitNested?: () => void }) {
         </Match>
         <Match when={$card.page === "nested" && $card.ready}>
           <AnkiFieldContextProvider
-            ankiFields={$card.nestedAnkiFields}
+            initialAnkiFields={$card.nestedAnkiFields}
             noteId={$card.nestedNoteId}
           >
             <CardStoreContextProvider
@@ -99,6 +108,9 @@ export function Back(props: { onExitNested?: () => void }) {
         </Match>
         <Match when={$card.page === "main"}>
           {$card.ready && <Lazy.HeaderMain onExitNested={props.onExitNested} />}
+          <div class="flex gap-4 flex-wrap min-h-lh text-2xl">
+            {$card.ready && <Lazy.RelatedExpression />}
+          </div>
           <div class="flex flex-col gap-4 relative z-10">
             <div
               class="flex rounded-lg gap-4 flex-col sm:flex-row"
