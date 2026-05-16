@@ -167,9 +167,15 @@ export function useKanji() {
       const readingList = ankiFields.ExpressionReading
         ? [ankiFields.ExpressionReading]
         : [];
-      const expressionList = ankiFields.Expression
-        ? [ankiFields.Expression]
+      const relatedExpressions = ankiFields.RelatedExpression
+        ? ankiFields.RelatedExpression.split(/\s*[,、;\uFF1B]\s*/).filter(
+            Boolean,
+          )
         : [];
+      const expressionList = [
+        ...(ankiFields.Expression ? [ankiFields.Expression] : []),
+        ...relatedExpressions,
+      ];
 
       const opts = {
         constants,
@@ -198,6 +204,9 @@ export function useKanji() {
         noteList: Object.entries(kanjiResult),
         sameReading: readingResult[ankiFields.ExpressionReading],
         sameExpression: expressionResult[ankiFields.Expression],
+        relatedExpression: relatedExpressions.flatMap(
+          (e) => expressionResult[e] ?? [],
+        ),
       });
 
       nex

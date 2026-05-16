@@ -87,6 +87,7 @@ export class WorkerThreadApi {
 
           const expr = note.fields.Expression.value;
           const reading = note.fields.ExpressionReading?.value ?? "";
+          const relatedExprValue = note.fields.RelatedExpression?.value ?? "";
 
           // ------- Kanji Search (contains) -------
           for (const kanji of kanjiSet) {
@@ -106,6 +107,20 @@ export class WorkerThreadApi {
           if (expressionSet.has(expr)) {
             expressionListResult[expr] ??= [];
             expressionListResult[expr].push(note);
+          }
+
+          if (relatedExprValue) {
+            const relatedExprs = relatedExprValue
+              .split(/\s*[,、;\uFF1B]\s*/)
+              .filter(Boolean);
+            for (const rel of relatedExprs) {
+              if (expressionSet.has(rel)) {
+                expressionListResult[rel] ??= [];
+                if (!expressionListResult[rel].includes(note)) {
+                  expressionListResult[rel].push(note);
+                }
+              }
+            }
           }
         }
       }

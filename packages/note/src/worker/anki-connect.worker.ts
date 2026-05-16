@@ -70,7 +70,7 @@ export class AnkiConnect {
       expressionList.length === 0
         ? null
         : `${noteFilter} AND (${expressionList
-            .map((e) => `"Expression:${e}"`)
+            .flatMap((e) => [`"Expression:${e}"`, `"RelatedExpression:*${e}*"`])
             .join(" OR ")})`;
 
     const queries = [kanjiQuery, readingQuery, expressionQuery].filter(
@@ -97,9 +97,15 @@ export class AnkiConnect {
     }
 
     for (const e of expressionList) {
-      expressionListResult[e] = allNotes.filter(
-        (n) => n.fields.Expression?.value === e,
-      );
+      expressionListResult[e] = allNotes.filter((n) => {
+        if (n.fields.Expression?.value === e) return true;
+        const related = n.fields.RelatedExpression?.value;
+        if (related) {
+          const list = related.split(/\s*[,、;\uFF1B]\s*/).filter(Boolean);
+          return list.includes(e);
+        }
+        return false;
+      });
     }
 
     return {

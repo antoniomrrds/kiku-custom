@@ -19,6 +19,7 @@ type Query = {
   status: "loading" | "success" | "error";
   sameReading: AnkiNote[] | undefined;
   sameExpression: AnkiNote[] | undefined;
+  relatedExpression: AnkiNote[] | undefined;
   noteList: [string, AnkiNote[]][];
 };
 
@@ -78,6 +79,7 @@ export function CardStoreContextProvider(props: {
       status: "loading",
       sameReading: undefined,
       sameExpression: undefined,
+      relatedExpression: undefined,
       noteList: [],
     },
     initialFocus: {
