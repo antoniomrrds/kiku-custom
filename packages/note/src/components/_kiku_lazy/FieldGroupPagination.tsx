@@ -53,11 +53,11 @@ export default function FieldGroupPagination() {
       <>
         <button
           type="button"
-          class="btn btn-ghost btn-circle btn-sm sm:btn-md"
+          class="btn btn-ghost btn-circle btn-sm"
           on:click={onPrevClick}
           on:touchend={(e) => e.stopPropagation()}
         >
-          <ArrowLeftIcon class="size-5 sm:size-8 hover:text-base-content-calm transition-colors" />
+          <ArrowLeftIcon class="size-6 hover:text-base-content-calm transition-colors" />
         </button>
         <div class="flex flex-col items-center">
           <div class="text-xs text-base-content-faint">{date()}</div>
@@ -65,11 +65,11 @@ export default function FieldGroupPagination() {
         </div>
         <button
           type="button"
-          class="btn btn-ghost btn-circle btn-sm sm:btn-md"
+          class="btn btn-ghost btn-circle btn-sm"
           on:click={onNextClick}
           on:touchend={(e) => e.stopPropagation()}
         >
-          <ArrowLeftIcon class="size-5 sm:size-8 rotate-180 hover:text-base-content-calm transition-colors" />
+          <ArrowLeftIcon class="size-6 rotate-180 hover:text-base-content-calm transition-colors" />
         </button>
       </>
     )

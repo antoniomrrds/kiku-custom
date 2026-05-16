@@ -121,7 +121,7 @@ export default function BackBody(props: {
 
   return (
     <div
-      class="flex sm:flex-col gap-8"
+      class="flex sm:flex-col gap-6"
       classList={{
         "flex-col-reverse": $config.swapSentenceAndDefinitionOnMobile,
         "flex-col": !$config.swapSentenceAndDefinitionOnMobile,
