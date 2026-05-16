@@ -9,7 +9,7 @@ export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;
   currentHtml?: string;
 }) {
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $config } = useConfigContext();
   const collectGlossaryImgs = useCollectGlossaryImgs();
 
@@ -25,13 +25,13 @@ export default function DefinitionPictureSection(props: {
       }
     }
 
-    const defPicDoc = parseHtml(ankiFields.DefinitionPicture);
+    const defPicDoc = parseHtml($ankiFields.DefinitionPicture);
     const defPics = Array.from(defPicDoc.querySelectorAll("img")).map(
       (img) => img.outerHTML,
     );
 
     const glossaryPics = $config.definitionPictureFromGlossary
-      ? collectGlossaryImgs(ankiFields.Glossary)
+      ? collectGlossaryImgs($ankiFields.Glossary)
           .filter((pic) => !displayedImages.has(pic.src))
           .map((pic) => pic.html)
       : [];

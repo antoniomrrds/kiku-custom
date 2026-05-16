@@ -12,7 +12,7 @@ export const plugin = {
     const [$pressed, $setPressed] = createSignal(false);
     const { $general } = props.ctx.useGeneralContext();
     const { $card, $setCard } = props.ctx.useCardContext();
-    const cardId = props.ctx.ankiFields.CardID;
+    const cardId = props.ctx.$ankiFields.CardID;
     const { $config: config } = props.ctx.useConfigContext();
 
     function ToggleNsfwButton() {

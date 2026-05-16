@@ -17,7 +17,7 @@ export default function PictureModal(props: {
   "on:click"?: () => void;
 }) {
   const { $general } = useGeneralContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const [$img, $setImg] = createSignal(props.img);
   const [$showAll, $setShowAll] = createSignal(false);
   const startViewTransition = useViewTransition();
@@ -43,13 +43,13 @@ export default function PictureModal(props: {
     };
 
     // Picture field
-    addImages(parseHtml(ankiFields.Picture));
+    addImages(parseHtml($ankiFields.Picture));
 
     // DefinitionPicture field
-    addImages(parseHtml(ankiFields.DefinitionPicture));
+    addImages(parseHtml($ankiFields.DefinitionPicture));
 
     // Glossary field
-    for (const pic of collectGlossaryImgs(ankiFields.Glossary)) {
+    for (const pic of collectGlossaryImgs($ankiFields.Glossary)) {
       pics.set(pic.src, pic.html);
     }
 

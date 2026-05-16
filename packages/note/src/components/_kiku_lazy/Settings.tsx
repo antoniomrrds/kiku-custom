@@ -7,6 +7,7 @@ import {
   Show,
 } from "solid-js";
 import { Portal } from "solid-js/web";
+import { unwrap } from "solid-js/store";
 import {
   type DefinitionStyle,
   getCssVar,
@@ -1064,7 +1065,7 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
 
 function DebugSettings() {
   const { $config, $setConfig } = useConfigContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const [$kikuFiles, $setKikuFiles] = createSignal<string>();
   const [$missingFiles, $setMissingFiles] = createSignal<string>();
   const { $general, $setGeneral: _$setGeneral } = useGeneralContext();
@@ -1197,11 +1198,11 @@ function DebugSettings() {
             <div class="flex gap-2 items-center">
               <div class="text-lg">Anki Fields</div>
               <ClipboardCopyButton
-                text={() => JSON.stringify({ ...ankiFields }, null, 2)}
+                text={() => JSON.stringify(unwrap($ankiFields), null, 2)}
               />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
-              {JSON.stringify({ ...ankiFields }, null, 2)}
+              {JSON.stringify(unwrap($ankiFields), null, 2)}
             </pre>
           </div>
           <Show when={$kikuFiles()}>

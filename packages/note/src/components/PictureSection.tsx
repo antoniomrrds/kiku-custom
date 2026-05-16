@@ -9,7 +9,7 @@ import { useFieldGroupContext } from "./shared/FieldGroupContext";
 export function PictureSection() {
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
-  const { ankiFields } = useAnkiFieldContext();
+  const { $ankiFields } = useAnkiFieldContext();
   const [$clicked, $setClicked] = createSignal(false);
   const [$subIndex, $setSubIndex] = createSignal(0);
 
@@ -35,7 +35,7 @@ export function PictureSection() {
   const dataSet1: () => DatasetProp = () => ({
     "data-has-picture": isServer
       ? "{{#Picture}}true{{/Picture}}"
-      : ankiFields.Picture
+      : $ankiFields.Picture
         ? "true"
         : "",
   });

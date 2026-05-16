@@ -17,7 +17,7 @@ import {
   useContext,
 } from "solid-js";
 import h from "solid-js/h";
-import { createStore } from "solid-js/store";
+import { createStore, unwrap } from "solid-js/store";
 import { Match, Portal, Show, Suspense, Switch } from "solid-js/web";
 import type { Ctx } from "#/plugins/plugin-types";
 import { useAnkiFieldContext } from "./AnkiFieldsContext";
@@ -29,7 +29,7 @@ import { useGeneralContext } from "./GeneralContext";
 const CtxContext = createContext<Ctx>();
 
 export function CtxContextProvider(props: { children: JSX.Element }) {
-  const { ankiFields } = useAnkiFieldContext();
+  const { $ankiFields } = useAnkiFieldContext();
   const ctx: Ctx = {
     h,
     createSignal,
@@ -53,8 +53,9 @@ export function CtxContextProvider(props: { children: JSX.Element }) {
     runWithOwner,
     getOwner,
     createStore,
-    //
-    ankiFields,
+    // ankiFields is deprecated, use $ankiFields instead
+    ankiFields: unwrap($ankiFields),
+    $ankiFields,
     useAnkiFieldContext,
     useBreakpointContext,
     useCardContext,

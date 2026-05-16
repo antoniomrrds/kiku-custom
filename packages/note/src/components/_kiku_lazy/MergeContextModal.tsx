@@ -17,7 +17,7 @@ export default function MergeContextModal() {
   const { $config } = useConfigContext();
   const { navigate } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
-  const { ankiFields: rootAnkiFields } = useRootFieldGroupContext();
+  const { $ankiFields: $rootAnkiFields } = useRootFieldGroupContext();
   const { noteId: currentNoteId } = useAnkiFieldContext<"back">();
 
   const [$rootNote, $setRootNote] = createSignal<AnkiNote>();
@@ -35,7 +35,7 @@ export default function MergeContextModal() {
       $setLoading(true);
       try {
         const noteIds = await AnkiConnect.invoke("findNotes", {
-          query: `cid:${rootAnkiFields.CardID}`,
+          query: `cid:${$rootAnkiFields.CardID}`,
         });
         const rootNoteId = noteIds.result[0];
         const notes = await AnkiConnect.invoke("notesInfo", {

@@ -43,7 +43,7 @@ export function KanjiContextProvider(props: {
 }) {
   const { $general } = useGeneralContext();
   const cacheStore = useCacheContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const [$kanji, $setKanji] = createStore<KanjiStore>({
     kanji: props.kanji,
     kanjiInfo: undefined,
@@ -74,7 +74,7 @@ export function KanjiContextProvider(props: {
 
     $setKanji("loading", type, true);
     const result = await nex.queryShared({
-      ankiFields: unwrap(ankiFields),
+      ankiFields: unwrap($ankiFields),
       kanjiList: list,
     });
 

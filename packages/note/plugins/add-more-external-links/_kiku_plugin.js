@@ -17,7 +17,7 @@ export const plugin = {
       {
         href: (() => {
           const url = new URL("https://nadeshiko.co/search/sentence");
-          url.searchParams.set("query", props.ctx.ankiFields.Expression);
+          url.searchParams.set("query", props.ctx.$ankiFields.Expression);
           return url.toString();
         })(),
         target: "_blank",
@@ -35,7 +35,7 @@ export const plugin = {
         class: "text-sm btn btn-sm",
         "on:click": () => {
           $general.ankiDroidAPI?.ankiSearchCard(
-            `("note:Kiku" OR "note:Lapis") AND "Expression:*${props.ctx.ankiFields.Expression}*"`,
+            `("note:Kiku" OR "note:Lapis") AND "Expression:*${props.ctx.$ankiFields.Expression}*"`,
           );
         },
       },

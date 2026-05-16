@@ -1,4 +1,4 @@
-import { createUniqueId, Match, Show, Switch } from "solid-js";
+import { createMemo, createUniqueId, Match, Show, Switch } from "solid-js";
 import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
 import { nextTheme } from "#/util/theme";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
@@ -255,23 +255,25 @@ function KanjiPageIndicator() {
 }
 
 function Frequency() {
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const $freqSort = createMemo(() => $ankiFields.FreqSort);
+  const $frequency = createMemo(() => $ankiFields.Frequency);
   return (
     <div class="flex gap-1 sm:gap-2 items-center animate-fade-in-sm relative hover:[&_#frequency]:block">
       <div
         class="text-base-content-soft text-sm sm:text-base"
-        innerHTML={ankiFields.FreqSort}
+        innerHTML={$freqSort()}
         classList={{
-          hidden: ankiFields.FreqSort === "9999999",
+          hidden: $freqSort() === "9999999",
         }}
       ></div>
-      {ankiFields.Frequency && (
+      {$frequency() && (
         <>
           <CircleChevronDownIcon class="size-5 text-base-content-soft" />
           <div
             id="frequency"
             class="absolute top-0 translate-y-6 right-2 w-fit [&_li]:text-nowrap [&_li]:whitespace-nowrap bg-base-200/95 text-sm sm:text-base p-2 sm:p-4 rounded-lg border border-base-300 shadow-lg hidden text-base-content-calm"
-            innerHTML={ankiFields.Frequency}
+            innerHTML={$frequency()}
           ></div>
         </>
       )}

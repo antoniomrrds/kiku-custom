@@ -1,4 +1,4 @@
-import { createContext, createEffect, useContext } from "solid-js";
+import { createContext, createEffect, createMemo, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { nodesToString, parseHtml } from "#/util/general";
@@ -21,31 +21,31 @@ const FieldGroupContext = createContext<{
   $setGroup: SetStoreFunction<GroupStore>;
   $next: () => boolean;
   $prev: () => boolean;
-  ankiFields: AnkiFields | AnkiFrontFields;
+  $ankiFields: Store<AnkiFields | AnkiFrontFields>;
 }>();
 
 export function FieldGroupContextProvider(props: { children: JSX.Element }) {
-  const { ankiFields } = useAnkiFieldContext();
+  const { $ankiFields } = useAnkiFieldContext();
   const { $card } = useCardContext();
   const { $general } = useGeneralContext();
 
-  const sentenceField = () => {
+  const $sentenceField = createMemo(() => {
     if ($card.side === "front") {
-      return ankiFields["kanji:Sentence"];
+      return $ankiFields["kanji:Sentence"];
     }
-    if ($card.nested) return ankiFields.Sentence;
-    return ankiFields["furigana:SentenceFurigana"]
-      ? ankiFields["furigana:SentenceFurigana"]
-      : ankiFields["kanji:Sentence"];
-  };
-  const pictureField = ankiFields.Picture;
-  const sentenceAudioField = ankiFields.SentenceAudio;
-  const miscInfoField = ankiFields.MiscInfo;
+    if ($card.nested) return $ankiFields.Sentence;
+    return $ankiFields["furigana:SentenceFurigana"]
+      ? $ankiFields["furigana:SentenceFurigana"]
+      : $ankiFields["kanji:Sentence"];
+  });
+  const $pictureField = createMemo(() => $ankiFields.Picture);
+  const $sentenceAudioField = createMemo(() => $ankiFields.SentenceAudio);
+  const $miscInfoField = createMemo(() => $ankiFields.MiscInfo);
   const [$group, $setGroup] = createStore<GroupStore>({
-    sentenceField: sentenceField(),
-    pictureField,
-    sentenceAudioField,
-    miscInfoField,
+    sentenceField: $sentenceField(),
+    pictureField: $pictureField(),
+    sentenceAudioField: $sentenceAudioField(),
+    miscInfoField: $miscInfoField(),
     index: 0,
     ids: [],
   });
@@ -56,10 +56,17 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
   };
 
   createEffect(() => {
+    $setGroup("sentenceField", $sentenceField());
+    $setGroup("pictureField", $pictureField());
+    $setGroup("sentenceAudioField", $sentenceAudioField());
+    $setGroup("miscInfoField", $miscInfoField());
+  });
+
+  createEffect(() => {
     ids.clear();
     $setGroup("ids", []);
 
-    const sentenceFieldDoc = parseHtml(sentenceField());
+    const sentenceFieldDoc = parseHtml($sentenceField());
     const sentenceFieldWithGroup =
       sentenceFieldDoc.querySelectorAll("[data-group-id]");
     sentenceFieldWithGroup.forEach((el) => {
@@ -74,7 +81,7 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
       sentenceFieldWithoutGroup,
     );
 
-    const sentenceAudioFieldDoc = parseHtml(sentenceAudioField);
+    const sentenceAudioFieldDoc = parseHtml($sentenceAudioField());
     const sentenceAudioFieldWithGroup =
       sentenceAudioFieldDoc.querySelectorAll("[data-group-id]");
     sentenceAudioFieldWithGroup.forEach((el) => {
@@ -89,7 +96,7 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
       sentenceAudioFieldWithoutGroup,
     );
 
-    const miscInfoFieldDoc = parseHtml(miscInfoField);
+    const miscInfoFieldDoc = parseHtml($miscInfoField());
     const miscInfoFieldWithGroup =
       miscInfoFieldDoc.querySelectorAll("[data-group-id]");
     miscInfoFieldWithGroup.forEach((el) => {
@@ -105,7 +112,7 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     );
 
     // each group may contain multiple img. img without group id will be given group id 0
-    const pictureFieldDoc = parseHtml(pictureField);
+    const pictureFieldDoc = parseHtml($pictureField());
     const pictureFieldWithGroup = pictureFieldDoc.querySelectorAll("img");
     pictureFieldWithGroup.forEach((el) => {
       let id = (el as HTMLElement).dataset.groupId;
@@ -205,7 +212,7 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
         $setGroup,
         $next,
         $prev,
-        ankiFields,
+        $ankiFields,
       }}
     >
       {props.children}
@@ -224,7 +231,8 @@ const RootFieldGroupConext = createContext<{
   $setGroup: SetStoreFunction<GroupStore>;
   $next: () => void;
   $prev: () => void;
-  ankiFields: AnkiFields | AnkiFrontFields;
+  //TODO: remove from here
+  $ankiFields: Store<AnkiFields | AnkiFrontFields>;
 }>();
 
 export function RootFieldGroupContextProvider(props: {

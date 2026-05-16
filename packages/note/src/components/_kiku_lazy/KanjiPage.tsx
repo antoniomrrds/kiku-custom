@@ -259,30 +259,28 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
 }
 
 function NoteList(props: { title: string; list: AnkiNote[] }) {
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
 
   //TODO: use better parser
-  const ExpressionFurigana = () => {
-    if (ankiFields.Expression && ankiFields.ExpressionReading) {
+  const $ExpressionFurigana = createMemo(() => {
+    if ($ankiFields.Expression && $ankiFields.ExpressionReading) {
       return (
         <ruby>
-          {ankiFields.Expression}
-          <rt>{ankiFields.ExpressionReading}</rt>
+          {$ankiFields.Expression}
+          <rt>{$ankiFields.ExpressionReading}</rt>
         </ruby>
       );
     }
-    return ankiFields.ExpressionReading
-      ? ankiFields.ExpressionReading
-      : ankiFields.Expression;
-  };
+    return $ankiFields.ExpressionReading
+      ? $ankiFields.ExpressionReading
+      : $ankiFields.Expression;
+  });
 
   return (
     <div class="flex flex-col gap-2 sm:gap-4">
       <div class="flex-col flex justify-between items-center gap-2">
         <div class="text-base-content-calm text-xl">{props.title}</div>
-        <div class="font-secondary expression">
-          <ExpressionFurigana />
-        </div>
+        <div class="font-secondary expression">{$ExpressionFurigana()}</div>
       </div>
       <ul class="list bg-base-100 rounded-box shadow-md">
         <For each={props.list ?? []}>
@@ -290,7 +288,7 @@ function NoteList(props: { title: string; list: AnkiNote[] }) {
             return (
               <AnkiNoteItem
                 data={data}
-                reading={ankiFields.ExpressionReading}
+                reading={$ankiFields.ExpressionReading}
               />
             );
           }}

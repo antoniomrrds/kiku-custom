@@ -11,8 +11,8 @@ export const plugin = {
 
     function SentenceTranslation() {
       const translation =
-        "SentenceTranslation" in props.ctx.ankiFields
-          ? props.ctx.ankiFields?.SentenceTranslation
+        "SentenceTranslation" in props.ctx.$ankiFields
+          ? props.ctx.$ankiFields?.SentenceTranslation
           : document.getElementById("SentenceTranslation")?.innerHTML;
 
       if (!translation) return null;

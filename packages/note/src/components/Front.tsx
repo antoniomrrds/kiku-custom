@@ -1,4 +1,10 @@
-import { createEffect, createSignal, lazy, onMount } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  lazy,
+  onMount,
+} from "solid-js";
 import { isServer } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/util/config";
@@ -20,12 +26,27 @@ const Lazy = {
 
 export function Front() {
   const { $card, $setCard } = useCardContext();
-  const { ankiFields } = useAnkiFieldContext<"front">();
+  const { $ankiFields } = useAnkiFieldContext<"front">();
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
   const loadPlugin = useLoadPlugin();
+  const $tags = createMemo(() => $ankiFields.Tags.split(" "));
+  const $hidden = createMemo(() => {
+    if (isServer) return true;
+    if (
+      $ankiFields.IsSentenceCard ||
+      $ankiFields.IsWordAndSentenceCard ||
+      $ankiFields.IsAudioCard
+    ) {
+      return false;
+    }
+    if ($ankiFields.IsClickCard && $clicked()) {
+      return false;
+    }
+    return true;
+  });
 
   onMount(() => {
     setTimeout(() => {
@@ -33,8 +54,12 @@ export function Front() {
       loadPlugin();
     }, 0);
 
-    const tags = ankiFields.Tags.split(" ");
-    $setCard("isNsfw", tags.map((tag) => tag.toLowerCase()).includes("nsfw"));
+    $setCard(
+      "isNsfw",
+      $tags()
+        .map((tag) => tag.toLowerCase())
+        .includes("nsfw"),
+    );
 
     if ($config.modHidden) {
       setTimeout(() => {
@@ -45,7 +70,7 @@ export function Front() {
 
   createEffect(() => {
     if (
-      ankiFields.IsAudioCard &&
+      $ankiFields.IsAudioCard &&
       $card.sentenceFieldRef &&
       $group.sentenceField
     ) {
@@ -57,25 +82,10 @@ export function Front() {
     }
   });
 
-  const hidden = () => {
-    if (isServer) return true;
-    if (
-      ankiFields.IsSentenceCard ||
-      ankiFields.IsWordAndSentenceCard ||
-      ankiFields.IsAudioCard
-    ) {
-      return false;
-    }
-    if (ankiFields.IsClickCard && $clicked()) {
-      return false;
-    }
-    return true;
-  };
-
   const hintFieldDataset: () => DatasetProp = () => ({
     "data-has-hint": isServer
       ? "{{#Hint}}true{{/Hint}}"
-      : ankiFields.Hint
+      : $ankiFields.Hint
         ? "true"
         : "",
   });
@@ -98,15 +108,15 @@ export function Front() {
               class="expression font-secondary text-center vertical-rl"
               classList={{
                 "border-b-2 border-dotted border-base-content-soft":
-                  !!ankiFields.IsClickCard,
+                  !!$ankiFields.IsClickCard,
                 "transition-opacity duration-[1000ms] opacity-0":
                   $hideExpression(),
               }}
               innerHTML={
                 isServer
                   ? undefined
-                  : !ankiFields.IsSentenceCard && !ankiFields.IsAudioCard
-                    ? ankiFields.Expression
+                  : !$ankiFields.IsSentenceCard && !$ankiFields.IsAudioCard
+                    ? $ankiFields.Expression
                     : "?"
               }
             >
@@ -118,7 +128,7 @@ export function Front() {
 
           <PictureSection />
         </div>
-        {$card.ready && !hidden() && <FieldGroupPaginationSection />}
+        {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
       </div>
       <div
         class="flex flex-col gap-4 items-center text-center justify-center"
@@ -126,9 +136,9 @@ export function Front() {
           "transition-opacity duration-[1000ms] opacity-0": $hideExpression(),
         }}
       >
-        {$card.ready && !hidden() && <Lazy.Sentence />}
+        {$card.ready && !$hidden() && <Lazy.Sentence />}
       </div>
-      {$card.ready && ankiFields.IsAudioCard && (
+      {$card.ready && $ankiFields.IsAudioCard && (
         <div class="flex gap-2 justify-center animate-fade-in-sm">
           <Lazy.AudioButtons position={1} />
         </div>
@@ -137,7 +147,7 @@ export function Front() {
         class={`flex gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
         {...hintFieldDataset()}
       >
-        <div innerHTML={isServer ? undefined : ankiFields.Hint}>
+        <div innerHTML={isServer ? undefined : $ankiFields.Hint}>
           {isServer ? "{{Hint}}" : undefined}
         </div>
       </div>

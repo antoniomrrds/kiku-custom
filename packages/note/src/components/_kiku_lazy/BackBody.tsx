@@ -21,25 +21,25 @@ export default function BackBody(props: {
 }) {
   let definitionEl: HTMLDivElement | undefined;
   let modalRef: HTMLDialogElement | undefined;
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $config } = useConfigContext();
 
-  const glossary = () => {
+  const glossary = createMemo(() => {
     // empty glossary if it's the same as main definition
-    if (ankiFields.MainDefinition === ankiFields.Glossary) return "";
+    if ($ankiFields.MainDefinition === $ankiFields.Glossary) return "";
     return removeMainDefinitionFromGlossary(
-      ankiFields.Glossary,
-      ankiFields.MainDefinition,
+      $ankiFields.Glossary,
+      $ankiFields.MainDefinition,
     );
-  };
+  });
 
   const $pages = createMemo(() => {
     const p: { name: string; html: string }[] = [];
-    const selection = !isHtmlEffectivelyEmpty(ankiFields.SelectionText)
-      ? ankiFields.SelectionText
+    const selection = !isHtmlEffectivelyEmpty($ankiFields.SelectionText)
+      ? $ankiFields.SelectionText
       : "";
-    const main = !isHtmlEffectivelyEmpty(ankiFields.MainDefinition)
-      ? ankiFields.MainDefinition
+    const main = !isHtmlEffectivelyEmpty($ankiFields.MainDefinition)
+      ? $ankiFields.MainDefinition
       : "";
     const gHtml = glossary();
 
@@ -277,14 +277,14 @@ function ExternalLinks() {
 }
 
 function DefaultExternalLinks() {
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
 
   return (
     <>
       <a
         href={(() => {
           const url = new URL("https://jpdb.io/search");
-          url.searchParams.set("q", ankiFields.Expression);
+          url.searchParams.set("q", $ankiFields.Expression);
           return url.toString();
         })()}
         target="_blank"
@@ -297,7 +297,7 @@ function DefaultExternalLinks() {
       </a>
 
       <a
-        href={`https://jisho.org/search/${ankiFields.Expression}`}
+        href={`https://jisho.org/search/${$ankiFields.Expression}`}
         target="_blank"
       >
         <img
@@ -309,7 +309,7 @@ function DefaultExternalLinks() {
       <a
         href={(() => {
           const url = new URL("https://www.google.co.jp/search");
-          url.searchParams.set("q", ankiFields.Expression);
+          url.searchParams.set("q", $ankiFields.Expression);
           return url.toString();
         })()}
         target="_blank"

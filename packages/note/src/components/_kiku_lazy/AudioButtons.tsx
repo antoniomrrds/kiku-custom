@@ -51,7 +51,7 @@ export function NotePlayIcon(props: {
 
 export default function AudioButtons(props: { position: 1 | 2 }) {
   const { $general } = useGeneralContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
@@ -119,7 +119,7 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
   const NotePlayIcons = () => {
     return (
       <>
-        {ankiFields.ExpressionAudio && (
+        {$ankiFields.ExpressionAudio && (
           <NotePlayIcon
             color="primary"
             on:click={() => {
@@ -149,9 +149,9 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
         <div
           style={hiddenStyle}
           ref={(ref) => $setCard("expressionAudioRef", ref)}
-          innerHTML={$card.nested ? undefined : ankiFields.ExpressionAudio}
+          innerHTML={$card.nested ? undefined : $ankiFields.ExpressionAudio}
         >
-          {$card.nested && <AudioTag text={ankiFields.ExpressionAudio} />}
+          {$card.nested && <AudioTag text={$ankiFields.ExpressionAudio} />}
         </div>
         <div
           style={hiddenStyle}

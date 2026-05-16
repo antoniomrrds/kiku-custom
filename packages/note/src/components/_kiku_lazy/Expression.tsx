@@ -1,5 +1,12 @@
 import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom";
-import { createEffect, createSignal, type JSX, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  type JSX,
+  onMount,
+  Show,
+} from "solid-js";
 import { createStore } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import { extractKanji, parseHtml } from "#/util/general";
@@ -14,7 +21,7 @@ import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
 
 export default function Expression() {
   const { $setCard } = useCardContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const [$activeKey, $setActiveKey] = createSignal<string | null>(null);
   let timeout: ReturnType<typeof setTimeout>;
 
@@ -65,10 +72,12 @@ export default function Expression() {
     );
   }
 
-  const doc = parseHtml(ankiFields.ExpressionFurigana);
-  const isRuby = doc.querySelector("ruby");
+  //TODO: fix early return
+  const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
+  const $isRuby = createMemo(() => $doc().querySelector("ruby"));
 
-  if (isRuby) {
+  if ($isRuby()) {
+    const doc = $doc();
     let groupIndex = 0;
     const renderNode = (node: Node): JSX.Element => {
       if (node.nodeType === Node.TEXT_NODE) {
@@ -109,24 +118,26 @@ export default function Expression() {
     );
   }
 
-  const furiganaData = parseFurigana(ankiFields.ExpressionFurigana);
+  const $furiganaData = createMemo(() =>
+    parseFurigana($ankiFields.ExpressionFurigana),
+  );
 
   if (
-    furiganaData.length === 0 ||
-    !ankiFields.ExpressionFurigana.includes("[")
+    $furiganaData().length === 0 ||
+    !$ankiFields.ExpressionFurigana.includes("[")
   ) {
     return (
       <ruby>
-        {ankiFields.Expression.split("").map((char, i) => (
+        {$ankiFields.Expression.split("").map((char, i) => (
           <CharSpan char={char} i={i} j={0} />
         ))}
         <Show
           when={
-            ankiFields.ExpressionFurigana &&
-            extractKanji(ankiFields.Expression).length > 0
+            $ankiFields.ExpressionFurigana &&
+            extractKanji($ankiFields.Expression).length > 0
           }
         >
-          <rt>{ankiFields.ExpressionReading}</rt>
+          <rt>{$ankiFields.ExpressionReading}</rt>
         </Show>
       </ruby>
     );
@@ -134,7 +145,7 @@ export default function Expression() {
 
   return (
     <>
-      {furiganaData.map((item, i) => {
+      {$furiganaData().map((item, i) => {
         const chars = item.text.trim().split("");
 
         if (item.type === "ruby") {

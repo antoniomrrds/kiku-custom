@@ -39,11 +39,10 @@ const Lazy = {
 export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
-
-  const tags = ankiFields.Tags.split(" ");
+  const $tags = createMemo(() => $ankiFields.Tags.split(" "));
   useKanji();
   usePitch();
 
@@ -54,14 +53,18 @@ export function Back(props: { onExitNested?: () => void }) {
       loadPlugin();
     }, 0);
 
-    const tags = ankiFields.Tags.split(" ");
-    $setCard("isNsfw", tags.map((tag) => tag.toLowerCase()).includes("nsfw"));
+    $setCard(
+      "isNsfw",
+      $tags()
+        .map((tag) => tag.toLowerCase())
+        .includes("nsfw"),
+    );
   });
 
   const pitchFieldDataset: () => DatasetProp = () => ({
     "data-has-pitch": isServer
       ? "{{#PitchPosition}}true{{/PitchPosition}}"
-      : ankiFields.PitchPosition
+      : $ankiFields.PitchPosition
         ? "true"
         : "",
   });
@@ -107,14 +110,14 @@ export function Back(props: { onExitNested?: () => void }) {
                   class={`mt-6 flex gap-4 pitch pitch-field`}
                   {...pitchFieldDataset()}
                 >
-                  {ankiFields.PitchPosition && $card.ready ? (
+                  {$ankiFields.PitchPosition && $card.ready ? (
                     <Suspense fallback={<span>&nbsp;</span>}>
                       <Lazy.Pitches />
                     </Suspense>
                   ) : isServer ? (
                     "{{#PitchPosition}}<span>&nbsp;</span>{{/PitchPosition}}"
                   ) : (
-                    ankiFields.PitchPosition && <span>&nbsp;</span>
+                    $ankiFields.PitchPosition && <span>&nbsp;</span>
                   )}
                 </div>
                 <div class="hidden sm:block sm:h-8 sm:mt-2">
@@ -138,7 +141,7 @@ export function Back(props: { onExitNested?: () => void }) {
           )}
           {$card.ready && (
             <>
-              <Lazy.BackFooter tags={tags} />
+              <Lazy.BackFooter tags={$tags()} />
               <Lazy.AudioButtons position={2} />
             </>
           )}
@@ -156,18 +159,18 @@ export function Back(props: { onExitNested?: () => void }) {
 
 function ExpressionSection() {
   const { $card } = useCardContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const [$dataPitchType, $setDataPitchType] = createSignal({
     "data-pitch-type": "{{PitchCategories}}",
   });
 
-  const expressionInnerHtml = () => {
+  const $expressionInnerHtml = createMemo(() => {
     return isServer
       ? undefined
-      : ankiFields.ExpressionFurigana
-        ? ankiFields["furigana:ExpressionFurigana"]
-        : ankiFields.Expression;
-  };
+      : $ankiFields.ExpressionFurigana
+        ? $ankiFields["furigana:ExpressionFurigana"]
+        : $ankiFields.Expression;
+  });
 
   onMount(() => {
     $setDataPitchType({
@@ -197,7 +200,7 @@ function ExpressionSection() {
           color: "var(--pitch-color)",
           display: $card.expressionReady ? "none" : "block",
         }}
-        innerHTML={expressionInnerHtml()}
+        innerHTML={$expressionInnerHtml()}
         {...$dataPitchType()}
       >
         {isServer

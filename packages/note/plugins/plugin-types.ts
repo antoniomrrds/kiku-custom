@@ -22,6 +22,7 @@ import type {
 import type h from "solid-js/h";
 import type { JSX } from "solid-js/jsx-runtime";
 import type { createStore } from "solid-js/store";
+import type { Store } from "solid-js/store";
 import type { Portal } from "solid-js/web";
 import type { UseKanjiContext } from "#/components/_kiku_lazy/KanjiContext";
 import type { UseAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
@@ -103,6 +104,7 @@ export type Ctx = {
    * These are strings as defined in your Anki note type.
    */
   ankiFields: AnkiFrontFields | AnkiBackFields;
+  $ankiFields: Store<AnkiFrontFields | AnkiBackFields>;
 
   // --- Kiku Hooks ---
   /** Provides reactive access to all Anki fields. */

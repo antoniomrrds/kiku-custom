@@ -74,23 +74,23 @@ export function useNavigationTransition() {
 
 export function usePitch() {
   const { $card, $setCard } = useCardContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
 
   const $pitchNumbers = createMemo(() =>
-    extractPitchNumbers(ankiFields.PitchPosition),
+    extractPitchNumbers($ankiFields.PitchPosition),
   );
 
   const $reading = createMemo(() => {
-    if ($card.nested) return ankiFields.ExpressionReading;
-    return ankiFields.ExpressionFurigana
-      ? ankiFields["kana:ExpressionFurigana"]
-      : ankiFields.ExpressionReading;
+    if ($card.nested) return $ankiFields.ExpressionReading;
+    return $ankiFields.ExpressionFurigana
+      ? $ankiFields["kana:ExpressionFurigana"]
+      : $ankiFields.ExpressionReading;
   });
 
   const $pitchInfos = createMemo(() => {
     const numbers = $pitchNumbers();
     if (!numbers.length) return [];
-    const pitchCategories = ankiFields.PitchCategories.split(",").map((s) => {
+    const pitchCategories = $ankiFields.PitchCategories.split(",").map((s) => {
       let pitchCategory: string | null = s.trim().toLowerCase();
       if (pitchCategory === "平板") pitchCategory = "heiban";
       if (pitchCategory === "頭高") pitchCategory = "atamadaka";
@@ -147,7 +147,7 @@ export function useThemeTransition() {
 export function useKanji() {
   const { $config } = useConfigContext();
   const { $card, $setCard } = useCardContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $general, $setGeneral } = useGeneralContext();
   const cacheStore = useCacheContext();
 
@@ -155,6 +155,7 @@ export function useKanji() {
   async function setKanji() {
     set = true;
     try {
+      const ankiFields = unwrap($ankiFields);
       const kanjiList = extractKanji(
         ankiFields.ExpressionFurigana
           ? $card.nested

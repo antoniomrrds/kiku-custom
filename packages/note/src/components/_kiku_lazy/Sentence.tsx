@@ -1,4 +1,4 @@
-import { createEffect, ErrorBoundary, Show } from "solid-js";
+import { createEffect, createMemo, ErrorBoundary, Show } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCtxContext } from "../shared/CtxContext";
@@ -9,7 +9,7 @@ export default function Sentence() {
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $general } = useGeneralContext();
-  const { ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const ctx = useCtxContext();
 
   createEffect(() => {
@@ -21,19 +21,19 @@ export default function Sentence() {
     }
   });
 
-  const animateFadeIn = () => {
+  const $animateFadeIn = createMemo(() => {
     if ($card.side === "back") {
       if (
-        ankiFields.IsAudioCard ||
-        ankiFields.IsSentenceCard ||
-        ankiFields.IsClickCard ||
-        ankiFields.IsWordAndSentenceCard
+        $ankiFields.IsAudioCard ||
+        $ankiFields.IsSentenceCard ||
+        $ankiFields.IsClickCard ||
+        $ankiFields.IsWordAndSentenceCard
       ) {
         return false;
       }
     }
     return true;
-  };
+  });
 
   const expressionPitchDataset = () => ({
     "data-pitch-type": $card.pitch.type,
@@ -44,7 +44,7 @@ export default function Sentence() {
       <div
         class={`sentence font-secondary sentence-field`}
         classList={{
-          "animate-fade-in": animateFadeIn(),
+          "animate-fade-in": $animateFadeIn(),
         }}
         ref={(ref) => $setCard("sentenceFieldRef", ref)}
         innerHTML={$group.sentenceField}
