@@ -59,19 +59,97 @@ export default function Expression() {
     parseFurigana($isRuby() ? "" : $ankiFields.ExpressionFurigana),
   );
 
+  function ExpressionRuby() {
+    return (
+      <For each={Array.from($doc().body.childNodes)}>
+        {(node) => (
+          <RenderNode
+            node={node}
+            onActive={handleActive}
+            onInactive={handleInactive}
+          />
+        )}
+      </For>
+    );
+  }
+
+  function ExpressionNoFurigana() {
+    return (
+      <ruby>
+        <For each={$ankiFields.Expression.split("")}>
+          {(char) => (
+            <CharSpan
+              char={char}
+              onActive={handleActive}
+              onInactive={handleInactive}
+            />
+          )}
+        </For>
+        <Show
+          when={
+            $ankiFields.ExpressionFurigana &&
+            extractKanji($ankiFields.Expression).length > 0
+          }
+        >
+          <rt>{$ankiFields.ExpressionReading}</rt>
+        </Show>
+      </ruby>
+    );
+  }
+
+  function ExpressionFurigana() {
+    return (
+      <For each={$furiganaData()}>
+        {(item) => (
+          <Switch
+            fallback={
+              <span>
+                <For each={item.text.trim().split("")}>
+                  {(char) => (
+                    <CharSpan
+                      char={char}
+                      onActive={handleActive}
+                      onInactive={handleInactive}
+                    />
+                  )}
+                </For>
+              </span>
+            }
+          >
+            <Match when={item.type === "ruby" && item}>
+              {(rubyItem) => (
+                <ruby>
+                  <For each={rubyItem().text.trim().split("")}>
+                    {(char) => (
+                      <CharSpan
+                        char={char}
+                        onActive={handleActive}
+                        onInactive={handleInactive}
+                      />
+                    )}
+                  </For>
+                  <Show
+                    when={
+                      rubyItem().reading.trim() !== "" ||
+                      rubyItem().reading === " "
+                    }
+                  >
+                    <rt>{rubyItem().reading}</rt>
+                  </Show>
+                </ruby>
+              )}
+            </Match>
+          </Switch>
+        )}
+      </For>
+    );
+  }
+
   return (
     <>
       <Switch>
         <Match when={$isRuby()}>
-          <For each={Array.from($doc().body.childNodes)}>
-            {(node) => (
-              <RenderNode
-                node={node}
-                onActive={handleActive}
-                onInactive={handleInactive}
-              />
-            )}
-          </For>
+          <ExpressionRuby />
         </Match>
         <Match
           when={
@@ -79,70 +157,10 @@ export default function Expression() {
             !$ankiFields.ExpressionFurigana.includes("[")
           }
         >
-          <ruby>
-            <For each={$ankiFields.Expression.split("")}>
-              {(char) => (
-                <CharSpan
-                  char={char}
-                  onActive={handleActive}
-                  onInactive={handleInactive}
-                />
-              )}
-            </For>
-            <Show
-              when={
-                $ankiFields.ExpressionFurigana &&
-                extractKanji($ankiFields.Expression).length > 0
-              }
-            >
-              <rt>{$ankiFields.ExpressionReading}</rt>
-            </Show>
-          </ruby>
+          <ExpressionNoFurigana />
         </Match>
         <Match when={true}>
-          <For each={$furiganaData()}>
-            {(item) => (
-              <Switch
-                fallback={
-                  <span>
-                    <For each={item.text.trim().split("")}>
-                      {(char) => (
-                        <CharSpan
-                          char={char}
-                          onActive={handleActive}
-                          onInactive={handleInactive}
-                        />
-                      )}
-                    </For>
-                  </span>
-                }
-              >
-                <Match when={item.type === "ruby" && item}>
-                  {(rubyItem) => (
-                    <ruby>
-                      <For each={rubyItem().text.trim().split("")}>
-                        {(char) => (
-                          <CharSpan
-                            char={char}
-                            onActive={handleActive}
-                            onInactive={handleInactive}
-                          />
-                        )}
-                      </For>
-                      <Show
-                        when={
-                          rubyItem().reading.trim() !== "" ||
-                          rubyItem().reading === " "
-                        }
-                      >
-                        <rt>{rubyItem().reading}</rt>
-                      </Show>
-                    </ruby>
-                  )}
-                </Match>
-              </Switch>
-            )}
-          </For>
+          <ExpressionFurigana />
         </Match>
       </Switch>
       <KanjiTooltip
@@ -305,59 +323,55 @@ function KanjiTooltip(props: {
   });
 
   return (
-    <Show when={props.kanji}>
-      <Portal mount={$general.layoutRef}>
+    <Portal mount={$general.layoutRef}>
+      <div
+        ref={$setTooltipRef}
+        class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable shadow-lg"
+        tabindex={0}
+        data-kanji-tooltip
+        on:mouseenter={props.onActive}
+        on:mouseleave={props.onInactive}
+        on:focus={props.onActive}
+        on:blur={props.onInactive}
+        on:touchstart={props.onActive}
+        on:touchend={(e) => e.stopPropagation()}
+        style={{
+          display: props.show ? "block" : "none",
+          left: `${$position.x}px`,
+          top: `${$position.y}px`,
+        }}
+      >
         <div
-          ref={$setTooltipRef}
-          class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable shadow-lg"
-          tabindex={0}
-          data-kanji-tooltip
-          on:mouseenter={props.onActive}
-          on:mouseleave={props.onInactive}
-          on:focus={props.onActive}
-          on:blur={props.onInactive}
-          on:touchstart={props.onActive}
-          on:touchend={(e) => e.stopPropagation()}
+          ref={$setArrowRef}
+          class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
           style={{
-            display: props.show ? "block" : "none",
-            left: `${$position.x}px`,
-            top: `${$position.y}px`,
+            left: `${$position.arrowX}px`,
+            top: `${$position.arrowY}px`,
+            right: "",
+            bottom: "",
+            ...($position.staticSide ? { [$position.staticSide]: "-4px" } : {}),
           }}
+        ></div>
+        <button
+          data-anki-mobile-only="block"
+          class="absolute z-20 top-2 right-2"
+          on:click={props.onInactive}
+          on:touchend={(e) => e.stopPropagation()}
         >
-          <div
-            ref={$setArrowRef}
-            class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
-            style={{
-              left: `${$position.arrowX}px`,
-              top: `${$position.arrowY}px`,
-              right: "",
-              bottom: "",
-              ...($position.staticSide
-                ? { [$position.staticSide]: "-4px" }
-                : {}),
-            }}
-          ></div>
-          <button
-            data-anki-mobile-only="block"
-            class="absolute z-20 top-2 right-2"
-            on:click={props.onInactive}
-            on:touchend={(e) => e.stopPropagation()}
-          >
-            <XIcon class="size-5 cursor-pointer text-base-content-soft" />
-          </button>
-          <div
-            class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
-            style={{ color: "initial" }}
-          >
-            <KanjiContextProvider kanji={props.kanji}>
-              <KanjiInfo />
-              <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
-                <KanjiInfoExtra />
-              </div>
-            </KanjiContextProvider>
-          </div>
+          <XIcon class="size-5 cursor-pointer text-base-content-soft" />
+        </button>
+        <div
+          class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
+          style={{ color: "initial" }}
+        >
+          <KanjiContextProvider kanji={props.kanji}>
+            <KanjiInfo />
+            <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
+              <KanjiInfoExtra />
+            </div>
+          </KanjiContextProvider>
         </div>
-      </Portal>
-    </Show>
+      </div>
+    </Portal>
   );
 }
