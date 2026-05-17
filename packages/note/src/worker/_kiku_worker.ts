@@ -132,10 +132,16 @@ export class WorkerThreadApi {
       };
     };
 
+    let result: {
+      kanjiListResult: Record<string, AnkiNote[]>;
+      readingListResult: Record<string, AnkiNote[]>;
+      expressionListResult: Record<string, AnkiNote[]>;
+    };
+
     if (this.preferAnkiConnect) {
       try {
         log.info("Querying with AnkiConnect");
-        return await this.ankiConnect.queryFieldContains({
+        result = await this.ankiConnect.queryFieldContains({
           kanjiList,
           readingList,
           expressionList,
@@ -144,21 +150,35 @@ export class WorkerThreadApi {
         log.warn(
           "Failed to query with AnkiConnect, falling back to notes cache",
         );
-        return await queryWithNotesCache();
+        result = await queryWithNotesCache();
+      }
+    } else {
+      try {
+        log.info("Querying with notes cache");
+        result = await queryWithNotesCache();
+      } catch {
+        log.warn(
+          "Failed to query with notes cache, falling back to AnkiConnect",
+        );
+        result = await this.ankiConnect.queryFieldContains({
+          kanjiList,
+          readingList,
+          expressionList,
+        });
       }
     }
 
-    try {
-      log.info("Querying with notes cache");
-      return await queryWithNotesCache();
-    } catch {
-      log.warn("Failed to query with notes cache, falling back to AnkiConnect");
-      return await this.ankiConnect.queryFieldContains({
-        kanjiList,
-        readingList,
-        expressionList,
-      });
-    }
+    const sort = (res: Record<string, AnkiNote[]>) => {
+      for (const key in res) {
+        res[key].sort((a, b) => b.noteId - a.noteId);
+      }
+    };
+
+    sort(result.kanjiListResult);
+    sort(result.readingListResult);
+    sort(result.expressionListResult);
+
+    return result;
   }
   debounceTimer: ReturnType<typeof setTimeout> | null = null;
   debounceMs = 200;
