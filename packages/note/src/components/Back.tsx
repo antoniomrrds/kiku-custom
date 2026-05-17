@@ -4,6 +4,7 @@ import {
   lazy,
   Match,
   onMount,
+  Show,
   Suspense,
   Switch,
 } from "solid-js";
@@ -188,42 +189,29 @@ function ExpressionSection() {
     });
   });
 
-  //TODO: remove early return
-  if ($card.nested) {
-    return (
-      <div
-        class="expression font-secondary text-center vertical-rl transition-colors"
-        {...$dataPitchType()}
-        style={{
-          color: "var(--pitch-color)",
-        }}
-      >
-        {$card.ready && <Lazy.Expression />}
-      </div>
-    );
-  }
-
   return (
     <>
+      <Show when={!$card.nested}>
+        <div
+          class="expression font-secondary text-center vertical-rl transition-colors"
+          style={{
+            color: "var(--pitch-color)",
+            display: $card.expressionReady ? "none" : "block",
+          }}
+          innerHTML={$expressionInnerHtml()}
+          {...$dataPitchType()}
+        >
+          {isServer
+            ? "{{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}{{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}"
+            : undefined}
+        </div>
+      </Show>
       <div
         class="expression font-secondary text-center vertical-rl transition-colors"
-        style={{
-          color: "var(--pitch-color)",
-          display: $card.expressionReady ? "none" : "block",
-        }}
-        innerHTML={$expressionInnerHtml()}
-        {...$dataPitchType()}
-      >
-        {isServer
-          ? "{{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}{{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}"
-          : undefined}
-      </div>
-      <div
-        class="expression font-secondary text-center vertical-rl transition-colors"
         {...$dataPitchType()}
         style={{
           color: "var(--pitch-color)",
-          display: $card.expressionReady ? "block" : "none",
+          display: $card.expressionReady || $card.nested ? "block" : "none",
         }}
       >
         {$card.ready && <Lazy.Expression />}
