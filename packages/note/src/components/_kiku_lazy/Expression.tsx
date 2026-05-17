@@ -235,7 +235,7 @@ function KanjiTooltip(props: {
     <Portal mount={$general.layoutRef}>
       <div
         ref={$setTooltipRef}
-        class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable"
+        class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable shadow-lg"
         tabindex={0}
         data-kanji-tooltip
         on:mouseenter={props.onActive}
