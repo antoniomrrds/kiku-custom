@@ -62,13 +62,14 @@ export function CardStoreContextProvider(props: {
   nested?: boolean;
   isMergePreview?: boolean;
   side: "front" | "back";
+  initialNsfw: boolean;
 }) {
   const [$card, $setCard] = createStore<CardStore>({
     side: props.side,
     page: "main",
     ready: false,
     expressionReady: false,
-    isNsfw: false,
+    isNsfw: props.initialNsfw,
     uniqueId: createUniqueId(),
     expressionAudioRef: undefined,
     sentenceFieldRef: undefined,

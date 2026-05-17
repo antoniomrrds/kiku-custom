@@ -32,7 +32,6 @@ export function Front() {
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
   const loadPlugin = useLoadPlugin();
-  const $tags = createMemo(() => $ankiFields.Tags.split(" "));
   const $hidden = createMemo(() => {
     if (isServer) return true;
     if (
@@ -53,13 +52,6 @@ export function Front() {
       $setCard("ready", true);
       loadPlugin();
     }, 0);
-
-    $setCard(
-      "isNsfw",
-      $tags()
-        .map((tag) => tag.toLowerCase())
-        .includes("nsfw"),
-    );
 
     if ($config.modHidden) {
       setTimeout(() => {

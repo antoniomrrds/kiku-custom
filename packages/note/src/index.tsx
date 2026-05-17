@@ -25,7 +25,7 @@ import {
 } from "./util/config.ts";
 import { defaultConfig } from "./util/default-config";
 import { exampleFields } from "./util/examples.ts";
-import { constants } from "./util/general.ts";
+import { constants, isNsfw } from "./util/general.ts";
 import { Logger } from "./util/logger.ts";
 import {
   type AnkiDroidAPI,
@@ -92,7 +92,10 @@ export async function init({
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
-              <CardStoreContextProvider side={side}>
+              <CardStoreContextProvider
+                side={side}
+                initialNsfw={isNsfw(ankiFields.Tags)}
+              >
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
                     <CtxContextProvider>

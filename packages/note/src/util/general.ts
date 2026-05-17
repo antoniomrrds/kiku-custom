@@ -118,3 +118,10 @@ export function nodesToString(nodes: Node[]) {
 export function unique<T>(arr: readonly T[]): T[] {
   return Array.from(new Set(arr));
 }
+
+export function isNsfw(tags: string) {
+  return tags
+    .split(" ")
+    .map((tag) => tag.toLowerCase())
+    .includes("nsfw");
+}

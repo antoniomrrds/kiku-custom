@@ -1,14 +1,15 @@
-import { ErrorBoundary, Show } from "solid-js";
+import { createMemo, ErrorBoundary, Show } from "solid-js";
 import { useCtxContext } from "../shared/CtxContext";
 import { useFieldGroupContext } from "../shared/FieldGroupContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { InfoIcon } from "./Icons";
 
-export default function BackFooter(props: { tags: string[] }) {
+export default function BackFooter() {
+  const { $ankiFields } = useFieldGroupContext();
   const { $general } = useGeneralContext();
   const { $group } = useFieldGroupContext();
   const ctx = useCtxContext();
-  const tags = () => props.tags.filter(Boolean);
+  const $tags = createMemo(() => $ankiFields.Tags.split(" ").filter(Boolean));
 
   function DefaultFooter() {
     return (
@@ -26,9 +27,9 @@ export default function BackFooter(props: { tags: string[] }) {
             ></div>
           </div>
         )}
-        <Show when={tags().length}>
+        <Show when={$tags().length}>
           <div class="flex gap-2 items-center justify-center animate-fade-in flex-wrap">
-            {tags().map((tag) => {
+            {$tags().map((tag) => {
               return <div class="badge badge-secondary">{tag}</div>;
             })}
           </div>

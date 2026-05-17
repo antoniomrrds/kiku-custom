@@ -13,6 +13,7 @@ import {
   useCardContext,
 } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/util/config";
+import { isNsfw } from "#/util/general";
 import {
   useKanji,
   useLoadPlugin,
@@ -52,7 +53,6 @@ export function Back(props: { onExitNested?: () => void }) {
   const { $ankiFields } = useAnkiFieldContext<"back">();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
-  const $tags = createMemo(() => $ankiFields.Tags.split(" "));
   useKanji();
   usePitch();
 
@@ -62,13 +62,6 @@ export function Back(props: { onExitNested?: () => void }) {
       cacheStore.relax = true;
       loadPlugin();
     }, 0);
-
-    $setCard(
-      "isNsfw",
-      $tags()
-        .map((tag) => tag.toLowerCase())
-        .includes("nsfw"),
-    );
   });
 
   const pitchFieldDataset: () => DatasetProp = () => ({
@@ -98,6 +91,7 @@ export function Back(props: { onExitNested?: () => void }) {
               nested
               side="back"
               isMergePreview={$card.nestedIsMergePreview}
+              initialNsfw={isNsfw($card.nestedAnkiFields.Tags)}
             >
               <FieldGroupContextProvider>
                 <CtxContextProvider>
@@ -157,7 +151,7 @@ export function Back(props: { onExitNested?: () => void }) {
           )}
           {$card.ready && (
             <>
-              <Lazy.BackFooter tags={$tags()} />
+              <Lazy.BackFooter />
               <Lazy.AudioButtons position={2} />
             </>
           )}
