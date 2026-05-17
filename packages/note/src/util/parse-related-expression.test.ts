@@ -32,13 +32,9 @@ describe("parseRelatedExpression", () => {
   });
 
   it("should handle mixed delimiters and varying whitespace", () => {
-    expect(parseRelatedExpression("  word1 ,  word2； word3、word4 ; word5  ")).toEqual([
-      "word1",
-      "word2",
-      "word3",
-      "word4",
-      "word5",
-    ]);
+    expect(
+      parseRelatedExpression("  word1 ,  word2； word3、word4 ; word5  "),
+    ).toEqual(["word1", "word2", "word3", "word4", "word5"]);
   });
 
   it("should filter out empty results from consecutive delimiters", () => {
@@ -50,10 +46,8 @@ describe("parseRelatedExpression", () => {
   });
 
   it("should handle &nbsp; and other HTML entities from Anki", () => {
-    expect(parseRelatedExpression("捕まる、囚われる;&nbsp; &nbsp;捉える")).toEqual([
-      "捕まる",
-      "囚われる",
-      "捉える",
-    ]);
+    expect(
+      parseRelatedExpression("捕まる、囚われる;&nbsp; &nbsp;捉える"),
+    ).toEqual(["捕まる", "囚われる", "捉える"]);
   });
 });

@@ -83,6 +83,9 @@ export function usePitch() {
 
   const $reading = createMemo(() => {
     if (!$isRootAnkiFields()) return $ankiFields.ExpressionReading;
+    const doc = parseHtml($ankiFields.ExpressionFurigana);
+    const isRuby = !!doc.querySelector("ruby");
+    if (isRuby) return $ankiFields.ExpressionReading;
     return $ankiFields.ExpressionFurigana
       ? $ankiFields["kana:ExpressionFurigana"]
       : $ankiFields.ExpressionReading;
