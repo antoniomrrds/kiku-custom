@@ -18,13 +18,16 @@ import { useBreakpointContext } from "../shared/BreakpointContext";
 import { useCardContext } from "../shared/CardContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { XIcon } from "./Icons";
-import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
+import { KanjiContextProvider } from "./KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
 
 export default function Expression() {
   const { $setCard } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
-  const [$activeKey, $setActiveKey] = createSignal<string | null>(null);
+  const [$activeAnchor, $setActiveAnchor] = createSignal<HTMLElement | null>(
+    null,
+  );
+  const [$activeKanji, $setActiveKanji] = createSignal<string | null>(null);
   let timeout: ReturnType<typeof setTimeout>;
 
   onMount(() => {
@@ -33,14 +36,20 @@ export default function Expression() {
     }, 100);
   });
 
-  const handleActive = (key: string) => {
+  const handleActive = (anchor: HTMLElement, kanji: string) => {
     clearTimeout(timeout);
-    $setActiveKey(key);
+    $setActiveAnchor(anchor);
+    $setActiveKanji(kanji);
+  };
+
+  const handleTooltipActive = () => {
+    clearTimeout(timeout);
   };
 
   const handleInactive = () => {
     timeout = setTimeout(() => {
-      $setActiveKey(null);
+      $setActiveAnchor(null);
+      $setActiveKanji(null);
     }, 50);
   };
 
@@ -51,112 +60,105 @@ export default function Expression() {
   );
 
   return (
-    <Switch>
-      <Match when={$isRuby()}>
-        <For each={Array.from($doc().body.childNodes)}>
-          {(node, i) => (
-            <RenderNode
-              node={node}
-              i={i()}
-              activeKey={$activeKey()}
-              onActive={handleActive}
-              onInactive={handleInactive}
-            />
-          )}
-        </For>
-      </Match>
-      <Match
-        when={
-          $furiganaData().length === 0 ||
-          !$ankiFields.ExpressionFurigana.includes("[")
-        }
-      >
-        <ruby>
-          <For each={$ankiFields.Expression.split("")}>
-            {(char, i) => {
-              const key = () => `${char}-${i()}-0`;
-              return (
+    <>
+      <Switch>
+        <Match when={$isRuby()}>
+          <For each={Array.from($doc().body.childNodes)}>
+            {(node) => (
+              <RenderNode
+                node={node}
+                onActive={handleActive}
+                onInactive={handleInactive}
+              />
+            )}
+          </For>
+        </Match>
+        <Match
+          when={
+            $furiganaData().length === 0 ||
+            !$ankiFields.ExpressionFurigana.includes("[")
+          }
+        >
+          <ruby>
+            <For each={$ankiFields.Expression.split("")}>
+              {(char) => (
                 <CharSpan
                   char={char}
-                  show={$activeKey() === key()}
-                  onActive={() => handleActive(key())}
+                  onActive={handleActive}
                   onInactive={handleInactive}
                 />
-              );
-            }}
-          </For>
-          <Show
-            when={
-              $ankiFields.ExpressionFurigana &&
-              extractKanji($ankiFields.Expression).length > 0
-            }
-          >
-            <rt>{$ankiFields.ExpressionReading}</rt>
-          </Show>
-        </ruby>
-      </Match>
-      <Match when={true}>
-        <For each={$furiganaData()}>
-          {(item, i) => (
-            <Switch
-              fallback={
-                <span>
-                  <For each={item.text.trim().split("")}>
-                    {(char, j) => {
-                      const key = () => `${char}-${i()}-${j()}`;
-                      return (
-                        <CharSpan
-                          char={char}
-                          show={$activeKey() === key()}
-                          onActive={() => handleActive(key())}
-                          onInactive={handleInactive}
-                        />
-                      );
-                    }}
-                  </For>
-                </span>
+              )}
+            </For>
+            <Show
+              when={
+                $ankiFields.ExpressionFurigana &&
+                extractKanji($ankiFields.Expression).length > 0
               }
             >
-              <Match when={item.type === "ruby" && item}>
-                {(rubyItem) => (
-                  <ruby>
-                    <For each={rubyItem().text.trim().split("")}>
-                      {(char, j) => {
-                        const key = () => `${char}-${i()}-${j()}`;
-                        return (
+              <rt>{$ankiFields.ExpressionReading}</rt>
+            </Show>
+          </ruby>
+        </Match>
+        <Match when={true}>
+          <For each={$furiganaData()}>
+            {(item) => (
+              <Switch
+                fallback={
+                  <span>
+                    <For each={item.text.trim().split("")}>
+                      {(char) => (
+                        <CharSpan
+                          char={char}
+                          onActive={handleActive}
+                          onInactive={handleInactive}
+                        />
+                      )}
+                    </For>
+                  </span>
+                }
+              >
+                <Match when={item.type === "ruby" && item}>
+                  {(rubyItem) => (
+                    <ruby>
+                      <For each={rubyItem().text.trim().split("")}>
+                        {(char) => (
                           <CharSpan
                             char={char}
-                            show={$activeKey() === key()}
-                            onActive={() => handleActive(key())}
+                            onActive={handleActive}
                             onInactive={handleInactive}
                           />
-                        );
-                      }}
-                    </For>
-                    <Show
-                      when={
-                        rubyItem().reading.trim() !== "" ||
-                        rubyItem().reading === " "
-                      }
-                    >
-                      <rt>{rubyItem().reading}</rt>
-                    </Show>
-                  </ruby>
-                )}
-              </Match>
-            </Switch>
-          )}
-        </For>
-      </Match>
-    </Switch>
+                        )}
+                      </For>
+                      <Show
+                        when={
+                          rubyItem().reading.trim() !== "" ||
+                          rubyItem().reading === " "
+                        }
+                      >
+                        <rt>{rubyItem().reading}</rt>
+                      </Show>
+                    </ruby>
+                  )}
+                </Match>
+              </Switch>
+            )}
+          </For>
+        </Match>
+      </Switch>
+      <KanjiTooltip
+        kanji={$activeKanji() ?? ""}
+        show={!!$activeAnchor()}
+        anchor={$activeAnchor() ?? undefined}
+        onActive={handleTooltipActive}
+        onInactive={handleInactive}
+      />
+    </>
   );
 }
 
 function RenderNode(props: {
   node: Node;
-  i: string | number;
-  activeKey: string | null;
-  onActive: (key: string) => void;
+  onActive: (anchor: HTMLElement, kanji: string) => void;
   onInactive: () => void;
 }) {
   const $el = createMemo(() => props.node as HTMLElement);
@@ -166,17 +168,13 @@ function RenderNode(props: {
     <Switch>
       <Match when={$el().nodeType === Node.TEXT_NODE}>
         <For each={$el().textContent?.split("")}>
-          {(char, j) => {
-            const key = () => `${char}-${props.i}-${j()}`;
-            return (
-              <CharSpan
-                char={char}
-                show={props.activeKey === key()}
-                onActive={() => props.onActive(key())}
-                onInactive={props.onInactive}
-              />
-            );
-          }}
+          {(char) => (
+            <CharSpan
+              char={char}
+              onActive={props.onActive}
+              onInactive={props.onInactive}
+            />
+          )}
         </For>
       </Match>
       <Match when={$el().nodeType === Node.ELEMENT_NODE}>
@@ -190,11 +188,9 @@ function RenderNode(props: {
           <Match when={$tagName() === "ruby"}>
             <ruby>
               <For each={Array.from($el().childNodes)}>
-                {(child, k) => (
+                {(child) => (
                   <RenderNode
                     node={child}
-                    i={`${props.i}.${k()}`}
-                    activeKey={props.activeKey}
                     onActive={props.onActive}
                     onInactive={props.onInactive}
                   />
@@ -204,11 +200,9 @@ function RenderNode(props: {
           </Match>
           <Match when={$tagName() === "rb"}>
             <For each={Array.from($el().childNodes)}>
-              {(child, k) => (
+              {(child) => (
                 <RenderNode
                   node={child}
-                  i={`${props.i}.${k()}`}
-                  activeKey={props.activeKey}
                   onActive={props.onActive}
                   onInactive={props.onInactive}
                 />
@@ -223,47 +217,45 @@ function RenderNode(props: {
 
 function CharSpan(props: {
   char: string;
-  show: boolean;
-  onActive: () => void;
+  onActive: (anchor: HTMLElement, kanji: string) => void;
   onInactive: () => void;
 }) {
   const [$anchorRef, $setAnchorRef] = createSignal<HTMLSpanElement>();
+  const $kanji = createMemo(() => extractKanji(props.char)[0]);
+
+  const handleActive = () => {
+    const kanji = $kanji();
+    const anchorRef = $anchorRef();
+    if (anchorRef && kanji) {
+      props.onActive(anchorRef, kanji);
+    }
+  };
 
   return (
     <span
       ref={$setAnchorRef}
       tabindex={0}
       class="tappable"
-      on:mouseenter={props.onActive}
+      on:mouseenter={handleActive}
       on:mouseleave={props.onInactive}
-      on:focus={props.onActive}
+      on:focus={handleActive}
       on:blur={props.onInactive}
-      on:touchstart={props.onActive}
+      on:touchstart={handleActive}
       on:touchend={(e) => e.stopPropagation()}
     >
-      <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
-        <KanjiTooltip
-          show={props.show}
-          anchor={$anchorRef()}
-          onActive={props.onActive}
-          onInactive={props.onInactive}
-        />
-      </KanjiContextProvider>
       {props.char}
     </span>
   );
 }
 
 function KanjiTooltip(props: {
+  kanji: string;
   show: boolean;
   anchor: HTMLElement | undefined;
   onActive: () => void;
   onInactive: () => void;
 }) {
   const { $general } = useGeneralContext();
-  const { $kanji } = useKanjiContext();
-  if (!$kanji.kanji) return null;
-
   const [$tooltipRef, $setTooltipRef] = createSignal<HTMLDivElement>();
   const [$arrowRef, $setArrowRef] = createSignal<HTMLDivElement>();
 
@@ -313,53 +305,59 @@ function KanjiTooltip(props: {
   });
 
   return (
-    <Portal mount={$general.layoutRef}>
-      <div
-        ref={$setTooltipRef}
-        class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable shadow-lg"
-        tabindex={0}
-        data-kanji-tooltip
-        on:mouseenter={props.onActive}
-        on:mouseleave={props.onInactive}
-        on:focus={props.onActive}
-        on:blur={props.onInactive}
-        on:touchstart={props.onActive}
-        on:touchend={(e) => e.stopPropagation()}
-        style={{
-          display: props.show ? "block" : "none",
-          left: `${$position.x}px`,
-          top: `${$position.y}px`,
-        }}
-      >
+    <Show when={props.kanji}>
+      <Portal mount={$general.layoutRef}>
         <div
-          ref={$setArrowRef}
-          class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
-          style={{
-            left: `${$position.arrowX}px`,
-            top: `${$position.arrowY}px`,
-            right: "",
-            bottom: "",
-            ...($position.staticSide ? { [$position.staticSide]: "-4px" } : {}),
-          }}
-        ></div>
-        <button
-          data-anki-mobile-only="block"
-          class="absolute z-20 top-2 right-2"
-          on:click={props.onInactive}
+          ref={$setTooltipRef}
+          class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable shadow-lg"
+          tabindex={0}
+          data-kanji-tooltip
+          on:mouseenter={props.onActive}
+          on:mouseleave={props.onInactive}
+          on:focus={props.onActive}
+          on:blur={props.onInactive}
+          on:touchstart={props.onActive}
           on:touchend={(e) => e.stopPropagation()}
+          style={{
+            display: props.show ? "block" : "none",
+            left: `${$position.x}px`,
+            top: `${$position.y}px`,
+          }}
         >
-          <XIcon class="size-5 cursor-pointer text-base-content-soft" />
-        </button>
-        <div
-          class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
-          style={{ color: "initial" }}
-        >
-          <KanjiInfo />
-          <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
-            <KanjiInfoExtra />
+          <div
+            ref={$setArrowRef}
+            class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
+            style={{
+              left: `${$position.arrowX}px`,
+              top: `${$position.arrowY}px`,
+              right: "",
+              bottom: "",
+              ...($position.staticSide
+                ? { [$position.staticSide]: "-4px" }
+                : {}),
+            }}
+          ></div>
+          <button
+            data-anki-mobile-only="block"
+            class="absolute z-20 top-2 right-2"
+            on:click={props.onInactive}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            <XIcon class="size-5 cursor-pointer text-base-content-soft" />
+          </button>
+          <div
+            class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
+            style={{ color: "initial" }}
+          >
+            <KanjiContextProvider kanji={props.kanji}>
+              <KanjiInfo />
+              <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
+                <KanjiInfoExtra />
+              </div>
+            </KanjiContextProvider>
           </div>
         </div>
-      </div>
-    </Portal>
+      </Portal>
+    </Show>
   );
 }
