@@ -1,7 +1,7 @@
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import type { DatasetProp } from "#/util/config";
-import { parseHtml } from "#/util/general";
+import { isNsfw, parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useCardContext } from "./shared/CardContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
@@ -19,25 +19,27 @@ export function PictureSection() {
     return Array.from(doc.querySelectorAll("img")).map((img) => img.outerHTML);
   });
 
-  createEffect(() => {
-    $group.pictureField;
-    $setSubIndex(0);
-  });
+  const $currentPicture = createMemo(() => $pictures()[$subIndex()] || "");
 
-  const currentPicture = () => $pictures()[$subIndex()] || "";
+  const $isNsfw = createMemo(() => isNsfw($ankiFields.Tags));
 
-  const pictureFieldDataset: () => DatasetProp = () => ({
+  const $pictureFieldDataset = createMemo<DatasetProp>(() => ({
     "data-transition": $card.ready ? "true" : undefined,
     "data-tags": "{{Tags}}",
-    "data-nsfw": $card.isNsfw ? "true" : "false",
-  });
+    "data-nsfw": $isNsfw() ? "true" : "false",
+  }));
 
-  const dataSet1: () => DatasetProp = () => ({
+  const $dataSet1 = createMemo<DatasetProp>(() => ({
     "data-has-picture": isServer
       ? "{{#Picture}}true{{/Picture}}"
       : $ankiFields.Picture
         ? "true"
         : "",
+  }));
+
+  createEffect(() => {
+    $group.pictureField;
+    $setSubIndex(0);
   });
 
   const next = (e: MouseEvent) => {
@@ -59,14 +61,14 @@ export function PictureSection() {
         $setClicked((prev) => !prev);
       }}
       on:touchend={(e) => e.stopPropagation()}
-      {...dataSet1()}
+      {...$dataSet1()}
     >
       <div
         class="picture-field-background"
         style={{
           opacity: $clicked() ? 1 : undefined,
         }}
-        innerHTML={isServer ? undefined : currentPicture()}
+        innerHTML={isServer ? undefined : $currentPicture()}
       >
         {isServer ? "{{Picture}}" : undefined}
       </div>
@@ -76,11 +78,11 @@ export function PictureSection() {
           opacity: $clicked() ? 1 : undefined,
         }}
         on:click={() => {
-          $setCard("pictureModal", currentPicture());
+          $setCard("pictureModal", $currentPicture());
         }}
         on:touchend={(e) => e.stopPropagation()}
-        {...pictureFieldDataset()}
-        innerHTML={isServer ? undefined : currentPicture()}
+        {...$pictureFieldDataset()}
+        innerHTML={isServer ? undefined : $currentPicture()}
       >
         {isServer ? "{{Picture}}" : undefined}
       </div>
