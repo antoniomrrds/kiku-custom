@@ -109,18 +109,22 @@ export function KanjiContextProvider(props: {
     });
 
     if (kanji) {
-      $general.nex.promise.then(async (nex) => {
-        if (nex) {
-          let kanjiInfo = lookupKanji.get(kanji);
-          if (!kanjiInfo) {
+      let kanjiInfo = lookupKanji.get(kanji);
+      if (!kanjiInfo) {
+        $general.nex.promise.then(async (nex) => {
+          if (nex) {
             kanjiInfo = await nex.lookupKanji(kanji);
             lookupKanji.set(kanji, kanjiInfo);
+            if ($kanji.kanji === kanji) {
+              $setKanji("kanjiInfo", kanjiInfo);
+            }
           }
-          if ($kanji.kanji === kanji) {
-            $setKanji("kanjiInfo", kanjiInfo);
-          }
+        });
+      } else {
+        if ($kanji.kanji === kanji) {
+          $setKanji("kanjiInfo", kanjiInfo);
         }
-      });
+      }
     }
   });
 
