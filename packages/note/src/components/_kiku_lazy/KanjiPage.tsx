@@ -279,8 +279,8 @@ function NoteList(props: { title: string; list: AnkiNote[] }) {
   return (
     <div class="flex flex-col gap-2 sm:gap-4">
       <div class="flex-col flex justify-between items-center gap-2">
-        <div class="text-base-content-calm text-xl">{props.title}</div>
-        <div class="font-secondary expression">{$ExpressionFurigana()}</div>
+        <div class="font-secondary text-7xl">{$ExpressionFurigana()}</div>
+        <div class="text-base-content-calm text-lg">{props.title}</div>
       </div>
       <ul class="list bg-base-100 rounded-box shadow-md animate-fade-in">
         <For each={props.list ?? []}>
