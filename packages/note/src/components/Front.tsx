@@ -87,7 +87,7 @@ export function Front() {
       {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
       {$card.ready && <Lazy.HeaderMain />}
       <div class="flex flex-col gap-2">
-        <div class="flex gap-2 flex-wrap min-h-lh text-xl"></div>
+        <div class="flex gap-2 flex-wrap min-h-lh text-2xl"></div>
         <div class="flex flex-col gap-4">
           <div
             class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
