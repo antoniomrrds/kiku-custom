@@ -1,17 +1,11 @@
-import { createMemo, createUniqueId, Match, Show, Switch } from "solid-js";
+import { createUniqueId, Match, Show, Switch } from "solid-js";
 import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
 import { nextTheme } from "#/util/theme";
-import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCardContext } from "../shared/CardContext";
 import { useConfigContext } from "../shared/ConfigContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderLayout from "./HeaderLayout";
-import {
-  ArrowLeftIcon,
-  BoltIcon,
-  CircleChevronDownIcon,
-  PaintbrushIcon,
-} from "./Icons";
+import { ArrowLeftIcon, BoltIcon, PaintbrushIcon } from "./Icons";
 import MergeContextModal from "./MergeContextModal";
 import { capitalize } from "./util/general";
 
@@ -114,9 +108,6 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
               </div>
             </Match>
           </Switch>
-        </Show>
-        <Show when={$card.side === "back"}>
-          <Frequency />
         </Show>
       </div>
     </HeaderLayout>
@@ -250,33 +241,6 @@ function KanjiPageIndicator() {
       <Show when={$card.query.sameExpression?.length}>
         <SameExpressionIndicator />
       </Show>
-    </div>
-  );
-}
-
-function Frequency() {
-  const { $ankiFields } = useAnkiFieldContext<"back">();
-  const $freqSort = createMemo(() => $ankiFields.FreqSort);
-  const $frequency = createMemo(() => $ankiFields.Frequency);
-  return (
-    <div class="flex gap-1 sm:gap-2 items-center animate-fade-in-sm relative hover:[&_#frequency]:block">
-      <div
-        class="text-base-content-soft text-sm sm:text-base"
-        innerHTML={$freqSort()}
-        classList={{
-          hidden: $freqSort() === "9999999",
-        }}
-      ></div>
-      {$frequency() && (
-        <>
-          <CircleChevronDownIcon class="size-5 text-base-content-soft" />
-          <div
-            id="frequency"
-            class="absolute top-0 translate-y-6 right-2 w-fit [&_li]:text-nowrap [&_li]:whitespace-nowrap bg-base-200/95 text-sm sm:text-base p-2 sm:p-4 rounded-lg border border-base-300 shadow-lg hidden text-base-content-calm"
-            innerHTML={$frequency()}
-          ></div>
-        </>
-      )}
     </div>
   );
 }

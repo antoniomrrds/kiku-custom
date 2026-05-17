@@ -60,7 +60,7 @@ export default function PictureModal(props: {
     <Portal mount={$general.layoutRef}>
       <div
         part="picture-modal"
-        class="z-20 top-0 left-0 w-full h-full p-4 sm:p-8 bg-black/75 flex flex-col transition-opacity overflow-auto tappable"
+        class="z-40 top-0 left-0 w-full h-full p-4 sm:p-8 bg-black/75 flex flex-col transition-opacity overflow-auto tappable"
         classList={{
           fixed: !$general.isAnkiWeb,
           absolute: $general.isAnkiWeb,

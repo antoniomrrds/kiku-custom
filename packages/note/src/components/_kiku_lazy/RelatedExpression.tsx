@@ -9,7 +9,7 @@ export default function RelatedExpression() {
     useAnkiFieldContext<"back">();
 
   return (
-    <>
+    <div class="flex gap-2 flex-wrap">
       <Show when={$card.query.relatedExpression?.length}>
         <button
           class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
@@ -58,6 +58,6 @@ export default function RelatedExpression() {
           );
         }}
       </For>
-    </>
+    </div>
   );
 }

@@ -4,6 +4,7 @@ import BackBody from "./BackBody";
 import BackFooter from "./BackFooter";
 import Expression from "./Expression";
 import FieldGroupPagination from "./FieldGroupPagination";
+import Frequency from "./Frequency";
 import HeaderMain from "./HeaderMain";
 import KanjiPage from "./KanjiPage";
 import PictureModal from "./PictureModal";
@@ -28,4 +29,5 @@ export {
   Expression,
   AnkiMobileDebug,
   RelatedExpression,
+  Frequency,
 };

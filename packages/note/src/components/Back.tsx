@@ -43,6 +43,7 @@ const Lazy = {
   Expression: lazy(async () => ({ default: (await import("./_kiku_lazy")).Expression, })),
   AnkiMobileDebug: lazy(async () => ({ default: (await import("./_kiku_lazy")).AnkiMobileDebug, })),
   RelatedExpression: lazy(async () => ({ default: (await import("./_kiku_lazy")).RelatedExpression, })),
+  Frequency: lazy(async () => ({ default: (await import("./_kiku_lazy")).Frequency, })),
 };
 
 export function Back(props: { onExitNested?: () => void }) {
@@ -109,8 +110,9 @@ export function Back(props: { onExitNested?: () => void }) {
         <Match when={$card.page === "main"}>
           {$card.ready && <Lazy.HeaderMain onExitNested={props.onExitNested} />}
           <div class="flex flex-col gap-2">
-            <div class="flex gap-2 flex-wrap min-h-lh text-xl">
-              {$card.ready && <Lazy.RelatedExpression />}
+            <div class="flex justify-between gap-2 min-h-lh text-xl">
+              <Lazy.RelatedExpression />
+              <Lazy.Frequency />
             </div>
             <div class="flex flex-col gap-4 relative z-10">
               <div
