@@ -94,42 +94,44 @@ export function Front() {
     <>
       {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
       {$card.ready && <Lazy.HeaderMain />}
-      <div class="flex gap-4 flex-wrap min-h-lh text-2xl"></div>
-      <div class="flex flex-col gap-4">
-        <div
-          class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
-          on:click={() => {
-            $setClicked((prev) => !prev);
-            $setHideExpression(false);
-          }}
-          on:touchend={(e) => e.stopPropagation()}
-        >
-          <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
-            <div
-              class="expression font-secondary text-center vertical-rl"
-              classList={{
-                "border-b-2 border-dotted border-base-content-soft":
-                  !!$ankiFields.IsClickCard,
-                "transition-opacity duration-[1000ms] opacity-0":
-                  $hideExpression(),
-              }}
-              innerHTML={
-                isServer
-                  ? undefined
-                  : !$ankiFields.IsSentenceCard && !$ankiFields.IsAudioCard
-                    ? $ankiFields.Expression
-                    : "?"
-              }
-            >
-              {isServer
-                ? `{{#IsSentenceCard}} <span>?</span> {{/IsSentenceCard}} {{#IsAudioCard}} <span>?</span> {{/IsAudioCard}} {{^IsSentenceCard}} {{^IsAudioCard}} {{Expression}} {{/IsAudioCard}} {{/IsSentenceCard}}`
-                : undefined}
+      <div class="flex flex-col gap-2">
+        <div class="flex gap-2 flex-wrap min-h-lh text-xl"></div>
+        <div class="flex flex-col gap-4">
+          <div
+            class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
+            on:click={() => {
+              $setClicked((prev) => !prev);
+              $setHideExpression(false);
+            }}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
+              <div
+                class="expression font-secondary text-center vertical-rl"
+                classList={{
+                  "border-b-2 border-dotted border-base-content-soft":
+                    !!$ankiFields.IsClickCard,
+                  "transition-opacity duration-[1000ms] opacity-0":
+                    $hideExpression(),
+                }}
+                innerHTML={
+                  isServer
+                    ? undefined
+                    : !$ankiFields.IsSentenceCard && !$ankiFields.IsAudioCard
+                      ? $ankiFields.Expression
+                      : "?"
+                }
+              >
+                {isServer
+                  ? `{{#IsSentenceCard}} <span>?</span> {{/IsSentenceCard}} {{#IsAudioCard}} <span>?</span> {{/IsAudioCard}} {{^IsSentenceCard}} {{^IsAudioCard}} {{Expression}} {{/IsAudioCard}} {{/IsSentenceCard}}`
+                  : undefined}
+              </div>
             </div>
-          </div>
 
-          <PictureSection />
+            <PictureSection />
+          </div>
+          {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
         </div>
-        {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
       </div>
       <div
         class="flex flex-col gap-4 items-center text-center justify-center"

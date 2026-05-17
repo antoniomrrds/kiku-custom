@@ -108,39 +108,41 @@ export function Back(props: { onExitNested?: () => void }) {
         </Match>
         <Match when={$card.page === "main"}>
           {$card.ready && <Lazy.HeaderMain onExitNested={props.onExitNested} />}
-          <div class="flex gap-4 flex-wrap min-h-lh text-2xl">
-            {$card.ready && <Lazy.RelatedExpression />}
-          </div>
-          <div class="flex flex-col gap-4 relative z-10">
-            <div
-              class="flex rounded-lg gap-4 flex-col sm:flex-row"
-              classList={{ "animate-fade-in": !!cacheStore.relax }}
-            >
-              <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
-                <ExpressionSection />
-                <div
-                  class={`mt-6 flex gap-4 pitch pitch-field`}
-                  {...pitchFieldDataset()}
-                >
-                  {$ankiFields.PitchPosition && $card.ready ? (
-                    <Suspense fallback={<span>&nbsp;</span>}>
-                      <Lazy.Pitches />
-                    </Suspense>
-                  ) : isServer ? (
-                    "{{#PitchPosition}}<span>&nbsp;</span>{{/PitchPosition}}"
-                  ) : (
-                    $ankiFields.PitchPosition && <span>&nbsp;</span>
-                  )}
+          <div class="flex flex-col gap-2">
+            <div class="flex gap-2 flex-wrap min-h-lh text-xl">
+              {$card.ready && <Lazy.RelatedExpression />}
+            </div>
+            <div class="flex flex-col gap-4 relative z-10">
+              <div
+                class="flex rounded-lg gap-4 flex-col sm:flex-row"
+                classList={{ "animate-fade-in": !!cacheStore.relax }}
+              >
+                <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
+                  <ExpressionSection />
+                  <div
+                    class={`mt-6 flex gap-4 pitch pitch-field`}
+                    {...pitchFieldDataset()}
+                  >
+                    {$ankiFields.PitchPosition && $card.ready ? (
+                      <Suspense fallback={<span>&nbsp;</span>}>
+                        <Lazy.Pitches />
+                      </Suspense>
+                    ) : isServer ? (
+                      "{{#PitchPosition}}<span>&nbsp;</span>{{/PitchPosition}}"
+                    ) : (
+                      $ankiFields.PitchPosition && <span>&nbsp;</span>
+                    )}
+                  </div>
+                  <div class="hidden sm:block sm:h-8 sm:mt-2">
+                    {$card.ready && (
+                      <div class="animate-fade-in-sm flex gap-2">
+                        <Lazy.AudioButtons position={1} />
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div class="hidden sm:block sm:h-8 sm:mt-2">
-                  {$card.ready && (
-                    <div class="animate-fade-in-sm flex gap-2">
-                      <Lazy.AudioButtons position={1} />
-                    </div>
-                  )}
-                </div>
+                <PictureSection />
               </div>
-              <PictureSection />
             </div>
             {$card.ready && <FieldGroupPaginationSection />}
           </div>

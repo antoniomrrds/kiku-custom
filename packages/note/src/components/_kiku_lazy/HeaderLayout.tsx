@@ -8,7 +8,7 @@ export default function HeaderLayout(props: { children: JSX.Element }) {
   return (
     <Portal mount={$general.layoutRef}>
       <div
-        class="top-0 left-0 w-full py-2 sm:py-4 bg-base-100/90 backdrop-blur-xs z-10"
+        class="top-0 left-0 w-full pt-2 pb-2 sm:pt-4 bg-base-100/90 backdrop-blur-xs z-10"
         classList={{
           fixed: !$general.isAnkiWeb,
           absolute: $general.isAnkiWeb,

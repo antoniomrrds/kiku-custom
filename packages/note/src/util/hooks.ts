@@ -12,8 +12,8 @@ import type { KikuPlugin } from "#/plugins/plugin-types";
 import { createNex } from "#/worker/client";
 import { constants, extractKanji, parseHtml } from "./general";
 import { hatsuon } from "./hatsuon";
-import { extractPitchNumbers } from "./pitch";
 import { parseRelatedExpression } from "./parse-related-expression";
+import { extractPitchNumbers } from "./pitch";
 import type { DaisyUITheme } from "./theme";
 import { type PitchType, pitchTypes } from "./types";
 
