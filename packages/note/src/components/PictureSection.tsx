@@ -25,7 +25,7 @@ export function PictureSection() {
 
   const $pictureFieldDataset = createMemo<DatasetProp>(() => ({
     "data-transition": $card.ready ? "true" : undefined,
-    "data-tags": "{{Tags}}",
+    "data-tags": isServer ? "{{Tags}}" : $ankiFields.Tags,
     "data-nsfw": $isNsfw() ? "true" : "false",
   }));
 
