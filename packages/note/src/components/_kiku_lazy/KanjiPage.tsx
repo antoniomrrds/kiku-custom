@@ -8,7 +8,9 @@ import {
   Switch,
 } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
+import { extractKanji, parseHtml } from "#/util/general";
 import { useNavigationTransition } from "#/util/hooks";
+import { parseFurigana } from "#/util/parse-furigana";
 import {
   type AnkiFields,
   type AnkiNote,
@@ -261,25 +263,63 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
 function NoteList(props: { title: string; list: AnkiNote[] }) {
   const { $ankiFields } = useAnkiFieldContext<"back">();
 
-  //TODO: use better parser
-  const $ExpressionFurigana = createMemo(() => {
-    if ($ankiFields.Expression && $ankiFields.ExpressionReading) {
-      return (
-        <ruby>
-          {$ankiFields.Expression}
-          <rt>{$ankiFields.ExpressionReading}</rt>
-        </ruby>
-      );
-    }
-    return $ankiFields.ExpressionReading
-      ? $ankiFields.ExpressionReading
-      : $ankiFields.Expression;
-  });
+  const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
+  const $isRuby = createMemo(() => $doc().querySelector("ruby"));
+  const $furiganaData = createMemo(() =>
+    parseFurigana($isRuby() ? "" : $ankiFields.ExpressionFurigana),
+  );
 
   return (
     <div class="flex flex-col gap-2 sm:gap-4">
       <div class="flex-col flex justify-between items-center gap-2">
-        <div class="font-secondary text-7xl">{$ExpressionFurigana()}</div>
+        <div class="font-secondary text-7xl">
+          <Switch>
+            <Match when={$isRuby()}>
+              <div innerHTML={$ankiFields.ExpressionFurigana}></div>
+            </Match>
+            <Match
+              when={
+                $furiganaData().length === 0 ||
+                !$ankiFields.ExpressionFurigana.includes("[")
+              }
+            >
+              <ruby>
+                {$ankiFields.Expression}
+                <Show
+                  when={
+                    $ankiFields.ExpressionFurigana &&
+                    extractKanji($ankiFields.Expression).length > 0
+                  }
+                >
+                  <rt>{$ankiFields.ExpressionReading}</rt>
+                </Show>
+              </ruby>
+            </Match>
+            <Match when={true}>
+              <For each={$furiganaData()}>
+                {(item) => (
+                  <Switch fallback={<span>{item.text}</span>}>
+                    <Match when={item.type === "ruby" && item}>
+                      {(rubyItem) => (
+                        <ruby>
+                          {rubyItem().text}
+                          <Show
+                            when={
+                              rubyItem().reading.trim() !== "" ||
+                              rubyItem().reading === " "
+                            }
+                          >
+                            <rt>{rubyItem().reading}</rt>
+                          </Show>
+                        </ruby>
+                      )}
+                    </Match>
+                  </Switch>
+                )}
+              </For>
+            </Match>
+          </Switch>
+        </div>
         <div class="text-base-content-calm text-lg">{props.title}</div>
       </div>
       <ul class="list bg-base-100 rounded-box shadow-md animate-fade-in">

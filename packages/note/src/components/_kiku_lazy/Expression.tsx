@@ -101,21 +101,7 @@ export default function Expression() {
     return (
       <For each={$furiganaData()}>
         {(item) => (
-          <Switch
-            fallback={
-              <span>
-                <For each={item.text.trim().split("")}>
-                  {(char) => (
-                    <CharSpan
-                      char={char}
-                      onActive={handleActive}
-                      onInactive={handleInactive}
-                    />
-                  )}
-                </For>
-              </span>
-            }
-          >
+          <Switch>
             <Match when={item.type === "ruby" && item}>
               {(rubyItem) => (
                 <ruby>
@@ -138,6 +124,19 @@ export default function Expression() {
                   </Show>
                 </ruby>
               )}
+            </Match>
+            <Match when={item.type === "text" && item}>
+              <span>
+                <For each={item.text.trim().split("")}>
+                  {(char) => (
+                    <CharSpan
+                      char={char}
+                      onActive={handleActive}
+                      onInactive={handleInactive}
+                    />
+                  )}
+                </For>
+              </span>
             </Match>
           </Switch>
         )}
