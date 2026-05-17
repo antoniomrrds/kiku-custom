@@ -16,7 +16,9 @@ export default function RelatedExpression() {
       ...$card.query.noteList.flatMap((n) => {
         return n[1];
       }),
-    ].slice(0, 2);
+    ]
+      .sort((a, b) => b.noteId - a.noteId)
+      .slice(0, 2);
   });
 
   return (
