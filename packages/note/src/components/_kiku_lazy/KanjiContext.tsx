@@ -1,4 +1,10 @@
-import { createContext, type JSX, onMount, useContext } from "solid-js";
+import {
+  batch,
+  createContext,
+  createEffect,
+  type JSX,
+  useContext,
+} from "solid-js";
 import {
   createStore,
   type SetStoreFunction,
@@ -82,15 +88,39 @@ export function KanjiContextProvider(props: {
     $setKanji("loading", type, false);
   }
 
-  onMount(async () => {
-    const nex = await $general.nex.promise;
-    if (nex && props.kanji) {
-      let kanjiInfo = lookupKanji.get(props.kanji);
-      if (!kanjiInfo) {
-        kanjiInfo = await nex.lookupKanji(props.kanji);
-        lookupKanji.set(props.kanji, kanjiInfo);
-      }
-      $setKanji("kanjiInfo", kanjiInfo);
+  createEffect(() => {
+    const kanji = props.kanji;
+    batch(() => {
+      $setKanji({
+        kanji,
+        kanjiInfo: undefined,
+        composedOf: undefined,
+        usedIn: undefined,
+        visuallySimilar: undefined,
+        related: undefined,
+        loading: {
+          visuallySimilar: false,
+          composedOf: false,
+          usedIn: false,
+          related: false,
+        },
+        fetched: new Set(),
+      });
+    });
+
+    if (kanji) {
+      $general.nex.promise.then(async (nex) => {
+        if (nex) {
+          let kanjiInfo = lookupKanji.get(kanji);
+          if (!kanjiInfo) {
+            kanjiInfo = await nex.lookupKanji(kanji);
+            lookupKanji.set(kanji, kanjiInfo);
+          }
+          if ($kanji.kanji === kanji) {
+            $setKanji("kanjiInfo", kanjiInfo);
+          }
+        }
+      });
     }
   });
 
