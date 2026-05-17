@@ -3,9 +3,11 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  type JSX,
+  For,
+  Match,
   onMount,
   Show,
+  Switch,
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Portal } from "solid-js/web";
@@ -31,145 +33,224 @@ export default function Expression() {
     }, 100);
   });
 
-  function CharSpan(props: { char: string; i: number; j: number }) {
-    const [$anchorRef, $setAnchorRef] = createSignal<HTMLSpanElement>();
-    const key = `${props.char}-${props.i}-${props.j}`;
-    const show = () => $activeKey() === key;
+  const handleActive = (key: string) => {
+    clearTimeout(timeout);
+    $setActiveKey(key);
+  };
 
-    const handleActive = () => {
-      clearTimeout(timeout);
-      $setActiveKey(key);
-    };
+  const handleInactive = () => {
+    timeout = setTimeout(() => {
+      $setActiveKey(null);
+    }, 50);
+  };
 
-    const handleInactive = () => {
-      timeout = setTimeout(() => {
-        $setActiveKey(null);
-      }, 50);
-    };
-
-    return (
-      <span
-        ref={$setAnchorRef}
-        tabindex={0}
-        class="tappable"
-        on:mouseenter={handleActive}
-        on:mouseleave={handleInactive}
-        on:focus={handleActive}
-        on:blur={handleInactive}
-        on:touchstart={handleActive}
-        on:touchend={(e) => e.stopPropagation()}
-      >
-        <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
-          <KanjiTooltip
-            show={show()}
-            anchor={$anchorRef()}
-            onActive={handleActive}
-            onInactive={handleInactive}
-          />
-        </KanjiContextProvider>
-        {props.char}
-      </span>
-    );
-  }
-
-  //TODO: fix early return
   const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));
-
-  if ($isRuby()) {
-    const doc = $doc();
-    let groupIndex = 0;
-    const renderNode = (node: Node): JSX.Element => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const i = groupIndex++;
-        return node.textContent
-          ?.split("")
-          .map((char, j) => <CharSpan char={char} i={i} j={j} />);
-      }
-
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const el = node as HTMLElement;
-        const tagName = el.tagName.toLowerCase();
-
-        if (tagName === "rt") {
-          return <rt innerHTML={el.innerHTML} />;
-        }
-        if (tagName === "rp") {
-          return <rp innerHTML={el.innerHTML} />;
-        }
-
-        const children = Array.from(el.childNodes);
-        if (tagName === "ruby") {
-          return <ruby>{children.map((child) => renderNode(child))}</ruby>;
-        }
-        if (tagName === "rb") {
-          // <rb> is deprecated
-          // return <rb>{children.map((child) => renderNode(child))}</rb>;
-          return children.map((child) => renderNode(child));
-        }
-
-        return <span innerHTML={el.outerHTML} />;
-      }
-      return null;
-    };
-
-    return (
-      <>{Array.from(doc.body.childNodes).map((node) => renderNode(node))}</>
-    );
-  }
-
   const $furiganaData = createMemo(() =>
-    parseFurigana($ankiFields.ExpressionFurigana),
+    parseFurigana($isRuby() ? "" : $ankiFields.ExpressionFurigana),
   );
 
-  if (
-    $furiganaData().length === 0 ||
-    !$ankiFields.ExpressionFurigana.includes("[")
-  ) {
-    return (
-      <ruby>
-        {$ankiFields.Expression.split("").map((char, i) => (
-          <CharSpan char={char} i={i} j={0} />
-        ))}
-        <Show
-          when={
-            $ankiFields.ExpressionFurigana &&
-            extractKanji($ankiFields.Expression).length > 0
-          }
-        >
-          <rt>{$ankiFields.ExpressionReading}</rt>
-        </Show>
-      </ruby>
-    );
-  }
+  return (
+    <Switch>
+      <Match when={$isRuby()}>
+        <For each={Array.from($doc().body.childNodes)}>
+          {(node, i) => (
+            <RenderNode
+              node={node}
+              i={i()}
+              activeKey={$activeKey()}
+              onActive={handleActive}
+              onInactive={handleInactive}
+            />
+          )}
+        </For>
+      </Match>
+      <Match
+        when={
+          $furiganaData().length === 0 ||
+          !$ankiFields.ExpressionFurigana.includes("[")
+        }
+      >
+        <ruby>
+          <For each={$ankiFields.Expression.split("")}>
+            {(char, i) => {
+              const key = () => `${char}-${i()}-0`;
+              return (
+                <CharSpan
+                  char={char}
+                  show={$activeKey() === key()}
+                  onActive={() => handleActive(key())}
+                  onInactive={handleInactive}
+                />
+              );
+            }}
+          </For>
+          <Show
+            when={
+              $ankiFields.ExpressionFurigana &&
+              extractKanji($ankiFields.Expression).length > 0
+            }
+          >
+            <rt>{$ankiFields.ExpressionReading}</rt>
+          </Show>
+        </ruby>
+      </Match>
+      <Match when={true}>
+        <For each={$furiganaData()}>
+          {(item, i) => (
+            <Switch
+              fallback={
+                <span>
+                  <For each={item.text.trim().split("")}>
+                    {(char, j) => {
+                      const key = () => `${char}-${i()}-${j()}`;
+                      return (
+                        <CharSpan
+                          char={char}
+                          show={$activeKey() === key()}
+                          onActive={() => handleActive(key())}
+                          onInactive={handleInactive}
+                        />
+                      );
+                    }}
+                  </For>
+                </span>
+              }
+            >
+              <Match when={item.type === "ruby" && item}>
+                {(rubyItem) => (
+                  <ruby>
+                    <For each={rubyItem().text.trim().split("")}>
+                      {(char, j) => {
+                        const key = () => `${char}-${i()}-${j()}`;
+                        return (
+                          <CharSpan
+                            char={char}
+                            show={$activeKey() === key()}
+                            onActive={() => handleActive(key())}
+                            onInactive={handleInactive}
+                          />
+                        );
+                      }}
+                    </For>
+                    <Show
+                      when={
+                        rubyItem().reading.trim() !== "" ||
+                        rubyItem().reading === " "
+                      }
+                    >
+                      <rt>{rubyItem().reading}</rt>
+                    </Show>
+                  </ruby>
+                )}
+              </Match>
+            </Switch>
+          )}
+        </For>
+      </Match>
+    </Switch>
+  );
+}
+
+function RenderNode(props: {
+  node: Node;
+  i: string | number;
+  activeKey: string | null;
+  onActive: (key: string) => void;
+  onInactive: () => void;
+}) {
+  const $el = createMemo(() => props.node as HTMLElement);
+  const $tagName = createMemo(() => $el().tagName?.toLowerCase());
 
   return (
-    <>
-      {$furiganaData().map((item, i) => {
-        const chars = item.text.trim().split("");
-
-        if (item.type === "ruby") {
-          return (
+    <Switch>
+      <Match when={$el().nodeType === Node.TEXT_NODE}>
+        <For each={$el().textContent?.split("")}>
+          {(char, j) => {
+            const key = () => `${char}-${props.i}-${j()}`;
+            return (
+              <CharSpan
+                char={char}
+                show={props.activeKey === key()}
+                onActive={() => props.onActive(key())}
+                onInactive={props.onInactive}
+              />
+            );
+          }}
+        </For>
+      </Match>
+      <Match when={$el().nodeType === Node.ELEMENT_NODE}>
+        <Switch fallback={<span innerHTML={$el().outerHTML} />}>
+          <Match when={$tagName() === "rt"}>
+            <rt innerHTML={$el().innerHTML} />
+          </Match>
+          <Match when={$tagName() === "rp"}>
+            <rp innerHTML={$el().innerHTML} />
+          </Match>
+          <Match when={$tagName() === "ruby"}>
             <ruby>
-              {chars.map((char, j) => (
-                <CharSpan char={char} i={i} j={j} />
-              ))}
-              <Show when={item.reading.trim() !== "" || item.reading === " "}>
-                <rt>{item.reading}</rt>
-              </Show>
+              <For each={Array.from($el().childNodes)}>
+                {(child, k) => (
+                  <RenderNode
+                    node={child}
+                    i={`${props.i}.${k()}`}
+                    activeKey={props.activeKey}
+                    onActive={props.onActive}
+                    onInactive={props.onInactive}
+                  />
+                )}
+              </For>
             </ruby>
-          );
-        }
+          </Match>
+          <Match when={$tagName() === "rb"}>
+            <For each={Array.from($el().childNodes)}>
+              {(child, k) => (
+                <RenderNode
+                  node={child}
+                  i={`${props.i}.${k()}`}
+                  activeKey={props.activeKey}
+                  onActive={props.onActive}
+                  onInactive={props.onInactive}
+                />
+              )}
+            </For>
+          </Match>
+        </Switch>
+      </Match>
+    </Switch>
+  );
+}
 
-        return (
-          <span>
-            {chars.map((char, j) => (
-              <CharSpan char={char} i={i} j={j} />
-            ))}
-          </span>
-        );
-      })}
-    </>
+function CharSpan(props: {
+  char: string;
+  show: boolean;
+  onActive: () => void;
+  onInactive: () => void;
+}) {
+  const [$anchorRef, $setAnchorRef] = createSignal<HTMLSpanElement>();
+
+  return (
+    <span
+      ref={$setAnchorRef}
+      tabindex={0}
+      class="tappable"
+      on:mouseenter={props.onActive}
+      on:mouseleave={props.onInactive}
+      on:focus={props.onActive}
+      on:blur={props.onInactive}
+      on:touchstart={props.onActive}
+      on:touchend={(e) => e.stopPropagation()}
+    >
+      <KanjiContextProvider kanji={extractKanji(props.char)[0] ?? ""}>
+        <KanjiTooltip
+          show={props.show}
+          anchor={$anchorRef()}
+          onActive={props.onActive}
+          onInactive={props.onInactive}
+        />
+      </KanjiContextProvider>
+      {props.char}
+    </span>
   );
 }
 
