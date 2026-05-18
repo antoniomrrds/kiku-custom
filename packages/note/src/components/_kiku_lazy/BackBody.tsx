@@ -211,12 +211,17 @@ export default function BackBody(props: {
           </div>
           <div class="modal-action mt-2">
             <form method="dialog">
-              <button class="btn btn-sm">Close</button>
+              <button
+                class="btn btn-sm"
+                on:touchend={(e) => e.stopPropagation()}
+              >
+                Close
+              </button>
             </form>
           </div>
         </div>
         <form method="dialog" class="modal-backdrop">
-          <button>close</button>
+          <button on:touchend={(e) => e.stopPropagation()}>Close</button>
         </form>
       </dialog>
     </div>

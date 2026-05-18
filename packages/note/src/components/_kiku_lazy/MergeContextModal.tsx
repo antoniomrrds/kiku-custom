@@ -381,7 +381,9 @@ export default function MergeContextModal() {
 
             <div class="modal-action">
               <form method="dialog">
-                <button class="btn">Close</button>
+                <button class="btn" on:touchend={(e) => e.stopPropagation()}>
+                  Close
+                </button>
               </form>
               <button
                 class="btn btn-secondary"
@@ -406,7 +408,7 @@ export default function MergeContextModal() {
           </div>
 
           <form method="dialog" class="modal-backdrop">
-            <button>Close</button>
+            <button on:touchend={(e) => e.stopPropagation()}>Close</button>
           </form>
         </dialog>
       </Portal>
