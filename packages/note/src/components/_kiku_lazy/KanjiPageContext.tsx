@@ -14,7 +14,7 @@ export type ContextLabel = {
   type: "similar" | "composedOf" | "usedIn" | "related";
 };
 
-type KanjiPageContextStore = {
+export type KanjiPageContextStore = {
   noteList: [string, AnkiNote[]][];
   sameReading?: AnkiNote[];
   sameExpression?: AnkiNote[];

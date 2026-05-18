@@ -9,6 +9,7 @@ import {
   ankiFieldsSkeleton,
   type PitchType,
 } from "#/util/types";
+import type { KanjiPageContextStore } from "../_kiku_lazy/KanjiPageContext";
 
 export type PitchState = {
   infos: PitchInfo[];
@@ -53,6 +54,9 @@ type CardStore = {
 type CardContextValue = {
   $card: Store<CardStore>;
   $setCard: SetStoreFunction<CardStore>;
+  onKanjiPageMount: Set<
+    (ctx: { $setKanjiPage: SetStoreFunction<KanjiPageContextStore> }) => void
+  >;
 };
 
 const CardStoreContext = createContext<CardContextValue>();
@@ -99,9 +103,10 @@ export function CardStoreContextProvider(props: {
       type: undefined,
     },
   });
+  const onKanjiPageMount: CardContextValue["onKanjiPageMount"] = new Set();
 
   return (
-    <CardStoreContext.Provider value={{ $card, $setCard }}>
+    <CardStoreContext.Provider value={{ $card, $setCard, onKanjiPageMount }}>
       {props.children}
     </CardStoreContext.Provider>
   );
@@ -110,11 +115,9 @@ export function CardStoreContextProvider(props: {
 export function useCardContext() {
   const cardStore = useContext(CardStoreContext);
   if (!cardStore) throw new Error("Missing CardStoreContext");
-  return createCompatPair(
-    "$card",
-    "$setCard",
-    cardStore.$card,
-    cardStore.$setCard,
+  return Object.assign(
+    createCompatPair("$card", "$setCard", cardStore.$card, cardStore.$setCard),
+    { onKanjiPageMount: cardStore.onKanjiPageMount },
   );
 }
 

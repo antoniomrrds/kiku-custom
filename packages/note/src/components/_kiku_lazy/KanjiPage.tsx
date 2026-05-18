@@ -48,6 +48,7 @@ export default function KanjiPage() {
 }
 
 function Page() {
+  const { onKanjiPageMount } = useCardContext();
   const { $general } = useGeneralContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
@@ -75,6 +76,13 @@ function Page() {
   const $furiganaData = createMemo(() =>
     parseFurigana($isRuby() ? "" : $ankiFields.ExpressionFurigana),
   );
+
+  onMount(() => {
+    onKanjiPageMount.forEach((callback) => {
+      callback({ $setKanjiPage });
+    });
+    onKanjiPageMount.clear();
+  });
 
   return (
     <Switch>
