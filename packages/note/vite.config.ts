@@ -16,7 +16,7 @@ export default defineConfig({
       outputFilePath: "./.circularDependency.json",
       circleImportThrowErr: true,
     }),
-    dts({ tsconfigPath: "./tsconfig.app.json", outDir: "./dist/types" }),
+    dts({ tsconfigPath: "./tsconfig.app.json", outDirs: "./dist/types" }),
   ],
   resolve: {
     alias: {
