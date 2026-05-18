@@ -325,12 +325,7 @@ function NoteList(props: { title: string; list: AnkiNote[] }) {
       <ul class="list bg-base-100 rounded-box shadow-md animate-fade-in">
         <For each={props.list ?? []}>
           {(data) => {
-            return (
-              <AnkiNoteItem
-                data={data}
-                reading={$ankiFields.ExpressionReading}
-              />
-            );
+            return <AnkiNoteItem data={data} />;
           }}
         </For>
       </ul>
@@ -338,52 +333,91 @@ function NoteList(props: { title: string; list: AnkiNote[] }) {
   );
 }
 
-function AnkiNoteItem(props: {
-  data: AnkiNote;
-  reading?: string;
-  highlightedKanji?: string;
-}) {
-  const data = () => props.data;
-  const reading = () => props.reading;
+function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
   const { navigate } = useNavigationTransition();
   const { $setCard } = useCardContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
+  const $data = createMemo(() => props.data);
+  const $expression = createMemo(() => $data().fields.Expression.value);
+  const $expressionFurigana = createMemo(
+    () => $data().fields.ExpressionFurigana.value,
+  );
+  const $expressionReading = createMemo(
+    () => $data().fields.ExpressionReading.value,
+  );
+  const $leech = createMemo(() => $data().tags.includes("leech"));
+  const $doc = createMemo(() => parseHtml($expressionFurigana()));
+  const $isRuby = createMemo(() => $doc().querySelector("ruby"));
+  const $furiganaData = createMemo(() =>
+    parseFurigana($isRuby() ? "" : $expressionFurigana()),
+  );
 
-  const leech = data().tags.includes("leech");
-  const $expressionInnerHtml = createMemo(() => {
-    if (
-      data().fields.Expression.value &&
-      data().fields.ExpressionReading.value
-    ) {
-      return `<ruby>${data().fields.Expression.value}<rt>${data().fields.ExpressionReading.value}</rt></ruby>`;
-    }
-    if (data().fields.Expression.value) return data().fields.Expression.value;
-    return data().fields.ExpressionReading.value;
-  });
+  function ExpressionNoFurigana() {
+    return (
+      <ruby>
+        <For each={$expression().split("")}>
+          {(char) => (
+            <span
+              classList={{
+                "text-base-content-primary": char === props.highlightedKanji,
+              }}
+            >
+              {char}
+            </span>
+          )}
+        </For>
+        <Show
+          when={$expressionReading() && extractKanji($expression()).length > 0}
+        >
+          <rt>{$expressionReading()}</rt>
+        </Show>
+      </ruby>
+    );
+  }
 
-  const $expressionInnerHtmlColorized = createMemo(() => {
-    const reading$ = reading();
-    if (!props.highlightedKanji && !reading$) return $expressionInnerHtml();
-
-    if (props.highlightedKanji) {
-      return $expressionInnerHtml().replaceAll(
-        props.highlightedKanji,
-        `<span class="text-base-content-primary">${props.highlightedKanji}</span>`,
-      );
-    }
-
-    if (reading$) {
-      return $expressionInnerHtml().replaceAll(
-        reading$,
-        `<span class="text-base-content-primary">${reading$}</span>`,
-      );
-    }
-  });
+  function ExpressionFurigana() {
+    return (
+      <For each={$furiganaData()}>
+        {(item) => (
+          <Switch>
+            <Match when={item.type === "ruby" && item}>
+              {(rubyItem) => (
+                <ruby>
+                  <For each={rubyItem().text.trim().split("")}>
+                    {(char) => (
+                      <span
+                        classList={{
+                          "text-base-content-primary":
+                            char === props.highlightedKanji,
+                        }}
+                      >
+                        {char}
+                      </span>
+                    )}
+                  </For>
+                  <Show
+                    when={
+                      rubyItem().reading.trim() !== "" ||
+                      rubyItem().reading === " "
+                    }
+                  >
+                    <rt>{rubyItem().reading}</rt>
+                  </Show>
+                </ruby>
+              )}
+            </Match>
+            <Match when={item.type === "text" && item}>
+              <span>{item.text}</span>
+            </Match>
+          </Switch>
+        )}
+      </For>
+    );
+  }
 
   const $sentenceInnerHtmlColorized = createMemo(() => {
-    if (!props.highlightedKanji) return data().fields.Sentence.value;
-
-    return data().fields.Sentence.value.replaceAll(
+    if (!props.highlightedKanji) return $data().fields.Sentence.value;
+    return $data().fields.Sentence.value.replaceAll(
       props.highlightedKanji,
       `<span class="text-base-content-primary">${props.highlightedKanji}</span>`,
     );
@@ -393,22 +427,22 @@ function AnkiNoteItem(props: {
     const ankiFields: AnkiFields = {
       ...ankiFieldsSkeleton,
       ...Object.fromEntries(
-        Object.entries(data().fields).map(([key, value]) => {
+        Object.entries($data().fields).map(([key, value]) => {
           return [key, value.value];
         }),
       ),
       // TODO: I'm not sure how to handle if the note has multiple cards
-      CardID: data().cards[0]?.toString() ?? "",
-      Tags: data().tags.join(" "),
+      CardID: $data().cards[0]?.toString() ?? "",
+      Tags: $data().tags.join(" "),
     };
 
     $setKanjiPage("focus", {
       kanji: props.highlightedKanji,
-      noteId: data().noteId,
+      noteId: $data().noteId,
     });
 
     $setCard({ nestedAnkiFields: ankiFields });
-    $setCard("nestedNoteId", data().noteId);
+    $setCard("nestedNoteId", $data().noteId);
     navigate("nested", "forward", () => navigate("kanji", "back"));
   };
 
@@ -423,16 +457,21 @@ function AnkiNoteItem(props: {
     <>
       <li class="p-4 pb-0 tracking-wide flex gap-2 items-start justify-between">
         <div class="flex gap-2 items-end">
-          <div
-            class=" font-secondary sentence"
-            innerHTML={$expressionInnerHtmlColorized()}
-            ref={ref}
-          ></div>
+          <div class="font-secondary text-2xl sm:text-4xl">
+            <Switch>
+              <Match when={$isRuby()}>
+                <ExpressionNoFurigana />
+              </Match>
+              <Match when={true}>
+                <ExpressionFurigana />
+              </Match>
+            </Switch>
+          </div>
           <div class="text-base-content-calm">
-            {new Date(data().noteId).toLocaleDateString()}
+            {new Date($data().noteId).toLocaleDateString()}
           </div>
         </div>
-        {leech && <div class="status status-warning"></div>}
+        {$leech() && <div class="status status-warning"></div>}
       </li>
 
       <li class="list-row">

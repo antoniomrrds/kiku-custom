@@ -87,7 +87,7 @@ export default function Expression() {
         </For>
         <Show
           when={
-            $ankiFields.ExpressionFurigana &&
+            $ankiFields.ExpressionReading &&
             extractKanji($ankiFields.Expression).length > 0
           }
         >
