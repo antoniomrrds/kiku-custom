@@ -37,13 +37,13 @@ type KanjiStore = {
     visuallySimilar: boolean;
     related: boolean;
   };
-  fetchNotes: (type: FetchType) => Promise<void>;
   fetched: Set<FetchType>;
 };
 
 type KanjiContextValue = {
   $kanji: Store<KanjiStore>;
   $setKanji: SetStoreFunction<KanjiStore>;
+  fetchNotes: (type: FetchType) => Promise<void>;
 };
 
 const KanjiContext = createContext<KanjiContextValue>();
@@ -84,7 +84,6 @@ export function KanjiContextProvider(props: {
       usedIn: false,
       related: false,
     },
-    fetchNotes,
     fetched: new Set(),
   });
   const lookupKanjiCache =
@@ -171,7 +170,7 @@ export function KanjiContextProvider(props: {
   });
 
   return (
-    <KanjiContext.Provider value={{ $kanji, $setKanji }}>
+    <KanjiContext.Provider value={{ $kanji, $setKanji, fetchNotes }}>
       {props.children}
     </KanjiContext.Provider>
   );
@@ -180,11 +179,14 @@ export function KanjiContextProvider(props: {
 export function useKanjiContext() {
   const kanjiStore = useContext(KanjiContext);
   if (!kanjiStore) throw new Error("Missing KanjiContext");
-  return createCompatPair(
-    "$kanji",
-    "$setKanji",
-    kanjiStore.$kanji,
-    kanjiStore.$setKanji,
+  return Object.assign(
+    createCompatPair(
+      "$kanji",
+      "$setKanji",
+      kanjiStore.$kanji,
+      kanjiStore.$setKanji,
+    ),
+    { fetchNotes: kanjiStore.fetchNotes },
   );
 }
 

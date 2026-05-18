@@ -67,7 +67,7 @@ export function KanjiInfo() {
 }
 
 export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
-  const { $kanji } = useKanjiContext();
+  const { $kanji, fetchNotes } = useKanjiContext();
   const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 
@@ -96,10 +96,10 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
   });
 
   createEffect(() => {
-    if ($checkbox.visuallySimilar) $kanji.fetchNotes("visuallySimilar");
-    if ($checkbox.composedOf) $kanji.fetchNotes("composedOf");
-    if ($checkbox.usedIn) $kanji.fetchNotes("usedIn");
-    if ($checkbox.related) $kanji.fetchNotes("related");
+    if ($checkbox.visuallySimilar) fetchNotes("visuallySimilar");
+    if ($checkbox.composedOf) fetchNotes("composedOf");
+    if ($checkbox.usedIn) fetchNotes("usedIn");
+    if ($checkbox.related) fetchNotes("related");
   });
 
   function VisuallySimilar() {
