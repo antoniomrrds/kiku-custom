@@ -2,6 +2,7 @@ import {
   createMemo,
   createSignal,
   For,
+  type JSX,
   Match,
   onMount,
   Show,
@@ -85,54 +86,35 @@ function Page() {
         <HeaderKanjiPage />
         <div class="flex flex-col gap-2 sm:gap-4">
           <div role="tablist" class="tabs tabs-box">
-            <button
-              role="tab"
-              class="tab"
-              classList={{
-                "tab-active": $kanjiPage.tab === "kanji",
-                "cursor-not-allowed": !$hasSameKanji(),
-              }}
-              on:click={() => {
+            <TabItem
+              active={$kanjiPage.tab === "kanji"}
+              disabled={!$hasSameKanji()}
+              onClick={() => {
                 if ($hasSameKanji()) $setKanjiPage("tab", "kanji");
               }}
-              on:touchend={(e) => e.stopPropagation()}
             >
               漢字
-            </button>
-            <button
-              role="tab"
-              class="tab gap-1"
-              classList={{
-                "tab-active": $kanjiPage.tab === "reading",
-                "cursor-not-allowed": !$hasSameReading(),
-              }}
-              on:click={() => {
+            </TabItem>
+            <TabItem
+              active={$kanjiPage.tab === "reading"}
+              disabled={!$hasSameReading()}
+              count={$kanjiPage.sameReading?.length ?? 0}
+              onClick={() => {
                 if ($hasSameReading()) $setKanjiPage("tab", "reading");
               }}
-              on:touchend={(e) => e.stopPropagation()}
             >
               読
-              <span class="text-base-content-soft bg-base-300 px-0.5 rounded-xs text-xs sm:text-sm">
-                {$kanjiPage.sameReading?.length ?? 0}
-              </span>
-            </button>
-            <button
-              role="tab"
-              class="tab gap-1"
-              classList={{
-                "tab-active": $kanjiPage.tab === "same",
-                "cursor-not-allowed": !$hasSameExpression(),
-              }}
-              on:click={() => {
+            </TabItem>
+            <TabItem
+              active={$kanjiPage.tab === "same"}
+              disabled={!$hasSameExpression()}
+              count={$kanjiPage.sameExpression?.length ?? 0}
+              onClick={() => {
                 if ($hasSameExpression()) $setKanjiPage("tab", "same");
               }}
-              on:touchend={(e) => e.stopPropagation()}
             >
               同
-              <span class="text-base-content-soft bg-base-300 px-0.5 rounded-xs text-xs sm:text-sm">
-                {$kanjiPage.sameExpression?.length ?? 0}
-              </span>
-            </button>
+            </TabItem>
           </div>
           <Show when={$kanjiPage.contextLabel}>
             <div class="flex flex-col items-center gap-2">
@@ -197,6 +179,34 @@ function Page() {
         </div>
       </Match>
     </Switch>
+  );
+}
+
+function TabItem(props: {
+  active: boolean;
+  children: JSX.Element;
+  count?: number;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      role="tab"
+      class="tab gap-1"
+      classList={{
+        "tab-active": props.active,
+        "cursor-not-allowed": props.disabled,
+      }}
+      on:click={props.onClick}
+      on:touchend={(e) => e.stopPropagation()}
+    >
+      {props.children}
+      <Show when={props.count !== undefined}>
+        <span class="text-base-content-soft bg-base-300 px-0.5 rounded-xs text-xs sm:text-sm">
+          {props.count}
+        </span>
+      </Show>
+    </button>
   );
 }
 
