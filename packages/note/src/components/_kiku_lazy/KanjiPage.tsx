@@ -56,6 +56,12 @@ function Page() {
   const $hasSameExpression = createMemo(
     () => $kanjiPage.sameExpression && $kanjiPage.sameExpression.length > 0,
   );
+  const $title = createMemo(() => {
+    if ($kanjiPage.contextLabel?.type === "similar") return "Similar";
+    if ($kanjiPage.contextLabel?.type === "composedOf") return "Composed of";
+    if ($kanjiPage.contextLabel?.type === "usedIn") return "Used in";
+    if ($kanjiPage.contextLabel?.type === "related") return "Related";
+  });
 
   return (
     <Switch>
@@ -130,25 +136,14 @@ function Page() {
           </div>
           <Show when={$kanjiPage.contextLabel}>
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center text-7xl font-secondary ">
+              <div class="flex justify-center text-5xl sm:text-6xl font-secondary ">
                 {$kanjiPage.contextLabel?.text}
               </div>
-              <Switch>
-                <Match when={$kanjiPage.contextLabel?.type === "similar"}>
-                  <div class="text-lg text-base-content-calm">
-                    Visually Similar
-                  </div>
-                </Match>
-                <Match when={$kanjiPage.contextLabel?.type === "composedOf"}>
-                  <div class="text-lg text-base-content-calm">Composed of</div>
-                </Match>
-                <Match when={$kanjiPage.contextLabel?.type === "usedIn"}>
-                  <div class="text-lg text-base-content-calm">Used in</div>
-                </Match>
-                <Match when={$kanjiPage.contextLabel?.type === "related"}>
-                  <div class="text-lg text-base-content-calm">Related</div>
-                </Match>
-              </Switch>
+              <Show when={$title()}>
+                <div class="text-base-content-calm text-base sm:text-lg">
+                  {$title()}
+                </div>
+              </Show>
             </div>
           </Show>
 
@@ -272,7 +267,7 @@ function NoteList(props: { title: string; list: AnkiNote[] }) {
   return (
     <div class="flex flex-col gap-2 sm:gap-4">
       <div class="flex-col flex justify-between items-center gap-2">
-        <div class="font-secondary text-7xl">
+        <div class="font-secondary text-5xl sm:text-6xl">
           <Switch>
             <Match when={$isRuby()}>
               <div innerHTML={$ankiFields.ExpressionFurigana}></div>
@@ -320,7 +315,9 @@ function NoteList(props: { title: string; list: AnkiNote[] }) {
             </Match>
           </Switch>
         </div>
-        <div class="text-base-content-calm text-lg">{props.title}</div>
+        <div class="text-base-content-calm text-base sm:text-lg">
+          {props.title}
+        </div>
       </div>
       <ul class="list bg-base-100 rounded-box shadow-md animate-fade-in">
         <For each={props.list ?? []}>
@@ -467,7 +464,7 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
               </Match>
             </Switch>
           </div>
-          <div class="text-base-content-calm">
+          <div class="text-base-content-calm text-xs sm:text-sm">
             {new Date($data().noteId).toLocaleDateString()}
           </div>
         </div>
@@ -512,7 +509,7 @@ function KanjiText() {
 
   return (
     <div class="flex gap-2 sm:gap-4 me-2">
-      <div class="font-secondary expression" ref={ref}>
+      <div class="font-secondary text-5xl sm:text-6xl" ref={ref}>
         {$kanji.kanji}
       </div>
       <KanjiInfo />
