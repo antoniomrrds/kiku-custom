@@ -108,7 +108,12 @@ export function usePitch() {
     });
     return numbers.map((pitchNum, i) => {
       const result = hatsuon({ reading, pitchNum, locale: "EN" });
-      result.patternName = pitchCategories[i] ?? result.patternName;
+      if (
+        pitchCategories.length === numbers.length &&
+        pitchCategories[i] === "kifuku"
+      ) {
+        result.patternName = pitchCategories[i] ?? result.patternName;
+      }
       return result;
     });
   });
