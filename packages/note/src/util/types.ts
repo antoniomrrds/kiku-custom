@@ -278,4 +278,7 @@ export type CacheStore = {
   nex?: NexApi;
   relax?: boolean;
   lookupKanji?: Map<string, KanjiInfo | undefined>;
+  queryShared?: Map<string, QuerySharedResult>;
 };
+
+export type QuerySharedResult = Awaited<ReturnType<NexApi["queryShared"]>>;

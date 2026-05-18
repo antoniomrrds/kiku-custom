@@ -8,6 +8,9 @@ export function CacheContextProvider(props: {
   children: JSX.Element;
   cacheStore: CacheStore;
 }) {
+  props.cacheStore.lookupKanji ??= new Map();
+  props.cacheStore.queryShared ??= new Map();
+
   return (
     <CacheContext.Provider value={props.cacheStore}>
       {props.children}
