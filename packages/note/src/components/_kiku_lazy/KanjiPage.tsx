@@ -49,6 +49,7 @@ export default function KanjiPage() {
 
 function Page() {
   const { $general } = useGeneralContext();
+  const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
   const $hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
   const $hasSameReading = createMemo(
@@ -58,11 +59,22 @@ function Page() {
     () => $kanjiPage.sameExpression && $kanjiPage.sameExpression.length > 0,
   );
   const $title = createMemo(() => {
-    if ($kanjiPage.contextLabel?.type === "similar") return "Similar";
-    if ($kanjiPage.contextLabel?.type === "composedOf") return "Composed of";
-    if ($kanjiPage.contextLabel?.type === "usedIn") return "Used in";
-    if ($kanjiPage.contextLabel?.type === "related") return "Related";
+    if ($kanjiPage.tab === "kanji") {
+      if ($kanjiPage.contextLabel?.type === "similar") return "Similar";
+      if ($kanjiPage.contextLabel?.type === "composedOf") return "Composed of";
+      if ($kanjiPage.contextLabel?.type === "usedIn") return "Used in";
+      if ($kanjiPage.contextLabel?.type === "related") return "Related";
+      return "Same Kanji";
+    }
+    if ($kanjiPage.tab === "reading") return "Same Reading";
+    if ($kanjiPage.tab === "same") return "Same Expression";
   });
+
+  const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
+  const $isRuby = createMemo(() => $doc().querySelector("ruby"));
+  const $furiganaData = createMemo(() =>
+    parseFurigana($isRuby() ? "" : $ankiFields.ExpressionFurigana),
+  );
 
   return (
     <Switch>
@@ -116,55 +128,85 @@ function Page() {
               同
             </TabItem>
           </div>
-          <Show when={$kanjiPage.contextLabel}>
-            <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center text-5xl sm:text-6xl font-secondary ">
-                {$kanjiPage.contextLabel?.text}
-              </div>
-              <Show when={$title()}>
-                <div class="text-base-content-calm text-base sm:text-lg">
-                  {$title()}
-                </div>
-              </Show>
+          <div class="flex flex-col items-center gap-2">
+            <div class="font-secondary text-5xl sm:text-6xl">
+              <Switch>
+                <Match when={$kanjiPage.contextLabel}>
+                  {$kanjiPage.contextLabel?.text}
+                </Match>
+                <Match when={$isRuby()}>
+                  <div innerHTML={$ankiFields.ExpressionFurigana}></div>
+                </Match>
+                <Match
+                  when={
+                    $furiganaData().length === 0 ||
+                    !$ankiFields.ExpressionFurigana.includes("[")
+                  }
+                >
+                  <ruby>
+                    {$ankiFields.Expression}
+                    <Show
+                      when={
+                        $ankiFields.ExpressionFurigana &&
+                        extractKanji($ankiFields.Expression).length > 0
+                      }
+                    >
+                      <rt>{$ankiFields.ExpressionReading}</rt>
+                    </Show>
+                  </ruby>
+                </Match>
+                <Match when={true}>
+                  <For each={$furiganaData()}>
+                    {(item) => (
+                      <Switch fallback={<span>{item.text}</span>}>
+                        <Match when={item.type === "ruby" && item}>
+                          {(rubyItem) => (
+                            <ruby>
+                              {rubyItem().text}
+                              <Show
+                                when={
+                                  rubyItem().reading.trim() !== "" ||
+                                  rubyItem().reading === " "
+                                }
+                              >
+                                <rt>{rubyItem().reading}</rt>
+                              </Show>
+                            </ruby>
+                          )}
+                        </Match>
+                      </Switch>
+                    )}
+                  </For>
+                </Match>
+              </Switch>
             </div>
-          </Show>
+            <Show when={$title()}>
+              <div class="text-base-content-calm text-base sm:text-lg">
+                {$title()}
+              </div>
+            </Show>
+          </div>
 
           <div class="flex flex-col gap-2 sm:gap-4 ">
-            <Show when={$kanjiPage.tab === "kanji"}>
-              <For each={$kanjiPage.noteList}>
-                {([kanji, data]) => {
-                  return (
-                    <KanjiContextProvider kanji={kanji}>
-                      <KanjiCollapsible data={data} />
-                    </KanjiContextProvider>
-                  );
-                }}
-              </For>
-            </Show>
-            <Show
-              when={
-                $kanjiPage.sameReading &&
-                $kanjiPage.sameReading.length > 0 &&
-                $kanjiPage.tab === "reading"
-              }
-            >
-              <NoteList
-                list={$kanjiPage.sameReading ?? []}
-                title="Same Reading"
-              />
-            </Show>
-            <Show
-              when={
-                $kanjiPage.sameExpression &&
-                $kanjiPage.sameExpression.length > 0 &&
-                $kanjiPage.tab === "same"
-              }
-            >
-              <NoteList
-                list={$kanjiPage.sameExpression ?? []}
-                title="Same Expression"
-              />
-            </Show>
+            <Switch>
+              <Match when={$kanjiPage.tab === "kanji"}>
+                <For each={$kanjiPage.noteList}>
+                  {([kanji, data]) => {
+                    return (
+                      <KanjiContextProvider kanji={kanji}>
+                        <KanjiCollapsible data={data} />
+                      </KanjiContextProvider>
+                    );
+                  }}
+                </For>
+              </Match>
+              <Match when={$kanjiPage.tab === "reading"}>
+                <NoteList list={$kanjiPage.sameReading ?? []} />
+              </Match>
+              <Match when={$kanjiPage.tab === "same"}>
+                <NoteList list={$kanjiPage.sameExpression ?? []} />
+              </Match>
+            </Switch>
           </div>
         </div>
         <div class="flex justify-center items-center">
@@ -265,78 +307,15 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
   );
 }
 
-function NoteList(props: { title: string; list: AnkiNote[] }) {
-  const { $ankiFields } = useAnkiFieldContext<"back">();
-
-  const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
-  const $isRuby = createMemo(() => $doc().querySelector("ruby"));
-  const $furiganaData = createMemo(() =>
-    parseFurigana($isRuby() ? "" : $ankiFields.ExpressionFurigana),
-  );
-
+function NoteList(props: { list: AnkiNote[] }) {
   return (
-    <div class="flex flex-col gap-2 sm:gap-4">
-      <div class="flex-col flex justify-between items-center gap-2">
-        <div class="font-secondary text-5xl sm:text-6xl">
-          <Switch>
-            <Match when={$isRuby()}>
-              <div innerHTML={$ankiFields.ExpressionFurigana}></div>
-            </Match>
-            <Match
-              when={
-                $furiganaData().length === 0 ||
-                !$ankiFields.ExpressionFurigana.includes("[")
-              }
-            >
-              <ruby>
-                {$ankiFields.Expression}
-                <Show
-                  when={
-                    $ankiFields.ExpressionFurigana &&
-                    extractKanji($ankiFields.Expression).length > 0
-                  }
-                >
-                  <rt>{$ankiFields.ExpressionReading}</rt>
-                </Show>
-              </ruby>
-            </Match>
-            <Match when={true}>
-              <For each={$furiganaData()}>
-                {(item) => (
-                  <Switch fallback={<span>{item.text}</span>}>
-                    <Match when={item.type === "ruby" && item}>
-                      {(rubyItem) => (
-                        <ruby>
-                          {rubyItem().text}
-                          <Show
-                            when={
-                              rubyItem().reading.trim() !== "" ||
-                              rubyItem().reading === " "
-                            }
-                          >
-                            <rt>{rubyItem().reading}</rt>
-                          </Show>
-                        </ruby>
-                      )}
-                    </Match>
-                  </Switch>
-                )}
-              </For>
-            </Match>
-          </Switch>
-        </div>
-        <div class="text-base-content-calm text-base sm:text-lg">
-          {props.title}
-        </div>
-      </div>
-      <ul class="list bg-base-100 rounded-box shadow-md animate-fade-in">
-        <For each={props.list ?? []}>
-          {(data) => {
-            return <AnkiNoteItem data={data} />;
-          }}
-        </For>
-      </ul>
-    </div>
+    <ul class="list bg-base-100 rounded-box shadow-md animate-fade-in">
+      <For each={props.list ?? []}>
+        {(data) => {
+          return <AnkiNoteItem data={data} />;
+        }}
+      </For>
+    </ul>
   );
 }
 
