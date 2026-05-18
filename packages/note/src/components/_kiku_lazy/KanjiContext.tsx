@@ -62,12 +62,17 @@ export function KanjiContextProvider(props: {
     fetchNotes,
     fetched: new Set(),
   });
-  const lookupKanji = cacheStore.lookupKanji ?? new Map();
-  if (!cacheStore.lookupKanji) cacheStore.lookupKanji = lookupKanji;
+  const cache =
+    cacheStore.lookupKanji ?? new Map<string, KanjiInfo | undefined>();
+  if (!cacheStore.lookupKanji) cacheStore.lookupKanji = cache;
 
   async function fetchNotes(type: FetchType) {
+    const kanji = $kanji.kanji;
+    if (!kanji) return;
     const nex = await $general.nex.promise;
-    const kanjiInfo = unwrap($kanji.kanjiInfo);
+    const kanjiInfo =
+      unwrap($kanji.kanjiInfo) ?? (await nex.lookupKanji(kanji));
+    if (kanji !== $kanji.kanji) return;
     if (!kanjiInfo) return;
     if ($kanji.fetched.has(type)) return;
     $kanji.fetched.add(type);
@@ -109,12 +114,12 @@ export function KanjiContextProvider(props: {
     });
 
     if (kanji) {
-      let kanjiInfo = lookupKanji.get(kanji);
+      let kanjiInfo = cache.get(kanji);
       if (!kanjiInfo) {
         $general.nex.promise.then(async (nex) => {
           if (nex) {
             kanjiInfo = await nex.lookupKanji(kanji);
-            lookupKanji.set(kanji, kanjiInfo);
+            cache.set(kanji, kanjiInfo);
             if ($kanji.kanji === kanji) {
               $setKanji("kanjiInfo", kanjiInfo);
             }
