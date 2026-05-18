@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import circularDpendency from "vite-plugin-circular-dependency";
 import dts from "vite-plugin-dts";
 import solid from "vite-plugin-solid";
@@ -7,17 +7,20 @@ import { paths } from "./tools/paths.js";
 import { getVersion } from "./tools/util.js";
 import { serveAnkiCollectionMedia } from "./tools/vite-plugin-serve-anki-collection.media.js";
 
-export default defineConfig({
-  plugins: [
-    solid({ ssr: true }),
-    tailwindcss(),
-    serveAnkiCollectionMedia(),
-    circularDpendency({
-      outputFilePath: "./.circularDependency.json",
-      circleImportThrowErr: true,
-    }),
+const fastBuild = process.env.FAST_BUILD === "true";
+const plugins: PluginOption[] = [solid({ ssr: true }), tailwindcss()];
+if (!fastBuild) {
+  plugins.push(serveAnkiCollectionMedia());
+  plugins.push(
+    circularDpendency({ outputFilePath: "./.circularDependency.json" }),
+  );
+  plugins.push(
     dts({ tsconfigPath: "./tsconfig.app.json", outDirs: "./dist/types" }),
-  ],
+  );
+}
+
+export default defineConfig({
+  plugins,
   resolve: {
     alias: {
       "#/plugins": paths["@/plugins/"],

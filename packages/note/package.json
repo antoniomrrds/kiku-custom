@@ -17,13 +17,14 @@
   "scripts": {
     "dev": "vite ./preview/anki",
     "build": "tsc -b && vite build",
+    "build:fast": "FAST_BUILD=true vite build",
     "typecheck": "tsc -b",
-    "copy-anki-build": "npx vite-node ./script/copy-anki-build.ts",
-    "update-note-type": "npx vite-node ./script/update-note-type.ts",
-    "generate-template": "npx vite-node ./script/generate-template.ts",
+    "copy-anki-build": "vite-node ./script/copy-anki-build.ts",
+    "update-note-type": "vite-node ./script/update-note-type.ts",
+    "generate-template": "vite-node ./script/generate-template.ts",
     "test": "vitest run",
-    "apply": "pnpm run build && pnpm run generate-template && pnpm run copy-anki-build && pnpm run update-note-type",
-    "package": "npx vite-node ./script/package.ts"
+    "apply": "FAST_BUILD=true vite build && vite-node ./script/generate-template.ts && vite-node ./script/copy-anki-build.ts && vite-node ./script/update-note-type.ts",
+    "package": "vite-node ./script/package.ts"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
