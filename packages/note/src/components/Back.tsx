@@ -1,6 +1,5 @@
 import {
   createMemo,
-  createSignal,
   lazy,
   Match,
   onMount,
@@ -171,9 +170,6 @@ export function Back(props: { onExitNested?: () => void }) {
 function ExpressionSection() {
   const { $card } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
-  const [$dataPitchType, $setDataPitchType] = createSignal({
-    "data-pitch-type": "{{PitchCategories}}",
-  });
 
   const $expressionInnerHtml = createMemo(() => {
     return isServer
@@ -183,11 +179,11 @@ function ExpressionSection() {
         : $ankiFields.Expression;
   });
 
-  onMount(() => {
-    $setDataPitchType({
-      "data-pitch-type": $card.pitch.type ?? "",
-    });
-  });
+  const $pitchFieldDataset = createMemo<DatasetProp>(() => ({
+    "data-pitch-type": isServer
+      ? "{{PitchCategories}}"
+      : ($card.pitch.type ?? ""),
+  }));
 
   return (
     <>
@@ -199,7 +195,7 @@ function ExpressionSection() {
             display: $card.expressionReady ? "none" : "block",
           }}
           innerHTML={$expressionInnerHtml()}
-          {...$dataPitchType()}
+          {...$pitchFieldDataset()}
         >
           {isServer
             ? "{{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}{{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}"
@@ -208,11 +204,11 @@ function ExpressionSection() {
       </Show>
       <div
         class="expression font-secondary text-center vertical-rl transition-colors"
-        {...$dataPitchType()}
         style={{
           color: "var(--pitch-color)",
           display: $card.expressionReady || $card.nested ? "block" : "none",
         }}
+        {...$pitchFieldDataset()}
       >
         {$card.ready && <Lazy.Expression />}
       </div>
