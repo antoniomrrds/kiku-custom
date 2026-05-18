@@ -1,4 +1,4 @@
-import { ErrorBoundary, For, Show } from "solid-js";
+import { createMemo, ErrorBoundary, For, Show } from "solid-js";
 import type { DatasetProp } from "#/util/config";
 import type { PitchInfo } from "#/util/hatsuon";
 import type { PitchType } from "#/util/types";
@@ -48,12 +48,12 @@ export function DefaultPitch(props: {
   index: number;
   ref?: (ref: HTMLDivElement) => void;
 }) {
-  const pitchDataset: DatasetProp = {
+  const $pitchDataset = createMemo<DatasetProp>(() => ({
     "data-pitch-type": props.pitchInfo.patternName as PitchType,
-  };
+  }));
 
-  const pitchTypeJA = (pitchType: string) => {
-    switch (pitchType) {
+  const $pitchTypeJA = createMemo(() => {
+    switch (props.pitchInfo.patternName) {
       case "heiban":
         return "平板";
       case "atamadaka":
@@ -65,14 +65,14 @@ export function DefaultPitch(props: {
       case "kifuku":
         return "起伏";
     }
-  };
+  });
 
   return (
     <div
       class="tooltip"
-      data-tip={pitchTypeJA(props.pitchInfo.patternName)}
+      data-tip={$pitchTypeJA()}
       ref={props.ref}
-      {...pitchDataset}
+      {...$pitchDataset()}
     >
       <div class="flex items-start gap-1 animate-fade-in-sm">
         <div>

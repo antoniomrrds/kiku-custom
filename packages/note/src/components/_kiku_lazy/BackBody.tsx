@@ -115,9 +115,9 @@ export default function BackBody(props: {
     onCleanup(() => window.removeEventListener("keydown", handler));
   });
 
-  const definitionDataset: () => DatasetProp = () => ({
+  const $definitionDataset = createMemo<DatasetProp>(() => ({
     "data-dictionary": currentPage()?.name,
-  });
+  }));
 
   return (
     <div
@@ -131,7 +131,7 @@ export default function BackBody(props: {
         <Sentence />
       </div>
       {$pages().length > 0 && (
-        <div class="animate-fade-in" {...definitionDataset()}>
+        <div class="animate-fade-in" {...$definitionDataset()}>
           {$pages().length > 1 && (
             <div
               class="flex justify-between text-base-content-calm text-sm cursor-pointer hover:text-base-content transition-colors mb-1 tappable"

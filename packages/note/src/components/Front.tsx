@@ -74,13 +74,13 @@ export function Front() {
     }
   });
 
-  const hintFieldDataset: () => DatasetProp = () => ({
+  const $hintFieldDataset = createMemo<DatasetProp>(() => ({
     "data-has-hint": isServer
       ? "{{#Hint}}true{{/Hint}}"
       : $ankiFields.Hint
         ? "true"
         : "",
-  });
+  }));
 
   return (
     <>
@@ -140,7 +140,7 @@ export function Front() {
       )}
       <div
         class={`flex gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
-        {...hintFieldDataset()}
+        {...$hintFieldDataset()}
       >
         <div innerHTML={isServer ? undefined : $ankiFields.Hint}>
           {isServer ? "{{Hint}}" : undefined}

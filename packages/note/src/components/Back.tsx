@@ -65,13 +65,13 @@ export function Back(props: { onExitNested?: () => void }) {
     }, 0);
   });
 
-  const pitchFieldDataset: () => DatasetProp = () => ({
+  const $pitchFieldDataset = createMemo<DatasetProp>(() => ({
     "data-has-pitch": isServer
       ? "{{#PitchPosition}}true{{/PitchPosition}}"
       : $ankiFields.PitchPosition
         ? "true"
         : "",
-  });
+  }));
 
   return (
     <>
@@ -118,7 +118,7 @@ export function Back(props: { onExitNested?: () => void }) {
                   <ExpressionSection />
                   <div
                     class={`mt-6 flex gap-4 pitch pitch-field`}
-                    {...pitchFieldDataset()}
+                    {...$pitchFieldDataset()}
                   >
                     {$ankiFields.PitchPosition && $card.ready ? (
                       <Suspense fallback={<span>&nbsp;</span>}>
