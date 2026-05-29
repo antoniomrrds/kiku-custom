@@ -1,6 +1,6 @@
 import "#/lib/polyfill";
 import type { KikuConfig } from "#/lib/config";
-import type { Constants } from "#/lib/general";
+import type { Constants } from "#/lib/contants";
 import { parseRelatedExpression } from "#/lib/parse-related-expression";
 import type {
   AnkiFields,

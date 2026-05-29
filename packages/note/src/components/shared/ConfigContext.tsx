@@ -7,8 +7,8 @@ import {
   type KikuConfig,
   updateConfigState,
 } from "#/lib/config";
+import { constants } from "#/lib/contants";
 import { createCompatPair } from "#/lib/context-compat";
-import { constants } from "#/lib/general";
 import { useGeneralContext } from "./GeneralContext";
 
 type ConfigContextValue = {

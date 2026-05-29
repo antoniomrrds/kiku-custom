@@ -1,5 +1,5 @@
 import { generateCssVars, getCssVar, type KikuConfig } from "#/lib/config";
-import { constants } from "#/lib/general";
+import { constants } from "#/lib/contants";
 
 export const base64 = {
   decode: (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0)),

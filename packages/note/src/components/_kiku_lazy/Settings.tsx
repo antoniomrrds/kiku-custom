@@ -21,9 +21,9 @@ import {
   tailwindFontSizeVar,
   tailwindSize,
 } from "#/lib/config";
+import { constants } from "#/lib/contants";
 import { defaultConfig } from "#/lib/default-config";
 import { type WebFont, webFonts } from "#/lib/fonts";
-import { constants } from "#/lib/general";
 import { useNavigationTransition, useThemeTransition } from "#/lib/hooks";
 import { capitalize } from "#/lib/text";
 import { daisyUIThemes } from "#/lib/theme";
