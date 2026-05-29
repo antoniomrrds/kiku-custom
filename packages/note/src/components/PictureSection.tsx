@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import type { DatasetProp } from "#/lib/config";
 import { parseHtml } from "#/lib/dom";
@@ -38,10 +38,12 @@ export function PictureSection() {
         : "",
   }));
 
-  createEffect(() => {
-    $group.pictureField;
-    $setSubIndex(0);
-  });
+  createEffect(
+    on(
+      () => $group.pictureField,
+      () => $setSubIndex(0),
+    ),
+  );
 
   const next = (e: MouseEvent) => {
     e.stopPropagation();

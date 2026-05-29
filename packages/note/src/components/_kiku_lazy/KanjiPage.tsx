@@ -10,8 +10,8 @@ import {
 } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
 import { parseHtml } from "#/lib/dom";
-import { extractKanji } from "#/lib/kana";
 import { useNavigationTransition } from "#/lib/hooks";
+import { extractKanji } from "#/lib/kana";
 import { parseFurigana } from "#/lib/parse-furigana";
 import {
   type AnkiFields,
@@ -331,7 +331,7 @@ function NoteList(props: { list: AnkiNote[] }) {
 function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
   const { navigate } = useNavigationTransition();
   const { $setCard } = useCardContext();
-  const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
+  const { $setKanjiPage } = useKanjiPageContext();
   const $data = createMemo(() => props.data);
   const $expression = createMemo(() => $data().fields.Expression.value);
   const $expressionFurigana = createMemo(
@@ -441,13 +441,6 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
     navigate("nested", "forward", () => navigate("kanji", "back"));
   };
 
-  let ref: HTMLDivElement | undefined;
-  onMount(() => {
-    if (ref && $kanjiPage.focus.noteId === props.data.noteId) {
-      ref.scrollIntoView({ block: "center" });
-    }
-  });
-
   return (
     <>
       <li class="p-4 pb-0 tracking-wide flex gap-2 items-start justify-between">
@@ -493,9 +486,10 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
 function KanjiText() {
   const { $kanji } = useKanjiContext();
   const { $kanjiPage } = useKanjiPageContext();
+  const [$ref, $setRef] = createSignal<HTMLDivElement>();
 
-  let ref: HTMLDivElement | undefined;
   onMount(() => {
+    const ref = $ref();
     if (
       ref &&
       $kanjiPage.focus.kanji === $kanji.kanji &&
@@ -507,7 +501,7 @@ function KanjiText() {
 
   return (
     <div class="flex gap-2 sm:gap-4 me-2">
-      <div class="font-secondary text-5xl sm:text-6xl" ref={ref}>
+      <div class="font-secondary text-5xl sm:text-6xl" ref={$setRef}>
         {$kanji.kanji}
       </div>
       <KanjiInfo />

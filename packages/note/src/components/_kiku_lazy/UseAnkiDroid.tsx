@@ -27,9 +27,6 @@ export default function UseAnkiDroid() {
   if (!ankiDroidAPI && !import.meta.env.DEV) return;
   $general.logger.info("Using AnkiDroid");
 
-  let rightIconRef: SVGSVGElement | undefined;
-  let leftIconRef: SVGSVGElement | undefined;
-
   const { $card } = useCardContext();
   const el$ = () => document.documentElement;
   const reverse = $config.ankiDroidReverseSwipeDirection;
@@ -158,14 +155,12 @@ export default function UseAnkiDroid() {
   return (
     <Portal mount={$general.layoutRef}>
       <Icon
-        ref={leftIconRef}
         side="left"
         color={reverse ? "error" : "success"}
         offset={$leftIconOffset()}
         progress={$progress()}
       />
       <Icon
-        ref={rightIconRef}
         side="right"
         color={reverse ? "success" : "error"}
         offset={$rightIconOffset()}
@@ -176,7 +171,6 @@ export default function UseAnkiDroid() {
 }
 
 function Icon(props: {
-  ref: SVGSVGElement | undefined;
   offset: number;
   side: "left" | "right";
   color: "success" | "error";
@@ -204,7 +198,6 @@ function Icon(props: {
       <Switch>
         <Match when={props.color === "error"}>
           <XIcon
-            ref={props.ref}
             class="size-12 rounded-full p-2 shadow-lg transition-colors"
             classList={{
               "bg-base-100 text-base-content-primary": props.progress !== 1,
@@ -214,7 +207,6 @@ function Icon(props: {
         </Match>
         <Match when={props.color === "success"}>
           <CheckIcon
-            ref={props.ref}
             class="size-12 rounded-full p-2 shadow-lg transition-colors"
             classList={{
               "bg-base-100 text-base-content-primary": props.progress !== 1,

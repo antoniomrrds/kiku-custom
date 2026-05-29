@@ -26,25 +26,25 @@ export function ConfigContextProvider(props: {
   const { $general, $setGeneral } = useGeneralContext();
 
   createEffect(() => {
-    ({ ...$config });
-    $general.logger.debug("Updating config:", $config);
+    const config = unwrap($config);
+    $general.logger.debug("Updating config:", config);
     if (!$general.root) throw new Error("Missing root");
-    updateConfigState($general.root, $config, !$general.isAnkiWeb);
-    AnkiConnect.changeAddress($config.ankiConnectAddress);
+    updateConfigState($general.root, config, !$general.isAnkiWeb);
+    AnkiConnect.changeAddress(config.ankiConnectAddress);
     $general.nex.promise.then((nex) => {
       nex.init({
-        constants: constants,
-        config: unwrap($config),
+        constants,
+        config,
         assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
-        preferAnkiConnect: $config.preferAnkiConnect && $general.isAnkiDesktop,
+        preferAnkiConnect: config.preferAnkiConnect && $general.isAnkiDesktop,
       });
     });
 
     sessionStorage.setItem(
       constants.key["kiku-config"],
-      JSON.stringify($config),
+      JSON.stringify(config),
     );
-    const rootDataset = getRootDatasetConfig($config);
+    const rootDataset = getRootDatasetConfig(config);
     const isConfigOutOfSync = Object.entries(rootDataset).some(
       ([key, value]) => {
         return (

@@ -24,9 +24,9 @@ export default function PictureModal(props: {
   const collectGlossaryImgs = useCollectGlossaryImgs();
 
   createEffect(() => {
-    props.img;
+    const img = props.img;
     startViewTransition(() => {
-      $setImg(props.img);
+      $setImg(img);
     });
   });
 

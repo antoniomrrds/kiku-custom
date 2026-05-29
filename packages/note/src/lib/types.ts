@@ -249,7 +249,7 @@ declare global {
   interface PromiseWithResolvers<T> {
     promise: Promise<T>;
     resolve: (value: T | PromiseLike<T>) => void;
-    //biome-ignore lint: polyfill
+    /* oxlint-disable */
     reject: (reason?: any) => void;
   }
 

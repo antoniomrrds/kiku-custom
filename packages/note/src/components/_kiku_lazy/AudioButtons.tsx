@@ -1,4 +1,4 @@
-import { createEffect, For, onMount, Show } from "solid-js";
+import { createEffect, For, on, onMount, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
 import { nodesToString } from "#/lib/dom";
@@ -63,52 +63,61 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
     position: "absolute",
   } as const;
 
-  createEffect(() => {
-    $group.sentenceAudioField;
-    const anchors = $card.sentenceAudioRef?.querySelectorAll("a");
-    if (anchors?.length) {
-      $setCard("sentenceAudios", Array.from(anchors));
-      const anchorsHtml = nodesToString(Array.from(anchors));
-      $general.logger.info("Anchors in sentence audios:", anchorsHtml);
-    }
+  createEffect(
+    on(
+      () => $group.sentenceAudioField,
+      () => {
+        const anchors = $card.sentenceAudioRef?.querySelectorAll("a");
+        if (anchors?.length) {
+          $setCard("sentenceAudios", Array.from(anchors));
+          const anchorsHtml = nodesToString(Array.from(anchors));
+          $general.logger.info("Anchors in sentence audios:", anchorsHtml);
+        }
 
-    const audios = $card.sentenceAudioRef?.querySelectorAll("audio");
-    if (audios?.length) {
-      $setCard("sentenceAudios", Array.from(audios));
-      const audiosHtml = nodesToString(Array.from(audios));
-      $general.logger.info("Audios in sentence audios:", audiosHtml);
-    }
+        const audios = $card.sentenceAudioRef?.querySelectorAll("audio");
+        if (audios?.length) {
+          $setCard("sentenceAudios", Array.from(audios));
+          const audiosHtml = nodesToString(Array.from(audios));
+          $general.logger.info("Audios in sentence audios:", audiosHtml);
+        }
 
-    if (!anchors?.length && !audios?.length) {
-      $setCard("sentenceAudios", undefined);
-    }
-  });
+        if (!anchors?.length && !audios?.length) {
+          $setCard("sentenceAudios", undefined);
+        }
+      },
+    ),
+  );
 
   let autoPlay = true;
-  createEffect(() => {
-    $group.sentenceAudioField;
-    const useWebVolume = bp.isAtLeast("sm") || $general.isAnkiWeb;
-    $card.expressionAudioRef?.querySelectorAll("audio").forEach((el) => {
-      el.volume = useWebVolume ? $config.volume / 100 : 1;
-    });
-    $card.sentenceAudioRef?.querySelectorAll("audio").forEach((el) => {
-      el.volume = useWebVolume ? $config.volume / 100 : 1;
-    });
+  createEffect(
+    on(
+      () => $group.sentenceAudioField,
+      () => {
+        const useWebVolume = bp.isAtLeast("sm") || $general.isAnkiWeb;
+        $card.expressionAudioRef?.querySelectorAll("audio").forEach((el) => {
+          el.volume = useWebVolume ? $config.volume / 100 : 1;
+        });
+        $card.sentenceAudioRef?.querySelectorAll("audio").forEach((el) => {
+          el.volume = useWebVolume ? $config.volume / 100 : 1;
+        });
 
-    if ($card.nested && autoPlay) {
-      autoPlay = false;
-      const audio = $card.expressionAudioRef?.querySelector("audio");
-      if (audio) {
-        audio.play();
-        audio.onpause = () => {
-          const audio = $card.sentenceAudioRef?.querySelectorAll("audio")[0];
+        if ($card.nested && autoPlay) {
+          autoPlay = false;
+          const audio = $card.expressionAudioRef?.querySelector("audio");
           if (audio) {
             audio.play();
+            audio.onpause = () => {
+              const audio =
+                $card.sentenceAudioRef?.querySelectorAll("audio")[0];
+              if (audio) {
+                audio.play();
+              }
+            };
           }
-        };
-      }
-    }
-  });
+        }
+      },
+    ),
+  );
 
   onMount(() => {
     if ($card.isNsfw && $config.muteNsfw) {

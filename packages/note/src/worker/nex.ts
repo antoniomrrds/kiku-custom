@@ -83,7 +83,8 @@ abstract class NexBase<TRemote extends object> {
       const pending = this.pending.get(id);
       if (!pending) return;
       this.pending.delete(id);
-      error ? pending.reject(error) : pending.resolve(result);
+      if (error) pending.reject(error);
+      else pending.resolve(result);
       return;
     }
 

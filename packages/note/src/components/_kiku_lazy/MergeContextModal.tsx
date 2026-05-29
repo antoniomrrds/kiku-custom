@@ -13,7 +13,7 @@ import { useGeneralContext } from "../shared/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
 
 export default function MergeContextModal() {
-  let dialogRef: HTMLDialogElement | undefined;
+  const [$dialogRef, $setDialogRef] = createSignal<HTMLDialogElement>();
   const { $general } = useGeneralContext();
   const { $config } = useConfigContext();
   const { navigate } = useNavigationTransition();
@@ -161,6 +161,7 @@ export default function MergeContextModal() {
   };
 
   const onMergeClick = async () => {
+    const dialogRef = $dialogRef();
     const payload = updateNoteFieldsPayload();
     await AnkiConnect.invoke("updateNote", payload)
       .catch((e) => {
@@ -211,9 +212,8 @@ export default function MergeContextModal() {
         >
           <button
             on:click={() => {
-              if (dialogRef) {
-                dialogRef.showModal();
-              }
+              const dialogRef = $dialogRef();
+              if (dialogRef) dialogRef.showModal();
             }}
             on:touchend={(e) => e.stopPropagation()}
           >
@@ -251,7 +251,7 @@ export default function MergeContextModal() {
       </Switch>
 
       <Portal mount={$general.layoutRef}>
-        <dialog class="modal" ref={dialogRef}>
+        <dialog class="modal" ref={$setDialogRef}>
           <div class="modal-box max-h-[80svh]">
             <h3 class="text-lg font-bold mb-4">Merge Context</h3>
 

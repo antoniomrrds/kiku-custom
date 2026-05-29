@@ -19,8 +19,7 @@ import Sentence from "./Sentence";
 export default function BackBody(props: {
   onDefinitionPictureClick?: (picture: string) => void;
 }) {
-  let definitionEl: HTMLDivElement | undefined;
-  let modalRef: HTMLDialogElement | undefined;
+  const [$modalRef, $setModalRef] = createSignal<HTMLDialogElement>();
   const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $config } = useConfigContext();
 
@@ -135,7 +134,7 @@ export default function BackBody(props: {
           {$pages().length > 1 && (
             <div
               class="flex justify-between text-base-content-calm text-sm cursor-pointer hover:text-base-content transition-colors mb-1 tappable"
-              on:click={() => modalRef?.showModal()}
+              on:click={() => $modalRef()?.showModal()}
               on:touchend={(e) => e.stopPropagation()}
             >
               <div
@@ -156,7 +155,7 @@ export default function BackBody(props: {
             }}
             data-definition-style={$config.definitionStyle}
           >
-            <div class="overflow-auto" ref={definitionEl}>
+            <div class="overflow-auto">
               <DefinitionPictureSection
                 onDefinitionPictureClick={props.onDefinitionPictureClick}
                 currentHtml={currentPage()?.html}
@@ -186,7 +185,7 @@ export default function BackBody(props: {
         </div>
       )}
 
-      <dialog class="modal" ref={modalRef}>
+      <dialog class="modal" ref={$setModalRef}>
         <div class="modal-box max-w-sm max-h-[80svh] flex flex-col p-4 gap-2">
           <h3 class="font-bold text-lg px-2 text-center">Select Page</h3>
           <div class="flex flex-col gap-1 overflow-auto p-2">
@@ -198,7 +197,7 @@ export default function BackBody(props: {
                   classList={{ "btn-active": i() === $definitionIndex() }}
                   on:click={() => {
                     $setDefinitionIndex(i());
-                    modalRef?.close();
+                    $modalRef()?.close();
                   }}
                   on:touchend={(e) => e.stopPropagation()}
                 >
