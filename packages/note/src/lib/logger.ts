@@ -8,23 +8,14 @@ export interface LoggerOptions {
 }
 
 export class Logger {
-  private static levels: LogLevel[] = [
-    "trace",
-    "debug",
-    "info",
-    "warn",
-    "error",
-    "fatal",
-  ];
+  private static levels: LogLevel[] = ["trace", "debug", "info", "warn", "error", "fatal"];
 
   logs: string[] = [];
   private minLevelIndex: number;
   private onUpdate?: (text: string) => void;
 
   constructor(options: LoggerOptions = {}) {
-    this.minLevelIndex = options.level
-      ? Logger.levels.indexOf(options.level)
-      : 0; // default = trace
+    this.minLevelIndex = options.level ? Logger.levels.indexOf(options.level) : 0; // default = trace
     this.onUpdate = options.onUpdate;
     if (!isServer) this.attachToGlobalErrors();
   }
@@ -43,8 +34,7 @@ export class Logger {
     // 2 Catch unhandled Promise rejections
     window.addEventListener("unhandledrejection", (event) => {
       this.error("UnhandledRejection:", {
-        reason:
-          event.reason instanceof Error ? event.reason.stack : event.reason,
+        reason: event.reason instanceof Error ? event.reason.stack : event.reason,
       });
     });
 
@@ -59,9 +49,7 @@ export class Logger {
   private format(level: LogLevel, args: unknown[]): string {
     const time = new Date().toISOString().split("T")[1].replace("Z", "");
     const msg = args
-      .map((a) =>
-        typeof a === "object" ? JSON.stringify(a, null, 2) : String(a),
-      )
+      .map((a) => (typeof a === "object" ? JSON.stringify(a, null, 2) : String(a)))
       .join(" ");
 
     return `[${time}] [${level.toUpperCase()}] ${msg}`;

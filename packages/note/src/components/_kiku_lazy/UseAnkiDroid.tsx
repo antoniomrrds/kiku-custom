@@ -72,10 +72,7 @@ export default function UseAnkiDroid() {
     if ($card.side === "front") return;
 
     // Detect vertical scroll intent
-    if (
-      Math.abs(diffY) > SCROLL_TOLERANCE &&
-      Math.abs(diffY) > Math.abs(diffX)
-    ) {
+    if (Math.abs(diffY) > SCROLL_TOLERANCE && Math.abs(diffY) > Math.abs(diffX)) {
       isScrolling = true;
       $setRightIconOffset(0);
       $setLeftIconOffset(0);

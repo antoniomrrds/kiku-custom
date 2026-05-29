@@ -56,30 +56,19 @@ export class JmdictParser {
 
   async writeTerm() {
     const terms = await this.parseAll();
-    await writeFile(
-      paths["@/.jmdict/term.json"],
-      JSON.stringify(terms, null, 2),
-    );
+    await writeFile(paths["@/.jmdict/term.json"], JSON.stringify(terms, null, 2));
   }
 
   async writeTermMap() {
-    const terms = JSON.parse(
-      await readFile(paths["@/.jmdict/term.json"], "utf8"),
-    ) as JmdictTerm[];
+    const terms = JSON.parse(await readFile(paths["@/.jmdict/term.json"], "utf8")) as JmdictTerm[];
     const termMap: Record<string, JmdictTerm> = {};
     terms.forEach((term) => {
       term.kanji.forEach((kanji) => {
         if (termMap[kanji]) {
           termMap[kanji] = {
-            kanji: Array.from(
-              new Set([...term.kanji, ...termMap[kanji].kanji]),
-            ),
-            meanings: Array.from(
-              new Set([...term.meanings, ...termMap[kanji].meanings]),
-            ),
-            reading: Array.from(
-              new Set([...term.reading, ...termMap[kanji].reading]),
-            ),
+            kanji: Array.from(new Set([...term.kanji, ...termMap[kanji].kanji])),
+            meanings: Array.from(new Set([...term.meanings, ...termMap[kanji].meanings])),
+            reading: Array.from(new Set([...term.reading, ...termMap[kanji].reading])),
           };
         } else {
           termMap[kanji] = term;
@@ -87,17 +76,13 @@ export class JmdictParser {
       });
     });
 
-    await writeFile(
-      paths["@/.jmdict/termMap.json"],
-      JSON.stringify(termMap, null, 2),
-    );
+    await writeFile(paths["@/.jmdict/termMap.json"], JSON.stringify(termMap, null, 2));
   }
 
   termMap: Record<string, JmdictTerm> | undefined = undefined;
   async lookup(term: string) {
     this.termMap =
-      this.termMap ||
-      JSON.parse(await readFile(paths["@/.jmdict/termMap.json"], "utf8"));
+      this.termMap || JSON.parse(await readFile(paths["@/.jmdict/termMap.json"], "utf8"));
     if (!this.termMap) throw new Error("termMap not found");
     return this.termMap[term];
   }

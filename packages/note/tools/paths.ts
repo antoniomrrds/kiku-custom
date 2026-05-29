@@ -10,7 +10,7 @@ const p = (path: string) => join(ROOT, path);
  * Keys starting with "@" represent the package root.
  * Directories end with "/", files do not.
  */
-// biome-ignore format: this looks nicer
+// oxfmt-ignore
 export const paths = {
   "@/":                                        `${ROOT}/`,
   "@/.env":                                    p(".env"),

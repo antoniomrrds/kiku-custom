@@ -38,7 +38,6 @@ export const daisyUIThemes = [
 
 export type DaisyUITheme = (typeof daisyUIThemes)[number];
 
-// biome-ignore format: this looks nicer
 export const colorBase100Map: Record<DaisyUITheme, string> = {
   light: "oklch(100% 0 0)",
   dark: "oklch(25.33% .016 252.42)",

@@ -23,10 +23,7 @@ function Pitch(props: { pitchInfo: PitchInfo; index: number }) {
 
   return (
     <ErrorBoundary fallback={<DefaultPitch {...props} />}>
-      <Show
-        when={$general.plugin?.Pitch}
-        fallback={<DefaultPitch {...props} />}
-      >
+      <Show when={$general.plugin?.Pitch} fallback={<DefaultPitch {...props} />}>
         {(get) => {
           const Pitch = get();
           return (
@@ -68,12 +65,7 @@ export function DefaultPitch(props: {
   });
 
   return (
-    <div
-      class="tooltip"
-      data-tip={$pitchTypeJA()}
-      ref={props.ref}
-      {...$pitchDataset()}
-    >
+    <div class="tooltip" data-tip={$pitchTypeJA()} ref={props.ref} {...$pitchDataset()}>
       <div class="flex items-start gap-1 animate-fade-in-sm">
         <div>
           <For each={props.pitchInfo.morae}>
@@ -87,8 +79,7 @@ export function DefaultPitch(props: {
                   classList={{
                     "border-t-2": props.pitchInfo.pattern[i()] === 1,
                     "pitch-segment":
-                      props.pitchInfo.pattern[i()] === 1 &&
-                      props.pitchInfo.pattern[i() + 1] === 0,
+                      props.pitchInfo.pattern[i()] === 1 && props.pitchInfo.pattern[i() + 1] === 0,
                   }}
                 >
                   {mora}

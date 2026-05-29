@@ -63,10 +63,9 @@ const frontKeys = [
 
 type ExtractUsedFields<T, U extends readonly (keyof T)[]> = Pick<T, U[number]>;
 
-export type AnkiFrontFields = ExtractUsedFields<
-  AnkiFields,
-  typeof frontKeys
-> & { __IS_ROOT__?: boolean };
+export type AnkiFrontFields = ExtractUsedFields<AnkiFields, typeof frontKeys> & {
+  __IS_ROOT__?: boolean;
+};
 export type AnkiBackFields = AnkiFields;
 
 export type AnkiNote = {
@@ -122,55 +121,43 @@ export type KanjiInfoCompact = [
   string[], // related
 ];
 
-// biome-ignore format: this looks nicer
 export const ankiFieldsSkeleton: AnkiFields = {
-  "Expression": "",
-  "ExpressionFurigana": "",
-  "ExpressionReading": "",
-  "ExpressionAudio": "",
-  "RelatedExpression": "",
-  "SelectionText": "",
-  "MainDefinition": "",
-  "DefinitionPicture": "",
-  "Sentence": "",
-  "SentenceFurigana": "",
-  "SentenceTranslation": "",
-  "SentenceAudio": "",
-  "Picture": "",
-  "Glossary": "",
-  "Hint": "",
-  "IsWordAndSentenceCard": "",
-  "IsClickCard": "",
-  "IsSentenceCard": "",
-  "IsAudioCard": "",
-  "PitchPosition": "",
-  "PitchCategories": "",
-  "Frequency": "",
-  "FreqSort": "",
-  "MiscInfo": "",
-  "Tags": "",
-  "CardID": "",
+  Expression: "",
+  ExpressionFurigana: "",
+  ExpressionReading: "",
+  ExpressionAudio: "",
+  RelatedExpression: "",
+  SelectionText: "",
+  MainDefinition: "",
+  DefinitionPicture: "",
+  Sentence: "",
+  SentenceFurigana: "",
+  SentenceTranslation: "",
+  SentenceAudio: "",
+  Picture: "",
+  Glossary: "",
+  Hint: "",
+  IsWordAndSentenceCard: "",
+  IsClickCard: "",
+  IsSentenceCard: "",
+  IsAudioCard: "",
+  PitchPosition: "",
+  PitchCategories: "",
+  Frequency: "",
+  FreqSort: "",
+  MiscInfo: "",
+  Tags: "",
+  CardID: "",
   "furigana:ExpressionFurigana": "",
   "kana:ExpressionFurigana": "",
   "furigana:Sentence": "",
   "kanji:Sentence": "",
   "furigana:SentenceFurigana": "",
-  "kana:SentenceFurigana": ""
-}
+  "kana:SentenceFurigana": "",
+};
 
-export type PitchType =
-  | "heiban"
-  | "atamadaka"
-  | "nakadaka"
-  | "odaka"
-  | "kifuku";
-export const pitchTypes: PitchType[] = [
-  "heiban",
-  "atamadaka",
-  "nakadaka",
-  "odaka",
-  "kifuku",
-];
+export type PitchType = "heiban" | "atamadaka" | "nakadaka" | "odaka" | "kifuku";
+export const pitchTypes: PitchType[] = ["heiban", "atamadaka", "nakadaka", "odaka", "kifuku"];
 
 type AnkiResponse<T = unknown> = {
   success: boolean;

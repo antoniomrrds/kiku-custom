@@ -25,7 +25,6 @@ const assets = {
   "_kiku_font_klee-one.woff2": "_kiku_font_klee-one.woff2",
 };
 
-// biome-ignore format: this looks nicer
 export const constants = {
   VERSION: VERSION,
   NOTE_TYPE: "Kiku",

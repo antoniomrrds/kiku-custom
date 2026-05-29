@@ -1,10 +1,4 @@
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  lazy,
-  onMount,
-} from "solid-js";
+import { createEffect, createMemo, createSignal, lazy, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/lib/config";
@@ -15,13 +9,13 @@ import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useConfigContext } from "./shared/ConfigContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
 
-// biome-ignore format: this looks nicer
+// oxfmt-ignore
 const Lazy = {
-  AudioButtons: lazy(async () => ({ default: (await import("./_kiku_lazy")).AudioButtons, })),
-  HeaderMain: lazy(async () => ({ default: (await import("./_kiku_lazy")).HeaderMain, })),
+  AudioButtons: lazy(async () => ({ default: (await import("./_kiku_lazy")).AudioButtons })),
+  HeaderMain: lazy(async () => ({ default: (await import("./_kiku_lazy")).HeaderMain })),
   FieldGroupPagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).FieldGroupPagination, })),
-  UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid, })),
-  Sentence: lazy(async () => ({ default: (await import("./_kiku_lazy")).Sentence, })),
+  UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid })),
+  Sentence: lazy(async () => ({ default: (await import("./_kiku_lazy")).Sentence })),
 };
 
 export function Front() {
@@ -61,11 +55,7 @@ export function Front() {
   });
 
   createEffect(() => {
-    if (
-      $ankiFields.IsAudioCard &&
-      $card.sentenceFieldRef &&
-      $group.sentenceField
-    ) {
+    if ($ankiFields.IsAudioCard && $card.sentenceFieldRef && $group.sentenceField) {
       const boldElements = $card.sentenceFieldRef.querySelectorAll("b");
       boldElements.forEach((el) => {
         el.innerHTML = "[...]";
@@ -75,11 +65,7 @@ export function Front() {
   });
 
   const $hintFieldDataset = createMemo<DatasetProp>(() => ({
-    "data-has-hint": isServer
-      ? "{{#Hint}}true{{/Hint}}"
-      : $ankiFields.Hint
-        ? "true"
-        : "",
+    "data-has-hint": isServer ? "{{#Hint}}true{{/Hint}}" : $ankiFields.Hint ? "true" : "",
   }));
 
   return (
@@ -101,10 +87,8 @@ export function Front() {
               <div
                 class="expression font-secondary text-center vertical-rl"
                 classList={{
-                  "border-b-2 border-dotted border-base-content-soft":
-                    !!$ankiFields.IsClickCard,
-                  "transition-opacity duration-[1000ms] opacity-0":
-                    $hideExpression(),
+                  "border-b-2 border-dotted border-base-content-soft": !!$ankiFields.IsClickCard,
+                  "transition-opacity duration-[1000ms] opacity-0": $hideExpression(),
                 }}
                 innerHTML={
                   isServer

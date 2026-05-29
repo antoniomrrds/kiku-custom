@@ -9,10 +9,7 @@ export default function AnkiMobileDebug() {
   const [$buttonActive, $setButtonActive] = createSignal(false);
 
   const log = (msg: string) => {
-    $setLogs((prev) => [
-      `${new Date().toLocaleTimeString()}: ${msg}`,
-      ...prev.slice(0, 49),
-    ]);
+    $setLogs((prev) => [`${new Date().toLocaleTimeString()}: ${msg}`, ...prev.slice(0, 49)]);
   };
 
   return (

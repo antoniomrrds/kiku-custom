@@ -6,10 +6,7 @@ export class AnkiConnect {
   private fetchJson: MainThreadApi["fetchJson"];
   public ankiConnectAddress: string;
 
-  constructor(
-    fetchJson: MainThreadApi["fetchJson"],
-    ankiConnectAddress: string,
-  ) {
+  constructor(fetchJson: MainThreadApi["fetchJson"], ankiConnectAddress: string) {
     this.fetchJson = fetchJson;
     this.ankiConnectAddress = ankiConnectAddress;
   }
@@ -56,16 +53,12 @@ export class AnkiConnect {
     const kanjiQuery =
       kanjiList.length === 0
         ? null
-        : `${noteFilter} AND (${kanjiList
-            .map((k) => `"Expression:*${k}*"`)
-            .join(" OR ")})`;
+        : `${noteFilter} AND (${kanjiList.map((k) => `"Expression:*${k}*"`).join(" OR ")})`;
 
     const readingQuery =
       readingList.length === 0
         ? null
-        : `${noteFilter} AND (${readingList
-            .map((r) => `"ExpressionReading:${r}"`)
-            .join(" OR ")})`;
+        : `${noteFilter} AND (${readingList.map((r) => `"ExpressionReading:${r}"`).join(" OR ")})`;
 
     const expressionQuery =
       expressionList.length === 0
@@ -74,9 +67,7 @@ export class AnkiConnect {
             .flatMap((e) => [`"Expression:${e}"`, `"RelatedExpression:*${e}*"`])
             .join(" OR ")})`;
 
-    const queries = [kanjiQuery, readingQuery, expressionQuery].filter(
-      Boolean,
-    ) as string[];
+    const queries = [kanjiQuery, readingQuery, expressionQuery].filter(Boolean) as string[];
     const idsLists = await this.batchFindNotes(queries);
     const allIds = [...new Set(idsLists.flat())];
     const [allNotes] = await this.batchNotesInfo([allIds]);
@@ -86,15 +77,11 @@ export class AnkiConnect {
     const expressionListResult: Record<string, AnkiNote[]> = {};
 
     for (const k of kanjiList) {
-      kanjiListResult[k] = allNotes.filter((n) =>
-        n.fields.Expression?.value.includes(k),
-      );
+      kanjiListResult[k] = allNotes.filter((n) => n.fields.Expression?.value.includes(k));
     }
 
     for (const r of readingList) {
-      readingListResult[r] = allNotes.filter(
-        (n) => n.fields.ExpressionReading?.value === r,
-      );
+      readingListResult[r] = allNotes.filter((n) => n.fields.ExpressionReading?.value === r);
     }
 
     for (const e of expressionList) {

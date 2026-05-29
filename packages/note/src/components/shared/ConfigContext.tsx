@@ -2,11 +2,7 @@ import { createContext, createEffect, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { type SetStoreFunction, type Store, unwrap } from "solid-js/store";
 import { AnkiConnect } from "#/lib/anki-connect";
-import {
-  getRootDatasetConfig,
-  type KikuConfig,
-  updateConfigState,
-} from "#/lib/config";
+import { getRootDatasetConfig, type KikuConfig, updateConfigState } from "#/lib/config";
 import { constants } from "#/lib/contants";
 import { createCompatPair } from "#/lib/context-compat";
 import { useGeneralContext } from "./GeneralContext";
@@ -18,10 +14,7 @@ type ConfigContextValue = {
 
 const ConfigContext = createContext<ConfigContextValue>();
 
-export function ConfigContextProvider(props: {
-  children: JSX.Element;
-  value: ConfigContextValue;
-}) {
+export function ConfigContextProvider(props: { children: JSX.Element; value: ConfigContextValue }) {
   const { $config } = props.value;
   const { $general, $setGeneral } = useGeneralContext();
 
@@ -40,37 +33,21 @@ export function ConfigContextProvider(props: {
       });
     });
 
-    sessionStorage.setItem(
-      constants.key["kiku-config"],
-      JSON.stringify(config),
-    );
+    sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
     const rootDataset = getRootDatasetConfig(config);
-    const isConfigOutOfSync = Object.entries(rootDataset).some(
-      ([key, value]) => {
-        return (
-          $general.templateDataset[key as keyof typeof rootDataset] !== value
-        );
-      },
-    );
+    const isConfigOutOfSync = Object.entries(rootDataset).some(([key, value]) => {
+      return $general.templateDataset[key as keyof typeof rootDataset] !== value;
+    });
     $setGeneral("isConfigOutOfSync", isConfigOutOfSync);
   });
 
-  return (
-    <ConfigContext.Provider value={props.value}>
-      {props.children}
-    </ConfigContext.Provider>
-  );
+  return <ConfigContext.Provider value={props.value}>{props.children}</ConfigContext.Provider>;
 }
 
 export function useConfigContext() {
   const config = useContext(ConfigContext);
   if (!config) throw new Error("Missing ConfigContext");
-  return createCompatPair(
-    "$config",
-    "$setConfig",
-    config.$config,
-    config.$setConfig,
-  );
+  return createCompatPair("$config", "$setConfig", config.$config, config.$setConfig);
 }
 
 export type UseConfigContext = typeof useConfigContext;

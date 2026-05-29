@@ -43,8 +43,7 @@ class Script {
     cssPlugin: string;
   }) {
     const version = `v${await getVersion()}`;
-    const { frontSsrTemplate, backSsrTemplate, hydrationScript } =
-      generateSsrTemplate();
+    const { frontSsrTemplate, backSsrTemplate, hydrationScript } = generateSsrTemplate();
 
     log.yellow("Front SSR Template:");
     log.gray(frontSsrTemplate);

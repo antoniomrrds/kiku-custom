@@ -46,15 +46,11 @@ export default function MergeContextModal() {
         const currentNote = notes.result[1];
         if (!rootNote?.noteId) throw new Error("Failed to load root note");
         if (!currentNote?.noteId)
-          throw new Error(
-            "Failed to load current note, is your notes cache up to date?",
-          );
+          throw new Error("Failed to load current note, is your notes cache up to date?");
         $setRootNote(rootNote);
         $setCurrentNote(currentNote);
       } catch (e) {
-        $general.toast.error(
-          e instanceof Error ? e.message : "Failed to load notes",
-        );
+        $general.toast.error(e instanceof Error ? e.message : "Failed to load notes");
         $general.logger.error(e);
       }
     }
@@ -81,9 +77,7 @@ export default function MergeContextModal() {
 
   const mergedReadable = () => parseMergedIntoReadable(merged());
   const hasDuplicates = () =>
-    Object.values(mergedReadable().duplicates).some((item) =>
-      Boolean(item.length),
-    );
+    Object.values(mergedReadable().duplicates).some((item) => Boolean(item.length));
 
   const mergedAnkiFields = () => {
     const direction = $mergeDirection();
@@ -91,10 +85,7 @@ export default function MergeContextModal() {
     const targetNote = direction === "toRoot" ? $rootNote() : $currentNote();
     if (!targetNote) return ankiFieldsSkeleton;
     const targetFields = Object.fromEntries(
-      Object.entries(targetNote.fields).map(([key, value]) => [
-        key,
-        value.value,
-      ]),
+      Object.entries(targetNote.fields).map(([key, value]) => [key, value.value]),
     );
 
     // ---- tags ----
@@ -103,9 +94,7 @@ export default function MergeContextModal() {
     let tags = unique([...rootTags, ...currentTags]);
     const targetTags = direction === "toRoot" ? rootTags : currentTags;
     const unwantedTags = ["leech", "marked", "potential_leech"];
-    tags = tags.filter(
-      (tag) => targetTags.includes(tag) || !unwantedTags.includes(tag),
-    );
+    tags = tags.filter((tag) => targetTags.includes(tag) || !unwantedTags.includes(tag));
 
     return {
       ...ankiFieldsSkeleton,
@@ -116,10 +105,7 @@ export default function MergeContextModal() {
   };
 
   const targetId = () => {
-    const targetId =
-      $mergeDirection() === "toRoot"
-        ? $rootNote()?.noteId
-        : $currentNote()?.noteId;
+    const targetId = $mergeDirection() === "toRoot" ? $rootNote()?.noteId : $currentNote()?.noteId;
     if (!targetId) return;
     return targetId;
   };
@@ -205,11 +191,7 @@ export default function MergeContextModal() {
         <Match when={$loading()}>
           <span class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"></span>
         </Match>
-        <Match
-          when={
-            $general.isAnkiConnectAvailable && $rootNote() && $currentNote()
-          }
-        >
+        <Match when={$general.isAnkiConnectAvailable && $rootNote() && $currentNote()}>
           <button
             on:click={() => {
               const dialogRef = $dialogRef();
@@ -220,11 +202,7 @@ export default function MergeContextModal() {
             <GitPullRequestArrow class="size-4 cursor-pointer text-base-content-soft animate-fade-in-sm" />
           </button>
         </Match>
-        <Match
-          when={
-            $general.isAnkiConnectAvailable && (!$rootNote() || !$currentNote())
-          }
-        >
+        <Match when={$general.isAnkiConnectAvailable && (!$rootNote() || !$currentNote())}>
           <span class="animate-fade-in-sm">
             <span class="status status-error animate-ping"></span>
           </span>
@@ -259,9 +237,7 @@ export default function MergeContextModal() {
               <div class="flex gap-4 items-center justify-center">
                 <div class="flex flex-col items-center">
                   <div>Root</div>
-                  <div class="text-base-content-calm text-xs">
-                    {$rootNote()?.noteId}
-                  </div>
+                  <div class="text-base-content-calm text-xs">{$rootNote()?.noteId}</div>
                   <Show when={$rootNote()?.noteId}>
                     {(id) => (
                       <div class="text-base-content-soft text-xs">
@@ -289,9 +265,7 @@ export default function MergeContextModal() {
                 </button>
                 <div class="flex flex-col items-center">
                   <div>Current</div>
-                  <div class="text-base-content-calm text-xs">
-                    {$currentNote()?.noteId}
-                  </div>
+                  <div class="text-base-content-calm text-xs">{$currentNote()?.noteId}</div>
                   <Show when={$currentNote()?.noteId}>
                     {(id) => (
                       <div class="text-base-content-soft text-xs">
@@ -306,8 +280,7 @@ export default function MergeContextModal() {
                 when={
                   $rootNote()?.fields.Expression.value &&
                   $currentNote()?.fields.Expression.value &&
-                  $rootNote()?.fields.Expression.value !==
-                    $currentNote()?.fields.Expression.value
+                  $rootNote()?.fields.Expression.value !== $currentNote()?.fields.Expression.value
                 }
               >
                 <div role="alert" class="alert alert-warning">
@@ -322,26 +295,14 @@ export default function MergeContextModal() {
               </Show>
 
               <div class="flex flex-col gap-2">
-                <FieldPreview
-                  title="Sentence"
-                  content={mergedReadable().Sentence}
-                />
+                <FieldPreview title="Sentence" content={mergedReadable().Sentence} />
                 <FieldPreview
                   title="SentenceFurigana"
                   content={mergedReadable().SentenceFurigana}
                 />
-                <FieldPreview
-                  title="SentenceAudio"
-                  content={mergedReadable().SentenceAudio}
-                />
-                <FieldPreview
-                  title="MiscInfo"
-                  content={mergedReadable().MiscInfo}
-                />
-                <FieldPreview
-                  title="Picture"
-                  content={mergedReadable().Picture}
-                />
+                <FieldPreview title="SentenceAudio" content={mergedReadable().SentenceAudio} />
+                <FieldPreview title="MiscInfo" content={mergedReadable().MiscInfo} />
+                <FieldPreview title="Picture" content={mergedReadable().Picture} />
                 <FieldPreview
                   title="AnkiConnect Payload Preview"
                   content={JSON.stringify(updateNoteFieldsPayload(), null, 2)}
@@ -351,8 +312,8 @@ export default function MergeContextModal() {
               <Show
                 when={
                   // only show if root note is not older than 1 day
-                  Date.now() - ($rootNote()?.noteId ?? Date.now()) <
-                    1000 * 60 * 60 * 24 && $mergeDirection() === "toCurrent"
+                  Date.now() - ($rootNote()?.noteId ?? Date.now()) < 1000 * 60 * 60 * 24 &&
+                  $mergeDirection() === "toCurrent"
                 }
               >
                 <fieldset class="fieldset">
@@ -373,8 +334,8 @@ export default function MergeContextModal() {
               <Show when={!$config.preferAnkiConnect}>
                 <div role="alert" class="alert alert-warning">
                   <span>
-                    To prevent unwanted result caused by stale notes cache,
-                    please enable <b>"Prefer AnkiConnect"</b> in Settings.
+                    To prevent unwanted result caused by stale notes cache, please enable{" "}
+                    <b>"Prefer AnkiConnect"</b> in Settings.
                   </span>
                 </div>
               </Show>
@@ -449,7 +410,6 @@ function mergeContext(base: ContextField, extra: ContextField) {
     return normalizedBase.SentenceFurigana + normalizedExtra.SentenceFurigana;
   };
 
-  // biome-ignore format: this looks nicer
   const merged = {
     Sentence: normalizedBase.Sentence + normalizedExtra.Sentence,
     SentenceFurigana: getSentenceFurigana(),
@@ -472,14 +432,12 @@ function mergeContext(base: ContextField, extra: ContextField) {
   merged.Sentence = nodesToString(Sentence);
 
   const sentenceFuriganaDoc = parseHtml(merged.SentenceFurigana);
-  const sentenceFuriganaWithGroup =
-    sentenceFuriganaDoc.querySelectorAll("[data-group-id]");
+  const sentenceFuriganaWithGroup = sentenceFuriganaDoc.querySelectorAll("[data-group-id]");
   const SentenceFurigana = sortGroup(sentenceFuriganaWithGroup);
   merged.SentenceFurigana = nodesToString(SentenceFurigana);
 
   const sentenceAudioDoc = parseHtml(merged.SentenceAudio);
-  const sentenceAudioWithGroup =
-    sentenceAudioDoc.querySelectorAll("[data-group-id]");
+  const sentenceAudioWithGroup = sentenceAudioDoc.querySelectorAll("[data-group-id]");
   const SentenceAudio = sortGroup(sentenceAudioWithGroup);
   merged.SentenceAudio = nodesToString(SentenceAudio);
 
@@ -509,18 +467,16 @@ function normalizeFields(fields: ContextField) {
   );
 
   const sentenceFuriganaDoc = parseHtml(fields.SentenceFurigana);
-  const sentenceFuriganaWithGroup =
-    sentenceFuriganaDoc.querySelectorAll("[data-group-id]");
-  const sentenceFuriganaWithoutGroup = Array.from(
-    sentenceFuriganaDoc.body.childNodes,
-  ).filter((el) => !(el as HTMLSpanElement).dataset?.groupId);
+  const sentenceFuriganaWithGroup = sentenceFuriganaDoc.querySelectorAll("[data-group-id]");
+  const sentenceFuriganaWithoutGroup = Array.from(sentenceFuriganaDoc.body.childNodes).filter(
+    (el) => !(el as HTMLSpanElement).dataset?.groupId,
+  );
 
   const sentenceAudioDoc = parseHtml(fields.SentenceAudio);
-  const sentenceAudioWithGroup =
-    sentenceAudioDoc.querySelectorAll("[data-group-id]");
-  const sentenceAudioWithoutGroup = Array.from(
-    sentenceAudioDoc.body.childNodes,
-  ).filter((el) => !(el as HTMLSpanElement).dataset?.groupId);
+  const sentenceAudioWithGroup = sentenceAudioDoc.querySelectorAll("[data-group-id]");
+  const sentenceAudioWithoutGroup = Array.from(sentenceAudioDoc.body.childNodes).filter(
+    (el) => !(el as HTMLSpanElement).dataset?.groupId,
+  );
 
   const miscInfoDoc = parseHtml(fields.MiscInfo);
   const miscInfoWithGroup = miscInfoDoc.querySelectorAll("[data-group-id]");
@@ -530,9 +486,7 @@ function normalizeFields(fields: ContextField) {
 
   const pictureDoc = parseHtml(fields.Picture);
   const pictureWithGroup = pictureDoc.querySelectorAll("img[data-group-id]");
-  const pictureWithoutGroup = pictureDoc.querySelectorAll(
-    "img:not([data-group-id])",
-  );
+  const pictureWithoutGroup = pictureDoc.querySelectorAll("img:not([data-group-id])");
   pictureWithoutGroup.forEach((img) => {
     img.setAttribute("data-group-id", newId.toString());
   });
@@ -581,11 +535,7 @@ function parseMergedIntoReadable(fields: {
   MiscInfo: string;
   Picture: string;
 }) {
-  function extractGroupedText(
-    doc: Document,
-    selector: string,
-    value: (node: Element) => string,
-  ) {
+  function extractGroupedText(doc: Document, selector: string, value: (node: Element) => string) {
     const seen = new Set<string>();
     const duplicates = new Set<string>();
 

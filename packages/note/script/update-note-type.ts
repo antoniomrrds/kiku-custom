@@ -22,7 +22,6 @@ class Script {
     return { front, back, style };
   }
 
-  //biome-ignore format: this looks nicer
   applyDataAttributes(template: string) {
     return template
       .replace("__DATA_THEME__", defaultConfig.theme)
@@ -64,9 +63,7 @@ class Script {
     });
 
     log.gray(`updateModelStyling: ${JSON.stringify(result)}`);
-    console.log(
-      `✅ Updated "${this.NOTE_TYPE}" style from ${basename(this.STYLE_PATH)}`,
-    );
+    console.log(`✅ Updated "${this.NOTE_TYPE}" style from ${basename(this.STYLE_PATH)}`);
   }
 
   async run() {

@@ -1,7 +1,7 @@
 import { lazy } from "solid-js";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
 
-// biome-ignore format: this looks nicer
+// oxfmt-ignore
 const Lazy = {
   FieldGroupPagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).FieldGroupPagination, })),
 };

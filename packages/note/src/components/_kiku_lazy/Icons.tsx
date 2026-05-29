@@ -21,9 +21,7 @@ export function BoltIcon(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   );
 }
 
-export function CircleChevronDownIcon(
-  props: JSX.SvgSVGAttributes<SVGSVGElement>,
-) {
+export function CircleChevronDownIcon(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -260,9 +258,7 @@ export function XIcon(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   );
 }
 
-export function GitPullRequestArrow(
-  props: JSX.SvgSVGAttributes<SVGSVGElement>,
-) {
+export function GitPullRequestArrow(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

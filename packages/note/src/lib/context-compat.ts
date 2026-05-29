@@ -1,9 +1,7 @@
-type CompatPair<
+type CompatPair<TFirst, TSecond, TFirstKey extends string, TSecondKey extends string> = readonly [
   TFirst,
   TSecond,
-  TFirstKey extends string,
-  TSecondKey extends string,
-> = readonly [TFirst, TSecond] &
+] &
   Record<TFirstKey, TFirst> &
   Record<TSecondKey, TSecond>;
 

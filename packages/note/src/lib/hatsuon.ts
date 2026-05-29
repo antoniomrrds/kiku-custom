@@ -1,14 +1,11 @@
 // https://github.com/DJTB/hatsuon/tree/master
-// biome-ignore format: this looks nicer
-export const HIRA_DIGRAPHS = ['ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'ゃ', 'ゅ', 'ょ', 'ゎ', 'ゕ', 'ゖ'];
-// biome-ignore format: this looks nicer
-export const KATA_DIGRAPHS = ['ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ャ', 'ュ', 'ョ', 'ヮ', 'ヵ', 'ヶ'];
-// biome-ignore format: this looks nicer
+export const HIRA_DIGRAPHS = ["ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "ゎ", "ゕ", "ゖ"];
+export const KATA_DIGRAPHS = ["ァ", "ィ", "ゥ", "ェ", "ォ", "ャ", "ュ", "ョ", "ヮ", "ヵ", "ヶ"];
 export const PATTERN_NAMES = {
-  HEIBAN: { EN: 'heiban', JA: '平板', },
-  ATAMADAKA: { EN: 'atamadaka', JA: '頭高', },
-  NAKADAKA: { EN: 'nakadaka', JA: '中高', },
-  ODAKA: { EN: 'odaka', JA: '尾高', },
+  HEIBAN: { EN: "heiban", JA: "平板" },
+  ATAMADAKA: { EN: "atamadaka", JA: "頭高" },
+  NAKADAKA: { EN: "nakadaka", JA: "中高" },
+  ODAKA: { EN: "odaka", JA: "尾高" },
 };
 type Locale = "EN" | "JA";
 
@@ -33,9 +30,7 @@ export function isDigraph(kana = "") {
 export function getMorae(reading = "") {
   // [か, し, ゅ, う] => [か, しゅ, う]
   const combineDigraphs = (arr: string[] = [], char = "") =>
-    isDigraph(char)
-      ? arr.slice(0, -1).concat(arr.slice(-1) + char)
-      : arr.concat(char);
+    isDigraph(char) ? arr.slice(0, -1).concat(arr.slice(-1) + char) : arr.concat(char);
 
   return reading.split("").reduce(combineDigraphs, []);
 }
@@ -60,11 +55,7 @@ export function getMoraCount(reading = "") {
  * @param {string} [locale='EN'] localization of pitch type name
  * @returns {string} pitch type name
  */
-export function getPitchPatternName(
-  moraCount = 0,
-  pitchNum = -1,
-  locale: Locale = "EN",
-) {
+export function getPitchPatternName(moraCount = 0, pitchNum = -1, locale: Locale = "EN") {
   let names = { EN: "unknown", JA: "不詳" };
   if (pitchNum === 0) {
     names = PATTERN_NAMES.HEIBAN;
@@ -137,12 +128,7 @@ export function makeOdaka(moraCount = 0) {
  */
 export function makeNakadaka(moraCount = 0, pitchNum = 0) {
   if (moraCount < 3 || pitchNum < 2 || pitchNum >= moraCount) return [];
-  return [
-    0,
-    ...Array(pitchNum - 1).fill(1),
-    ...Array(moraCount - pitchNum).fill(0),
-    0,
-  ];
+  return [0, ...Array(pitchNum - 1).fill(1), ...Array(moraCount - pitchNum).fill(0), 0];
 }
 
 /**
@@ -169,11 +155,7 @@ export function removeDigraphPitches(reading = "", pattern = []) {
  * @param {boolean} [digraphsIncluded=false] are digraph pitch points present
  * @returns {number} pitch number
  */
-export function getPitchNumFromPattern(
-  reading = "",
-  pitchPattern = [],
-  digraphsIncluded = false,
-) {
+export function getPitchNumFromPattern(reading = "", pitchPattern = [], digraphsIncluded = false) {
   if (!reading || !pitchPattern.length) {
     return -1;
   }

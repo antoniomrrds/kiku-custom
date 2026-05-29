@@ -42,9 +42,7 @@ export const plugin = {
 
               const noteInfos = await invoke("notesInfo", { notes: [noteId] });
               const tags = noteInfos?.[0]?.tags || [];
-              const isNsfw = tags.some(
-                (/**@type {string}*/ t) => t.toLowerCase() === "nsfw",
-              );
+              const isNsfw = tags.some((/**@type {string}*/ t) => t.toLowerCase() === "nsfw");
 
               if (isNsfw) {
                 await invoke("removeTags", { notes: [noteId], tags: "NSFW" });

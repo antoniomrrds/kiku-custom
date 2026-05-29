@@ -52,9 +52,7 @@ export function PictureSection() {
 
   const prev = (e: MouseEvent) => {
     e.stopPropagation();
-    $setSubIndex(
-      (prev) => (prev - 1 + $pictures().length) % $pictures().length,
-    );
+    $setSubIndex((prev) => (prev - 1 + $pictures().length) % $pictures().length);
   };
 
   return (

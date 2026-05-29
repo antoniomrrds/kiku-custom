@@ -48,8 +48,7 @@ function createBreakpoint() {
     });
   });
 
-  const isAtLeast = (bp: Breakpoint) =>
-    order.indexOf($breakpoint()) >= order.indexOf(bp);
+  const isAtLeast = (bp: Breakpoint) => order.indexOf($breakpoint()) >= order.indexOf(bp);
 
   return { breakpoint: $breakpoint, isAtLeast };
 }

@@ -25,9 +25,7 @@ import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
 export default function Expression() {
   const { $setCard } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
-  const [$activeAnchor, $setActiveAnchor] = createSignal<HTMLElement | null>(
-    null,
-  );
+  const [$activeAnchor, $setActiveAnchor] = createSignal<HTMLElement | null>(null);
   const [$activeKanji, $setActiveKanji] = createSignal<string | null>(null);
   let timeout: ReturnType<typeof setTimeout>;
 
@@ -63,13 +61,7 @@ export default function Expression() {
   function ExpressionRuby() {
     return (
       <For each={Array.from($doc().body.childNodes)}>
-        {(node) => (
-          <RenderNode
-            node={node}
-            onActive={handleActive}
-            onInactive={handleInactive}
-          />
-        )}
+        {(node) => <RenderNode node={node} onActive={handleActive} onInactive={handleInactive} />}
       </For>
     );
   }
@@ -78,19 +70,10 @@ export default function Expression() {
     return (
       <ruby>
         <For each={$ankiFields.Expression.split("")}>
-          {(char) => (
-            <CharSpan
-              char={char}
-              onActive={handleActive}
-              onInactive={handleInactive}
-            />
-          )}
+          {(char) => <CharSpan char={char} onActive={handleActive} onInactive={handleInactive} />}
         </For>
         <Show
-          when={
-            $ankiFields.ExpressionReading &&
-            extractKanji($ankiFields.Expression).length > 0
-          }
+          when={$ankiFields.ExpressionReading && extractKanji($ankiFields.Expression).length > 0}
         >
           <rt>{$ankiFields.ExpressionReading}</rt>
         </Show>
@@ -108,19 +91,10 @@ export default function Expression() {
                 <ruby>
                   <For each={rubyItem().text.trim().split("")}>
                     {(char) => (
-                      <CharSpan
-                        char={char}
-                        onActive={handleActive}
-                        onInactive={handleInactive}
-                      />
+                      <CharSpan char={char} onActive={handleActive} onInactive={handleInactive} />
                     )}
                   </For>
-                  <Show
-                    when={
-                      rubyItem().reading.trim() !== "" ||
-                      rubyItem().reading === " "
-                    }
-                  >
+                  <Show when={rubyItem().reading.trim() !== "" || rubyItem().reading === " "}>
                     <rt>{rubyItem().reading}</rt>
                   </Show>
                 </ruby>
@@ -130,11 +104,7 @@ export default function Expression() {
               <span>
                 <For each={item.text.trim().split("")}>
                   {(char) => (
-                    <CharSpan
-                      char={char}
-                      onActive={handleActive}
-                      onInactive={handleInactive}
-                    />
+                    <CharSpan char={char} onActive={handleActive} onInactive={handleInactive} />
                   )}
                 </For>
               </span>
@@ -151,12 +121,7 @@ export default function Expression() {
         <Match when={$isRuby()}>
           <ExpressionRuby />
         </Match>
-        <Match
-          when={
-            $furiganaData().length === 0 ||
-            !$ankiFields.ExpressionFurigana.includes("[")
-          }
-        >
+        <Match when={$furiganaData().length === 0 || !$ankiFields.ExpressionFurigana.includes("[")}>
           <ExpressionNoFurigana />
         </Match>
         <Match when={true}>
@@ -187,11 +152,7 @@ function RenderNode(props: {
       <Match when={$el().nodeType === Node.TEXT_NODE}>
         <For each={$el().textContent?.split("")}>
           {(char) => (
-            <CharSpan
-              char={char}
-              onActive={props.onActive}
-              onInactive={props.onInactive}
-            />
+            <CharSpan char={char} onActive={props.onActive} onInactive={props.onInactive} />
           )}
         </For>
       </Match>
@@ -219,11 +180,7 @@ function RenderNode(props: {
           <Match when={$tagName() === "rb"}>
             <For each={Array.from($el().childNodes)}>
               {(child) => (
-                <RenderNode
-                  node={child}
-                  onActive={props.onActive}
-                  onInactive={props.onInactive}
-                />
+                <RenderNode node={child} onActive={props.onActive} onInactive={props.onInactive} />
               )}
             </For>
           </Match>

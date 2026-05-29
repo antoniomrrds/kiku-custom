@@ -43,28 +43,26 @@ export type KikuConfig = {
   keybindFieldGroupNext: string;
 };
 
-//biome-ignore format: this looks nicer
+// oxfmt-ignore
 export const tailwindSize = [ "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl", "7xl", "8xl", "9xl", ] as const;
 export type TailwindSize = (typeof tailwindSize)[number];
 
-//biome-ignore format: this looks nicer
-export const definitionStyle = [ "normal", "single-page", "glossary-split", ] as const;
+export const definitionStyle = ["normal", "single-page", "glossary-split"] as const;
 export type DefinitionStyle = (typeof definitionStyle)[number];
-//biome-ignore format: this looks nicer
 export const tailwindFontSizeVar = {
-  xs: { fontSize: "var(--text-xs)", lineHeight: "var(--text-xs--line-height)", },
-  sm: { fontSize: "var(--text-sm)", lineHeight: "var(--text-sm--line-height)", },
-  md: { fontSize: "var(--text-base)", lineHeight: "var(--text-base--line-height)", },
-  lg: { fontSize: "var(--text-lg)", lineHeight: "var(--text-lg--line-height)", },
-  xl: { fontSize: "var(--text-xl)", lineHeight: "var(--text-xl--line-height)", },
-  "2xl": { fontSize: "var(--text-2xl)", lineHeight: "var(--text-2xl--line-height)", },
-  "3xl": { fontSize: "var(--text-3xl)", lineHeight: "var(--text-3xl--line-height)", },
-  "4xl": { fontSize: "var(--text-4xl)", lineHeight: "var(--text-4xl--line-height)", },
-  "5xl": { fontSize: "var(--text-5xl)", lineHeight: "var(--text-5xl--line-height)", },
-  "6xl": { fontSize: "var(--text-6xl)", lineHeight: "var(--text-6xl--line-height)", },
-  "7xl": { fontSize: "var(--text-7xl)", lineHeight: "var(--text-7xl--line-height)", },
-  "8xl": { fontSize: "var(--text-8xl)", lineHeight: "var(--text-8xl--line-height)", },
-  "9xl": { fontSize: "var(--text-9xl)", lineHeight: "var(--text-9xl--line-height)", },
+  xs: { fontSize: "var(--text-xs)", lineHeight: "var(--text-xs--line-height)" },
+  sm: { fontSize: "var(--text-sm)", lineHeight: "var(--text-sm--line-height)" },
+  md: { fontSize: "var(--text-base)", lineHeight: "var(--text-base--line-height)" },
+  lg: { fontSize: "var(--text-lg)", lineHeight: "var(--text-lg--line-height)" },
+  xl: { fontSize: "var(--text-xl)", lineHeight: "var(--text-xl--line-height)" },
+  "2xl": { fontSize: "var(--text-2xl)", lineHeight: "var(--text-2xl--line-height)" },
+  "3xl": { fontSize: "var(--text-3xl)", lineHeight: "var(--text-3xl--line-height)" },
+  "4xl": { fontSize: "var(--text-4xl)", lineHeight: "var(--text-4xl--line-height)" },
+  "5xl": { fontSize: "var(--text-5xl)", lineHeight: "var(--text-5xl--line-height)" },
+  "6xl": { fontSize: "var(--text-6xl)", lineHeight: "var(--text-6xl--line-height)" },
+  "7xl": { fontSize: "var(--text-7xl)", lineHeight: "var(--text-7xl--line-height)" },
+  "8xl": { fontSize: "var(--text-8xl)", lineHeight: "var(--text-8xl--line-height)" },
+  "9xl": { fontSize: "var(--text-9xl)", lineHeight: "var(--text-9xl--line-height)" },
 } as const;
 
 export const tailwindContainerSize = ["4xl", "5xl", "6xl", "7xl"] as const;
@@ -76,23 +74,16 @@ export const tailwindContainerSizeVar = {
   "7xl": { maxWidth: "var(--container-7xl)" },
 };
 
-const rootDatasetArray = [
-  "theme",
-  "blurNsfw",
-  "pictureOnFront",
-  "modVertical",
-] as const;
+const rootDatasetArray = ["theme", "blurNsfw", "pictureOnFront", "modVertical"] as const;
 export type RootDatasetKey = (typeof rootDatasetArray)[number];
 export type RootDataset = Partial<Record<RootDatasetKey, string>>;
-export const rootDatasetConfigWhitelist = new Set<RootDatasetKey>(
-  rootDatasetArray,
-);
+export const rootDatasetConfigWhitelist = new Set<RootDatasetKey>(rootDatasetArray);
 
 export function validateConfig(config: KikuConfig): KikuConfig {
   try {
     if (typeof config !== "object" || config === null) throw new Error();
 
-    // biome-ignore format: this looks nicer
+    // oxfmt-ignore
     const valid: KikuConfig = {
       theme: daisyUIThemes.includes(config.theme) ? config.theme : defaultConfig.theme,
       webFontPrimary: webFonts.includes(config.webFontPrimary) ? config.webFontPrimary : defaultConfig.webFontPrimary,
@@ -175,7 +166,6 @@ export type CssVar = {
   "--color-base-100": string;
 };
 
-// biome-ignore format: this looks nicer
 export type Dataset = {
   "data-theme": string;
   //
@@ -185,10 +175,10 @@ export type Dataset = {
   "data-nsfw": "true" | "false";
   "data-blur-nsfw": "true" | "false";
   "data-pitch-type": string;
-  "data-has-pitch": string
-  "data-has-hint": string
-  "data-has-picture": string
-  "data-dictionary": string
+  "data-has-pitch": string;
+  "data-has-hint": string;
+  "data-has-picture": string;
+  "data-dictionary": string;
 };
 
 export type DatasetProp = Partial<Dataset>;
@@ -203,7 +193,7 @@ export function getRootDatasetConfig(config: KikuConfig): RootDataset {
 }
 
 export function getCssVar(config: KikuConfig) {
-  //biome-ignore format: this looks nicer
+  // oxfmt-ignore
   const cssVar: CssVar = {
     "--font-primary": config.useSystemFontPrimary ? config.systemFontPrimary : config.webFontPrimary,
     "--font-secondary": config.useSystemFontSecondary ? config.systemFontSecondary : config.webFontSecondary,
@@ -237,11 +227,7 @@ export function getCssVar(config: KikuConfig) {
   return cssVar;
 }
 
-export function updateConfigState(
-  el: HTMLElement,
-  config: KikuConfig,
-  updateDocument: boolean,
-) {
+export function updateConfigState(el: HTMLElement, config: KikuConfig, updateDocument: boolean) {
   const dataset = getRootDatasetConfig(config);
   el.dataset.theme = dataset.theme;
   el.dataset.blurNsfw = dataset.blurNsfw;

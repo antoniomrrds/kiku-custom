@@ -20,10 +20,7 @@ import type { DaisyUITheme } from "./theme";
 import { type PitchType, pitchTypes } from "./types";
 
 export function useViewTransition() {
-  function startViewTransition(
-    callback: () => void,
-    opts: { beforeCallback?: () => void } = {},
-  ) {
+  function startViewTransition(callback: () => void, opts: { beforeCallback?: () => void } = {}) {
     if (document.startViewTransition) {
       opts.beforeCallback?.();
       return document.startViewTransition(callback);
@@ -79,9 +76,7 @@ export function usePitch() {
   const { $setCard } = useCardContext();
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
 
-  const $pitchNumbers = createMemo(() =>
-    extractPitchNumbers($ankiFields.PitchPosition),
-  );
+  const $pitchNumbers = createMemo(() => extractPitchNumbers($ankiFields.PitchPosition));
 
   const $reading = createMemo(() => {
     if (!$isRootAnkiFields()) return $ankiFields.ExpressionReading;
@@ -104,16 +99,12 @@ export function usePitch() {
       if (pitchCategory === "中高") pitchCategory = "nakadaka";
       if (pitchCategory === "尾高") pitchCategory = "odaka";
       if (pitchCategory === "起伏") pitchCategory = "kifuku";
-      if (!pitchTypes.includes(pitchCategory as PitchType))
-        pitchCategory = null;
+      if (!pitchTypes.includes(pitchCategory as PitchType)) pitchCategory = null;
       return pitchCategory;
     });
     return numbers.map((pitchNum, i) => {
       const result = hatsuon({ reading, pitchNum, locale: "EN" });
-      if (
-        pitchCategories.length === numbers.length &&
-        pitchCategories[i] === "kifuku"
-      ) {
+      if (pitchCategories.length === numbers.length && pitchCategories[i] === "kifuku") {
         result.patternName = pitchCategories[i] ?? result.patternName;
       }
       return result;
@@ -175,12 +166,8 @@ export function useKanji() {
             : ankiFields.Expression
           : ankiFields.Expression,
       );
-      const readingList = ankiFields.ExpressionReading
-        ? [ankiFields.ExpressionReading]
-        : [];
-      const relatedExpressions = parseRelatedExpression(
-        ankiFields.RelatedExpression,
-      );
+      const readingList = ankiFields.ExpressionReading ? [ankiFields.ExpressionReading] : [];
+      const relatedExpressions = parseRelatedExpression(ankiFields.RelatedExpression);
       const expressionList = [
         ...(ankiFields.Expression ? [ankiFields.Expression] : []),
         ...relatedExpressions,
@@ -198,32 +185,26 @@ export function useKanji() {
       if (cacheStore && !cacheStore.nex) {
         cacheStore.nex = nex;
       }
-      const { kanjiResult, readingResult, expressionResult } =
-        await nex.queryShared({
-          kanjiList,
-          readingList,
-          ankiFields: unwrap(ankiFields),
-          expressionList,
-        });
+      const { kanjiResult, readingResult, expressionResult } = await nex.queryShared({
+        kanjiList,
+        readingList,
+        ankiFields: unwrap(ankiFields),
+        expressionList,
+      });
 
       if ($general.aborter.signal.aborted) return;
 
-      const currentExpressionResults =
-        expressionResult[ankiFields.Expression] ?? [];
+      const currentExpressionResults = expressionResult[ankiFields.Expression] ?? [];
       const sameExpression = currentExpressionResults.filter(
         (n) => n.fields.Expression.value === ankiFields.Expression,
       );
       const incomingRelated = currentExpressionResults.filter(
         (n) => n.fields.Expression.value !== ankiFields.Expression,
       );
-      const outgoingRelated = relatedExpressions.flatMap(
-        (e) => expressionResult[e] ?? [],
-      );
+      const outgoingRelated = relatedExpressions.flatMap((e) => expressionResult[e] ?? []);
 
       const combinedRelated = [...incomingRelated, ...outgoingRelated];
-      const uniqueRelated = Array.from(
-        new Map(combinedRelated.map((n) => [n.noteId, n])).values(),
-      );
+      const uniqueRelated = Array.from(new Map(combinedRelated.map((n) => [n.noteId, n])).values());
 
       $setCard("query", {
         status: "success",

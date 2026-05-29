@@ -368,39 +368,29 @@ export default (options) => {
             h(
               For,
               { each: k.meaning },
-              (
-                /** @type {MeaningItem} */ m,
-                /** @type {() => number} */ index,
-              ) =>
+              (/** @type {MeaningItem} */ m, /** @type {() => number} */ index) =>
                 h("div", { class: "flex flex-col gap-2" }, [
                   h("div", { class: "meaning-item" }, [
-                    h(
-                      "div",
-                      { style: "flex-shrink: 0" },
-                      CIRCLED_NUMBERS[index()] || "•",
-                    ),
+                    h("div", { style: "flex-shrink: 0" }, CIRCLED_NUMBERS[index()] || "•"),
                     h("div", {}, m.meaning),
                   ]),
-                  h(
-                    For,
-                    { each: m.supplementary },
-                    (/** @type {SupplementaryItem} */ s) =>
-                      h(
-                        "div",
-                        {
-                          class: `ms-6 p-2 flex rounded-lg items-center gap-2 ${meaningSupplementaryTagBg[s.tag]}`,
-                        },
-                        [
-                          h(
-                            "div",
-                            {
-                              class: `badge-origin ${meaningSupplementaryTagBadge[s.tag]}`,
-                            },
-                            s.tag,
-                          ),
-                          h("span", { class: "text-base" }, s.content),
-                        ],
-                      ),
+                  h(For, { each: m.supplementary }, (/** @type {SupplementaryItem} */ s) =>
+                    h(
+                      "div",
+                      {
+                        class: `ms-6 p-2 flex rounded-lg items-center gap-2 ${meaningSupplementaryTagBg[s.tag]}`,
+                      },
+                      [
+                        h(
+                          "div",
+                          {
+                            class: `badge-origin ${meaningSupplementaryTagBadge[s.tag]}`,
+                          },
+                          s.tag,
+                        ),
+                        h("span", { class: "text-base" }, s.content),
+                      ],
+                    ),
                   ),
                 ]),
             ),
@@ -516,20 +506,12 @@ export default (options) => {
             h("div", { class: "info-header" }, "別字体"),
             h("div", { class: "flex gap-2" }, [
               h("div", { class: "flex gap-2" }, [
-                h(
-                  Show,
-                  { when: k.kyujitai },
-                  (/** @type {() => {value: string}} */ v) => {
-                    return BigKanji({ header: "旧字体", kanji: v().value });
-                  },
-                ),
-                h(
-                  Show,
-                  { when: k.itaiji },
-                  (/** @type {() => {value: string}} */ v) => {
-                    return BigKanji({ header: "異体字", kanji: v().value });
-                  },
-                ),
+                h(Show, { when: k.kyujitai }, (/** @type {() => {value: string}} */ v) => {
+                  return BigKanji({ header: "旧字体", kanji: v().value });
+                }),
+                h(Show, { when: k.itaiji }, (/** @type {() => {value: string}} */ v) => {
+                  return BigKanji({ header: "異体字", kanji: v().value });
+                }),
               ]),
             ]),
           ]),
@@ -549,16 +531,9 @@ export default (options) => {
           h(
             "div",
             {
-              class:
-                "collapse-title p-0 mb-1 after:text-base-content-calm text-start",
+              class: "collapse-title p-0 mb-1 after:text-base-content-calm text-start",
             },
-            [
-              h(
-                "div",
-                { class: "font-bold text-base-content-calm" },
-                collapseTitle,
-              ),
-            ],
+            [h("div", { class: "font-bold text-base-content-calm" }, collapseTitle)],
           ),
           h("div", { class: "collapse-content p-0" }, [
             h("div", { class: "kiku-plugin-kanji-data" }, [
@@ -571,10 +546,7 @@ export default (options) => {
                   {
                     class: "bottom-sections",
                   },
-                  [
-                    h(KadokawaSection, { data: k }),
-                    h(BigKanjiSection, { data: k }),
-                  ],
+                  [h(KadokawaSection, { data: k }), h(BigKanjiSection, { data: k })],
                 ),
               ]),
             ]),

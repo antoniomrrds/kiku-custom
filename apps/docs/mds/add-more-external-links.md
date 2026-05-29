@@ -7,4 +7,5 @@ outline: deep
 In your `collection.media` directory, open the file named `_kiku_plugin.js`,
 and replace its contents with the following code:
 
+<!-- prettier-ignore -->
 <<< ../../../packages/note/plugins/add-more-external-links/_kiku_plugin.js

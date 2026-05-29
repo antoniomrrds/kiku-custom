@@ -8,8 +8,10 @@ Using `_kiku_plugin.css` and `_kiku_plugin.js`, this will randomize the secondar
 
 `_kiku_plugin.css`
 
+<!-- prettier-ignore -->
 <<< ../../../packages/note/plugins/random-font/_kiku_plugin.css
 
 `_kiku_plugin.js`
 
+<!-- prettier-ignore -->
 <<< ../../../packages/note/plugins/random-font/_kiku_plugin.js

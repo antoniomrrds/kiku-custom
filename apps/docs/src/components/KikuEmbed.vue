@@ -59,9 +59,7 @@ const selectedCardField = ref<CardFieldName | "">("");
 
 const host = ref<HTMLElement>();
 const currentSide = ref<"front" | "back">(props.side ?? "front");
-const toggleLabel = computed(() =>
-  currentSide.value === "front" ? "Show back" : "Show front",
-);
+const toggleLabel = computed(() => (currentSide.value === "front" ? "Show back" : "Show front"));
 let dispose: (() => void) | undefined;
 
 async function renderKiku(): Promise<void> {
@@ -72,8 +70,7 @@ async function renderKiku(): Promise<void> {
   const isDark = document.documentElement.classList.contains("dark");
   const theme = isDark ? "dark" : "light";
   const assetsPath = window.location.origin;
-  const shadowRoot =
-    host.value.shadowRoot ?? host.value.attachShadow({ mode: "open" });
+  const shadowRoot = host.value.shadowRoot ?? host.value.attachShadow({ mode: "open" });
 
   if (import.meta.env.DEV) {
     let style = shadowRoot.querySelector(
@@ -175,44 +172,20 @@ onBeforeUnmount(() => {
 
 <template>
   <div style="display: grid; gap: 0.75rem">
-    <div
-      style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center"
-    >
+    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center">
       <VPButton theme="alt" text="" @click="toggleSide">
         {{ toggleLabel }}
       </VPButton>
-      <label
-        style="
-          display: inline-flex;
-          gap: 0.4rem;
-          align-items: center;
-          cursor: pointer;
-        "
-      >
-        <input
-          v-model="selectedCardField"
-          type="radio"
-          value=""
-          style="margin: 0"
-        />
+      <label style="display: inline-flex; gap: 0.4rem; align-items: center; cursor: pointer">
+        <input v-model="selectedCardField" type="radio" value="" style="margin: 0" />
         <span>Default</span>
       </label>
       <label
         v-for="fieldName in cardFieldNames"
         :key="fieldName"
-        style="
-          display: inline-flex;
-          gap: 0.4rem;
-          align-items: center;
-          cursor: pointer;
-        "
+        style="display: inline-flex; gap: 0.4rem; align-items: center; cursor: pointer"
       >
-        <input
-          v-model="selectedCardField"
-          type="radio"
-          :value="fieldName"
-          style="margin: 0"
-        />
+        <input v-model="selectedCardField" type="radio" :value="fieldName" style="margin: 0" />
         <span>{{ fieldName }}</span>
       </label>
     </div>

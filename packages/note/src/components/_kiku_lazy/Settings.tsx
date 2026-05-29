@@ -1,11 +1,4 @@
-import {
-  createEffect,
-  createSignal,
-  For,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
+import { createEffect, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/lib/anki-connect";
@@ -72,9 +65,7 @@ export default function Settings() {
       await AnkiConnect.saveConfig($config);
       $general.toast.success("Saved! Restart Anki to apply changes.");
     } catch (e) {
-      $general.toast.error(
-        `Failed to save config: ${e instanceof Error ? e.message : ""}`,
-      );
+      $general.toast.error(`Failed to save config: ${e instanceof Error ? e.message : ""}`);
     }
   };
 
@@ -150,30 +141,21 @@ export default function Settings() {
 function KikuVersion() {
   const [$latestVersion, $setLatestVersion] = createSignal<string | null>(
     (() => {
-      const cached = sessionStorage.getItem(
-        constants.key["kiku-latest-version"],
-      );
+      const cached = sessionStorage.getItem(constants.key["kiku-latest-version"]);
       return cached && cached !== constants.VERSION ? cached : null;
     })(),
   );
 
   onMount(async () => {
     try {
-      if (
-        sessionStorage.getItem(constants.key["kiku-latest-version-checked"])
-      ) {
+      if (sessionStorage.getItem(constants.key["kiku-latest-version-checked"])) {
         return;
       }
 
-      const res = await fetch(
-        "https://api.github.com/repos/youyoumu/kiku/releases/latest",
-      );
+      const res = await fetch("https://api.github.com/repos/youyoumu/kiku/releases/latest");
       if (!res.ok) return;
       const data = await res.json();
-      sessionStorage.setItem(
-        constants.key["kiku-latest-version-checked"],
-        "true",
-      );
+      sessionStorage.setItem(constants.key["kiku-latest-version-checked"], "true");
       if (data?.tag_name) {
         const v = data.tag_name.replace(/^v/, "");
         sessionStorage.setItem(constants.key["kiku-latest-version"], v);
@@ -193,11 +175,7 @@ function KikuVersion() {
         <div
           classList={{ tooltip: !!$latestVersion() }}
           class="tooltip-bottom tooltip-info"
-          data-tip={
-            $latestVersion()
-              ? `Update Available: v${$latestVersion()}`
-              : undefined
-          }
+          data-tip={$latestVersion() ? `Update Available: v${$latestVersion()}` : undefined}
         >
           <a
             href="https://github.com/youyoumu/kiku/releases/latest"
@@ -227,9 +205,8 @@ function GeneralSettings() {
       <Show when={$general.isConfigOutOfSync}>
         <div role="alert" class="alert alert-warning">
           <span>
-            The card template is out of sync with your current theme or display
-            settings. Until you click Save and restart Anki, there might be a
-            flash of the wrong theme.
+            The card template is out of sync with your current theme or display settings. Until you
+            click Save and restart Anki, there might be a flash of the wrong theme.
           </span>
         </div>
       </Show>
@@ -324,10 +301,7 @@ function GeneralSettings() {
         <fieldset class="fieldset py-0">
           <legend class="fieldset-legend">
             Mobile Layout Alt
-            <div
-              class="tooltip"
-              data-tip="Swap Sentence and Definition position on mobile"
-            >
+            <div class="tooltip" data-tip="Swap Sentence and Definition position on mobile">
               <InfoIcon class="size-4 text-base-content-calm" />
             </div>
           </legend>
@@ -337,10 +311,7 @@ function GeneralSettings() {
               checked={$config.swapSentenceAndDefinitionOnMobile}
               class="toggle"
               on:change={(e) => {
-                $setConfig(
-                  "swapSentenceAndDefinitionOnMobile",
-                  e.target.checked,
-                );
+                $setConfig("swapSentenceAndDefinitionOnMobile", e.target.checked);
               }}
             />
           </label>
@@ -371,17 +342,13 @@ function GeneralSettings() {
           <input
             on:change={(e) => {
               const target = e.target as HTMLInputElement;
-              const value = tailwindContainerSize[
-                Number(target.value)
-              ] as TailwindContainerSize;
+              const value = tailwindContainerSize[Number(target.value)] as TailwindContainerSize;
               $setConfig("layoutMaxWidth", value);
             }}
             type="range"
             min="0"
             max={(tailwindContainerSize.length - 1).toString()}
-            value={tailwindContainerSize
-              .indexOf($config.layoutMaxWidth)
-              .toString()}
+            value={tailwindContainerSize.indexOf($config.layoutMaxWidth).toString()}
             class="range w-full range-sm"
             step="1"
           />
@@ -389,9 +356,7 @@ function GeneralSettings() {
             <For each={tailwindContainerSize}>{(_) => <span>|</span>}</For>
           </div>
           <div class="flex justify-between px-2.5 text-xs">
-            <For each={tailwindContainerSize}>
-              {(label) => <span>{label}</span>}
-            </For>
+            <For each={tailwindContainerSize}>{(label) => <span>{label}</span>}</For>
           </div>
         </fieldset>
       </div>
@@ -417,22 +382,13 @@ function DefinitionSettings() {
               $setConfig("definitionStyle", target.value as DefinitionStyle);
             }}
           >
-            <option
-              value="normal"
-              selected={$config.definitionStyle === "normal"}
-            >
+            <option value="normal" selected={$config.definitionStyle === "normal"}>
               Normal (3 Pages)
             </option>
-            <option
-              value="single-page"
-              selected={$config.definitionStyle === "single-page"}
-            >
+            <option value="single-page" selected={$config.definitionStyle === "single-page"}>
               Single Page (Appended)
             </option>
-            <option
-              value="glossary-split"
-              selected={$config.definitionStyle === "glossary-split"}
-            >
+            <option value="glossary-split" selected={$config.definitionStyle === "glossary-split"}>
               Glossary Split (Per Dictionary)
             </option>
           </select>
@@ -536,10 +492,7 @@ function ModSettings() {
       <div>
         <div class="text-lg font-bold flex gap-2 items-center">
           Vertical
-          <div
-            class="tooltip"
-            data-tip="Expression appears in the vertical direction"
-          >
+          <div class="tooltip" data-tip="Expression appears in the vertical direction">
             <InfoIcon class="size-4 text-base-content-calm" />
           </div>
         </div>
@@ -591,24 +544,16 @@ function ThemeSettings() {
                     <div class="font-bold">{capitalize(theme)}</div>
                     <div class="flex flex-wrap gap-1">
                       <div class="bg-primary flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-primary-content text-sm font-bold">
-                          A
-                        </div>
+                        <div class="text-primary-content text-sm font-bold">A</div>
                       </div>
                       <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-secondary-content text-sm font-bold">
-                          A
-                        </div>
+                        <div class="text-secondary-content text-sm font-bold">A</div>
                       </div>
                       <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-accent-content text-sm font-bold">
-                          A
-                        </div>
+                        <div class="text-accent-content text-sm font-bold">A</div>
                       </div>
                       <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-neutral-content text-sm font-bold">
-                          A
-                        </div>
+                        <div class="text-neutral-content text-sm font-bold">A</div>
                       </div>
                     </div>
                   </div>
@@ -645,10 +590,7 @@ function FontSettings() {
             <select class="select w-full">
               {webFonts.map((font) => {
                 return (
-                  <option
-                    value={font}
-                    selected={$config.webFontPrimary === font}
-                  >
+                  <option value={font} selected={$config.webFontPrimary === font}>
                     <span class="font-primary" style={{ "font-family": font }}>
                       {font}
                     </span>
@@ -667,19 +609,14 @@ function FontSettings() {
               System Font
               <button
                 on:click={() => {
-                  $setConfig(
-                    "systemFontPrimary",
-                    defaultConfig.systemFontPrimary,
-                  );
+                  $setConfig("systemFontPrimary", defaultConfig.systemFontPrimary);
                 }}
                 on:touchend={(e) => e.stopPropagation()}
               >
                 <UndoIcon
                   class="size-4 cursor-pointer"
                   classList={{
-                    hidden:
-                      $config.systemFontPrimary ===
-                      defaultConfig.systemFontPrimary,
+                    hidden: $config.systemFontPrimary === defaultConfig.systemFontPrimary,
                   }}
                 />
               </button>
@@ -692,10 +629,7 @@ function FontSettings() {
               }
               value={$config.systemFontPrimary}
               on:input={(e) => {
-                $setConfig(
-                  "systemFontPrimary",
-                  (e.target as HTMLInputElement).value,
-                );
+                $setConfig("systemFontPrimary", (e.target as HTMLInputElement).value);
               }}
             />
           </fieldset>
@@ -711,9 +645,7 @@ function FontSettings() {
                   $setConfig("useSystemFontPrimary", e.target.checked);
                 }}
               />
-              {$config.useSystemFontPrimary
-                ? "Using System Font"
-                : "Using Web Font"}
+              {$config.useSystemFontPrimary ? "Using System Font" : "Using Web Font"}
             </label>
           </fieldset>
         </div>
@@ -736,14 +668,8 @@ function FontSettings() {
             <select class="select w-full">
               {webFonts.map((font) => {
                 return (
-                  <option
-                    value={font}
-                    selected={$config.webFontSecondary === font}
-                  >
-                    <span
-                      class="font-secondary"
-                      style={{ "font-family": font }}
-                    >
+                  <option value={font} selected={$config.webFontSecondary === font}>
+                    <span class="font-secondary" style={{ "font-family": font }}>
                       {font}
                     </span>
                   </option>
@@ -761,19 +687,14 @@ function FontSettings() {
               System Font
               <button
                 on:click={() => {
-                  $setConfig(
-                    "systemFontSecondary",
-                    defaultConfig.systemFontSecondary,
-                  );
+                  $setConfig("systemFontSecondary", defaultConfig.systemFontSecondary);
                 }}
                 on:touchend={(e) => e.stopPropagation()}
               >
                 <UndoIcon
                   class="size-4 cursor-pointer"
                   classList={{
-                    hidden:
-                      $config.systemFontSecondary ===
-                      defaultConfig.systemFontSecondary,
+                    hidden: $config.systemFontSecondary === defaultConfig.systemFontSecondary,
                   }}
                 />
               </button>
@@ -786,10 +707,7 @@ function FontSettings() {
               }
               value={$config.systemFontSecondary}
               on:input={(e) => {
-                $setConfig(
-                  "systemFontSecondary",
-                  (e.target as HTMLInputElement).value,
-                );
+                $setConfig("systemFontSecondary", (e.target as HTMLInputElement).value);
               }}
             />
           </fieldset>
@@ -805,9 +723,7 @@ function FontSettings() {
                   $setConfig("useSystemFontSecondary", e.target.checked);
                 }}
               />
-              {$config.useSystemFontSecondary
-                ? "Using System Font"
-                : "Using Web Font"}
+              {$config.useSystemFontSecondary ? "Using System Font" : "Using Web Font"}
             </label>
           </fieldset>
         </div>
@@ -827,25 +743,23 @@ function FontSizeSettings() {
         <div class="collapse-content p-0 flex flex-col gap-4">
           <div>
             <div class="text-lg font-bold">Mobile</div>
-            {/* biome-ignore format: this looks nicer */}
             <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-x-4 gap-y-4 sm:gap-y-2">
-          <FontSizeSettingsFieldset configKey="fontSizeBaseExpression" label="Expression" />
-          <FontSizeSettingsFieldset configKey="fontSizeBasePitch" label="Pitch" />
-          <FontSizeSettingsFieldset configKey="fontSizeBaseSentence" label="Sentence" />
-          <FontSizeSettingsFieldset configKey="fontSizeBaseMiscInfo" label="Misc Info" />
-          <FontSizeSettingsFieldset configKey="fontSizeBaseHint" label="Hint" />
-        </div>
+              <FontSizeSettingsFieldset configKey="fontSizeBaseExpression" label="Expression" />
+              <FontSizeSettingsFieldset configKey="fontSizeBasePitch" label="Pitch" />
+              <FontSizeSettingsFieldset configKey="fontSizeBaseSentence" label="Sentence" />
+              <FontSizeSettingsFieldset configKey="fontSizeBaseMiscInfo" label="Misc Info" />
+              <FontSizeSettingsFieldset configKey="fontSizeBaseHint" label="Hint" />
+            </div>
           </div>
           <div>
             <div class="text-lg font-bold">Desktop</div>
-            {/* biome-ignore format: this looks nicer */}
             <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-x-4 gap-y-4 sm:gap-y-2">
-          <FontSizeSettingsFieldset configKey="fontSizeSmExpression" label="Expression" />
-          <FontSizeSettingsFieldset configKey="fontSizeSmPitch" label="Pitch" />
-          <FontSizeSettingsFieldset configKey="fontSizeSmSentence" label="Sentence" />
-          <FontSizeSettingsFieldset configKey="fontSizeSmMiscInfo" label="Misc Info" />
-          <FontSizeSettingsFieldset configKey="fontSizeSmHint" label="Hint" />
-        </div>
+              <FontSizeSettingsFieldset configKey="fontSizeSmExpression" label="Expression" />
+              <FontSizeSettingsFieldset configKey="fontSizeSmPitch" label="Pitch" />
+              <FontSizeSettingsFieldset configKey="fontSizeSmSentence" label="Sentence" />
+              <FontSizeSettingsFieldset configKey="fontSizeSmMiscInfo" label="Misc Info" />
+              <FontSizeSettingsFieldset configKey="fontSizeSmHint" label="Hint" />
+            </div>
           </div>
         </div>
       </div>
@@ -853,10 +767,7 @@ function FontSizeSettings() {
   );
 }
 
-function FontSizeSettingsFieldset(props: {
-  configKey: keyof KikuConfig;
-  label: string;
-}) {
+function FontSizeSettingsFieldset(props: { configKey: keyof KikuConfig; label: string }) {
   const { $config, $setConfig } = useConfigContext();
   const configValue = () => $config[props.configKey] as TailwindSize;
 
@@ -874,8 +785,7 @@ function FontSizeSettingsFieldset(props: {
             <UndoIcon
               class="size-4 cursor-pointer"
               classList={{
-                hidden:
-                  $config[props.configKey] === defaultConfig[props.configKey],
+                hidden: $config[props.configKey] === defaultConfig[props.configKey],
               }}
             />
           </button>
@@ -978,10 +888,7 @@ function AnkiDroidSettings() {
                 checked={$config.ankiDroidReverseSwipeDirection}
                 class="toggle"
                 on:change={(e) => {
-                  $setConfig(
-                    "ankiDroidReverseSwipeDirection",
-                    e.target.checked,
-                  );
+                  $setConfig("ankiDroidReverseSwipeDirection", e.target.checked);
                 }}
               />
             </label>
@@ -1041,8 +948,7 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
           <UndoIcon
             class="size-4 cursor-pointer"
             classList={{
-              hidden:
-                $config[props.configKey] === defaultConfig[props.configKey],
+              hidden: $config[props.configKey] === defaultConfig[props.configKey],
             }}
           />
         </button>
@@ -1055,9 +961,7 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
         on:touchend={(e) => e.stopPropagation()}
         on:keydown={onKeyDown}
       >
-        {$isRecording()
-          ? "Press any key..."
-          : ($config[props.configKey] as string)}
+        {$isRecording() ? "Press any key..." : ($config[props.configKey] as string)}
       </button>
     </fieldset>
   );
@@ -1114,19 +1018,14 @@ function DebugSettings() {
                 AnkiConnect Address
                 <button
                   on:click={() => {
-                    $setConfig(
-                      "ankiConnectAddress",
-                      defaultConfig.ankiConnectAddress,
-                    );
+                    $setConfig("ankiConnectAddress", defaultConfig.ankiConnectAddress);
                   }}
                   on:touchend={(e) => e.stopPropagation()}
                 >
                   <UndoIcon
                     class="size-4 cursor-pointer"
                     classList={{
-                      hidden:
-                        $config.ankiConnectAddress ===
-                        defaultConfig.ankiConnectAddress,
+                      hidden: $config.ankiConnectAddress === defaultConfig.ankiConnectAddress,
                     }}
                   />
                 </button>
@@ -1159,9 +1058,7 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Expected Root Dataset</div>
-              <ClipboardCopyButton
-                text={() => toDatasetString(rootDataset())}
-              />
+              <ClipboardCopyButton text={() => toDatasetString(rootDataset())} />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               <span class="opacity-25 select-none">{"<div\n"}</span>
@@ -1185,9 +1082,7 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Config</div>
-              <ClipboardCopyButton
-                text={() => JSON.stringify({ ...$config }, null, 2)}
-              />
+              <ClipboardCopyButton text={() => JSON.stringify({ ...$config }, null, 2)} />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               {JSON.stringify({ ...$config }, null, 2)}
@@ -1197,9 +1092,7 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Anki Fields</div>
-              <ClipboardCopyButton
-                text={() => JSON.stringify(unwrap($ankiFields), null, 2)}
-              />
+              <ClipboardCopyButton text={() => JSON.stringify(unwrap($ankiFields), null, 2)} />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               {JSON.stringify(unwrap($ankiFields), null, 2)}
@@ -1221,9 +1114,7 @@ function DebugSettings() {
                   </span>
                 </div>
               </Show>
-              <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
-                {$kikuFiles()}
-              </pre>
+              <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">{$kikuFiles()}</pre>
             </div>
           </Show>
           <div class="flex flex-col gap-2">

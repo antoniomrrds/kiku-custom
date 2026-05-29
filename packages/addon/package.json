@@ -1,7 +1,7 @@
 {
   "name": "@repo/addon",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
     "package": "node ./scripts/package.ts",
     "typecheck": "./.venv/bin/basedpyright",

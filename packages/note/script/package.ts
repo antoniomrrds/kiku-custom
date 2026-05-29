@@ -22,9 +22,7 @@ class Script {
       includeSched: false,
     });
     if (!result) throw new Error(`Failed to export deck "${this.DECK_NAME}"`);
-    console.log(
-      `✅ Successfully exported deck "${this.DECK_NAME}" to: ${outputPath}`,
-    );
+    console.log(`✅ Successfully exported deck "${this.DECK_NAME}" to: ${outputPath}`);
   }
 
   async run() {

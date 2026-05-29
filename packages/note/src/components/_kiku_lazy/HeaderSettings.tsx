@@ -22,9 +22,7 @@ export default function HeaderSettings() {
       <div class="flex flex-row gap-2 items-center">
         {$general.isAnkiConnectAvailable && (
           <>
-            <div class="text-sm text-base-content-calm">
-              AnkiConnect is available
-            </div>
+            <div class="text-sm text-base-content-calm">AnkiConnect is available</div>
             <div class="status status-success"></div>
           </>
         )}
@@ -42,9 +40,7 @@ export default function HeaderSettings() {
             >
               <RefreshCwIcon class="size-4 cursor-pointer text-base-content-soft" />
             </button>
-            <div class="text-sm text-base-content-calm">
-              AnkiConnect is not available
-            </div>
+            <div class="text-sm text-base-content-calm">AnkiConnect is not available</div>
             <div class="status status-error animate-ping"></div>
           </>
         )}

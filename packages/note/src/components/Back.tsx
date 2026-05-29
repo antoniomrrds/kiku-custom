@@ -1,50 +1,31 @@
-import {
-  createMemo,
-  lazy,
-  Match,
-  onMount,
-  Show,
-  Suspense,
-  Switch,
-} from "solid-js";
+import { createMemo, lazy, Match, onMount, Show, Suspense, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
-import {
-  CardStoreContextProvider,
-  useCardContext,
-} from "#/components/shared/CardContext";
+import { CardStoreContextProvider, useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/lib/config";
 import { isNsfw } from "#/lib/util";
-import {
-  useKanji,
-  useLoadPlugin,
-  useNavigationTransition,
-  usePitch,
-} from "#/lib/hooks";
+import { useKanji, useLoadPlugin, useNavigationTransition, usePitch } from "#/lib/hooks";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
-import {
-  AnkiFieldContextProvider,
-  useAnkiFieldContext,
-} from "./shared/AnkiFieldsContext";
+import { AnkiFieldContextProvider, useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useCacheContext } from "./shared/CacheContext";
 import { CtxContextProvider } from "./shared/CtxContext";
 import { FieldGroupContextProvider } from "./shared/FieldGroupContext";
 
-// biome-ignore format: this looks nicer
+// oxfmt-ignore
 const Lazy = {
-  Settings: lazy(async () => ({ default: (await import("./_kiku_lazy")).Settings, })),
-  HeaderMain: lazy(async () => ({ default: (await import("./_kiku_lazy")).HeaderMain, })),
-  BackFooter: lazy(async () => ({ default: (await import("./_kiku_lazy")).BackFooter, })),
-  AudioButtons: lazy(async () => ({ default: (await import("./_kiku_lazy")).AudioButtons, })),
-  PictureModal: lazy(async () => ({ default: (await import("./_kiku_lazy")).PictureModal, })),
-  BackBody: lazy(async () => ({ default: (await import("./_kiku_lazy")).BackBody, })),
-  Pitches: lazy(async () => ({ default: (await import("./_kiku_lazy")).Pitches, })),
-  KanjiPage: lazy(async () => ({ default: (await import("./_kiku_lazy")).KanjiPage, })),
-  UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid, })),
-  Expression: lazy(async () => ({ default: (await import("./_kiku_lazy")).Expression, })),
-  AnkiMobileDebug: lazy(async () => ({ default: (await import("./_kiku_lazy")).AnkiMobileDebug, })),
+  Settings: lazy(async () => ({ default: (await import("./_kiku_lazy")).Settings })),
+  HeaderMain: lazy(async () => ({ default: (await import("./_kiku_lazy")).HeaderMain })),
+  BackFooter: lazy(async () => ({ default: (await import("./_kiku_lazy")).BackFooter })),
+  AudioButtons: lazy(async () => ({ default: (await import("./_kiku_lazy")).AudioButtons })),
+  PictureModal: lazy(async () => ({ default: (await import("./_kiku_lazy")).PictureModal })),
+  BackBody: lazy(async () => ({ default: (await import("./_kiku_lazy")).BackBody })),
+  Pitches: lazy(async () => ({ default: (await import("./_kiku_lazy")).Pitches })),
+  KanjiPage: lazy(async () => ({ default: (await import("./_kiku_lazy")).KanjiPage })),
+  UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid })),
+  Expression: lazy(async () => ({ default: (await import("./_kiku_lazy")).Expression })),
+  AnkiMobileDebug: lazy(async () => ({ default: (await import("./_kiku_lazy")).AnkiMobileDebug })),
   RelatedExpression: lazy(async () => ({ default: (await import("./_kiku_lazy")).RelatedExpression, })),
-  Frequency: lazy(async () => ({ default: (await import("./_kiku_lazy")).Frequency, })),
+  Frequency: lazy(async () => ({ default: (await import("./_kiku_lazy")).Frequency })),
 };
 
 export function Back(props: { onExitNested?: () => void }) {
@@ -115,10 +96,7 @@ export function Back(props: { onExitNested?: () => void }) {
               >
                 <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
                   <ExpressionSection />
-                  <div
-                    class={`mt-6 flex gap-4 pitch pitch-field`}
-                    {...$pitchFieldDataset()}
-                  >
+                  <div class={`mt-6 flex gap-4 pitch pitch-field`} {...$pitchFieldDataset()}>
                     {$ankiFields.PitchPosition && $card.ready ? (
                       <Suspense fallback={<span>&nbsp;</span>}>
                         <Lazy.Pitches />
@@ -180,9 +158,7 @@ function ExpressionSection() {
   });
 
   const $pitchFieldDataset = createMemo<DatasetProp>(() => ({
-    "data-pitch-type": isServer
-      ? "{{PitchCategories}}"
-      : ($card.pitch.type ?? ""),
+    "data-pitch-type": isServer ? "{{PitchCategories}}" : ($card.pitch.type ?? ""),
   }));
 
   return (

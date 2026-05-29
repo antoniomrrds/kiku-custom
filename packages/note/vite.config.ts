@@ -11,12 +11,8 @@ const fastBuild = process.env.FAST_BUILD === "true";
 const plugins: PluginOption[] = [solid({ ssr: true }), tailwindcss()];
 if (!fastBuild) {
   plugins.push(serveAnkiCollectionMedia());
-  plugins.push(
-    circularDpendency({ outputFilePath: "./.circularDependency.json" }),
-  );
-  plugins.push(
-    dts({ tsconfigPath: "./tsconfig.app.json", outDirs: "./dist/types" }),
-  );
+  plugins.push(circularDpendency({ outputFilePath: "./.circularDependency.json" }));
+  plugins.push(dts({ tsconfigPath: "./tsconfig.app.json", outDirs: "./dist/types" }));
 }
 
 export default defineConfig({
@@ -59,8 +55,7 @@ export default defineConfig({
             },
             {
               test: (id) => {
-                const result =
-                  /src\/lib/.test(id) || /src\/components\/shared/.test(id);
+                const result = /src\/lib/.test(id) || /src\/components\/shared/.test(id);
                 return result;
               },
               // _kiku_shared is module that is used by _kiku.js and _kiku_lazy.js

@@ -3,12 +3,7 @@ import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { createCompatPair } from "#/lib/context-compat";
 import type { PitchInfo } from "#/lib/hatsuon";
-import {
-  type AnkiFields,
-  type AnkiNote,
-  ankiFieldsSkeleton,
-  type PitchType,
-} from "#/lib/types";
+import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton, type PitchType } from "#/lib/types";
 import type { KanjiPageContextStore } from "../_kiku_lazy/KanjiPageContext";
 
 export type PitchState = {
@@ -54,9 +49,7 @@ type CardStore = {
 type CardContextValue = {
   $card: Store<CardStore>;
   $setCard: SetStoreFunction<CardStore>;
-  onKanjiPageMount: Set<
-    (ctx: { $setKanjiPage: SetStoreFunction<KanjiPageContextStore> }) => void
-  >;
+  onKanjiPageMount: Set<(ctx: { $setKanjiPage: SetStoreFunction<KanjiPageContextStore> }) => void>;
 };
 
 const CardStoreContext = createContext<CardContextValue>();
@@ -115,10 +108,9 @@ export function CardStoreContextProvider(props: {
 export function useCardContext() {
   const cardStore = useContext(CardStoreContext);
   if (!cardStore) throw new Error("Missing CardStoreContext");
-  return Object.assign(
-    createCompatPair("$card", "$setCard", cardStore.$card, cardStore.$setCard),
-    { onKanjiPageMount: cardStore.onKanjiPageMount },
-  );
+  return Object.assign(createCompatPair("$card", "$setCard", cardStore.$card, cardStore.$setCard), {
+    onKanjiPageMount: cardStore.onKanjiPageMount,
+  });
 }
 
 export type UseCardContext = typeof useCardContext;

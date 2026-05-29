@@ -1,33 +1,17 @@
-import {
-  createMemo,
-  createSignal,
-  For,
-  type JSX,
-  Match,
-  onMount,
-  Show,
-  Switch,
-} from "solid-js";
+import { createMemo, createSignal, For, type JSX, Match, onMount, Show, Switch } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
 import { parseHtml } from "#/lib/dom";
 import { useNavigationTransition } from "#/lib/hooks";
 import { extractKanji } from "#/lib/kana";
 import { parseFurigana } from "#/lib/parse-furigana";
-import {
-  type AnkiFields,
-  type AnkiNote,
-  ankiFieldsSkeleton,
-} from "#/lib/types";
+import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderKanjiPage from "./HeaderKanjiPage";
 import { ArrowLeftIcon } from "./Icons";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
-import {
-  KanjiPageContextProvider,
-  useKanjiPageContext,
-} from "./KanjiPageContext";
+import { KanjiPageContextProvider, useKanjiPageContext } from "./KanjiPageContext";
 
 export default function KanjiPage() {
   const { $card } = useCardContext();
@@ -140,16 +124,13 @@ function Page() {
           <div class="flex flex-col items-center gap-2">
             <div class="font-secondary text-5xl sm:text-6xl">
               <Switch>
-                <Match when={$kanjiPage.contextLabel}>
-                  {$kanjiPage.contextLabel?.text}
-                </Match>
+                <Match when={$kanjiPage.contextLabel}>{$kanjiPage.contextLabel?.text}</Match>
                 <Match when={$isRuby()}>
                   <div innerHTML={$ankiFields.ExpressionFurigana}></div>
                 </Match>
                 <Match
                   when={
-                    $furiganaData().length === 0 ||
-                    !$ankiFields.ExpressionFurigana.includes("[")
+                    $furiganaData().length === 0 || !$ankiFields.ExpressionFurigana.includes("[")
                   }
                 >
                   <ruby>
@@ -174,8 +155,7 @@ function Page() {
                               {rubyItem().text}
                               <Show
                                 when={
-                                  rubyItem().reading.trim() !== "" ||
-                                  rubyItem().reading === " "
+                                  rubyItem().reading.trim() !== "" || rubyItem().reading === " "
                                 }
                               >
                                 <rt>{rubyItem().reading}</rt>
@@ -190,9 +170,7 @@ function Page() {
               </Switch>
             </div>
             <Show when={$title()}>
-              <div class="text-base-content-calm text-base sm:text-lg">
-                {$title()}
-              </div>
+              <div class="text-base-content-calm text-base sm:text-lg">{$title()}</div>
             </Show>
           </div>
 
@@ -221,10 +199,7 @@ function Page() {
         <div class="flex justify-center items-center">
           <Show when={$general.notesManifest}>
             <div class="text-base-content-faint text-sm">
-              Updated at{" "}
-              {new Date(
-                $general.notesManifest?.generatedAt ?? 0,
-              ).toLocaleString()}
+              Updated at {new Date($general.notesManifest?.generatedAt ?? 0).toLocaleString()}
             </div>
           </Show>
         </div>
@@ -265,9 +240,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
   const { $kanjiPage } = useKanjiPageContext();
   const { $kanji } = useKanjiContext();
   const data = () => props.data;
-  const [$checked, $setChecked] = createSignal(
-    $kanjiPage.focus.kanji === $kanji.kanji,
-  );
+  const [$checked, $setChecked] = createSignal($kanjiPage.focus.kanji === $kanji.kanji);
 
   const loading = () => {
     return Object.values($kanji.loading).some((v) => v);
@@ -305,9 +278,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
         <ul class="list bg-base-100 rounded-box shadow-md">
           <For each={data()}>
             {(data) => {
-              return (
-                <AnkiNoteItem data={data} highlightedKanji={$kanji.kanji} />
-              );
+              return <AnkiNoteItem data={data} highlightedKanji={$kanji.kanji} />;
             }}
           </For>
         </ul>
@@ -334,18 +305,12 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
   const { $setKanjiPage } = useKanjiPageContext();
   const $data = createMemo(() => props.data);
   const $expression = createMemo(() => $data().fields.Expression.value);
-  const $expressionFurigana = createMemo(
-    () => $data().fields.ExpressionFurigana.value,
-  );
-  const $expressionReading = createMemo(
-    () => $data().fields.ExpressionReading.value,
-  );
+  const $expressionFurigana = createMemo(() => $data().fields.ExpressionFurigana.value);
+  const $expressionReading = createMemo(() => $data().fields.ExpressionReading.value);
   const $leech = createMemo(() => $data().tags.includes("leech"));
   const $doc = createMemo(() => parseHtml($expressionFurigana()));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));
-  const $furiganaData = createMemo(() =>
-    parseFurigana($isRuby() ? "" : $expressionFurigana()),
-  );
+  const $furiganaData = createMemo(() => parseFurigana($isRuby() ? "" : $expressionFurigana()));
 
   function ExpressionNoFurigana() {
     return (
@@ -361,9 +326,7 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
             </span>
           )}
         </For>
-        <Show
-          when={$expressionReading() && extractKanji($expression()).length > 0}
-        >
+        <Show when={$expressionReading() && extractKanji($expression()).length > 0}>
           <rt>{$expressionReading()}</rt>
         </Show>
       </ruby>
@@ -382,20 +345,14 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
                     {(char) => (
                       <span
                         classList={{
-                          "text-base-content-primary":
-                            char === props.highlightedKanji,
+                          "text-base-content-primary": char === props.highlightedKanji,
                         }}
                       >
                         {char}
                       </span>
                     )}
                   </For>
-                  <Show
-                    when={
-                      rubyItem().reading.trim() !== "" ||
-                      rubyItem().reading === " "
-                    }
-                  >
+                  <Show when={rubyItem().reading.trim() !== "" || rubyItem().reading === " "}>
                     <rt>{rubyItem().reading}</rt>
                   </Show>
                 </ruby>
@@ -490,11 +447,7 @@ function KanjiText() {
 
   onMount(() => {
     const ref = $ref();
-    if (
-      ref &&
-      $kanjiPage.focus.kanji === $kanji.kanji &&
-      !$kanjiPage.focus.noteId
-    ) {
+    if (ref && $kanjiPage.focus.kanji === $kanji.kanji && !$kanjiPage.focus.noteId) {
       ref.scrollIntoView({ block: "center" });
     }
   });

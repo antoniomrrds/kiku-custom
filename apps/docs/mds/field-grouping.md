@@ -57,8 +57,8 @@ Sentence:
 SentenceAudio:
 
 ```html
-[sound:Tate no Yuusha no Nariagari S3 - 10.mkv_118779.mp3] [sound:Gochuumon wa
-Usagi Desuka S01E09 9092049A.mkv_955687.289_958481.289.mp3]
+[sound:Tate no Yuusha no Nariagari S3 - 10.mkv_118779.mp3] [sound:Gochuumon wa Usagi Desuka S01E09
+9092049A.mkv_955687.289_958481.289.mp3]
 ```
 
 :::
@@ -78,10 +78,7 @@ Now, to group the fields together, all you need to do is add a `data-group-id` t
 Picture:
 
 ```html
-<img
-  data-group-id="10"
-  src="Tate_no_Yuusha_no_NariagariS3-20.mkv_1190221.jpeg"
-/>
+<img data-group-id="10" src="Tate_no_Yuusha_no_NariagariS3-20.mkv_1190221.jpeg" />
 <img src="gochuumon_wa_usagi_desuka.mkv_957803.webp" />
 ```
 
@@ -95,9 +92,7 @@ Sentence:
 SentenceAudio:
 
 ```html
-<span data-group-id="10">
-  [sound:Tate no Yuusha no Nariagari S3 - 10.mkv_118779.mp3]
-</span>
+<span data-group-id="10"> [sound:Tate no Yuusha no Nariagari S3 - 10.mkv_118779.mp3] </span>
 [sound:Gochuumon wa Usagi Desuka S01E09 9092049A.mkv_955687.289_958481.289.mp3]
 ```
 

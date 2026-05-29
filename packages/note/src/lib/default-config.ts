@@ -1,6 +1,6 @@
 import type { KikuConfig } from "./config";
 
-// biome-ignore format: this looks nicer
+// oxfmt-ignore
 export const defaultConfig: KikuConfig = {
   theme: "light",
   webFontPrimary: "Klee One",

@@ -50,8 +50,7 @@ describe("extractPitchNumbers", () => {
   });
 
   it("should handle list with labels 'アクセント辞典: 0', 'アクセント辞典: 3'", () => {
-    const html =
-      "<ol><li>アクセント辞典: 0</li><li>アクセント辞典: 3</li></ol>";
+    const html = "<ol><li>アクセント辞典: 0</li><li>アクセント辞典: 3</li></ol>";
     expect(extractPitchNumbers(html)).toEqual([0, 3]);
   });
 

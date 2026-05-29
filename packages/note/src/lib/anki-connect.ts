@@ -5,8 +5,7 @@ export const base64 = {
   decode: (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0)),
   encode: (b: ArrayBuffer) => btoa(String.fromCharCode(...new Uint8Array(b))),
   decodeToString: (s: string) => new TextDecoder().decode(base64.decode(s)),
-  encodeString: (s: string) =>
-    base64.encode(new TextEncoder().encode(s).buffer),
+  encodeString: (s: string) => base64.encode(new TextEncoder().encode(s).buffer),
 };
 
 export const AnkiConnect = {
@@ -75,10 +74,7 @@ export const AnkiConnect = {
       .replace("__DATA_MOD_VERTICAL__", config.modVertical.toString());
     const cssVar = getCssVar(config);
     const cssVarTemplate = generateCssVars(cssVar);
-    const styleTemplate = styleSrc.replace(
-      "/* __CSS_VARIABLE__ */",
-      cssVarTemplate,
-    );
+    const styleTemplate = styleSrc.replace("/* __CSS_VARIABLE__ */", cssVarTemplate);
 
     await AnkiConnect.invoke("updateModelTemplates", {
       model: {

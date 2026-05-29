@@ -114,8 +114,7 @@ class Script {
       const { composedOf, usedIn } = kanjiVgJson[kanji];
       const wkMeaning = wkJson[kanji]?.primaryMeaning ?? "";
       const visuallySimilar = wkJson[kanji]?.visuallySimilar ?? [];
-      const keyword =
-        jpdbJson[kanji]?.keyword ?? extraKeywordMap[kanji] ?? "???";
+      const keyword = jpdbJson[kanji]?.keyword ?? extraKeywordMap[kanji] ?? "???";
       const readings = jpdbJson[kanji]?.readings ?? [];
       const frequency = jpdbJson[kanji]?.frequency ?? "Unknown";
       const kind = jpdbJson[kanji]?.kind ?? "Unknown";
@@ -173,10 +172,7 @@ class Script {
       kikuDbKanjiCompact[kanji] = toCompact(kikuDbKanji[kanji]);
     }
 
-    await writeFile(
-      paths["@/.db/kiku_db_kanji_compact.json"],
-      JSON.stringify(kikuDbKanjiCompact),
-    );
+    await writeFile(paths["@/.db/kiku_db_kanji_compact.json"], JSON.stringify(kikuDbKanjiCompact));
   }
 
   async gzipKikuDbKanjiCompactJson() {
@@ -236,10 +232,7 @@ class Script {
       },
     });
 
-    await writeFile(
-      paths["@/.db/_kiku_db_main_manifest.json"],
-      JSON.stringify(manifest, null, 2),
-    );
+    await writeFile(paths["@/.db/_kiku_db_main_manifest.json"], JSON.stringify(manifest, null, 2));
   }
 }
 

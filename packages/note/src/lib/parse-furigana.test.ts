@@ -76,17 +76,13 @@ describe("parseFurigana", () => {
   it("should handle 為す術もない[なすすべもない]", () => {
     const input = "為す術もない[なすすべもない]";
     const result = parseFurigana(input);
-    expect(result).toEqual([
-      { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
-    ]);
+    expect(result).toEqual([{ type: "ruby", text: "為す術もない", reading: "なすすべもない" }]);
   });
 
   it("should handle 為す術もない[なすすべもない] with a leading space", () => {
     const input = " 為す術もない[なすすべもない]";
     const result = parseFurigana(input);
-    expect(result).toEqual([
-      { type: "ruby", text: "為す術もない", reading: "なすすべもない" },
-    ]);
+    expect(result).toEqual([{ type: "ruby", text: "為す術もない", reading: "なすすべもない" }]);
   });
 
   it("should handle mixed text with space-delimited ruby in the middle", () => {
@@ -121,17 +117,13 @@ describe("parseFurigana", () => {
   it("should handle 食べる[たべる]", () => {
     const input = "食べる[たべる]";
     const result = parseFurigana(input);
-    expect(result).toEqual([
-      { type: "ruby", text: "食べる", reading: "たべる" },
-    ]);
+    expect(result).toEqual([{ type: "ruby", text: "食べる", reading: "たべる" }]);
   });
 
   it("should handle full-width numbers followed by kanji with furigana", () => {
     const input = "１０日[とおか]";
     const result = parseFurigana(input);
-    expect(result).toEqual([
-      { type: "ruby", text: "１０日", reading: "とおか" },
-    ]);
+    expect(result).toEqual([{ type: "ruby", text: "１０日", reading: "とおか" }]);
   });
 
   it("should handle half-width numbers followed by kanji with furigana", () => {

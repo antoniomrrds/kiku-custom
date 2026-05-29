@@ -45,10 +45,7 @@ export class WorkerThreadApi {
     this.constants = payload.constants;
     this.config = payload.config;
     this.preferAnkiConnect = payload.preferAnkiConnect;
-    this.ankiConnect = new AnkiConnect(
-      main.fetchJson,
-      this.config.ankiConnectAddress,
-    );
+    this.ankiConnect = new AnkiConnect(main.fetchJson, this.config.ankiConnectAddress);
   }
 
   chunkCache = new Map<string, AnkiNote[]>();
@@ -75,9 +72,7 @@ export class WorkerThreadApi {
       for (const chunk of manifest.chunks) {
         let notes = this.chunkCache.get(chunk.file);
         if (!notes) {
-          const buf = await main.fetchArrayBuffer(
-            `${this.assetsPath}/${chunk.file}`,
-          );
+          const buf = await main.fetchArrayBuffer(`${this.assetsPath}/${chunk.file}`);
           const text = await gunzipArrayBuffer(buf).text();
           notes = JSON.parse(text) as AnkiNote[];
           this.chunkCache.set(chunk.file, notes);
@@ -147,9 +142,7 @@ export class WorkerThreadApi {
           expressionList,
         });
       } catch {
-        log.warn(
-          "Failed to query with AnkiConnect, falling back to notes cache",
-        );
+        log.warn("Failed to query with AnkiConnect, falling back to notes cache");
         result = await queryWithNotesCache();
       }
     } else {
@@ -157,9 +150,7 @@ export class WorkerThreadApi {
         log.info("Querying with notes cache");
         result = await queryWithNotesCache();
       } catch {
-        log.warn(
-          "Failed to query with notes cache, falling back to AnkiConnect",
-        );
+        log.warn("Failed to query with notes cache, falling back to AnkiConnect");
         result = await this.ankiConnect.queryFieldContains({
           kanjiList,
           readingList,
@@ -230,19 +221,14 @@ export class WorkerThreadApi {
     this.pendingQueryShared = [];
 
     const batchedKanjiList = [...new Set(requests.flatMap((r) => r.kanjiList))];
-    const batchedReadingList = [
-      ...new Set(requests.flatMap((r) => r.readingList)),
-    ];
-    const batchedExpressionList = [
-      ...new Set(requests.flatMap((r) => r.expressionList)),
-    ];
+    const batchedReadingList = [...new Set(requests.flatMap((r) => r.readingList))];
+    const batchedExpressionList = [...new Set(requests.flatMap((r) => r.expressionList))];
 
-    const { kanjiListResult, readingListResult, expressionListResult } =
-      await this.query({
-        kanjiList: batchedKanjiList,
-        readingList: batchedReadingList,
-        expressionList: batchedExpressionList,
-      });
+    const { kanjiListResult, readingListResult, expressionListResult } = await this.query({
+      kanjiList: batchedKanjiList,
+      readingList: batchedReadingList,
+      expressionList: batchedExpressionList,
+    });
 
     for (const req of requests) {
       const { kanjiList, readingList, expressionList, ankiFields } = req;
@@ -259,18 +245,14 @@ export class WorkerThreadApi {
       const kanjiResult: Record<string, AnkiNote[]> = {};
       for (const kanji of kanjiList) {
         kanjiResult[kanji] =
-          kanjiListResult[kanji]
-            ?.filter(filterSameNote)
-            .filter(filterSameExpression) ?? [];
+          kanjiListResult[kanji]?.filter(filterSameNote).filter(filterSameExpression) ?? [];
       }
 
       // --- reading ---
       const readingResult: Record<string, AnkiNote[]> = {};
       for (const reading of readingList) {
         readingResult[reading] =
-          readingListResult[reading]
-            ?.filter(filterSameNote)
-            .filter(filterSameExpression) ?? [];
+          readingListResult[reading]?.filter(filterSameNote).filter(filterSameExpression) ?? [];
       }
 
       // --- expression ---
@@ -288,9 +270,7 @@ export class WorkerThreadApi {
     }
   }
 
-  lookupKanjiPromise:
-    | PromiseWithResolvers<Record<string, KanjiInfo>>
-    | undefined;
+  lookupKanjiPromise: PromiseWithResolvers<Record<string, KanjiInfo>> | undefined;
   async lookupKanji(kanji: string): Promise<KanjiInfo | undefined> {
     const key = this.lookupKanji.name;
     const cached = this.cache.get(key);
@@ -302,8 +282,7 @@ export class WorkerThreadApi {
     } else {
       this.lookupKanjiPromise = Promise.withResolvers();
       const manifest = await this.dbMainManifest();
-      const file =
-        manifest.files[this.constants.tar["kiku_db_kanji_compact.json.gz"]];
+      const file = manifest.files[this.constants.tar["kiku_db_kanji_compact.json.gz"]];
       const buf = await main.fetchArrayBuffer(
         `${this.assetsPath}/${this.constants.assets["_kiku_db_main.tar"]}`,
         {

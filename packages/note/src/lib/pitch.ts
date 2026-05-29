@@ -6,9 +6,7 @@ export function extractPitchNumbers(html: string) {
   let text = pitchPositionDoc.body.textContent || "";
 
   // Normalize full-width numbers to half-width
-  text = text.replace(/[０-９]/g, (s) =>
-    String.fromCharCode(s.charCodeAt(0) - 0xfee0),
-  );
+  text = text.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
 
   const matches = text.match(/\d+/g);
   if (!matches) return [];

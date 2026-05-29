@@ -65,49 +65,40 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     $setGroup("ids", []);
 
     const sentenceFieldDoc = parseHtml($sentenceField());
-    const sentenceFieldWithGroup =
-      sentenceFieldDoc.querySelectorAll("[data-group-id]");
+    const sentenceFieldWithGroup = sentenceFieldDoc.querySelectorAll("[data-group-id]");
     sentenceFieldWithGroup.forEach((el) => {
       const id = (el as HTMLElement).dataset.groupId;
       addIds(id);
     });
 
-    const sentenceFieldWithoutGroup = Array.from(
-      sentenceFieldDoc.body.childNodes,
-    ).filter((el) => !(el as HTMLElement).dataset?.groupId);
-    const sentenceFieldWithoutGroupHtml = nodesToString(
-      sentenceFieldWithoutGroup,
+    const sentenceFieldWithoutGroup = Array.from(sentenceFieldDoc.body.childNodes).filter(
+      (el) => !(el as HTMLElement).dataset?.groupId,
     );
+    const sentenceFieldWithoutGroupHtml = nodesToString(sentenceFieldWithoutGroup);
 
     const sentenceAudioFieldDoc = parseHtml($sentenceAudioField());
-    const sentenceAudioFieldWithGroup =
-      sentenceAudioFieldDoc.querySelectorAll("[data-group-id]");
+    const sentenceAudioFieldWithGroup = sentenceAudioFieldDoc.querySelectorAll("[data-group-id]");
     sentenceAudioFieldWithGroup.forEach((el) => {
       const id = (el as HTMLElement).dataset.groupId;
       addIds(id);
     });
 
-    const sentenceAudioFieldWithoutGroup = Array.from(
-      sentenceAudioFieldDoc.body.childNodes,
-    ).filter((el) => !(el as HTMLElement).dataset?.groupId);
-    const sentenceAudioFieldWithoutGroupHtml = nodesToString(
-      sentenceAudioFieldWithoutGroup,
+    const sentenceAudioFieldWithoutGroup = Array.from(sentenceAudioFieldDoc.body.childNodes).filter(
+      (el) => !(el as HTMLElement).dataset?.groupId,
     );
+    const sentenceAudioFieldWithoutGroupHtml = nodesToString(sentenceAudioFieldWithoutGroup);
 
     const miscInfoFieldDoc = parseHtml($miscInfoField());
-    const miscInfoFieldWithGroup =
-      miscInfoFieldDoc.querySelectorAll("[data-group-id]");
+    const miscInfoFieldWithGroup = miscInfoFieldDoc.querySelectorAll("[data-group-id]");
     miscInfoFieldWithGroup.forEach((el) => {
       const id = (el as HTMLElement).dataset.groupId;
       addIds(id);
     });
 
-    const miscInfoFieldWithoutGroup = Array.from(
-      miscInfoFieldDoc.body.childNodes,
-    ).filter((el) => !(el as HTMLElement).dataset?.groupId);
-    const miscInfoFieldWithoutGroupHtml = nodesToString(
-      miscInfoFieldWithoutGroup,
+    const miscInfoFieldWithoutGroup = Array.from(miscInfoFieldDoc.body.childNodes).filter(
+      (el) => !(el as HTMLElement).dataset?.groupId,
     );
+    const miscInfoFieldWithoutGroupHtml = nodesToString(miscInfoFieldWithoutGroup);
 
     // each group may contain multiple img. img without group id will be given group id 0
     const pictureFieldDoc = parseHtml($pictureField());
@@ -147,9 +138,7 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
 
       const filterById = (nodes: Iterable<Node> | ArrayLike<Node>) =>
         Array.from(nodes)
-          .filter(
-            (el) => (el as HTMLElement).dataset?.groupId === id.toString(),
-          )
+          .filter((el) => (el as HTMLElement).dataset?.groupId === id.toString())
           .map((el) => (el as HTMLElement).outerHTML)
           .join("");
 
@@ -175,11 +164,10 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
       $setGroup("miscInfoField", miscInfoField ?? "");
       $setGroup("pictureField", pictureField ?? "");
 
-      // biome-ignore lint format: this looks nicer
-      { $general.logger.info("[Groups] sentenceField:", sentenceField);
-        $general.logger.info("[Groups] sentenceAudioField:", sentenceAudioField,);
-        $general.logger.info("[Groups] miscInfoField:", miscInfoField);
-        $general.logger.info("[Groups] pictureField:", pictureField); }
+      $general.logger.info("[Groups] sentenceField:", sentenceField);
+      $general.logger.info("[Groups] sentenceAudioField:", sentenceAudioField);
+      $general.logger.info("[Groups] miscInfoField:", miscInfoField);
+      $general.logger.info("[Groups] pictureField:", pictureField);
     }
   });
 
@@ -233,15 +221,11 @@ const RootFieldGroupConext = createContext<{
   $ankiFields: Store<AnkiFields | AnkiFrontFields>;
 }>();
 
-export function RootFieldGroupContextProvider(props: {
-  children: JSX.Element;
-}) {
+export function RootFieldGroupContextProvider(props: { children: JSX.Element }) {
   const value = useFieldGroupContext();
 
   return (
-    <RootFieldGroupConext.Provider value={value}>
-      {props.children}
-    </RootFieldGroupConext.Provider>
+    <RootFieldGroupConext.Provider value={value}>{props.children}</RootFieldGroupConext.Provider>
   );
 }
 

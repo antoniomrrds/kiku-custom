@@ -4,18 +4,11 @@ import type { CacheStore } from "#/lib/types";
 
 const CacheContext = createContext<CacheStore>();
 
-export function CacheContextProvider(props: {
-  children: JSX.Element;
-  cacheStore: CacheStore;
-}) {
+export function CacheContextProvider(props: { children: JSX.Element; cacheStore: CacheStore }) {
   props.cacheStore.lookupKanji ??= new Map();
   props.cacheStore.queryShared ??= new Map();
 
-  return (
-    <CacheContext.Provider value={props.cacheStore}>
-      {props.children}
-    </CacheContext.Provider>
-  );
+  return <CacheContext.Provider value={props.cacheStore}>{props.children}</CacheContext.Provider>;
 }
 
 export function useCacheContext() {

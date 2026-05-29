@@ -94,9 +94,7 @@
     content: ") ";
   }
 
-  [data-details="JMdict"]
-    .dict-group__tag-list
-    .dict-group__tag:not(:first-child)::before {
+  [data-details="JMdict"] .dict-group__tag-list .dict-group__tag:not(:first-child)::before {
     content: ", ";
   }
 

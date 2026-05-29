@@ -7,7 +7,7 @@
 @import "./configurable.css";
 @source "..";
 
-/* biome-ignore format: this looks nicer */
+/* prettier-ignore */
 @theme {
   --animate-fade-in: fade-in 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-fade-in-sm: fade-in-sm 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -83,7 +83,6 @@
 }
 
 @layer components {
-  /* biome-ignore lint: root */
   :root::view-transition-group(root) {
     animation: none;
   }

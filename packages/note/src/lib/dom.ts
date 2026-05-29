@@ -15,14 +15,7 @@ export function isHtmlEffectivelyEmpty(html: string): boolean {
   if (text && text.length > 0) return false;
 
   // Check for meaningful non-text content
-  const meaningfulSelectors = [
-    "img",
-    "video",
-    "audio",
-    "svg",
-    "iframe",
-    "canvas",
-  ];
+  const meaningfulSelectors = ["img", "video", "audio", "svg", "iframe", "canvas"];
 
   return !meaningfulSelectors.some((sel) => doc.body.querySelector(sel));
 }

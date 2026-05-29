@@ -38,6 +38,7 @@ Do not modify the rest of the file, even with code formatters (such as [Prettier
 
 Now you can include the `SentenceTranslation` field in the `Sentence` component with `_kiku_plugin.js`:
 
+<!-- prettier-ignore -->
 <<< ../../../packages/note/plugins/display-extra-fields/_kiku_plugin.js
 
 Finally, open the Kiku settings and click **Save**. This will update Kiku’s Back template using the modified `_kiku_back.html`.

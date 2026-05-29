@@ -21,10 +21,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
       <div class="flex gap-1 sm:gap-2 items-center animate-fade-in-sm">
         <Switch>
           <Match when={$card.nested}>
-            <button
-              on:click={props.onExitNested}
-              on:touchend={(e) => e.stopPropagation()}
-            >
+            <button on:click={props.onExitNested} on:touchend={(e) => e.stopPropagation()}>
               <ArrowLeftIcon class="size-5 cursor-pointer text-base-content-soft" />
             </button>
             <MergeContextModal />
@@ -42,19 +39,15 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
                 <button
                   on:click={() => {
                     if ($card.side === "front") return;
-                    navigate("settings", "forward", () =>
-                      navigate("main", "back"),
-                    );
+                    navigate("settings", "forward", () => navigate("main", "back"));
                   }}
                   on:touchend={(e) => e.stopPropagation()}
                 >
                   <BoltIcon
                     class="size-5"
                     classList={{
-                      "text-base-content-soft cursor-pointer":
-                        $card.side === "back",
-                      "text-base-content-subtle-100 cursor-not-allowed":
-                        $card.side === "front",
+                      "text-base-content-soft cursor-pointer": $card.side === "back",
+                      "text-base-content-subtle-100 cursor-not-allowed": $card.side === "front",
                     }}
                   ></BoltIcon>
                 </button>
@@ -90,19 +83,13 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
       <div class="flex gap-1 sm:gap-2 items-center">
         <Show when={!$card.isMergePreview}>
           <Switch>
-            <Match
-              when={$card.query.status === "loading" && $card.side === "back"}
-            >
+            <Match when={$card.query.status === "loading" && $card.side === "back"}>
               <span class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"></span>
             </Match>
-            <Match
-              when={$card.query.status === "error" && $card.side === "back"}
-            >
+            <Match when={$card.query.status === "error" && $card.side === "back"}>
               <div class="status status-error animate-ping"></div>
             </Match>
-            <Match
-              when={$card.query.status === "success" && $card.side === "back"}
-            >
+            <Match when={$card.query.status === "success" && $card.side === "back"}>
               <div class="text-base-content-soft cursor-pointer animate-fade-in-sm">
                 <KanjiPageIndicator />
               </div>
@@ -132,8 +119,7 @@ function KanjiPageIndicator() {
   }) => {
     const isKanjiResult = $card.query.noteList.length > 0;
     const isSameReadingResult = ($card.query.sameReading?.length ?? 0) > 0;
-    const isSameExpressionResult =
-      ($card.query.sameExpression?.length ?? 0) > 0;
+    const isSameExpressionResult = ($card.query.sameExpression?.length ?? 0) > 0;
     const canOpen =
       (initialTab === "kanji" && isKanjiResult) ||
       (initialTab === "reading" && isSameReadingResult) ||
@@ -228,11 +214,7 @@ function KanjiPageIndicator() {
     >
       <KanjiIndicator />
 
-      <Show
-        when={
-          $card.query.sameReading?.length || $card.query.sameExpression?.length
-        }
-      >
+      <Show when={$card.query.sameReading?.length || $card.query.sameExpression?.length}>
         <span>•</span>
       </Show>
       <Show when={$card.query.sameReading?.length}>

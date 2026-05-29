@@ -21,10 +21,7 @@ export default function BackFooter() {
             <div class="min-w-4">
               <InfoIcon class="size-4 text-base-content-calm" />
             </div>
-            <div
-              class="text-base-content-calm"
-              innerHTML={$group.miscInfoField}
-            ></div>
+            <div class="text-base-content-calm" innerHTML={$group.miscInfoField}></div>
           </div>
         )}
         <Show when={$tags().length}>

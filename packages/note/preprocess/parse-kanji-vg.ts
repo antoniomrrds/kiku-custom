@@ -72,10 +72,7 @@ class KanjiVgParser {
       process.stdout.cursorTo(0);
       process.stdout.write(`Processing ${i + 1}/${files.length}`);
       const file = files[i];
-      const svgContent = await readFile(
-        join(paths["@/.kanjivg/kanji/"], file),
-        "utf8",
-      );
+      const svgContent = await readFile(join(paths["@/.kanjivg/kanji/"], file), "utf8");
       const { kanji, composedOf } = this.parseKanjiVG(svgContent);
       if (!kanji) throw new Error(`Failed to parse ${file}`);
       kanjiComposition[kanji] = { composedOf, usedIn: [] };
@@ -89,16 +86,11 @@ class KanjiVgParser {
       }
     }
 
-    await writeFile(
-      paths["@/.kanjivg/kanji.json"],
-      JSON.stringify(kanjiComposition, null, 2),
-    );
+    await writeFile(paths["@/.kanjivg/kanji.json"], JSON.stringify(kanjiComposition, null, 2));
   }
 
   async readKanjiVgJson() {
-    return JSON.parse(
-      await readFile(paths["@/.kanjivg/kanji.json"], "utf8"),
-    ) as KanjiComposition;
+    return JSON.parse(await readFile(paths["@/.kanjivg/kanji.json"], "utf8")) as KanjiComposition;
   }
 }
 

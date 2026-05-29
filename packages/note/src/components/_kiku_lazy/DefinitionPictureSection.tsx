@@ -26,9 +26,7 @@ export default function DefinitionPictureSection(props: {
     }
 
     const defPicDoc = parseHtml($ankiFields.DefinitionPicture);
-    const defPics = Array.from(defPicDoc.querySelectorAll("img")).map(
-      (img) => img.outerHTML,
-    );
+    const defPics = Array.from(defPicDoc.querySelectorAll("img")).map((img) => img.outerHTML);
 
     const glossaryPics = $config.definitionPictureFromGlossary
       ? collectGlossaryImgs($ankiFields.Glossary)
@@ -64,8 +62,7 @@ export default function DefinitionPictureSection(props: {
                 e.stopPropagation();
                 $setDefPicIndex(
                   (prev) =>
-                    (prev - 1 + $definitionPictures().length) %
-                    $definitionPictures().length,
+                    (prev - 1 + $definitionPictures().length) % $definitionPictures().length,
                 );
               }}
               on:touchend={(e) => e.stopPropagation()}
@@ -75,9 +72,7 @@ export default function DefinitionPictureSection(props: {
               class="h-full w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-r-sm"
               on:click={(e) => {
                 e.stopPropagation();
-                $setDefPicIndex(
-                  (prev) => (prev + 1) % $definitionPictures().length,
-                );
+                $setDefPicIndex((prev) => (prev + 1) % $definitionPictures().length);
               }}
               on:touchend={(e) => e.stopPropagation()}
             />

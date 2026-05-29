@@ -29,15 +29,9 @@ function AudioTag(props: { text: string }) {
   );
 }
 
-export function NotePlayIcon(props: {
-  "on:click"?: () => void;
-  color: "primary" | "secondary";
-}) {
+export function NotePlayIcon(props: { "on:click"?: () => void; color: "primary" | "secondary" }) {
   return (
-    <button
-      on:click={props["on:click"]}
-      on:touchend={(e) => e.stopPropagation()}
-    >
+    <button on:click={props["on:click"]} on:touchend={(e) => e.stopPropagation()}>
       <PlayIcon
         class="bg-primary rounded-full text-primary-content p-1 w-8 h-8 cursor-pointer"
         classList={{
@@ -107,8 +101,7 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
           if (audio) {
             audio.play();
             audio.onpause = () => {
-              const audio =
-                $card.sentenceAudioRef?.querySelectorAll("audio")[0];
+              const audio = $card.sentenceAudioRef?.querySelectorAll("audio")[0];
               if (audio) {
                 audio.play();
               }
@@ -158,24 +151,16 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
         <div
           style={hiddenStyle}
           ref={(ref) => $setCard("expressionAudioRef", ref)}
-          innerHTML={
-            $isRootAnkiFields() ? $ankiFields.ExpressionAudio : undefined
-          }
+          innerHTML={$isRootAnkiFields() ? $ankiFields.ExpressionAudio : undefined}
         >
-          {!$isRootAnkiFields() && (
-            <AudioTag text={$ankiFields.ExpressionAudio} />
-          )}
+          {!$isRootAnkiFields() && <AudioTag text={$ankiFields.ExpressionAudio} />}
         </div>
         <div
           style={hiddenStyle}
           ref={(ref) => $setCard("sentenceAudioRef", ref)}
-          innerHTML={
-            $isRootAnkiFields() ? $group.sentenceAudioField : undefined
-          }
+          innerHTML={$isRootAnkiFields() ? $group.sentenceAudioField : undefined}
         >
-          {!$isRootAnkiFields() && (
-            <AudioTag text={$group.sentenceAudioField} />
-          )}
+          {!$isRootAnkiFields() && <AudioTag text={$group.sentenceAudioField} />}
         </div>
         <NotePlayIcons />
       </>

@@ -15,10 +15,7 @@ const DEFAULT_EXCEPTIONS = new Set([
   "the",
 ]);
 
-export function capitalizeSmart(
-  word: string,
-  exceptions = DEFAULT_EXCEPTIONS,
-): string {
+export function capitalizeSmart(word: string, exceptions = DEFAULT_EXCEPTIONS): string {
   const lower = word.toLowerCase();
   if (exceptions.has(lower)) return lower;
   return lower.charAt(0).toUpperCase() + lower.slice(1);

@@ -63,9 +63,7 @@ export function CtxContextProvider(props: { children: JSX.Element }) {
     useGeneralContext,
   };
 
-  return (
-    <CtxContext.Provider value={ctx}>{props.children}</CtxContext.Provider>
-  );
+  return <CtxContext.Provider value={ctx}>{props.children}</CtxContext.Provider>;
 }
 
 export function useCtxContext() {

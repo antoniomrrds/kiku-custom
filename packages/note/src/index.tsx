@@ -93,10 +93,7 @@ export async function init({
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
-              <CardStoreContextProvider
-                side={side}
-                initialNsfw={isNsfw(ankiFields.Tags)}
-              >
+              <CardStoreContextProvider side={side} initialNsfw={isNsfw(ankiFields.Tags)}>
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
                     <CtxContextProvider>
@@ -117,13 +114,7 @@ export async function init({
   return { dispose, logger };
 }
 
-export async function initAnki({
-  side,
-  ssr,
-}: {
-  side: "front" | "back";
-  ssr?: boolean;
-}) {
+export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: boolean }) {
   if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
   if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
 
@@ -160,9 +151,10 @@ export async function initAnki({
     if (!root) {
       const shadowParent = document.querySelector("#kiku-shadow-parent");
       if (shadowParent) {
-        const existingRoot = shadowParent.shadowRoot?.querySelector(
-          "#kiku-root",
-        ) as HTMLElement | undefined | null;
+        const existingRoot = shadowParent.shadowRoot?.querySelector("#kiku-root") as
+          | HTMLElement
+          | undefined
+          | null;
         if (existingRoot && existingRoot.innerHTML.trim() === "") {
           root = existingRoot;
         } else {
@@ -222,10 +214,7 @@ export async function initAnki({
         const json = await res.json();
         config = validateConfig(json);
         if (aborter.signal.aborted) return;
-        sessionStorage.setItem(
-          constants.key["kiku-config"],
-          JSON.stringify(config),
-        );
+        sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
       }
     } catch {}
 
@@ -241,10 +230,7 @@ export async function initAnki({
     }
     const ankiFields = divs
       ? Object.fromEntries(
-          Array.from(divs).map((el) => [
-            (el as HTMLDivElement).dataset.field,
-            el.innerHTML.trim(),
-          ]),
+          Array.from(divs).map((el) => [(el as HTMLDivElement).dataset.field, el.innerHTML.trim()]),
         )
       : ankiFieldsSkeleton;
 
@@ -253,9 +239,7 @@ export async function initAnki({
     kanjiToolTipSyle.innerHTML = `[data-kanji-tooltip] { display: none !important; }`;
     shadow.appendChild(kanjiToolTipSyle);
     const resetKanjiTooltip = () => {
-      const kanjiTooltips = root?.querySelectorAll<HTMLSpanElement>(
-        "[data-kanji-tooltip]",
-      );
+      const kanjiTooltips = root?.querySelectorAll<HTMLSpanElement>("[data-kanji-tooltip]");
       Array.from(kanjiTooltips ?? []).forEach((el) => {
         el.style.display = "none";
       });

@@ -73,9 +73,7 @@ class Script {
   }
 
   async run() {
-    console.log(
-      `🔍 Checking Anki collection at: ${env.ANKI_COLLECTION_MEDIA_PATH}`,
-    );
+    console.log(`🔍 Checking Anki collection at: ${env.ANKI_COLLECTION_MEDIA_PATH}`);
     await this.ensureAnkiDir();
     await this.copyAssetsFromDistToAnkiBuild();
     await this.copyAnkiBuild();

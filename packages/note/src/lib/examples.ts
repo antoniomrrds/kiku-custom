@@ -1,6 +1,6 @@
 import type { AnkiFields } from "#/lib/types";
 
-// biome-ignore format: this looks nicer
+// oxfmt-ignore
 export const exampleFields1: AnkiFields = {
   "Expression": "拘る",
   "ExpressionFurigana": "拘[かかわ]る",

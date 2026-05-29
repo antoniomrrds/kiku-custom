@@ -1,10 +1,4 @@
-import {
-  createEffect,
-  createUniqueId,
-  ErrorBoundary,
-  For,
-  Show,
-} from "solid-js";
+import { createEffect, createUniqueId, ErrorBoundary, For, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useNavigationTransition } from "#/lib/hooks";
 import { capitalizeSentence } from "#/lib/text";
@@ -72,9 +66,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
   const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 
-  const KanjiKeywordComponent = props.inKanjiPage
-    ? KanjiKeywordKanjiPage
-    : KanjiKeywordTooltip;
+  const KanjiKeywordComponent = props.inKanjiPage ? KanjiKeywordKanjiPage : KanjiKeywordTooltip;
   const [$checkbox, $setCheckbox] = createStore({
     visuallySimilar: false,
     composedOf: false,
@@ -259,9 +251,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
               <For each={$kanji.kanjiInfo?.meanings}>
                 {(meaning) => {
                   return (
-                    <div class="border border-base-300 inline-flex px-1 bg-base-300">
-                      {meaning}
-                    </div>
+                    <div class="border border-base-300 inline-flex px-1 bg-base-300">{meaning}</div>
                   );
                 }}
               </For>
@@ -344,10 +334,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 
   return (
     <ErrorBoundary fallback={<DefaultKanjiInfoExtra />}>
-      <Show
-        when={$general.plugin?.KanjiInfoExtra}
-        fallback={<DefaultKanjiInfoExtra />}
-      >
+      <Show when={$general.plugin?.KanjiInfoExtra} fallback={<DefaultKanjiInfoExtra />}>
         {(get) => {
           const KanjiInfoExtra = get();
           return (
@@ -379,9 +366,7 @@ function KanjiKeyword(props: {
   const { $kanji } = useKanjiContext();
 
   const keyword = () =>
-    $kanji.kanjiInfo?.wkMeaning
-      ? $kanji.kanjiInfo?.wkMeaning
-      : $kanji.kanjiInfo?.keyword;
+    $kanji.kanjiInfo?.wkMeaning ? $kanji.kanjiInfo?.wkMeaning : $kanji.kanjiInfo?.keyword;
   const ready = () => !!props.noteList;
 
   return (

@@ -16,10 +16,7 @@ async function getVersion() {
   return version;
 }
 
-async function zipFiles(
-  files: { abs: string; rel: string }[],
-  outputPath: string,
-) {
+async function zipFiles(files: { abs: string; rel: string }[], outputPath: string) {
   const output = fs.createWriteStream(outputPath);
   const archive = archiver("zip", { zlib: { level: 9 } });
 
@@ -63,18 +60,13 @@ async function getFilesRecursively(
   return out;
 }
 
-const rootFiles = ["__init__.py", "config.json", "manifest.json"].map(
-  (file) => ({
-    abs: path.join(rootDir, file),
-    rel: file,
-  }),
-);
+const rootFiles = ["__init__.py", "config.json", "manifest.json"].map((file) => ({
+  abs: path.join(rootDir, file),
+  rel: file,
+}));
 const srcFiles = await getFilesRecursively(srcDir, rootDir);
 const allFiles = [...rootFiles, ...srcFiles];
 const version = await getVersion();
-const outputZip = path.join(
-  outputDir,
-  `kiku_note_manager_v${version}.ankiaddon`,
-);
+const outputZip = path.join(outputDir, `kiku_note_manager_v${version}.ankiaddon`);
 
 await zipFiles(allFiles, outputZip);

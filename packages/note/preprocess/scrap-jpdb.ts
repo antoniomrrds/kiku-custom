@@ -47,10 +47,7 @@ class JpdbScraper {
   async writeKanjiByFrequencyHtml() {
     const kyoikuRes = await fetch(this.KYOIKU_URL);
     const kyoikuHtml = await kyoikuRes.text();
-    await writeFile(
-      paths["@/.jpdb/kanji-by-frequency/kyoiku.html"],
-      kyoikuHtml,
-    );
+    await writeFile(paths["@/.jpdb/kanji-by-frequency/kyoiku.html"], kyoikuHtml);
 
     const joyoRes = await fetch(this.JOYO_URL);
     const joyoHtml = await joyoRes.text();
@@ -58,17 +55,11 @@ class JpdbScraper {
 
     const jinmeiyoRes = await fetch(this.JINMEIYO_URL);
     const jinmeiyoHtml = await jinmeiyoRes.text();
-    await writeFile(
-      paths["@/.jpdb/kanji-by-frequency/jinmeiyo.html"],
-      jinmeiyoHtml,
-    );
+    await writeFile(paths["@/.jpdb/kanji-by-frequency/jinmeiyo.html"], jinmeiyoHtml);
 
     const hyogaiRes = await fetch(this.HYOGAI_URL);
     const hyogaiHtml = await hyogaiRes.text();
-    await writeFile(
-      paths["@/.jpdb/kanji-by-frequency/hyogai.html"],
-      hyogaiHtml,
-    );
+    await writeFile(paths["@/.jpdb/kanji-by-frequency/hyogai.html"], hyogaiHtml);
   }
 
   async writeKanjiByFrequencyJson() {
@@ -98,11 +89,7 @@ class JpdbScraper {
 
       rows.each((i, row) => {
         if (i === 0) return;
-        const position = $(row)
-          .children("td")
-          .first()
-          .text()
-          .replace(/\.$/, "");
+        const position = $(row).children("td").first().text().replace(/\.$/, "");
         const kanji = $(row).children("td").first().next().text();
         const kind = $(row).children("td").first().next().next().text();
         json.push({ position, kanji, kind });
@@ -160,17 +147,12 @@ class JpdbScraper {
     }
 
     try {
-      const kanjiErrorJson = JSON.parse(
-        await readFile(paths["@/.jpdb/kanji-error.json"], "utf8"),
-      );
+      const kanjiErrorJson = JSON.parse(await readFile(paths["@/.jpdb/kanji-error.json"], "utf8"));
       kanjiError = Array.from(new Set([...kanjiError, ...kanjiErrorJson]));
     } catch {
       console.log("Error reading kanjiErrorJson");
     }
-    await writeFile(
-      paths["@/.jpdb/kanji-error.json"],
-      JSON.stringify(kanjiError, null, 2),
-    );
+    await writeFile(paths["@/.jpdb/kanji-error.json"], JSON.stringify(kanjiError, null, 2));
   }
 
   async writeKanjiJson() {
@@ -182,10 +164,7 @@ class JpdbScraper {
       .filter((kanji) => kanji);
 
     for (const kanji of kanjis) {
-      const kanjiHtml = await readFile(
-        join(paths["@/.jpdb/kanji/"], `${kanji}.html`),
-        "utf8",
-      );
+      const kanjiHtml = await readFile(join(paths["@/.jpdb/kanji/"], `${kanji}.html`), "utf8");
       const $ = cheerio.load(kanjiHtml);
       const svg = $("svg.kanji").prop("outerHTML") ?? "";
       const keyword = $('h6.subsection-label:contains("Keyword")')
@@ -213,15 +192,9 @@ class JpdbScraper {
       const position = info?.position ?? "";
       const kind = info?.kind ?? "";
 
-      const kanken = infoTable
-        .find('tr:has(td:contains("Kanken")) td:nth-child(2)')
-        .text()
-        .trim();
+      const kanken = infoTable.find('tr:has(td:contains("Kanken")) td:nth-child(2)').text().trim();
 
-      const heisig = infoTable
-        .find('tr:has(td:contains("Heisig")) td:nth-child(2)')
-        .text()
-        .trim();
+      const heisig = infoTable.find('tr:has(td:contains("Heisig")) td:nth-child(2)').text().trim();
 
       const commonReadings: { reading: string; percentage: string }[] = [];
       infoTable.find(".kanji-reading-list-common > div").each((_, el) => {
@@ -282,10 +255,7 @@ class JpdbScraper {
       kanjiJson[kanji] = kanjiInfo;
     }
 
-    await writeFile(
-      paths["@/.jpdb/kanji.json"],
-      JSON.stringify(kanjiJson, null, 2),
-    );
+    await writeFile(paths["@/.jpdb/kanji.json"], JSON.stringify(kanjiJson, null, 2));
   }
 
   async gzipKanjiJson() {
@@ -294,9 +264,7 @@ class JpdbScraper {
   }
 
   async readKanjiJson() {
-    return JSON.parse(
-      await readFile(paths["@/.jpdb/kanji.json"], "utf8"),
-    ) as Record<string, Kanji>;
+    return JSON.parse(await readFile(paths["@/.jpdb/kanji.json"], "utf8")) as Record<string, Kanji>;
   }
 }
 

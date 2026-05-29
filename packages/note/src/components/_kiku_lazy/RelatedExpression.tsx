@@ -8,8 +8,7 @@ export default function RelatedExpression() {
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields } =
     useAnkiFieldContext<"back">();
   const $relatedExpression = createMemo(() => {
-    if ($card.query.relatedExpression?.length)
-      return $card.query.relatedExpression;
+    if ($card.query.relatedExpression?.length) return $card.query.relatedExpression;
     return [
       ...($card.query.sameExpression ?? []),
       ...($card.query.sameReading ?? []),
@@ -27,10 +26,8 @@ export default function RelatedExpression() {
         <button
           class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
           classList={{
-            "text-base-content-soft":
-              $ankiFields.CardID !== initialAnkiFields.CardID,
-            "text-base-content":
-              $ankiFields.CardID === initialAnkiFields.CardID,
+            "text-base-content-soft": $ankiFields.CardID !== initialAnkiFields.CardID,
+            "text-base-content": $ankiFields.CardID === initialAnkiFields.CardID,
           }}
           on:click={() => {
             resetAnkiFields();

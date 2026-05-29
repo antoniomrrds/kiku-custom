@@ -23,9 +23,7 @@ class Script {
   }
 
   findFontId(name: string) {
-    return this.allFonts.find(
-      (f) => f.family.toLowerCase() === name.toLowerCase(),
-    )?.id;
+    return this.allFonts.find((f) => f.family.toLowerCase() === name.toLowerCase())?.id;
   }
 
   buildDownloadUrl(id: string) {
@@ -55,10 +53,7 @@ class Script {
       await fs.rm(extractDir, { recursive: true, force: true });
       await fs.rm(zipPath, { force: true });
     } catch (err) {
-      console.error(
-        `❌ Failed for ${name}:`,
-        err instanceof Error ? err.message : err,
-      );
+      console.error(`❌ Failed for ${name}:`, err instanceof Error ? err.message : err);
     }
   }
 

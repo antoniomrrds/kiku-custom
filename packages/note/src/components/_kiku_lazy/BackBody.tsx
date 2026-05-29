@@ -1,12 +1,4 @@
-import {
-  createMemo,
-  createSignal,
-  ErrorBoundary,
-  For,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
+import { createMemo, createSignal, ErrorBoundary, For, onCleanup, onMount, Show } from "solid-js";
 import type { DatasetProp } from "#/lib/config";
 import { isHtmlEffectivelyEmpty, parseHtml } from "#/lib/dom";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
@@ -16,9 +8,7 @@ import { useGeneralContext } from "../shared/GeneralContext";
 import DefinitionPictureSection from "./DefinitionPictureSection";
 import Sentence from "./Sentence";
 
-export default function BackBody(props: {
-  onDefinitionPictureClick?: (picture: string) => void;
-}) {
+export default function BackBody(props: { onDefinitionPictureClick?: (picture: string) => void }) {
   const [$modalRef, $setModalRef] = createSignal<HTMLDialogElement>();
   const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $config } = useConfigContext();
@@ -26,10 +16,7 @@ export default function BackBody(props: {
   const glossary = createMemo(() => {
     // empty glossary if it's the same as main definition
     if ($ankiFields.MainDefinition === $ankiFields.Glossary) return "";
-    return removeMainDefinitionFromGlossary(
-      $ankiFields.Glossary,
-      $ankiFields.MainDefinition,
-    );
+    return removeMainDefinitionFromGlossary($ankiFields.Glossary, $ankiFields.MainDefinition);
   });
 
   const $pages = createMemo(() => {
@@ -99,9 +86,7 @@ export default function BackBody(props: {
 
   function changePage(direction: 1 | -1) {
     if ($pages().length === 0) return;
-    $setDefinitionIndex(
-      (prev) => (prev + direction + $pages().length) % $pages().length,
-    );
+    $setDefinitionIndex((prev) => (prev + direction + $pages().length) % $pages().length);
   }
 
   onMount(() => {
@@ -139,8 +124,7 @@ export default function BackBody(props: {
             >
               <div
                 style={{
-                  color:
-                    "var(--dictionary-color, var(--color-base-content-calm)",
+                  color: "var(--dictionary-color, var(--color-base-content-calm)",
                 }}
               >
                 {currentPage()?.name}
@@ -210,10 +194,7 @@ export default function BackBody(props: {
           </div>
           <div class="modal-action mt-2">
             <form method="dialog">
-              <button
-                class="btn btn-sm"
-                on:touchend={(e) => e.stopPropagation()}
-              >
+              <button class="btn btn-sm" on:touchend={(e) => e.stopPropagation()}>
                 Close
               </button>
             </form>
@@ -227,10 +208,7 @@ export default function BackBody(props: {
   );
 }
 
-function removeMainDefinitionFromGlossary(
-  glossary: string,
-  mainDefinition: string,
-) {
+function removeMainDefinitionFromGlossary(glossary: string, mainDefinition: string) {
   const parser = new DOMParser();
   const glossaryDoc = parser.parseFromString(glossary, "text/html");
   const mainDefinitionDoc = parser.parseFromString(mainDefinition, "text/html");
@@ -239,17 +217,14 @@ function removeMainDefinitionFromGlossary(
     'div[class="yomitan-glossary"] > ol > li[data-dictionary]',
   );
   if (!mainDefinitionLi) return glossary;
-  const mainDefinitionDictionary =
-    mainDefinitionLi.getAttribute("data-dictionary");
+  const mainDefinitionDictionary = mainDefinitionLi.getAttribute("data-dictionary");
   if (!mainDefinitionDictionary) return glossary;
 
   const glossaries = glossaryDoc.querySelectorAll(
     `div[class="yomitan-glossary"] > ol > li[data-dictionary]`,
   );
   for (const glossaryLi of glossaries) {
-    if (
-      glossaryLi.getAttribute("data-dictionary") === mainDefinitionDictionary
-    ) {
+    if (glossaryLi.getAttribute("data-dictionary") === mainDefinitionDictionary) {
       glossaryLi.remove();
     }
   }
@@ -262,18 +237,10 @@ function ExternalLinks() {
 
   return (
     <ErrorBoundary fallback={<DefaultExternalLinks />}>
-      <Show
-        when={$general.plugin?.ExternalLinks}
-        fallback={<DefaultExternalLinks />}
-      >
+      <Show when={$general.plugin?.ExternalLinks} fallback={<DefaultExternalLinks />}>
         {(get) => {
           const ExternalLinks = get();
-          return (
-            <ExternalLinks
-              ctx={ctx}
-              DefaultExternalLinks={DefaultExternalLinks}
-            />
-          );
+          return <ExternalLinks ctx={ctx} DefaultExternalLinks={DefaultExternalLinks} />;
         }}
       </Show>
     </ErrorBoundary>
@@ -301,11 +268,7 @@ function DefaultExternalLinks() {
         />
       </a>
 
-      <a
-        href={`https://jisho.org/search/${$ankiFields.Expression}`}
-        target="_blank"
-        rel="noopener"
-      >
+      <a href={`https://jisho.org/search/${$ankiFields.Expression}`} target="_blank" rel="noopener">
         <img
           class="size-5 object-contain rounded-xs"
           src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAFpQTFRFVtkm////+f73vPCpXdovWtort++j+P32u++osu2c9Pvx6vjl9Pvy9Pry2u/S5vTh4vLcSLYgR7Qfa79M6/bmc8JWR7QgU9Alf8pjfspiUs4kVc0pVM0nVtgmNSyDBQAAAH5JREFUeJxjZCAAGEcVwBXAFTEyMv5hYGVk/AUT+I+mgIGB/QcD5w8EF1MB5zcG7m/4FACFeL4SUMD7ZVQBDgV8MD7jJ7AC/n8wgU8QBYJwBYyMbxj42Rh/wwTeo6cHccYXDJKMz5CF0BKM9FMGmScMeBTIPgYhPAowwWBQAADBWTUhzGucIAAAAABJRU5ErkJggg=="

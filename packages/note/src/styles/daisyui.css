@@ -7,7 +7,7 @@
     tooltip, divider, modal, indicator, tab;
 }
 
-/* biome-ignore format: this looks nicer */
+/* prettier-ignore */
 @theme {
   --color-base-content-subtle-100: color-mix( in srgb, var(--color-base-content) 10%, var(--color-base-100));
   --color-base-content-subtle-200: color-mix( in srgb, var(--color-base-content) 20%, var(--color-base-100));
@@ -26,7 +26,7 @@
   --color-base-content-primary: var(--color-primary);
 }
 
-/* biome-ignore format: this looks nicer */
+/* prettier-ignore */
 @layer base {
   [data-theme] {
     --color-base-content-subtle-100: color-mix( in srgb, var(--color-base-content) 10%, var(--color-base-100));

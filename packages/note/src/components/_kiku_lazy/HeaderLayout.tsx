@@ -15,9 +15,7 @@ export default function HeaderLayout(props: { children: JSX.Element }) {
         }}
       >
         <div class="w-full mx-auto px-2 sm:px-4 layout-max-width">
-          <div class="flex justify-between flex-row h-6 items-center min-h-6">
-            {props.children}
-          </div>
+          <div class="flex justify-between flex-row h-6 items-center min-h-6">{props.children}</div>
         </div>
       </div>
     </Portal>
