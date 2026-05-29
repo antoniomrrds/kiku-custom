@@ -1,5 +1,5 @@
 import { createMemo, For, Show } from "solid-js";
-import { ankiFieldsSkeleton } from "#/util/types";
+import { ankiFieldsSkeleton } from "#/lib/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCardContext } from "../shared/CardContext";
 

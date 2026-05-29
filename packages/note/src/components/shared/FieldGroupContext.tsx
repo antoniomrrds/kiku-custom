@@ -1,8 +1,8 @@
 import { createContext, createEffect, createMemo, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { nodesToString, parseHtml } from "#/util/general";
-import type { AnkiFields, AnkiFrontFields } from "#/util/types";
+import { nodesToString, parseHtml } from "#/lib/general";
+import type { AnkiFields, AnkiFrontFields } from "#/lib/types";
 import { useAnkiFieldContext } from "./AnkiFieldsContext";
 import { useCardContext } from "./CardContext";
 import { useGeneralContext } from "./GeneralContext";

@@ -1,5 +1,5 @@
-import { parseRelatedExpression } from "#/util/parse-related-expression";
-import type { AnkiNote } from "#/util/types";
+import { parseRelatedExpression } from "#/lib/parse-related-expression";
+import type { AnkiNote } from "#/lib/types";
 import type { MainThreadApi } from "./client";
 
 export class AnkiConnect {

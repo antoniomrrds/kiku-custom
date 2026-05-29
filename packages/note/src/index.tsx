@@ -1,5 +1,5 @@
 /* @refresh reload */
-import "./util/polyfill.ts";
+import "./lib/polyfill.ts";
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { hydrate, render } from "solid-js/web";
@@ -22,17 +22,17 @@ import {
   type RootDataset,
   updateConfigState,
   validateConfig,
-} from "./util/config.ts";
-import { defaultConfig } from "./util/default-config";
-import { exampleFields } from "./util/examples.ts";
-import { constants, isNsfw } from "./util/general.ts";
-import { Logger } from "./util/logger.ts";
+} from "./lib/config.ts";
+import { defaultConfig } from "./lib/default-config.ts";
+import { exampleFields } from "./lib/examples.ts";
+import { constants, isNsfw } from "./lib/general.ts";
+import { Logger } from "./lib/logger.ts";
 import {
   type AnkiDroidAPI,
   type AnkiFields,
   ankiFieldsSkeleton,
   type CacheStore,
-} from "./util/types.ts";
+} from "./lib/types.ts";
 import "./styles/tailwind.css";
 
 export async function init({

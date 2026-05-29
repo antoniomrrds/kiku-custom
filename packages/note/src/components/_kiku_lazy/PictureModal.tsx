@@ -7,8 +7,8 @@ import {
   Switch,
 } from "solid-js";
 import { Portal } from "solid-js/web";
-import { parseHtml } from "#/util/general";
-import { useCollectGlossaryImgs, useViewTransition } from "#/util/hooks";
+import { parseHtml } from "#/lib/general";
+import { useCollectGlossaryImgs, useViewTransition } from "#/lib/hooks";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 

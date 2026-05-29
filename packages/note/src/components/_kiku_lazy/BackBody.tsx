@@ -7,8 +7,8 @@ import {
   onMount,
   Show,
 } from "solid-js";
-import type { DatasetProp } from "#/util/config";
-import { isHtmlEffectivelyEmpty, parseHtml } from "#/util/general";
+import type { DatasetProp } from "#/lib/config";
+import { isHtmlEffectivelyEmpty, parseHtml } from "#/lib/general";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useConfigContext } from "../shared/ConfigContext";
 import { useCtxContext } from "../shared/CtxContext";
@@ -293,6 +293,7 @@ function DefaultExternalLinks() {
           return url.toString();
         })()}
         target="_blank"
+        rel="noopener"
       >
         <img
           class="size-5 object-contain rounded-xs"
@@ -304,6 +305,7 @@ function DefaultExternalLinks() {
       <a
         href={`https://jisho.org/search/${$ankiFields.Expression}`}
         target="_blank"
+        rel="noopener"
       >
         <img
           class="size-5 object-contain rounded-xs"
@@ -318,6 +320,7 @@ function DefaultExternalLinks() {
           return url.toString();
         })()}
         target="_blank"
+        rel="noopener"
       >
         <img
           class="size-5 object-contain rounded-xs"

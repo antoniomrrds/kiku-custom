@@ -21,8 +21,7 @@ import type {
 } from "solid-js";
 import type h from "solid-js/h";
 import type { JSX } from "solid-js/jsx-runtime";
-import type { createStore } from "solid-js/store";
-import type { Store } from "solid-js/store";
+import type { createStore, Store } from "solid-js/store";
 import type { Portal } from "solid-js/web";
 import type { UseKanjiContext } from "#/components/_kiku_lazy/KanjiContext";
 import type { UseAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
@@ -30,8 +29,8 @@ import type { UseBreakpointContext } from "#/components/shared/BreakpointContext
 import type { UseCardContext } from "#/components/shared/CardContext";
 import type { UseConfigContext } from "#/components/shared/ConfigContext";
 import type { UseGeneralContext } from "#/components/shared/GeneralContext";
-import type { PitchInfo } from "#/util/hatsuon";
-import type { AnkiBackFields, AnkiFrontFields } from "#/util/types";
+import type { PitchInfo } from "#/lib/hatsuon";
+import type { AnkiBackFields, AnkiFrontFields } from "#/lib/types";
 
 /**
  * The Plugin Context (Ctx) provides the essential building blocks for creating

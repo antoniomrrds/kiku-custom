@@ -1,7 +1,7 @@
 import { createMemo, ErrorBoundary, For, Show } from "solid-js";
-import type { DatasetProp } from "#/util/config";
-import type { PitchInfo } from "#/util/hatsuon";
-import type { PitchType } from "#/util/types";
+import type { DatasetProp } from "#/lib/config";
+import type { PitchInfo } from "#/lib/hatsuon";
+import type { PitchType } from "#/lib/types";
 import { useCardContext } from "../shared/CardContext";
 import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";

@@ -7,8 +7,8 @@ import {
 } from "solid-js";
 import { isServer } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
-import type { DatasetProp } from "#/util/config";
-import { useLoadPlugin } from "#/util/hooks";
+import type { DatasetProp } from "#/lib/config";
+import { useLoadPlugin } from "#/lib/hooks";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";

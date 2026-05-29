@@ -9,14 +9,14 @@ import {
   Switch,
 } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
-import { extractKanji, parseHtml } from "#/util/general";
-import { useNavigationTransition } from "#/util/hooks";
-import { parseFurigana } from "#/util/parse-furigana";
+import { extractKanji, parseHtml } from "#/lib/general";
+import { useNavigationTransition } from "#/lib/hooks";
+import { parseFurigana } from "#/lib/parse-furigana";
 import {
   type AnkiFields,
   type AnkiNote,
   ankiFieldsSkeleton,
-} from "#/util/types";
+} from "#/lib/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderKanjiPage from "./HeaderKanjiPage";

@@ -1,7 +1,7 @@
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import { isServer } from "solid-js/web";
-import type { DatasetProp } from "#/util/config";
-import { isNsfw, parseHtml } from "#/util/general";
+import type { DatasetProp } from "#/lib/config";
+import { isNsfw, parseHtml } from "#/lib/general";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useCardContext } from "./shared/CardContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";

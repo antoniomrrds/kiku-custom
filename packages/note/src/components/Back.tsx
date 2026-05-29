@@ -12,14 +12,14 @@ import {
   CardStoreContextProvider,
   useCardContext,
 } from "#/components/shared/CardContext";
-import type { DatasetProp } from "#/util/config";
-import { isNsfw } from "#/util/general";
+import type { DatasetProp } from "#/lib/config";
+import { isNsfw } from "#/lib/general";
 import {
   useKanji,
   useLoadPlugin,
   useNavigationTransition,
   usePitch,
-} from "#/util/hooks";
+} from "#/lib/hooks";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import {

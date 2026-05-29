@@ -1,6 +1,6 @@
 import { createContext, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
-import type { CacheStore } from "#/util/types";
+import type { CacheStore } from "#/lib/types";
 
 const CacheContext = createContext<CacheStore>();
 

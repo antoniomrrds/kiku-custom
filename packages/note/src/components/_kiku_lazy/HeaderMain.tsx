@@ -1,6 +1,6 @@
 import { createUniqueId, Match, Show, Switch } from "solid-js";
-import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
-import { nextTheme } from "#/util/theme";
+import { useNavigationTransition, useThemeTransition } from "#/lib/hooks";
+import { nextTheme } from "#/lib/theme";
 import { useCardContext } from "../shared/CardContext";
 import { useConfigContext } from "../shared/ConfigContext";
 import { useGeneralContext } from "../shared/GeneralContext";

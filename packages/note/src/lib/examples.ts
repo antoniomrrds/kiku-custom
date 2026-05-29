@@ -1,4 +1,4 @@
-import type { AnkiFields } from "#/util/types";
+import type { AnkiFields } from "#/lib/types";
 
 // biome-ignore format: this looks nicer
 export const exampleFields1: AnkiFields = {

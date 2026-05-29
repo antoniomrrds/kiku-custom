@@ -11,13 +11,13 @@ import {
   type Store,
   unwrap,
 } from "solid-js/store";
-import { createCompatPair } from "#/util/context-compat";
+import { createCompatPair } from "#/lib/context-compat";
 import type {
   AnkiFields,
   AnkiNote,
   KanjiInfo,
   QuerySharedResult,
-} from "#/util/types";
+} from "#/lib/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCacheContext } from "../shared/CacheContext";
 import { useGeneralContext } from "../shared/GeneralContext";

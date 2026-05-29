@@ -1,14 +1,14 @@
 import { createContext, createUniqueId, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { createCompatPair } from "#/util/context-compat";
-import type { PitchInfo } from "#/util/hatsuon";
+import { createCompatPair } from "#/lib/context-compat";
+import type { PitchInfo } from "#/lib/hatsuon";
 import {
   type AnkiFields,
   type AnkiNote,
   ankiFieldsSkeleton,
   type PitchType,
-} from "#/util/types";
+} from "#/lib/types";
 import type { KanjiPageContextStore } from "../_kiku_lazy/KanjiPageContext";
 
 export type PitchState = {

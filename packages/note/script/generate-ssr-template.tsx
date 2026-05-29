@@ -12,11 +12,11 @@ import {
   RootFieldGroupContextProvider,
 } from "#/components/shared/FieldGroupContext";
 import { GeneralContextProvider } from "#/components/shared/GeneralContext";
-import { Logger } from "#/util/logger";
-import { ankiFieldsSkeleton } from "#/util/types";
+import { Logger } from "#/lib/logger";
+import { ankiFieldsSkeleton } from "#/lib/types";
 import { Back } from "../src/components/Back";
 import { BreakpointContextProvider } from "../src/components/shared/BreakpointContext";
-import { defaultConfig } from "../src/util/default-config";
+import { defaultConfig } from "../src/lib/default-config";
 
 const [$config, $setConfig] = createStore(defaultConfig);
 

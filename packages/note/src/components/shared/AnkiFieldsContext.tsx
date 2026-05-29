@@ -1,7 +1,7 @@
 import { type Accessor, createContext, createMemo, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import type { AnkiFields, AnkiFrontFields } from "#/util/types";
+import type { AnkiFields, AnkiFrontFields } from "#/lib/types";
 
 const AnkiFieldsContext = createContext<{
   $ankiFields: Store<AnkiFields>;

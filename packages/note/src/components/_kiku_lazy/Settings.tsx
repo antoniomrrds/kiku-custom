@@ -19,12 +19,12 @@ import {
   tailwindContainerSize,
   tailwindFontSizeVar,
   tailwindSize,
-} from "#/util/config";
-import { defaultConfig } from "#/util/default-config";
-import { type WebFont, webFonts } from "#/util/fonts";
-import { constants } from "#/util/general";
-import { useNavigationTransition, useThemeTransition } from "#/util/hooks";
-import { daisyUIThemes } from "#/util/theme";
+} from "#/lib/config";
+import { defaultConfig } from "#/lib/default-config";
+import { type WebFont, webFonts } from "#/lib/fonts";
+import { constants } from "#/lib/general";
+import { useNavigationTransition, useThemeTransition } from "#/lib/hooks";
+import { daisyUIThemes } from "#/lib/theme";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useConfigContext } from "../shared/ConfigContext";
 import { useCtxContext } from "../shared/CtxContext";

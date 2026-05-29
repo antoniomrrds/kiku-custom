@@ -11,8 +11,8 @@ import {
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Portal } from "solid-js/web";
-import { extractKanji, parseHtml } from "#/util/general";
-import { parseFurigana } from "#/util/parse-furigana";
+import { extractKanji, parseHtml } from "#/lib/general";
+import { parseFurigana } from "#/lib/parse-furigana";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useBreakpointContext } from "../shared/BreakpointContext";
 import { useCardContext } from "../shared/CardContext";
