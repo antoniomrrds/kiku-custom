@@ -1,4 +1,4 @@
-const version: string =
+const VERSION: string =
   // @ts-expect-error: injected by vite
   typeof __VERSION__ !== "undefined" ? __VERSION__ : "unknown";
 
@@ -27,9 +27,9 @@ const assets = {
 
 // biome-ignore format: this looks nicer
 export const constants = {
-  KIKU_VERSION: version,
-  KIKU_NOTE_TYPE: "Kiku",
-  KIKU_CARD_TYPE: "Mining",
+  VERSION: VERSION,
+  NOTE_TYPE: "Kiku",
+  CARD_TYPE: "Mining",
   key: {
     "kiku-config": "kiku-config",
     "kiku-latest-version": "kiku-latest-version",
@@ -39,7 +39,7 @@ export const constants = {
   tar: {
     "kiku_db_kanji_compact.json.gz": "kiku_db_kanji_compact.json.gz",
   },
-  KIKU_IMPORTANT_FILES: [
+  IMPORTANT_FILES: [
     assets["_kiku.js"],
     assets["_kiku_libs.js"],
     assets["_kiku_shared.js"],

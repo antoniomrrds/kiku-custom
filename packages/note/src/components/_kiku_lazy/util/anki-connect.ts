@@ -82,9 +82,9 @@ export const AnkiConnect = {
 
     await AnkiConnect.invoke("updateModelTemplates", {
       model: {
-        name: constants.KIKU_NOTE_TYPE,
+        name: constants.NOTE_TYPE,
         templates: {
-          [constants.KIKU_CARD_TYPE]: {
+          [constants.CARD_TYPE]: {
             Front: frontTemplate,
             Back: backTemplate,
           },
@@ -94,7 +94,7 @@ export const AnkiConnect = {
 
     await AnkiConnect.invoke("updateModelStyling", {
       model: {
-        name: constants.KIKU_NOTE_TYPE,
+        name: constants.NOTE_TYPE,
         css: styleTemplate,
       },
     });

@@ -6,8 +6,8 @@ import {
   onMount,
   Show,
 } from "solid-js";
-import { Portal } from "solid-js/web";
 import { unwrap } from "solid-js/store";
+import { Portal } from "solid-js/web";
 import {
   type DefinitionStyle,
   getCssVar,
@@ -153,7 +153,7 @@ function KikuVersion() {
       const cached = sessionStorage.getItem(
         constants.key["kiku-latest-version"],
       );
-      return cached && cached !== constants.KIKU_VERSION ? cached : null;
+      return cached && cached !== constants.VERSION ? cached : null;
     })(),
   );
 
@@ -177,7 +177,7 @@ function KikuVersion() {
       if (data?.tag_name) {
         const v = data.tag_name.replace(/^v/, "");
         sessionStorage.setItem(constants.key["kiku-latest-version"], v);
-        if (v !== constants.KIKU_VERSION) {
+        if (v !== constants.VERSION) {
           $setLatestVersion(v);
         }
       }
@@ -205,7 +205,7 @@ function KikuVersion() {
             rel="noreferrer"
             class="text-sm"
           >
-            Kiku Note v{constants.KIKU_VERSION}
+            Kiku Note v{constants.VERSION}
           </a>
         </div>
         <Show when={$latestVersion()}>
@@ -1074,7 +1074,7 @@ function DebugSettings() {
     if ($general.isAnkiConnectAvailable) {
       const files = await AnkiConnect.getKikuFiles();
       $setKikuFiles(JSON.stringify(files, null, 2));
-      const missing = constants.KIKU_IMPORTANT_FILES.filter((file) => {
+      const missing = constants.IMPORTANT_FILES.filter((file) => {
         return !files.includes(file);
       });
       $setMissingFiles(missing.join(", "));
