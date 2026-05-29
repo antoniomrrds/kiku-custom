@@ -43,7 +43,6 @@
     "serve-static": "^2.2.1",
     "tailwindcss": "^4.3.0",
     "tar": "^7.5.15",
-    "typescript": "~6.0.3",
     "vite": "^8.0.13",
     "vite-node": "^6.0.0",
     "vite-plugin-circular-dependency": "^0.6.0",
