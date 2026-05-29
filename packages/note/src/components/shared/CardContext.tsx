@@ -27,7 +27,6 @@ type CardStore = {
   isNsfw: boolean;
   uniqueId: string;
   expressionAudioRef?: HTMLDivElement;
-  sentenceFieldRef?: HTMLDivElement;
   sentenceAudioRef?: HTMLDivElement;
   sentenceAudios?: HTMLAnchorElement[] | HTMLAudioElement[];
   pictureModal?: string;
@@ -69,7 +68,6 @@ export function CardStoreContextProvider(props: {
     isNsfw: props.initialNsfw,
     uniqueId: createUniqueId(),
     expressionAudioRef: undefined,
-    sentenceFieldRef: undefined,
     sentenceAudioRef: undefined,
     sentenceAudios: undefined,
     pictureModal: undefined,

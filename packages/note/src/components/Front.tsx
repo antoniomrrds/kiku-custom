@@ -8,6 +8,7 @@ import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useConfigContext } from "./shared/ConfigContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
+import { parseHtml } from "#/lib/dom";
 
 // oxfmt-ignore
 const Lazy = {
@@ -51,16 +52,6 @@ export function Front() {
       setTimeout(() => {
         $setHideExpression(true);
       }, $config.modHiddenDuration);
-    }
-  });
-
-  createEffect(() => {
-    if ($ankiFields.IsAudioCard && $card.sentenceFieldRef && $group.sentenceField) {
-      const boldElements = $card.sentenceFieldRef.querySelectorAll("b");
-      boldElements.forEach((el) => {
-        el.innerHTML = "[...]";
-        el.classList.add("text-base-content-primary");
-      });
     }
   });
 
