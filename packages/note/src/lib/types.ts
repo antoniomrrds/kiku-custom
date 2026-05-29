@@ -41,22 +41,23 @@ export type AnkiFields = {
 
 const frontKeys = [
   "Expression",
+  "ExpressionAudio",
   "Sentence",
   "kanji:Sentence",
   "furigana:Sentence",
   "SentenceFurigana",
   "furigana:SentenceFurigana",
   "kana:SentenceFurigana",
+  "SentenceAudio",
+  "SentenceTranslation",
+  "Picture",
+  "Hint",
 
   "IsWordAndSentenceCard",
   "IsSentenceCard",
   "IsClickCard",
   "IsAudioCard",
-  "SentenceAudio",
-  "ExpressionAudio",
   "MiscInfo",
-  "Hint",
-  "Picture",
   "Tags",
   "CardID",
 ] satisfies readonly (keyof AnkiFields)[];

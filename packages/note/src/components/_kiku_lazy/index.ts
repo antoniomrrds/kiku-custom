@@ -11,6 +11,7 @@ import PictureModal from "./PictureModal";
 import Pitches from "./Pitches";
 import RelatedExpression from "./RelatedExpression";
 import Sentence from "./Sentence";
+import SentenceTranslation from "./SentenceTranslation";
 import Settings from "./Settings";
 import UseAnkiDroid from "./UseAnkiDroid";
 
@@ -26,6 +27,7 @@ export {
   KanjiPage,
   UseAnkiDroid,
   Sentence,
+  SentenceTranslation,
   Expression,
   AnkiMobileDebug,
   RelatedExpression,

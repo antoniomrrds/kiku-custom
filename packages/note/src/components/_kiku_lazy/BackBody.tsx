@@ -7,6 +7,7 @@ import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import DefinitionPictureSection from "./DefinitionPictureSection";
 import Sentence from "./Sentence";
+import SentenceTranslation from "./SentenceTranslation";
 
 export default function BackBody(props: { onDefinitionPictureClick?: (picture: string) => void }) {
   const [$modalRef, $setModalRef] = createSignal<HTMLDialogElement>();
@@ -113,6 +114,7 @@ export default function BackBody(props: { onDefinitionPictureClick?: (picture: s
     >
       <div class="flex flex-col justify-center gap-2 items-center text-center">
         <Sentence />
+        <SentenceTranslation />
       </div>
       {$pages().length > 0 && (
         <div class="animate-fade-in" {...$definitionDataset()}>
