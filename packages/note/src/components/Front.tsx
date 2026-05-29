@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, lazy, onMount } from "solid-js";
+import { createMemo, createSignal, lazy, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 import { useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/lib/config";
@@ -7,8 +7,6 @@ import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useConfigContext } from "./shared/ConfigContext";
-import { useFieldGroupContext } from "./shared/FieldGroupContext";
-import { parseHtml } from "#/lib/dom";
 
 // oxfmt-ignore
 const Lazy = {
@@ -24,7 +22,6 @@ export function Front() {
   const { $ankiFields } = useAnkiFieldContext<"front">();
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
-  const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
   const loadPlugin = useLoadPlugin();
   const $hidden = createMemo(() => {
