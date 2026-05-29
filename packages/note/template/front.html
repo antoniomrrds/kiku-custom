@@ -15,50 +15,48 @@ This file is auto-generated. Any manual changes will be lost on save.
   <!-- SSR_TEMPLATE -->
 </div>
 
-<div>
-  <link ref="preload" href="_kiku_font_hina-mincho.woff2" as="font" type="font/woff2" />
-  <link ref="preload" href="_kiku_font_klee-one.woff2" as="font" type="font/woff2" />
-  <link ref="preload" href="_kiku_font_ibm-plex-sans-jp.woff2" as="font" type="font/woff2" />
-  <link rel="stylesheet" href="_kiku.css" id="kiku-css" />
-  <link rel="stylesheet" href="_kiku_plugin.css" id="kiku-css-plugin" />
-  <link href="_kiku.js" data-anki-include />
-  <link href="_kiku_libs.js" data-anki-include />
-  <link href="_kiku_shared.js" data-anki-include />
-  <link href="_kiku_lazy.js" data-anki-include />
-  <link href="_kiku_worker.js" data-anki-include />
-  <link href="_kiku_plugin.js" data-anki-include />
-  <link href="_kiku_db_main.tar" data-anki-include />
-  <link href="_kiku_db_main_manifest.json" data-anki-include />
-  <link href="_kiku_back.html" data-anki-include />
-  <link href="_kiku_front.html" data-anki-include />
-  <link href="_kiku_style.css" data-anki-include />
-</div>
+<link ref="preload" href="_kiku_font_hina-mincho.woff2" as="font" type="font/woff2" />
+<link ref="preload" href="_kiku_font_klee-one.woff2" as="font" type="font/woff2" />
+<link ref="preload" href="_kiku_font_ibm-plex-sans-jp.woff2" as="font" type="font/woff2" />
+<link rel="stylesheet" href="_kiku.css" id="kiku-css" />
+<link rel="stylesheet" href="_kiku_plugin.css" id="kiku-css-plugin" />
+<link href="_kiku.js" data-anki-include />
+<link href="_kiku_libs.js" data-anki-include />
+<link href="_kiku_shared.js" data-anki-include />
+<link href="_kiku_lazy.js" data-anki-include />
+<link href="_kiku_worker.js" data-anki-include />
+<link href="_kiku_plugin.js" data-anki-include />
+<link href="_kiku_db_main.tar" data-anki-include />
+<link href="_kiku_db_main_manifest.json" data-anki-include />
+<link href="_kiku_back.html" data-anki-include />
+<link href="_kiku_front.html" data-anki-include />
+<link href="_kiku_style.css" data-anki-include />
 
-<div style="display: none" id="anki-fields">
-  <div data-field="Expression">{{Expression}}</div>
-  <div data-field="Hint">{{Hint}}</div>
-  <div data-field="Picture">{{Picture}}</div>
-  <div data-field="IsWordAndSentenceCard">{{IsWordAndSentenceCard}}</div>
-  <div data-field="IsClickCard">{{IsClickCard}}</div>
-  <div data-field="IsSentenceCard">{{IsSentenceCard}}</div>
-  <div data-field="IsAudioCard">{{IsAudioCard}}</div>
+<template id="anki-fields">
+  <template data-field="Expression">{{Expression}}</template>
+  <template data-field="Hint">{{Hint}}</template>
+  <template data-field="Picture">{{Picture}}</template>
+  <template data-field="IsWordAndSentenceCard">{{IsWordAndSentenceCard}}</template>
+  <template data-field="IsClickCard">{{IsClickCard}}</template>
+  <template data-field="IsSentenceCard">{{IsSentenceCard}}</template>
+  <template data-field="IsAudioCard">{{IsAudioCard}}</template>
   {{#IsAudioCard}}
-  <div data-field="ExpressionAudio"></div>
-  <div data-field="SentenceAudio">{{SentenceAudio}}</div>
+  <template data-field="ExpressionAudio"></template>
+  <template data-field="SentenceAudio">{{SentenceAudio}}</template>
   {{/IsAudioCard}} {{^IsAudioCard}}
-  <div data-field="ExpressionAudio"></div>
-  <div data-field="SentenceAudio"></div>
+  <template data-field="ExpressionAudio"></template>
+  <template data-field="SentenceAudio"></template>
   {{/IsAudioCard}}
-  <div data-field="Sentence">{{Sentence}}</div>
-  <div data-field="MiscInfo">{{MiscInfo}}</div>
-  <div data-field="Tags">{{Tags}}</div>
-  <div data-field="CardID">{{CardID}}</div>
-  <div data-field="kanji:Sentence">{{kanji:Sentence}}</div>
-  <div data-field="furigana:Sentence">{{furigana:Sentence}}</div>
-  <div data-field="SentenceFurigana">{{SentenceFurigana}}</div>
-  <div data-field="furigana:SentenceFurigana">{{furigana:SentenceFurigana}}</div>
-  <div data-field="kana:SentenceFurigana">{{kana:SentenceFurigana}}</div>
-</div>
+  <template data-field="Sentence">{{Sentence}}</template>
+  <template data-field="MiscInfo">{{MiscInfo}}</template>
+  <template data-field="Tags">{{Tags}}</template>
+  <template data-field="CardID">{{CardID}}</template>
+  <template data-field="kanji:Sentence">{{kanji:Sentence}}</template>
+  <template data-field="furigana:Sentence">{{furigana:Sentence}}</template>
+  <template data-field="SentenceFurigana">{{SentenceFurigana}}</template>
+  <template data-field="furigana:SentenceFurigana">{{furigana:SentenceFurigana}}</template>
+  <template data-field="kana:SentenceFurigana">{{kana:SentenceFurigana}}</template>
+</template>
 
 <!-- HYDRATION_SCRIPT -->
 

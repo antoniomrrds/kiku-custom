@@ -220,19 +220,22 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       }
     } catch {}
 
-    let divs: NodeListOf<Element> | Element[] | undefined =
-      document.querySelectorAll("#anki-fields > div");
+    const ankiFieldsTemplate = document.querySelector("#anki-fields");
+    let templates: NodeListOf<HTMLTemplateElement> | HTMLTemplateElement[] | undefined =
+      ankiFieldsTemplate instanceof HTMLTemplateElement
+        ? ankiFieldsTemplate.content.querySelectorAll("template[data-field]")
+        : undefined;
     if (import.meta.env.DEV) {
-      divs = Object.entries(exampleFields).map(([key, value]) => {
-        const div = document.createElement("div");
-        div.dataset.field = key;
-        div.innerHTML = value.toString();
-        return div;
+      templates = Object.entries(exampleFields).map(([key, value]) => {
+        const fieldTemplate = document.createElement("template");
+        fieldTemplate.dataset.field = key;
+        fieldTemplate.innerHTML = value.toString();
+        return fieldTemplate;
       });
     }
-    const ankiFields = divs
+    const ankiFields = templates
       ? Object.fromEntries(
-          Array.from(divs).map((el) => [(el as HTMLDivElement).dataset.field, el.innerHTML.trim()]),
+          Array.from(templates).map((el) => [el.dataset.field, el.innerHTML.trim()]),
         )
       : ankiFieldsSkeleton;
 
