@@ -173,7 +173,7 @@ function KikuVersion() {
       <div class="flex items-center gap-1.5">
         <div
           classList={{ tooltip: !!$latestVersion() }}
-          class="tooltip-bottom tooltip-info"
+          class="tooltip-bottom tooltip-info flex gap-2 items-center"
           data-tip={$latestVersion() ? `Update Available: v${$latestVersion()}` : undefined}
         >
           <a
@@ -183,6 +183,14 @@ function KikuVersion() {
             class="text-sm"
           >
             Kiku Note v{constants.VERSION}
+          </a>
+          <a
+            href={`https://github.com/youyoumu/kiku/commit/${constants.COMMIT_SHA}`}
+            target="_blank"
+            rel="noreferrer"
+            class="text-xs"
+          >
+            ({constants.COMMIT_SHA.slice(0, 7)})
           </a>
         </div>
         <Show when={$latestVersion()}>

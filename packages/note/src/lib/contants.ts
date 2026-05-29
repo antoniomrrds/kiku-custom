@@ -2,6 +2,10 @@ const VERSION: string =
   // @ts-expect-error: injected by vite
   typeof __VERSION__ !== "undefined" ? __VERSION__ : "unknown";
 
+const COMMIT_SHA: string =
+  // @ts-expect-error: injected by vite
+  typeof __COMMIT_SHA__ !== "undefined" ? __COMMIT_SHA__ : "unknown";
+
 const assets = {
   "_kiku_config.json": "_kiku_config.json",
   "_kiku_front.html": "_kiku_front.html",
@@ -23,6 +27,7 @@ const assets = {
 
 export const constants = {
   VERSION: VERSION,
+  COMMIT_SHA: COMMIT_SHA,
   NOTE_TYPE: "Kiku",
   CARD_TYPE: "Mining",
   key: {

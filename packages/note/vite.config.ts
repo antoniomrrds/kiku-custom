@@ -25,6 +25,7 @@ export default defineConfig({
   },
   define: {
     __VERSION__: JSON.stringify(await getVersion()),
+    __COMMIT_SHA__: JSON.stringify(process.env.COMMIT_SHA ?? "dev"),
   },
   build: {
     lib: {
