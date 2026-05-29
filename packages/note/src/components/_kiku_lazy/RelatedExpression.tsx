@@ -20,6 +20,10 @@ export default function RelatedExpression() {
       .slice(0, 2);
   });
 
+  const $isFallbackRelatedExpression = createMemo(() => {
+    return !$card.query.relatedExpression?.length;
+  });
+
   return (
     <div class="flex gap-2 sm:gap-4 flex-wrap">
       <Show when={$relatedExpression().length}>
@@ -45,7 +49,10 @@ export default function RelatedExpression() {
             <button
               class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
               classList={{
-                "text-base-content-soft": $ankiFields.CardID !== cardId,
+                "text-base-content-soft":
+                  $ankiFields.CardID !== cardId && !$isFallbackRelatedExpression(),
+                "text-base-content-faint":
+                  $ankiFields.CardID !== cardId && $isFallbackRelatedExpression(),
                 "text-base-content": $ankiFields.CardID === cardId,
               }}
               on:click={() => {
