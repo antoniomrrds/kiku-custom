@@ -26,7 +26,7 @@ import {
 import { constants } from "./lib/contants.ts";
 import { defaultConfig } from "./lib/default-config.ts";
 import { exampleFields } from "./lib/examples.ts";
-import { isNsfw } from "./lib/general.ts";
+import { isNsfw } from "./lib/util.ts";
 import { Logger } from "./lib/logger.ts";
 import {
   type AnkiDroidAPI,

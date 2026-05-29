@@ -1,9 +1,3 @@
-export function extractKanji(str: string): string[] {
-  // Match all CJK Unified Ideographs (Kanji range)
-  const matches = str.match(/\p{Script=Han}/gu);
-  return matches ? Array.from(new Set(matches)) : [];
-}
-
 export function isHtmlEffectivelyEmpty(html: string): boolean {
   if (!html || html.trim() === "") return true;
   const doc = new DOMParser().parseFromString(html, "text/html");
@@ -46,15 +40,4 @@ export function nodesToString(nodes: Node[]) {
       return node.textContent ?? "";
     })
     .join("");
-}
-
-export function unique<T>(arr: readonly T[]): T[] {
-  return Array.from(new Set(arr));
-}
-
-export function isNsfw(tags: string) {
-  return tags
-    .split(" ")
-    .map((tag) => tag.toLowerCase())
-    .includes("nsfw");
 }

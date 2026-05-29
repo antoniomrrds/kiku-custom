@@ -1,4 +1,5 @@
-import { parseHtml, unique } from "./general";
+import { parseHtml } from "./dom";
+import { unique } from "./es";
 export function extractPitchNumbers(html: string) {
   if (!html) return [];
   const pitchPositionDoc = parseHtml(html);

@@ -9,7 +9,8 @@ import {
   Switch,
 } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
-import { extractKanji, parseHtml } from "#/lib/general";
+import { parseHtml } from "#/lib/dom";
+import { extractKanji } from "#/lib/kana";
 import { useNavigationTransition } from "#/lib/hooks";
 import { parseFurigana } from "#/lib/parse-furigana";
 import {

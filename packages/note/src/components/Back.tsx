@@ -13,7 +13,7 @@ import {
   useCardContext,
 } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/lib/config";
-import { isNsfw } from "#/lib/general";
+import { isNsfw } from "#/lib/util";
 import {
   useKanji,
   useLoadPlugin,

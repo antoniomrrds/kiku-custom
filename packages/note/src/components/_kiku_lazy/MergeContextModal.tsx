@@ -1,7 +1,8 @@
 import { createEffect, createSignal, Match, Show, Switch } from "solid-js";
 import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/lib/anki-connect";
-import { nodesToString, parseHtml, unique } from "#/lib/general";
+import { nodesToString, parseHtml } from "#/lib/dom";
+import { unique } from "#/lib/es";
 import { useNavigationTransition } from "#/lib/hooks";
 import { type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";

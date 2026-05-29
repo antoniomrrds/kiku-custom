@@ -8,7 +8,7 @@ import {
   Show,
 } from "solid-js";
 import type { DatasetProp } from "#/lib/config";
-import { isHtmlEffectivelyEmpty, parseHtml } from "#/lib/general";
+import { isHtmlEffectivelyEmpty, parseHtml } from "#/lib/dom";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useConfigContext } from "../shared/ConfigContext";
 import { useCtxContext } from "../shared/CtxContext";
