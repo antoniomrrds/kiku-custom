@@ -19,7 +19,7 @@ export function ConfigContextProvider(props: { children: JSX.Element; value: Con
   const { $general, $setGeneral } = useGeneralContext();
 
   createEffect(() => {
-    const config = unwrap($config);
+    const config = unwrap({ ...$config });
     $general.logger.debug("Updating config:", config);
     if (!$general.root) throw new Error("Missing root");
     updateConfigState($general.root, config, !$general.isAnkiWeb);
