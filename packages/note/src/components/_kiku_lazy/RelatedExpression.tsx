@@ -21,7 +21,7 @@ export default function RelatedExpression() {
   });
 
   return (
-    <div class="flex gap-4 flex-wrap">
+    <div class="flex gap-2 sm:gap-4 flex-wrap">
       <Show when={$relatedExpression().length}>
         <button
           class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
