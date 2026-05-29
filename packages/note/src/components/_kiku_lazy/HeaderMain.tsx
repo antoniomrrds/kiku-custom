@@ -1,5 +1,6 @@
 import { createUniqueId, Match, Show, Switch } from "solid-js";
 import { useNavigationTransition, useThemeTransition } from "#/lib/hooks";
+import { capitalize } from "#/lib/text";
 import { nextTheme } from "#/lib/theme";
 import { useCardContext } from "../shared/CardContext";
 import { useConfigContext } from "../shared/ConfigContext";
@@ -7,7 +8,6 @@ import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderLayout from "./HeaderLayout";
 import { ArrowLeftIcon, BoltIcon, PaintbrushIcon } from "./Icons";
 import MergeContextModal from "./MergeContextModal";
-import { capitalize } from "./util/general";
 
 export default function HeaderMain(props: { onExitNested?: () => void }) {
   const { $card } = useCardContext();

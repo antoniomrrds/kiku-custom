@@ -8,6 +8,7 @@ import {
 } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { Portal } from "solid-js/web";
+import { AnkiConnect } from "#/lib/anki-connect";
 import {
   type DefinitionStyle,
   getCssVar,
@@ -24,6 +25,7 @@ import { defaultConfig } from "#/lib/default-config";
 import { type WebFont, webFonts } from "#/lib/fonts";
 import { constants } from "#/lib/general";
 import { useNavigationTransition, useThemeTransition } from "#/lib/hooks";
+import { capitalize } from "#/lib/text";
 import { daisyUIThemes } from "#/lib/theme";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useConfigContext } from "../shared/ConfigContext";
@@ -31,8 +33,6 @@ import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderSettings from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
-import { AnkiConnect } from "./util/anki-connect";
-import { capitalize } from "./util/general";
 
 function toDashed(str: string) {
   return str.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);

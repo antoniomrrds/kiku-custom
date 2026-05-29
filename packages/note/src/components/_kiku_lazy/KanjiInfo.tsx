@@ -7,13 +7,13 @@ import {
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { useNavigationTransition } from "#/lib/hooks";
+import { capitalizeSentence } from "#/lib/text";
 import type { AnkiNote } from "#/lib/types";
 import { useCardContext } from "../shared/CardContext";
 import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { type ContextLabel, useKanjiPageContext } from "./KanjiPageContext";
-import { capitalizeSentence } from "./util/general";
 
 export function KanjiInfo() {
   const { $kanji } = useKanjiContext();

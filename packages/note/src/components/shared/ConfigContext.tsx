@@ -1,6 +1,7 @@
 import { createContext, createEffect, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { type SetStoreFunction, type Store, unwrap } from "solid-js/store";
+import { AnkiConnect } from "#/lib/anki-connect";
 import {
   getRootDatasetConfig,
   type KikuConfig,
@@ -8,7 +9,6 @@ import {
 } from "#/lib/config";
 import { createCompatPair } from "#/lib/context-compat";
 import { constants } from "#/lib/general";
-import { AnkiConnect } from "../_kiku_lazy/util/anki-connect";
 import { useGeneralContext } from "./GeneralContext";
 
 type ConfigContextValue = {

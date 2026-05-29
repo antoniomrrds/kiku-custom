@@ -1,5 +1,6 @@
 import { createEffect, createSignal, Match, Show, Switch } from "solid-js";
 import { Portal } from "solid-js/web";
+import { AnkiConnect } from "#/lib/anki-connect";
 import { nodesToString, parseHtml, unique } from "#/lib/general";
 import { useNavigationTransition } from "#/lib/hooks";
 import { type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
@@ -9,7 +10,6 @@ import { useConfigContext } from "../shared/ConfigContext";
 import { useRootFieldGroupContext } from "../shared/FieldGroupContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
-import { AnkiConnect } from "./util/anki-connect";
 
 export default function MergeContextModal() {
   let dialogRef: HTMLDialogElement | undefined;
