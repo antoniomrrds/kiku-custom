@@ -63,7 +63,6 @@ export const paths = {
   "@/.db/_kiku_db_main_manifest.json":         p(".db/_kiku_db_main_manifest.json"),
 
   "@/.dicts/":                                 p(".dicts/"),
-  "@/.fonts/":                                 p(".fonts/"),
   "@/.release/":                               p(".release/"),
 
   "@/.jmdict/":                                p(".jmdict/"),

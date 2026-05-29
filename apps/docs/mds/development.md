@@ -33,7 +33,6 @@ Kiku Note is a TypeScript project that uses [Vite](https://vitejs.dev/) as the b
 ```
  kiku/packages/note
 ├──  .db                      # Databases used by Kiku
-├──  .fonts                   # Default web fonts used by Kiku
 ├──  dist
 ├──  plugins                  # Plugin types and plugin examples
 ├──  preprocess
@@ -65,7 +64,6 @@ Kiku Note is a TypeScript project that uses [Vite](https://vitejs.dev/) as the b
 
 ### Preprocess
 
-- Run `preprocess/download-fonts.ts` (with `npx vite-node`) to download the web fonts used by Kiku.
 - Create a `.env` file in `packages/note` from `.env.example` and configure your Anki path there.
 - For packaging, prepare a deck named "Kiku" in Anki.
 

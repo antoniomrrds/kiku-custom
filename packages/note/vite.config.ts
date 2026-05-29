@@ -37,11 +37,7 @@ export default defineConfig({
     cssMinify: false,
     minify: false,
     rolldownOptions: {
-      external: [
-        "_kiku_font_hina-mincho.woff2",
-        "_kiku_font_klee-one.woff2",
-        "_kiku_font_ibm-plex-sans-jp.woff2",
-      ],
+      external: [],
       output: {
         codeSplitting: {
           groups: [

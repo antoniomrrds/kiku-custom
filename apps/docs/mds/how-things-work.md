@@ -39,10 +39,7 @@ Kiku stores certain files in your Anki `collection.media` directory. All of thes
   "_kiku_config.json",
   "_kiku_db_main_manifest.json",
   "_kiku_notes_manifest.json",
-  "_kiku_db_main.tar",
-  "_kiku_font_hina-mincho.woff2",
-  "_kiku_font_ibm-plex-sans-jp.woff2",
-  "_kiku_font_klee-one.woff2"
+  "_kiku_db_main.tar"
 ]
 ```
 
@@ -55,7 +52,6 @@ Some explanations about these files:
   `_kiku_worker.js` is used for ~~multithreading~~ JavaScript operations via [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Worker).
 - `_kiku.css` contains all styles for Kiku.
 - `_kiku_front.html`, `_kiku_back.html`, and `_kiku_style.css` are the templates used to update the Front Template, Back Template, and Styling of the note when saving in the settings.
-- `_kiku_font_*.woff2` are the custom fonts included by default.
 
 ## Settings
 
@@ -76,7 +72,7 @@ When AnkiConnect is running, you can click the **"Save"** button on the Settings
 
 ::: details Why are some settings stored in the Front/Back/Styling templates? {open}
 CSS loads instantly, but JavaScript runs only after the initial render.
-If we relied only on the JSON settings, the card would briefly show the wrong theme or font before JavaScript applies the correct ones (a [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content)).
+If we relied only on the JSON settings, the card would briefly show the wrong theme before JavaScript applies the correct one (a [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content)).
 Storing key settings in the templates avoids this flicker.
 :::
 

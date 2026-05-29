@@ -16,7 +16,6 @@ import {
 } from "#/lib/config";
 import { constants } from "#/lib/contants";
 import { defaultConfig } from "#/lib/default-config";
-import { type WebFont, webFonts } from "#/lib/fonts";
 import { useNavigationTransition, useThemeTransition } from "#/lib/hooks";
 import { capitalize } from "#/lib/text";
 import { daisyUIThemes } from "#/lib/theme";
@@ -574,39 +573,10 @@ function FontSettings() {
     <div class="flex flex-col gap-4 animate-fade-in">
       <div class="text-2xl font-bold">Font</div>
       <div>
-        <div class="text-lg font-bold">Primary</div>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] rounded-box gap-4">
-          <fieldset
-            class="fieldset"
-            classList={{
-              hidden: $config.useSystemFontPrimary,
-            }}
-            on:change={(e) => {
-              const target = e.target as HTMLSelectElement;
-              $setConfig("webFontPrimary", target.value as WebFont);
-            }}
-          >
-            <legend class="fieldset-legend">Web Font</legend>
-            <select class="select w-full">
-              {webFonts.map((font) => {
-                return (
-                  <option value={font} selected={$config.webFontPrimary === font}>
-                    <span class="font-primary" style={{ "font-family": font }}>
-                      {font}
-                    </span>
-                  </option>
-                );
-              })}
-            </select>
-          </fieldset>
-          <fieldset
-            class="fieldset"
-            classList={{
-              hidden: !$config.useSystemFontPrimary,
-            }}
-          >
+          <fieldset class="fieldset">
             <legend class="fieldset-legend">
-              System Font
+              Primary
               <button
                 on:click={() => {
                   $setConfig("systemFontPrimary", defaultConfig.systemFontPrimary);
@@ -624,67 +594,21 @@ function FontSettings() {
             <input
               type="text"
               class="input w-full"
-              placeholder={
-                "'Inter', 'SF Pro Display', 'Liberation Sans', 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans CJK JP', 'Noto Sans JP', 'Meiryo', HanaMinA, HanaMinB, sans-serif"
-              }
+              placeholder={defaultConfig.systemFontPrimary}
               value={$config.systemFontPrimary}
               on:input={(e) => {
                 $setConfig("systemFontPrimary", (e.target as HTMLInputElement).value);
               }}
             />
           </fieldset>
-
-          <fieldset class="fieldset bg-base-100 border-base-300 rounded-box w-64 py-4">
-            <legend class="fieldset-legend">Use System Font</legend>
-            <label class="label text-base-content-soft">
-              <input
-                type="checkbox"
-                checked={$config.useSystemFontPrimary}
-                class="toggle"
-                on:change={(e) => {
-                  $setConfig("useSystemFontPrimary", e.target.checked);
-                }}
-              />
-              {$config.useSystemFontPrimary ? "Using System Font" : "Using Web Font"}
-            </label>
-          </fieldset>
         </div>
       </div>
 
       <div>
-        <div class="text-lg font-bold">Secondary</div>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] rounded-box gap-4">
-          <fieldset
-            class="fieldset"
-            classList={{
-              hidden: $config.useSystemFontSecondary,
-            }}
-            on:change={(e) => {
-              const target = e.target as HTMLSelectElement;
-              $setConfig("webFontSecondary", target.value as WebFont);
-            }}
-          >
-            <legend class="fieldset-legend">Web Font</legend>
-            <select class="select w-full">
-              {webFonts.map((font) => {
-                return (
-                  <option value={font} selected={$config.webFontSecondary === font}>
-                    <span class="font-secondary" style={{ "font-family": font }}>
-                      {font}
-                    </span>
-                  </option>
-                );
-              })}
-            </select>
-          </fieldset>
-          <fieldset
-            class="fieldset"
-            classList={{
-              hidden: !$config.useSystemFontSecondary,
-            }}
-          >
+          <fieldset class="fieldset">
             <legend class="fieldset-legend">
-              System Font
+              Secondary
               <button
                 on:click={() => {
                   $setConfig("systemFontSecondary", defaultConfig.systemFontSecondary);
@@ -702,29 +626,12 @@ function FontSettings() {
             <input
               type="text"
               class="input w-full"
-              placeholder={
-                "'Hiragino Mincho ProN', 'Noto Serif CJK JP', 'Noto Serif JP', 'Yu Mincho', HanaMinA, HanaMinB, serif"
-              }
+              placeholder={defaultConfig.systemFontSecondary}
               value={$config.systemFontSecondary}
               on:input={(e) => {
                 $setConfig("systemFontSecondary", (e.target as HTMLInputElement).value);
               }}
             />
-          </fieldset>
-
-          <fieldset class="fieldset bg-base-100 border-base-300 rounded-box w-64 py-4">
-            <legend class="fieldset-legend">Use System Font</legend>
-            <label class="label text-base-content-soft">
-              <input
-                type="checkbox"
-                checked={$config.useSystemFontSecondary}
-                class="toggle"
-                on:change={(e) => {
-                  $setConfig("useSystemFontSecondary", e.target.checked);
-                }}
-              />
-              {$config.useSystemFontSecondary ? "Using System Font" : "Using Web Font"}
-            </label>
           </fieldset>
         </div>
       </div>

@@ -239,30 +239,6 @@
   }
 }
 
-@font-face {
-  font-family: "Hina Mincho";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("_kiku_font_hina-mincho.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Klee One";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("_kiku_font_klee-one.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "IBM Plex Sans JP";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("_kiku_font_ibm-plex-sans-jp.woff2") format("woff2");
-}
-
 [data-kiku-cloak] {
   visibility: visible !important;
   opacity: 1 !important;

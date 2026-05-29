@@ -54,17 +54,6 @@ class Script {
     await this.copyFiles(FILES, paths["@/.anki-build/"]);
   }
 
-  async copyFonts() {
-    const FONTS = [
-      "_kiku_font_hina-mincho.woff2",
-      "_kiku_font_klee-one.woff2",
-      "_kiku_font_ibm-plex-sans-jp.woff2",
-    ];
-
-    console.log("\n📁 Copying FONTS...");
-    await this.copyFiles(FONTS, paths["@/.fonts/"]);
-  }
-
   async copyDatabases() {
     const DBS = ["_kiku_db_main.tar", "_kiku_db_main_manifest.json"];
 
@@ -77,7 +66,6 @@ class Script {
     await this.ensureAnkiDir();
     await this.copyAssetsFromDistToAnkiBuild();
     await this.copyAnkiBuild();
-    await this.copyFonts();
     await this.copyDatabases();
     console.log("\n🎉 Done!");
   }

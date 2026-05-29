@@ -1,15 +1,10 @@
 import { defaultConfig } from "./default-config";
-import { type WebFont, webFonts } from "./fonts";
 import { colorBase100Map, type DaisyUITheme, daisyUIThemes } from "./theme";
 
 export type KikuConfig = {
   theme: DaisyUITheme;
-  webFontPrimary: WebFont;
   systemFontPrimary: string;
-  useSystemFontPrimary: boolean;
-  webFontSecondary: WebFont;
   systemFontSecondary: string;
-  useSystemFontSecondary: boolean;
   blurNsfw: boolean;
   muteNsfw: boolean;
   pictureOnFront: boolean;
@@ -86,12 +81,8 @@ export function validateConfig(config: KikuConfig): KikuConfig {
     // oxfmt-ignore
     const valid: KikuConfig = {
       theme: daisyUIThemes.includes(config.theme) ? config.theme : defaultConfig.theme,
-      webFontPrimary: webFonts.includes(config.webFontPrimary) ? config.webFontPrimary : defaultConfig.webFontPrimary,
       systemFontPrimary: typeof config.systemFontPrimary === "string" ? config.systemFontPrimary : defaultConfig.systemFontPrimary,
-      useSystemFontPrimary: typeof config.useSystemFontPrimary === "boolean" ? config.useSystemFontPrimary : defaultConfig.useSystemFontPrimary,
-      webFontSecondary: webFonts.includes(config.webFontSecondary) ? config.webFontSecondary : defaultConfig.webFontSecondary,
       systemFontSecondary: typeof config.systemFontSecondary === "string" ? config.systemFontSecondary : defaultConfig.systemFontSecondary,
-      useSystemFontSecondary: typeof config.useSystemFontSecondary === "boolean" ? config.useSystemFontSecondary : defaultConfig.useSystemFontSecondary,
 
       blurNsfw: typeof config.blurNsfw === "boolean" ? config.blurNsfw : defaultConfig.blurNsfw,
       muteNsfw: typeof config.muteNsfw === "boolean" ? config.muteNsfw : defaultConfig.muteNsfw,
@@ -195,8 +186,8 @@ export function getRootDatasetConfig(config: KikuConfig): RootDataset {
 export function getCssVar(config: KikuConfig) {
   // oxfmt-ignore
   const cssVar: CssVar = {
-    "--font-primary": config.useSystemFontPrimary ? config.systemFontPrimary : config.webFontPrimary,
-    "--font-secondary": config.useSystemFontSecondary ? config.systemFontSecondary : config.webFontSecondary,
+    "--font-primary": config.systemFontPrimary,
+    "--font-secondary": config.systemFontSecondary,
 
     "--font-size-base-expression": tailwindFontSizeVar[config.fontSizeBaseExpression].fontSize,
     "--line-height-base-expression": tailwindFontSizeVar[config.fontSizeBaseExpression].lineHeight,

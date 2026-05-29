@@ -19,10 +19,6 @@ const assets = {
   "_kiku_worker.js": "_kiku_worker.js",
   "_kiku_plugin.css": "_kiku_plugin.css",
   "_kiku.css": "_kiku.css",
-
-  "_kiku_font_hina-mincho.woff2": "_kiku_font_hina-mincho.woff2",
-  "_kiku_font_ibm-plex-sans-jp.woff2": "_kiku_font_ibm-plex-sans-jp.woff2",
-  "_kiku_font_klee-one.woff2": "_kiku_font_klee-one.woff2",
 };
 
 export const constants = {
@@ -51,10 +47,6 @@ export const constants = {
     assets["_kiku_back.html"],
     assets["_kiku_style.css"],
     assets["_kiku.css"],
-
-    assets["_kiku_font_hina-mincho.woff2"],
-    assets["_kiku_font_ibm-plex-sans-jp.woff2"],
-    assets["_kiku_font_klee-one.woff2"],
 
     assets["_kiku_db_main.tar"],
     assets["_kiku_db_main_manifest.json"],

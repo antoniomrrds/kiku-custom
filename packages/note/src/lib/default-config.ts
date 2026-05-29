@@ -3,12 +3,8 @@ import type { KikuConfig } from "./config";
 // oxfmt-ignore
 export const defaultConfig: KikuConfig = {
   theme: "light",
-  webFontPrimary: "Klee One",
-  systemFontPrimary: "'Inter', 'SF Pro Display', 'Liberation Sans', 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans CJK JP', 'Noto Sans JP', 'Meiryo', HanaMinA, HanaMinB, sans-serif",
-  useSystemFontPrimary: true,
-  webFontSecondary: "IBM Plex Sans JP",
-  systemFontSecondary: "'Hiragino Mincho ProN', 'Noto Serif CJK JP', 'Noto Serif JP', 'Yu Mincho', HanaMinA, HanaMinB, serif",
-  useSystemFontSecondary: true,
+  systemFontPrimary: "'Inter', 'SF Pro Display', 'Liberation Sans', 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans CJK JP', 'Noto Sans JP', 'Meiryo', 'HanaMinA', 'HanaMinB', 'sans-serif'",
+  systemFontSecondary: "'Hiragino Mincho ProN', 'Noto Serif CJK JP', 'Noto Serif JP', 'Yu Mincho', 'HanaMinA', 'HanaMinB', 'serif'",
   blurNsfw: true,
   muteNsfw: false,
   pictureOnFront: false,
