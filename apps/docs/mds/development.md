@@ -7,7 +7,7 @@ outline: deep
 ## Project Structure
 
 The Kiku repo is a monorepo managed by [Turborepo](https://turborepo.com/), with [pnpm](https://pnpm.io/) as the package manager
-and [Biome](https://biomejs.dev/) as the linter and formatter.
+and [Oxc](https://oxc.rs/) as the linter and formatter.
 
 ```
  kiku
@@ -17,7 +17,8 @@ and [Biome](https://biomejs.dev/) as the linter and formatter.
 │   ├──  addon                # Kiku Note Manager
 │   └──  note                 # Kiku Note Type
 ├── 󰊢 .gitignore
-├──  biome.json
+├──  .oxfmtrc.json
+├──  .oxlintrc.json
 ├──  package.json
 ├──  pnpm-lock.yaml
 ├──  pnpm-workspace.yaml
@@ -48,7 +49,7 @@ Kiku Note is a TypeScript project that uses [Vite](https://vitejs.dev/) as the b
 ├── 󰣞 src
 │   ├──  components
 │   ├──  styles               # The actual CSS files
-│   ├──  util
+│   ├──  lib
 │   ├──  worker
 │   └──  index.tsx            # Entry point for the JavaScript bundle
 ├──  package.json

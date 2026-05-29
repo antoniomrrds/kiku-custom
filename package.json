@@ -17,7 +17,6 @@
     "apply": "turbo run apply --force"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.15",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.67.0",
     "turbo": "^2.9.14",
