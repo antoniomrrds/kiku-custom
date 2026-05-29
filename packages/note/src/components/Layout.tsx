@@ -18,7 +18,7 @@ export function Layout(props: { children: JSX.Element }) {
       </div>
       <Portal mount={$general.layoutRef}>
         {$general.toast.message && (
-          <div class="toast toast-top toast-center z-20">
+          <div class="toast toast-top toast-center z-50">
             <div
               class="alert"
               classList={{
