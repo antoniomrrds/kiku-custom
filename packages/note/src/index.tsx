@@ -188,6 +188,8 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       );
       if (!tailwind) throw new Error("tailwind not found");
       shadow.appendChild(tailwind.cloneNode(true));
+      const ankiCss = document.querySelector('link[href="/anki.css"]');
+      if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
     } else {
       const kikuCss = document.createElement("link");
       kikuCss.rel = "stylesheet";
