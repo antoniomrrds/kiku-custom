@@ -22,10 +22,6 @@ export default function Sentence() {
   const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 
-  createEffect(() => {
-    console.log($group.sentenceTranslationField);
-  });
-
   function DefaultSentence() {
     return (
       <Switch>
