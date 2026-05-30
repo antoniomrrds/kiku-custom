@@ -2,20 +2,20 @@ import { createStore } from "solid-js/store";
 import { generateHydrationScript, renderToString } from "solid-js/web";
 import { Front } from "#/components/Front";
 import { Layout } from "#/components/Layout";
-import { AnkiFieldContextProvider } from "#/components/shared/AnkiFieldsContext";
-import { CacheContextProvider } from "#/components/shared/CacheContext";
-import { CardStoreContextProvider } from "#/components/shared/CardContext";
-import { ConfigContextProvider } from "#/components/shared/ConfigContext";
-import { CtxContextProvider } from "#/components/shared/CtxContext";
+import { AnkiFieldContextProvider } from "#/contexts/AnkiFieldsContext";
+import { CacheContextProvider } from "#/contexts/CacheContext";
+import { CardStoreContextProvider } from "#/contexts/CardContext";
+import { ConfigContextProvider } from "#/contexts/ConfigContext";
+import { CtxContextProvider } from "#/contexts/CtxContext";
 import {
   FieldGroupContextProvider,
   RootFieldGroupContextProvider,
-} from "#/components/shared/FieldGroupContext";
-import { GeneralContextProvider } from "#/components/shared/GeneralContext";
+} from "#/contexts/FieldGroupContext";
+import { GeneralContextProvider } from "#/contexts/GeneralContext";
 import { Logger } from "#/lib/logger";
 import { ankiFieldsSkeleton } from "#/lib/types";
 import { Back } from "../src/components/Back";
-import { BreakpointContextProvider } from "../src/components/shared/BreakpointContext";
+import { BreakpointContextProvider } from "../src/contexts/BreakpointContext";
 import { defaultConfig } from "../src/lib/default-config";
 
 const [$config, $setConfig] = createStore(defaultConfig);

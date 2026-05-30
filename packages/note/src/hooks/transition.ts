@@ -1,7 +1,7 @@
-import { useBreakpointContext } from "#/components/shared/BreakpointContext";
-import { useCardContext } from "#/components/shared/CardContext";
-import { useConfigContext } from "#/components/shared/ConfigContext";
-import { useGeneralContext } from "#/components/shared/GeneralContext";
+import { useBreakpointContext } from "#/contexts/BreakpointContext";
+import { useCardContext } from "#/contexts/CardContext";
+import { useConfigContext } from "#/contexts/ConfigContext";
+import { useGeneralContext } from "#/contexts/GeneralContext";
 import type { DaisyUITheme } from "#/lib/theme";
 
 export function useViewTransition() {

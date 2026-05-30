@@ -9,11 +9,11 @@ import {
   Show,
   Switch,
 } from "solid-js";
-import { useCardContext } from "#/components/shared/CardContext";
-import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
-import { useCtxContext } from "../shared/CtxContext";
-import { useFieldGroupContext } from "../shared/FieldGroupContext";
-import { useGeneralContext } from "../shared/GeneralContext";
+import { useCardContext } from "#/contexts/CardContext";
+import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
+import { useCtxContext } from "../../contexts/CtxContext";
+import { useFieldGroupContext } from "../../contexts/FieldGroupContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import { parseHtml } from "#/lib/dom";
 import { usePitch } from "#/hooks/pitch";
 

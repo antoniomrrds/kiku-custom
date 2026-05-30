@@ -3,9 +3,9 @@ import { createStore } from "solid-js/store";
 import { useNavigationTransition } from "#/hooks/transition";
 import { capitalizeSentence } from "#/lib/text";
 import type { AnkiNote } from "#/lib/types";
-import { useCardContext } from "../shared/CardContext";
-import { useCtxContext } from "../shared/CtxContext";
-import { useGeneralContext } from "../shared/GeneralContext";
+import { useCardContext } from "../../contexts/CardContext";
+import { useCtxContext } from "../../contexts/CtxContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
 import { type ContextLabel, useKanjiPageContext } from "./KanjiPageContext";
 

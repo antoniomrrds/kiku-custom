@@ -1,4 +1,4 @@
-import { useAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
+import { useAnkiFieldContext } from "#/contexts/AnkiFieldsContext";
 import { parseHtml } from "#/lib/dom";
 import { unique } from "#/lib/es";
 import { hatsuon } from "#/lib/hatsuon";

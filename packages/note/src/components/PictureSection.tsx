@@ -3,9 +3,9 @@ import { isServer } from "solid-js/web";
 import type { DatasetProp } from "#/lib/config";
 import { parseHtml } from "#/lib/dom";
 import { isNsfw } from "#/lib/util";
-import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
-import { useCardContext } from "./shared/CardContext";
-import { useFieldGroupContext } from "./shared/FieldGroupContext";
+import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
+import { useCardContext } from "../contexts/CardContext";
+import { useFieldGroupContext } from "../contexts/FieldGroupContext";
 
 export function PictureSection() {
   const { $card, $setPictureModal } = useCardContext();

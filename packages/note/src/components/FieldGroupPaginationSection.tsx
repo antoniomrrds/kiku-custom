@@ -1,5 +1,5 @@
 import { lazy } from "solid-js";
-import { useFieldGroupContext } from "./shared/FieldGroupContext";
+import { useFieldGroupContext } from "../contexts/FieldGroupContext";
 
 // oxfmt-ignore
 const Lazy = {

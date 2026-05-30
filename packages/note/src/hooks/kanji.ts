@@ -1,10 +1,10 @@
 import { createEffect } from "solid-js";
 import { unwrap } from "solid-js/store";
-import { useAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
-import { useCacheContext } from "#/components/shared/CacheContext";
-import { useCardContext } from "#/components/shared/CardContext";
-import { useConfigContext } from "#/components/shared/ConfigContext";
-import { useGeneralContext } from "#/components/shared/GeneralContext";
+import { useAnkiFieldContext } from "#/contexts/AnkiFieldsContext";
+import { useCacheContext } from "#/contexts/CacheContext";
+import { useCardContext } from "#/contexts/CardContext";
+import { useConfigContext } from "#/contexts/ConfigContext";
+import { useGeneralContext } from "#/contexts/GeneralContext";
 import { constants } from "#/lib/contants";
 import { createNex } from "#/worker/client";
 import { extractKanji } from "#/lib/kana";

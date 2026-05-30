@@ -53,9 +53,7 @@ export default defineConfig({
             {
               test: (id) => {
                 const result =
-                  /src\/lib/.test(id) ||
-                  /src\/hooks/.test(id) ||
-                  /src\/components\/shared/.test(id);
+                  /src\/lib/.test(id) || /src\/hooks/.test(id) || /src\/contexts/.test(id);
                 return result;
               },
               // _kiku_shared is module that is used by _kiku.js and _kiku_lazy.js

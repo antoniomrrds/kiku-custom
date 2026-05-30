@@ -1,5 +1,5 @@
 import { createMemo } from "solid-js";
-import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
+import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
 import { CircleChevronDownIcon } from "./Icons";
 
 export default function Frequency() {

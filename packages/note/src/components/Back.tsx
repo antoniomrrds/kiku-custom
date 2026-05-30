@@ -1,6 +1,6 @@
 import { createMemo, lazy, Match, onMount, Show, Suspense, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
-import { CardStoreContextProvider, useCardContext } from "#/components/shared/CardContext";
+import { CardStoreContextProvider, useCardContext } from "#/contexts/CardContext";
 import type { DatasetProp } from "#/lib/config";
 import { isNsfw } from "#/lib/util";
 import { useKanji } from "#/hooks/kanji";
@@ -8,10 +8,10 @@ import { useLoadPlugin } from "#/hooks/plugin";
 import { useNavigationTransition } from "#/hooks/transition";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
-import { AnkiFieldContextProvider, useAnkiFieldContext } from "./shared/AnkiFieldsContext";
-import { useCacheContext } from "./shared/CacheContext";
-import { CtxContextProvider } from "./shared/CtxContext";
-import { FieldGroupContextProvider } from "./shared/FieldGroupContext";
+import { AnkiFieldContextProvider, useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
+import { useCacheContext } from "../contexts/CacheContext";
+import { CtxContextProvider } from "../contexts/CtxContext";
+import { FieldGroupContextProvider } from "../contexts/FieldGroupContext";
 import { usePitch } from "#/hooks/pitch";
 
 // oxfmt-ignore

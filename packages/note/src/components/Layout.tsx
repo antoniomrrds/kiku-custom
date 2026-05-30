@@ -1,6 +1,6 @@
 import type { JSX } from "solid-js";
 import { Portal } from "solid-js/web";
-import { useGeneralContext } from "./shared/GeneralContext";
+import { useGeneralContext } from "../contexts/GeneralContext";
 
 export function Layout(props: { children: JSX.Element }) {
   const { $general, $setGeneral } = useGeneralContext();

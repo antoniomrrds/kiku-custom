@@ -1,12 +1,12 @@
 import { createMemo, createSignal, lazy, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
-import { useCardContext } from "#/components/shared/CardContext";
+import { useCardContext } from "#/contexts/CardContext";
 import type { DatasetProp } from "#/lib/config";
 import { useLoadPlugin } from "#/hooks/plugin";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
-import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
-import { useConfigContext } from "./shared/ConfigContext";
+import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
+import { useConfigContext } from "../contexts/ConfigContext";
 
 // oxfmt-ignore
 const Lazy = {

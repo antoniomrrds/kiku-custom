@@ -1,12 +1,12 @@
 import { createMemo, createSignal, For, type JSX, Match, onMount, Show, Switch } from "solid-js";
-import { useCardContext } from "#/components/shared/CardContext";
+import { useCardContext } from "#/contexts/CardContext";
 import { parseHtml } from "#/lib/dom";
 import { useNavigationTransition } from "#/hooks/transition";
 import { extractKanji } from "#/lib/kana";
 import { parseFurigana } from "#/lib/parse-furigana";
 import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
-import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
-import { useGeneralContext } from "../shared/GeneralContext";
+import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import HeaderKanjiPage from "./HeaderKanjiPage";
 import { ArrowLeftIcon } from "./Icons";
 import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";

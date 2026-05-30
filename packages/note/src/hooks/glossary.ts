@@ -1,5 +1,5 @@
 import { isServer } from "solid-js/web";
-import { useGeneralContext } from "#/components/shared/GeneralContext";
+import { useGeneralContext } from "#/contexts/GeneralContext";
 import { parseHtml } from "#/lib/dom";
 
 function isSvg(src: string | null) {

@@ -6,17 +6,17 @@ import { hydrate, render } from "solid-js/web";
 import { Back } from "./components/Back.tsx";
 import { Front } from "./components/Front.tsx";
 import { Layout } from "./components/Layout.tsx";
-import { AnkiFieldContextProvider } from "./components/shared/AnkiFieldsContext.tsx";
-import { BreakpointContextProvider } from "./components/shared/BreakpointContext.tsx";
-import { CacheContextProvider } from "./components/shared/CacheContext.tsx";
-import { CardStoreContextProvider } from "./components/shared/CardContext.tsx";
-import { ConfigContextProvider } from "./components/shared/ConfigContext.tsx";
-import { CtxContextProvider } from "./components/shared/CtxContext.tsx";
+import { AnkiFieldContextProvider } from "./contexts/AnkiFieldsContext.tsx";
+import { BreakpointContextProvider } from "./contexts/BreakpointContext.tsx";
+import { CacheContextProvider } from "./contexts/CacheContext.tsx";
+import { CardStoreContextProvider } from "./contexts/CardContext.tsx";
+import { ConfigContextProvider } from "./contexts/ConfigContext.tsx";
+import { CtxContextProvider } from "./contexts/CtxContext.tsx";
 import {
   FieldGroupContextProvider,
   RootFieldGroupContextProvider,
-} from "./components/shared/FieldGroupContext.tsx";
-import { GeneralContextProvider } from "./components/shared/GeneralContext.tsx";
+} from "./contexts/FieldGroupContext.tsx";
+import { GeneralContextProvider } from "./contexts/GeneralContext.tsx";
 import {
   type KikuConfig,
   type RootDataset,

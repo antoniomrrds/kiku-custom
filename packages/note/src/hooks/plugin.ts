@@ -1,6 +1,6 @@
 import { getOwner, runWithOwner } from "solid-js";
-import { useCtxContext } from "#/components/shared/CtxContext";
-import { useGeneralContext } from "#/components/shared/GeneralContext";
+import { useCtxContext } from "#/contexts/CtxContext";
+import { useGeneralContext } from "#/contexts/GeneralContext";
 import { constants } from "#/lib/contants";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 

@@ -1,10 +1,10 @@
 import { createMemo, createSignal, ErrorBoundary, For, onCleanup, onMount, Show } from "solid-js";
 import type { DatasetProp } from "#/lib/config";
 import { isHtmlEffectivelyEmpty, parseHtml } from "#/lib/dom";
-import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
-import { useConfigContext } from "../shared/ConfigContext";
-import { useCtxContext } from "../shared/CtxContext";
-import { useGeneralContext } from "../shared/GeneralContext";
+import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
+import { useConfigContext } from "../../contexts/ConfigContext";
+import { useCtxContext } from "../../contexts/CtxContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import DefinitionPictureSection from "./DefinitionPictureSection";
 import Sentence from "./Sentence";
 

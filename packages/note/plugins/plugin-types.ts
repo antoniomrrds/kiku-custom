@@ -24,11 +24,11 @@ import type { JSX } from "solid-js/jsx-runtime";
 import type { createStore, Store } from "solid-js/store";
 import type { Portal } from "solid-js/web";
 import type { UseKanjiContext } from "#/components/_kiku_lazy/KanjiContext";
-import type { UseAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
-import type { UseBreakpointContext } from "#/components/shared/BreakpointContext";
-import type { UseCardContext } from "#/components/shared/CardContext";
-import type { UseConfigContext } from "#/components/shared/ConfigContext";
-import type { UseGeneralContext } from "#/components/shared/GeneralContext";
+import type { UseAnkiFieldContext } from "#/contexts/AnkiFieldsContext";
+import type { UseBreakpointContext } from "#/contexts/BreakpointContext";
+import type { UseCardContext } from "#/contexts/CardContext";
+import type { UseConfigContext } from "#/contexts/ConfigContext";
+import type { UseGeneralContext } from "#/contexts/GeneralContext";
 import type { PitchInfo } from "#/lib/hatsuon";
 import type { AnkiBackFields, AnkiFrontFields } from "#/lib/types";
 

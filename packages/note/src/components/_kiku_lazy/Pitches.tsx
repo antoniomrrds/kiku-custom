@@ -2,8 +2,8 @@ import { createMemo, ErrorBoundary, For, Show } from "solid-js";
 import type { DatasetProp } from "#/lib/config";
 import type { PitchInfo } from "#/lib/hatsuon";
 import type { PitchType } from "#/lib/types";
-import { useCtxContext } from "../shared/CtxContext";
-import { useGeneralContext } from "../shared/GeneralContext";
+import { useCtxContext } from "../../contexts/CtxContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import { usePitch } from "#/hooks/pitch";
 
 export default function Pitches() {
