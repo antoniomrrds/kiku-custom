@@ -8,7 +8,7 @@ import type { Logger } from "#/lib/logger";
 import type { AnkiDroidAPI, KikuNotesManifest } from "#/lib/types";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import { useBreakpointContext } from "./BreakpointContext";
-import type { NexApi } from "#/worker/client";
+import type { WorkerApi } from "#/worker/client";
 
 type GeneralStore = {
   logger: Logger;
@@ -28,7 +28,7 @@ type GeneralStore = {
   layoutRef: HTMLDivElement | undefined;
   contentRef: HTMLDivElement | undefined;
   toast: Toast;
-  nex: PromiseWithResolvers<NexApi>;
+  workerApi: PromiseWithResolvers<WorkerApi>;
   checkAnkiConnect: () => Promise<void>;
   useCheckAnkiConnect: () => void;
 };
@@ -97,7 +97,7 @@ export function GeneralContextProvider(props: {
     });
   }
 
-  const nex = Promise.withResolvers<NexApi>();
+  const workerApi = Promise.withResolvers<WorkerApi>();
 
   const [$general, $setGeneral] = createStore<GeneralStore>({
     logger: props.logger,
@@ -117,7 +117,7 @@ export function GeneralContextProvider(props: {
     layoutRef: undefined,
     contentRef: undefined,
     toast: { success, error, message: undefined, type: "success" },
-    nex,
+    workerApi: workerApi,
     checkAnkiConnect,
     useCheckAnkiConnect,
   });

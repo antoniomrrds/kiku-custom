@@ -24,8 +24,8 @@ export function ConfigContextProvider(props: { children: JSX.Element; value: Con
     if (!$general.root) throw new Error("Missing root");
     updateConfigState($general.root, config, !$general.isAnkiWeb);
     AnkiConnect.changeAddress(config.ankiConnectAddress);
-    $general.nex.promise.then((nex) => {
-      nex.init({
+    $general.workerApi.promise.then((workerApi) => {
+      workerApi.init({
         constants,
         config,
         assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,

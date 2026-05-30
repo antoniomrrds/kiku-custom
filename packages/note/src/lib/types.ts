@@ -1,4 +1,4 @@
-import type { NexApi } from "#/worker/client";
+import type { WorkerApi } from "#/worker/client";
 import type { Logger } from "./logger";
 
 export type AnkiFields = {
@@ -263,10 +263,10 @@ declare global {
 }
 
 export type CacheStore = {
-  nex?: NexApi;
+  workerApi?: WorkerApi;
   relax?: boolean;
   lookupKanji?: Map<string, KanjiInfo | undefined>;
   queryShared?: Map<string, QuerySharedResult>;
 };
 
-export type QuerySharedResult = Awaited<ReturnType<NexApi["queryShared"]>>;
+export type QuerySharedResult = Awaited<ReturnType<WorkerApi["queryShared"]>>;

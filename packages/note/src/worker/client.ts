@@ -5,9 +5,9 @@ import { MainThreadApi } from "./MainThreadApi.ts";
 import { NexMain, type NexRemote } from "./nex";
 import type { WorkerThreadApi } from "./WorkerThreadApi.ts";
 
-export type NexApi = NexRemote<WorkerThreadApi>;
+export type WorkerApi = NexRemote<WorkerThreadApi>;
 
-export async function createNex(
+export async function createWorkerApi(
   opts: {
     constants: Constants;
     assetsPath: string;
@@ -16,12 +16,11 @@ export async function createNex(
     workerPath?: string;
   },
   logger: Logger,
-  existingNex?: NexApi,
+  existingWorkerApi?: WorkerApi,
 ) {
-  if (existingNex) {
-    const nex = existingNex;
-    await nex.init(opts);
-    return nex;
+  if (existingWorkerApi) {
+    existingWorkerApi.init(opts);
+    return existingWorkerApi;
   }
 
   let worker: Worker;
@@ -38,7 +37,7 @@ export async function createNex(
   }
 
   const mainThreadApi = new MainThreadApi(logger);
-  const nex: NexApi = new NexMain<WorkerThreadApi>(worker).wrap(mainThreadApi);
-  await nex.init(opts);
-  return nex;
+  const workerApi: WorkerApi = new NexMain<WorkerThreadApi>(worker).wrap(mainThreadApi);
+  await workerApi.init(opts);
+  return workerApi;
 }

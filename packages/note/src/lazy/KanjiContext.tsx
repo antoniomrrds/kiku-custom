@@ -68,8 +68,8 @@ export function KanjiContextProvider(props: { kanji: string; children: JSX.Eleme
   async function fetchNotes(type: FetchType) {
     const kanji = $kanji.kanji;
     if (!kanji) return;
-    const nex = await $general.nex.promise;
-    const kanjiInfo = unwrap($kanji.kanjiInfo) ?? (await nex.lookupKanji(kanji));
+    const workerApi = await $general.workerApi.promise;
+    const kanjiInfo = unwrap($kanji.kanjiInfo) ?? (await workerApi.lookupKanji(kanji));
     if (kanji !== $kanji.kanji) return;
     if (!kanjiInfo) return;
     if ($kanji.fetched.has(type)) return;
@@ -91,7 +91,7 @@ export function KanjiContextProvider(props: { kanji: string; children: JSX.Eleme
         return;
       }
 
-      const result = await nex.queryShared({ ankiFields, kanjiList: list });
+      const result = await workerApi.queryShared({ ankiFields, kanjiList: list });
       if (kanji !== $kanji.kanji) return;
       querySharedCache.set(cacheKey, result);
       $setKanji(type, Object.entries(result.kanjiResult));
@@ -123,9 +123,9 @@ export function KanjiContextProvider(props: { kanji: string; children: JSX.Eleme
     if (kanji) {
       let kanjiInfo = lookupKanjiCache.get(kanji);
       if (!kanjiInfo) {
-        $general.nex.promise.then(async (nex) => {
-          if (nex) {
-            kanjiInfo = await nex.lookupKanji(kanji);
+        $general.workerApi.promise.then(async (workerApi) => {
+          if (workerApi) {
+            kanjiInfo = await workerApi.lookupKanji(kanji);
             lookupKanjiCache.set(kanji, kanjiInfo);
             if ($kanji.kanji === kanji) {
               $setKanji("kanjiInfo", kanjiInfo);

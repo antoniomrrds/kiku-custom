@@ -6,7 +6,7 @@ import { useCardContext } from "#/contexts/CardContext";
 import { useConfigContext } from "#/contexts/ConfigContext";
 import { useGeneralContext } from "#/contexts/GeneralContext";
 import { constants } from "#/lib/contants";
-import { createNex } from "#/worker/client";
+import { createWorkerApi } from "#/worker/client";
 import { extractKanji } from "#/lib/kana";
 import { parseRelatedExpression } from "#/lib/parse-related-expression";
 
@@ -43,12 +43,12 @@ export function useKanji() {
         preferAnkiConnect: $config.preferAnkiConnect && $general.isAnkiDesktop,
         workerPath: $general.workerPath,
       };
-      const nex = await createNex(opts, $general.logger, cacheStore?.nex);
-      $general.nex.resolve(nex);
-      if (cacheStore && !cacheStore.nex) {
-        cacheStore.nex = nex;
+      const workerApi = await createWorkerApi(opts, $general.logger, cacheStore?.workerApi);
+      $general.workerApi.resolve(workerApi);
+      if (cacheStore && !cacheStore.workerApi) {
+        cacheStore.workerApi = workerApi;
       }
-      const { kanjiResult, readingResult, expressionResult } = await nex.queryShared({
+      const { kanjiResult, readingResult, expressionResult } = await workerApi.queryShared({
         kanjiList,
         readingList,
         ankiFields: unwrap(ankiFields),
@@ -77,7 +77,7 @@ export function useKanji() {
         relatedExpression: uniqueRelated,
       });
 
-      nex
+      workerApi
         .notesManifest()
         .then((manifest) => $setGeneral("notesManifest", manifest))
         .catch(() => {
