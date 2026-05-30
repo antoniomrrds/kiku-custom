@@ -2,14 +2,16 @@ import { createMemo, createSignal, For, Match, Switch } from "solid-js";
 import { Portal } from "solid-js/web";
 import { parseHtml } from "#/lib/dom";
 import { useCollectGlossaryImgs } from "#/hooks/glossary";
+import { usePictureModalTransition } from "#/hooks/transition";
 import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
 import { useGeneralContext } from "../../contexts/GeneralContext";
 import { useCardContext } from "../../contexts/CardContext";
 
 export default function PictureModal() {
-  const { $card, $setCard, $setPictureModal } = useCardContext();
+  const { $card } = useCardContext();
   const { $general } = useGeneralContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $setPictureModal } = usePictureModalTransition();
   const [$showAll, $setShowAll] = createSignal(false);
   const collectGlossaryImgs = useCollectGlossaryImgs();
 

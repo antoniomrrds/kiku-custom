@@ -5,7 +5,7 @@ import type { DatasetProp } from "#/lib/config";
 import { isNsfw } from "#/lib/util";
 import { useKanji } from "#/hooks/kanji";
 import { useLoadPlugin } from "#/hooks/plugin";
-import { useNavigationTransition } from "#/hooks/transition";
+import { useNavigationTransition, usePictureModalTransition } from "#/hooks/transition";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { AnkiFieldContextProvider, useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
@@ -33,8 +33,9 @@ const Lazy = {
 
 export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
-  const { $card, $setCard, $setPictureModal } = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $setPictureModal } = usePictureModalTransition();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
   useKanji();

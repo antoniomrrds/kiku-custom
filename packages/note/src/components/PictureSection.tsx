@@ -6,11 +6,13 @@ import { isNsfw } from "#/lib/util";
 import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
 import { useCardContext } from "../contexts/CardContext";
 import { useFieldGroupContext } from "../contexts/FieldGroupContext";
+import { usePictureModalTransition } from "#/hooks/transition";
 
 export function PictureSection() {
-  const { $card, $setPictureModal } = useCardContext();
+  const { $card } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $ankiFields } = useAnkiFieldContext();
+  const { $setPictureModal } = usePictureModalTransition();
   const [$clicked, $setClicked] = createSignal(false);
   const [$subIndex, $setSubIndex] = createSignal(0);
 

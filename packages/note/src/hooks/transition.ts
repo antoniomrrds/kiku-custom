@@ -78,3 +78,14 @@ export function useThemeTransition() {
   }
   return changeTheme;
 }
+
+export function usePictureModalTransition() {
+  const { $setCard } = useCardContext();
+  const startViewTransition = useViewTransition();
+
+  function $setPictureModal(img: string | undefined) {
+    startViewTransition(() => $setCard("pictureModal", img));
+  }
+
+  return { $setPictureModal };
+}
