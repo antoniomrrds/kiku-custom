@@ -2,14 +2,15 @@ import { createMemo, ErrorBoundary, For, Show } from "solid-js";
 import type { DatasetProp } from "#/lib/config";
 import type { PitchInfo } from "#/lib/hatsuon";
 import type { PitchType } from "#/lib/types";
-import { useCardContext } from "../shared/CardContext";
 import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
+import { usePitch } from "#/lib/hooks";
 
 export default function Pitches() {
-  const { $card } = useCardContext();
+  const { $pitchInfos } = usePitch();
+
   return (
-    <For each={$card.pitch.infos}>
+    <For each={$pitchInfos()}>
       {(pitchInfo, index) => {
         return <Pitch pitchInfo={pitchInfo} index={index()} />;
       }}

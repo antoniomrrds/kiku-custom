@@ -73,7 +73,6 @@ export function useNavigationTransition() {
 }
 
 export function usePitch() {
-  const { $setCard } = useCardContext();
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
 
   const $pitchNumbers = createMemo(() => extractPitchNumbers($ankiFields.PitchPosition));
@@ -117,12 +116,7 @@ export function usePitch() {
     return info.patternName as PitchType;
   });
 
-  createEffect(() => {
-    $setCard("pitch", {
-      infos: $pitchInfos(),
-      type: $pitchType(),
-    });
-  });
+  return { $pitchInfos, $pitchType };
 }
 
 export function useThemeTransition() {

@@ -2,15 +2,9 @@ import { createContext, createUniqueId, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { createCompatPair } from "#/lib/context-compat";
-import type { PitchInfo } from "#/lib/hatsuon";
-import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton, type PitchType } from "#/lib/types";
+import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
 import type { KanjiPageContextStore } from "../_kiku_lazy/KanjiPageContext";
 import { useViewTransition } from "#/lib/hooks";
-
-export type PitchState = {
-  infos: PitchInfo[];
-  type: PitchType | undefined;
-};
 
 type Query = {
   status: "loading" | "success" | "error";
@@ -43,7 +37,6 @@ type CardStore = {
   nestedNoteId: number | undefined;
   nestedIsMergePreview: boolean;
   isMergePreview: boolean;
-  pitch: PitchState;
 };
 
 type CardContextValue = {
@@ -91,10 +84,6 @@ export function CardStoreContextProvider(props: {
     nestedNoteId: undefined,
     nestedIsMergePreview: false,
     isMergePreview: props.isMergePreview ?? false,
-    pitch: {
-      infos: [],
-      type: undefined,
-    },
   });
   const onKanjiPageMount: CardContextValue["onKanjiPageMount"] = new Set();
 

@@ -143,6 +143,7 @@ export function Back(props: { onExitNested?: () => void }) {
 function ExpressionSection() {
   const { $card } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $pitchType } = usePitch();
 
   const $expressionInnerHtml = createMemo(() => {
     return isServer
@@ -153,7 +154,7 @@ function ExpressionSection() {
   });
 
   const $pitchFieldDataset = createMemo<DatasetProp>(() => ({
-    "data-pitch-type": isServer ? "{{PitchCategories}}" : ($card.pitch.type ?? ""),
+    "data-pitch-type": isServer ? "{{PitchCategories}}" : ($pitchType() ?? ""),
   }));
 
   return (

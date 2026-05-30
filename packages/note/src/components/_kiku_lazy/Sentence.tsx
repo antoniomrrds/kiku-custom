@@ -15,6 +15,7 @@ import { useCtxContext } from "../shared/CtxContext";
 import { useFieldGroupContext } from "../shared/FieldGroupContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { parseHtml } from "#/lib/dom";
+import { usePitch } from "#/lib/hooks";
 
 export default function Sentence() {
   const { $card } = useCardContext();
@@ -97,6 +98,7 @@ function SentenceFieldWithTranslation() {
 
 function SentenceField() {
   const { $card } = useCardContext();
+  const { $pitchType } = usePitch();
   const { $group } = useFieldGroupContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
 
@@ -133,7 +135,7 @@ function SentenceField() {
   });
 
   const expressionPitchDataset = () => ({
-    "data-pitch-type": $card.pitch.type,
+    "data-pitch-type": $pitchType(),
   });
 
   return (
