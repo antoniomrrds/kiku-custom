@@ -5,6 +5,7 @@ import { createCompatPair } from "#/lib/context-compat";
 import type { PitchInfo } from "#/lib/hatsuon";
 import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton, type PitchType } from "#/lib/types";
 import type { KanjiPageContextStore } from "../_kiku_lazy/KanjiPageContext";
+import { useViewTransition } from "#/lib/hooks";
 
 export type PitchState = {
   infos: PitchInfo[];
@@ -49,6 +50,7 @@ type CardContextValue = {
   $card: Store<CardStore>;
   $setCard: SetStoreFunction<CardStore>;
   onKanjiPageMount: Set<(ctx: { $setKanjiPage: SetStoreFunction<KanjiPageContextStore> }) => void>;
+  $setPictureModal: (img: string | undefined) => void;
 };
 
 const CardStoreContext = createContext<CardContextValue>();
@@ -96,8 +98,13 @@ export function CardStoreContextProvider(props: {
   });
   const onKanjiPageMount: CardContextValue["onKanjiPageMount"] = new Set();
 
+  const startViewTransition = useViewTransition();
+  const $setPictureModal = (img: string | undefined) => {
+    startViewTransition(() => $setCard("pictureModal", img));
+  };
+
   return (
-    <CardStoreContext.Provider value={{ $card, $setCard, onKanjiPageMount }}>
+    <CardStoreContext.Provider value={{ $card, $setCard, onKanjiPageMount, $setPictureModal }}>
       {props.children}
     </CardStoreContext.Provider>
   );
@@ -108,6 +115,7 @@ export function useCardContext() {
   if (!cardStore) throw new Error("Missing CardStoreContext");
   return Object.assign(createCompatPair("$card", "$setCard", cardStore.$card, cardStore.$setCard), {
     onKanjiPageMount: cardStore.onKanjiPageMount,
+    $setPictureModal: cardStore.$setPictureModal,
   });
 }
 

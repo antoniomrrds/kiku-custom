@@ -8,7 +8,7 @@ import { useCardContext } from "./shared/CardContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
 
 export function PictureSection() {
-  const { $card, $setCard } = useCardContext();
+  const { $card, $setPictureModal } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $ankiFields } = useAnkiFieldContext();
   const [$clicked, $setClicked] = createSignal(false);
@@ -58,9 +58,7 @@ export function PictureSection() {
   return (
     <div
       class="sm:max-w-1/2 bg-base-200 flex sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic tappable"
-      on:click={() => {
-        $setClicked((prev) => !prev);
-      }}
+      on:click={() => $setClicked((prev) => !prev)}
       on:touchend={(e) => e.stopPropagation()}
       {...$dataSet1()}
     >
@@ -78,9 +76,7 @@ export function PictureSection() {
         style={{
           opacity: $clicked() ? 1 : undefined,
         }}
-        on:click={() => {
-          $setCard("pictureModal", $currentPicture());
-        }}
+        on:click={() => $setPictureModal($currentPicture())}
         on:touchend={(e) => e.stopPropagation()}
         {...$pictureFieldDataset()}
         innerHTML={isServer ? undefined : $currentPicture()}

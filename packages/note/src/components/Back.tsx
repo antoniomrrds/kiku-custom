@@ -30,7 +30,7 @@ const Lazy = {
 
 export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
-  const { $card, $setCard } = useCardContext();
+  const { $card, $setCard, $setPictureModal } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
@@ -123,7 +123,7 @@ export function Back(props: { onExitNested?: () => void }) {
           {$card.ready && (
             <Lazy.BackBody
               onDefinitionPictureClick={(picture) => {
-                $setCard("pictureModal", picture);
+                $setPictureModal(picture);
               }}
             />
           )}
@@ -135,12 +135,7 @@ export function Back(props: { onExitNested?: () => void }) {
           )}
         </Match>
       </Switch>
-      {$card.ready && (
-        <Lazy.PictureModal
-          img={$card.pictureModal}
-          on:click={() => $setCard("pictureModal", undefined)}
-        />
-      )}
+      {$card.ready && <Lazy.PictureModal />}
     </>
   );
 }

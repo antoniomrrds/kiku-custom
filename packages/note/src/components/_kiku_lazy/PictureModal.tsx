@@ -1,28 +1,20 @@
-import { createEffect, createMemo, createSignal, For, Match, Switch } from "solid-js";
+import { createMemo, createSignal, For, Match, Switch } from "solid-js";
 import { Portal } from "solid-js/web";
 import { parseHtml } from "#/lib/dom";
-import { useCollectGlossaryImgs, useViewTransition } from "#/lib/hooks";
+import { useCollectGlossaryImgs } from "#/lib/hooks";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
+import { useCardContext } from "../shared/CardContext";
 
-export default function PictureModal(props: { img: string | undefined; "on:click"?: () => void }) {
+export default function PictureModal() {
+  const { $card, $setCard, $setPictureModal } = useCardContext();
   const { $general } = useGeneralContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
-  const [$img, $setImg] = createSignal(props.img);
   const [$showAll, $setShowAll] = createSignal(false);
-  const startViewTransition = useViewTransition();
   const collectGlossaryImgs = useCollectGlossaryImgs();
-
-  createEffect(() => {
-    const img = props.img;
-    startViewTransition(() => {
-      $setImg(img);
-    });
-  });
 
   const $allPictures = createMemo(() => {
     const pics = new Map<string, string>(); // src -> html
-
     const addImages = (doc: Document) => {
       for (const img of doc.querySelectorAll("img")) {
         const src = img.getAttribute("src");
@@ -32,13 +24,8 @@ export default function PictureModal(props: { img: string | undefined; "on:click
       }
     };
 
-    // Picture field
     addImages(parseHtml($ankiFields.Picture));
-
-    // DefinitionPicture field
     addImages(parseHtml($ankiFields.DefinitionPicture));
-
-    // Glossary field
     for (const pic of collectGlossaryImgs($ankiFields.Glossary)) {
       pics.set(pic.src, pic.html);
     }
@@ -54,9 +41,9 @@ export default function PictureModal(props: { img: string | undefined; "on:click
         classList={{
           fixed: !$general.isAnkiWeb,
           absolute: $general.isAnkiWeb,
-          hidden: !$img(),
+          hidden: !$card.pictureModal,
         }}
-        on:click={props["on:click"]}
+        on:click={() => $setPictureModal(undefined)}
         on:touchend={(e) => e.stopPropagation()}
       >
         <div class="flex justify-end items-center mb-4 sticky top-0 rounded-lg z-10">
@@ -81,7 +68,7 @@ export default function PictureModal(props: { img: string | undefined; "on:click
             <Match when={!$showAll()}>
               <div
                 class="transition-all [&_img]:max-h-[85vh] sm:[&_img]:max-h-[95vh] [&_*:not(img)]:contents"
-                innerHTML={$img() ?? ""}
+                innerHTML={$card.pictureModal ?? ""}
               ></div>
             </Match>
             <Match when={$showAll()}>
@@ -92,7 +79,7 @@ export default function PictureModal(props: { img: string | undefined; "on:click
                       class="aspect-square relative rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:scale-105 transition-transform group tappable"
                       on:click={(e) => {
                         e.stopPropagation();
-                        $setImg(pic.html);
+                        $setPictureModal(pic.html);
                         $setShowAll(false);
                       }}
                       on:touchend={(e) => e.stopPropagation()}
