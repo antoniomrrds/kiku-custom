@@ -15,23 +15,21 @@ import { AnkiConnect } from "./anki-connect.worker";
 import type { MainThreadApi } from "./client";
 import { type NexRemote, NexWorker } from "./nex";
 
-let main: NexRemote<MainThreadApi>;
-
-const log = {
-  trace: (...args: unknown[]) => main.log("trace", args),
-  debug: (...args: unknown[]) => main.log("debug", args),
-  info: (...args: unknown[]) => main.log("info", args),
-  warn: (...args: unknown[]) => main.log("warn", args),
-  error: (...args: unknown[]) => main.log("error", args),
-};
-
 export class WorkerThreadApi {
+  main!: NexRemote<MainThreadApi>;
   assetsPath!: string;
   constants!: Constants;
   config!: KikuConfig;
   preferAnkiConnect!: boolean;
   cache = new Map();
   ankiConnect!: AnkiConnect;
+  private readonly log = {
+    trace: (...args: unknown[]) => this.main.log("trace", args),
+    debug: (...args: unknown[]) => this.main.log("debug", args),
+    info: (...args: unknown[]) => this.main.log("info", args),
+    warn: (...args: unknown[]) => this.main.log("warn", args),
+    error: (...args: unknown[]) => this.main.log("error", args),
+  };
 
   init(payload: {
     assetsPath: string;
@@ -39,13 +37,13 @@ export class WorkerThreadApi {
     config: KikuConfig;
     preferAnkiConnect: boolean;
   }) {
-    log.debug("init Worker", payload);
+    this.log.debug("init Worker", payload);
 
     this.assetsPath = payload.assetsPath;
     this.constants = payload.constants;
     this.config = payload.config;
     this.preferAnkiConnect = payload.preferAnkiConnect;
-    this.ankiConnect = new AnkiConnect(main.fetchJson, this.config.ankiConnectAddress);
+    this.ankiConnect = new AnkiConnect(this.main.fetchJson, this.config.ankiConnectAddress);
   }
 
   chunkCache = new Map<string, AnkiNote[]>();
@@ -72,7 +70,7 @@ export class WorkerThreadApi {
       for (const chunk of manifest.chunks) {
         let notes = this.chunkCache.get(chunk.file);
         if (!notes) {
-          const buf = await main.fetchArrayBuffer(`${this.assetsPath}/${chunk.file}`);
+          const buf = await this.main.fetchArrayBuffer(`${this.assetsPath}/${chunk.file}`);
           const text = await gunzipArrayBuffer(buf).text();
           notes = JSON.parse(text) as AnkiNote[];
           this.chunkCache.set(chunk.file, notes);
@@ -135,22 +133,22 @@ export class WorkerThreadApi {
 
     if (this.preferAnkiConnect) {
       try {
-        log.info("Querying with AnkiConnect");
+        this.log.info("Querying with AnkiConnect");
         result = await this.ankiConnect.queryFieldContains({
           kanjiList,
           readingList,
           expressionList,
         });
       } catch {
-        log.warn("Failed to query with AnkiConnect, falling back to notes cache");
+        this.log.warn("Failed to query with AnkiConnect, falling back to notes cache");
         result = await queryWithNotesCache();
       }
     } else {
       try {
-        log.info("Querying with notes cache");
+        this.log.info("Querying with notes cache");
         result = await queryWithNotesCache();
       } catch {
-        log.warn("Failed to query with notes cache, falling back to AnkiConnect");
+        this.log.warn("Failed to query with notes cache, falling back to AnkiConnect");
         result = await this.ankiConnect.queryFieldContains({
           kanjiList,
           readingList,
@@ -283,7 +281,7 @@ export class WorkerThreadApi {
       this.lookupKanjiPromise = Promise.withResolvers();
       const manifest = await this.dbMainManifest();
       const file = manifest.files[this.constants.tar["kiku_db_kanji_compact.json.gz"]];
-      const buf = await main.fetchArrayBuffer(
+      const buf = await this.main.fetchArrayBuffer(
         `${this.assetsPath}/${this.constants.assets["_kiku_db_main.tar"]}`,
         {
           headers: { Range: `bytes=${file.start}-${file.end}` },
@@ -316,12 +314,12 @@ export class WorkerThreadApi {
     if (this.cache.has(key)) return this.cache.get(key);
     let manifest: KikuDbMainManifest;
     try {
-      manifest = (await main.fetchJson(
+      manifest = (await this.main.fetchJson(
         `${this.assetsPath}/${this.constants.assets["_kiku_db_main_manifest.json"]}`,
         { cache: "no-store" },
       )) as KikuDbMainManifest;
     } catch {
-      log.error("Failed to load db main manifest");
+      this.log.error("Failed to load db main manifest");
       throw new Error("Failed to load db main manifest");
     }
     this.cache.set(key, manifest);
@@ -333,12 +331,12 @@ export class WorkerThreadApi {
     if (this.cache.has(key)) return this.cache.get(key);
     let manifest: KikuNotesManifest;
     try {
-      manifest = (await main.fetchJson(
+      manifest = (await this.main.fetchJson(
         `${this.assetsPath}/${this.constants.assets["_kiku_notes_manifest.json"]}`,
         { cache: "no-store" },
       )) as KikuNotesManifest;
     } catch {
-      log.error("Failed to load manifest");
+      this.log.error("Failed to load manifest");
       throw new Error("Failed to load manifest");
     }
     this.cache.set(key, manifest);
@@ -377,4 +375,4 @@ function fromCompact(c: KanjiInfoCompact | undefined): KanjiInfo | undefined {
 
 const workerThreadApi = new WorkerThreadApi();
 const nexWorker = new NexWorker<MainThreadApi>();
-main = nexWorker.wrap(workerThreadApi);
+workerThreadApi.main = nexWorker.wrap(workerThreadApi);
