@@ -3,7 +3,7 @@ import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { createCompatPair } from "#/lib/context-compat";
 import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
-import type { KanjiPageContextStore } from "../components/_kiku_lazy/KanjiPageContext";
+import type { KanjiPageContextStore } from "../lazy/KanjiPageContext";
 
 type Query = {
   status: "loading" | "success" | "error";

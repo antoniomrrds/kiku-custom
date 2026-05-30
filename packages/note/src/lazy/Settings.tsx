@@ -19,10 +19,10 @@ import { defaultConfig } from "#/lib/default-config";
 import { useNavigationTransition, useThemeTransition } from "#/hooks/transition";
 import { capitalize } from "#/lib/text";
 import { daisyUIThemes } from "#/lib/theme";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useConfigContext } from "../../contexts/ConfigContext";
-import { useCtxContext } from "../../contexts/CtxContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
+import { useConfigContext } from "../contexts/ConfigContext";
+import { useCtxContext } from "../contexts/CtxContext";
+import { useGeneralContext } from "../contexts/GeneralContext";
 import HeaderSettings from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
 

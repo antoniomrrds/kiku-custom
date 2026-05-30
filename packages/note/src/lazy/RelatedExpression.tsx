@@ -1,7 +1,7 @@
 import { createMemo, For, Show } from "solid-js";
 import { ankiFieldsSkeleton } from "#/lib/types";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useCardContext } from "../../contexts/CardContext";
+import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
+import { useCardContext } from "../contexts/CardContext";
 
 export default function RelatedExpression() {
   const { $card } = useCardContext();

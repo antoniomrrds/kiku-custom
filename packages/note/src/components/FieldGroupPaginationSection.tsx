@@ -3,7 +3,7 @@ import { useFieldGroupContext } from "../contexts/FieldGroupContext";
 
 // oxfmt-ignore
 const Lazy = {
-  FieldGroupPagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).FieldGroupPagination, })),
+  FieldGroupPagination: lazy(async () => ({ default: (await import("../lazy")).FieldGroupPagination, })),
 };
 
 export function FieldGroupPaginationSection() {

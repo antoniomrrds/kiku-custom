@@ -10,10 +10,10 @@ import {
   Switch,
 } from "solid-js";
 import { useCardContext } from "#/contexts/CardContext";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useCtxContext } from "../../contexts/CtxContext";
-import { useFieldGroupContext } from "../../contexts/FieldGroupContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
+import { useCtxContext } from "../contexts/CtxContext";
+import { useFieldGroupContext } from "../contexts/FieldGroupContext";
+import { useGeneralContext } from "../contexts/GeneralContext";
 import { parseHtml } from "#/lib/dom";
 import { usePitch } from "#/hooks/pitch";
 

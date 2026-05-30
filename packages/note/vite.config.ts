@@ -59,6 +59,14 @@ export default defineConfig({
               // _kiku_shared is module that is used by _kiku.js and _kiku_lazy.js
               name: "_kiku_shared",
             },
+            {
+              test: (id) => {
+                const result = /src\/lazy/.test(id);
+                return result;
+              },
+              // _kiku_libs contains modules that is imported from node_modules
+              name: "_kiku_lazy",
+            },
           ],
         },
         chunkFileNames: "[name].js",

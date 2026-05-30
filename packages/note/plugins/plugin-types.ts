@@ -23,7 +23,7 @@ import type h from "solid-js/h";
 import type { JSX } from "solid-js/jsx-runtime";
 import type { createStore, Store } from "solid-js/store";
 import type { Portal } from "solid-js/web";
-import type { UseKanjiContext } from "#/components/_kiku_lazy/KanjiContext";
+import type { UseKanjiContext } from "#/lazy/KanjiContext";
 import type { UseAnkiFieldContext } from "#/contexts/AnkiFieldsContext";
 import type { UseBreakpointContext } from "#/contexts/BreakpointContext";
 import type { UseCardContext } from "#/contexts/CardContext";

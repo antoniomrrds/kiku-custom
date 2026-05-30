@@ -16,19 +16,19 @@ import { usePitch } from "#/hooks/pitch";
 
 // oxfmt-ignore
 const Lazy = {
-  Settings: lazy(async () => ({ default: (await import("./_kiku_lazy")).Settings })),
-  HeaderMain: lazy(async () => ({ default: (await import("./_kiku_lazy")).HeaderMain })),
-  BackFooter: lazy(async () => ({ default: (await import("./_kiku_lazy")).BackFooter })),
-  AudioButtons: lazy(async () => ({ default: (await import("./_kiku_lazy")).AudioButtons })),
-  PictureModal: lazy(async () => ({ default: (await import("./_kiku_lazy")).PictureModal })),
-  BackBody: lazy(async () => ({ default: (await import("./_kiku_lazy")).BackBody })),
-  Pitches: lazy(async () => ({ default: (await import("./_kiku_lazy")).Pitches })),
-  KanjiPage: lazy(async () => ({ default: (await import("./_kiku_lazy")).KanjiPage })),
-  UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid })),
-  Expression: lazy(async () => ({ default: (await import("./_kiku_lazy")).Expression })),
-  AnkiMobileDebug: lazy(async () => ({ default: (await import("./_kiku_lazy")).AnkiMobileDebug })),
-  RelatedExpression: lazy(async () => ({ default: (await import("./_kiku_lazy")).RelatedExpression, })),
-  Frequency: lazy(async () => ({ default: (await import("./_kiku_lazy")).Frequency })),
+  Settings: lazy(async () => ({ default: (await import("../lazy")).Settings })),
+  HeaderMain: lazy(async () => ({ default: (await import("../lazy")).HeaderMain })),
+  BackFooter: lazy(async () => ({ default: (await import("../lazy")).BackFooter })),
+  AudioButtons: lazy(async () => ({ default: (await import("../lazy")).AudioButtons })),
+  PictureModal: lazy(async () => ({ default: (await import("../lazy")).PictureModal })),
+  BackBody: lazy(async () => ({ default: (await import("../lazy")).BackBody })),
+  Pitches: lazy(async () => ({ default: (await import("../lazy")).Pitches })),
+  KanjiPage: lazy(async () => ({ default: (await import("../lazy")).KanjiPage })),
+  UseAnkiDroid: lazy(async () => ({ default: (await import("../lazy")).UseAnkiDroid })),
+  Expression: lazy(async () => ({ default: (await import("../lazy")).Expression })),
+  AnkiMobileDebug: lazy(async () => ({ default: (await import("../lazy")).AnkiMobileDebug })),
+  RelatedExpression: lazy(async () => ({ default: (await import("../lazy")).RelatedExpression, })),
+  Frequency: lazy(async () => ({ default: (await import("../lazy")).Frequency })),
 };
 
 export function Back(props: { onExitNested?: () => void }) {

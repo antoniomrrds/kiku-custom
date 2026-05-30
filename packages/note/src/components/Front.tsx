@@ -10,11 +10,11 @@ import { useConfigContext } from "../contexts/ConfigContext";
 
 // oxfmt-ignore
 const Lazy = {
-  AudioButtons: lazy(async () => ({ default: (await import("./_kiku_lazy")).AudioButtons })),
-  HeaderMain: lazy(async () => ({ default: (await import("./_kiku_lazy")).HeaderMain })),
-  FieldGroupPagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).FieldGroupPagination, })),
-  UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid })),
-  Sentence: lazy(async () => ({ default: (await import("./_kiku_lazy")).Sentence })),
+  AudioButtons: lazy(async () => ({ default: (await import("../lazy")).AudioButtons })),
+  HeaderMain: lazy(async () => ({ default: (await import("../lazy")).HeaderMain })),
+  FieldGroupPagination: lazy(async () => ({ default: (await import("../lazy")).FieldGroupPagination, })),
+  UseAnkiDroid: lazy(async () => ({ default: (await import("../lazy")).UseAnkiDroid })),
+  Sentence: lazy(async () => ({ default: (await import("../lazy")).Sentence })),
 };
 
 export function Front() {
