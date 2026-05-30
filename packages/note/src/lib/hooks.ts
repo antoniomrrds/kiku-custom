@@ -1,4 +1,4 @@
-import { createEffect, createMemo, getOwner, runWithOwner } from "solid-js";
+import { createEffect, getOwner, runWithOwner } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { isServer } from "solid-js/web";
 import { useAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
@@ -12,12 +12,9 @@ import { constants } from "#/lib/contants";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import { createNex } from "#/worker/client";
 import { parseHtml } from "./dom";
-import { hatsuon } from "./hatsuon";
 import { extractKanji } from "./kana";
 import { parseRelatedExpression } from "./parse-related-expression";
-import { extractPitchNumbers } from "./pitch";
 import type { DaisyUITheme } from "./theme";
-import { type PitchType, pitchTypes } from "./types";
 
 export function useViewTransition() {
   function startViewTransition(callback: () => void, opts: { beforeCallback?: () => void } = {}) {
@@ -70,53 +67,6 @@ export function useNavigationTransition() {
   }
 
   return { navigate, navigateBack };
-}
-
-export function usePitch() {
-  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
-
-  const $pitchNumbers = createMemo(() => extractPitchNumbers($ankiFields.PitchPosition));
-
-  const $reading = createMemo(() => {
-    if (!$isRootAnkiFields()) return $ankiFields.ExpressionReading;
-    const doc = parseHtml($ankiFields.ExpressionFurigana);
-    const isRuby = !!doc.querySelector("ruby");
-    if (isRuby) return $ankiFields.ExpressionReading;
-    return $ankiFields.ExpressionFurigana
-      ? $ankiFields["kana:ExpressionFurigana"]
-      : $ankiFields.ExpressionReading;
-  });
-
-  const $pitchInfos = createMemo(() => {
-    const numbers = $pitchNumbers();
-    const reading = $reading();
-    if (!numbers.length) return [];
-    const pitchCategories = $ankiFields.PitchCategories.split(",").map((s) => {
-      let pitchCategory: string | null = s.trim().toLowerCase();
-      if (pitchCategory === "平板") pitchCategory = "heiban";
-      if (pitchCategory === "頭高") pitchCategory = "atamadaka";
-      if (pitchCategory === "中高") pitchCategory = "nakadaka";
-      if (pitchCategory === "尾高") pitchCategory = "odaka";
-      if (pitchCategory === "起伏") pitchCategory = "kifuku";
-      if (!pitchTypes.includes(pitchCategory as PitchType)) pitchCategory = null;
-      return pitchCategory;
-    });
-    return numbers.map((pitchNum, i) => {
-      const result = hatsuon({ reading, pitchNum, locale: "EN" });
-      if (pitchCategories.length === numbers.length && pitchCategories[i] === "kifuku") {
-        result.patternName = pitchCategories[i] ?? result.patternName;
-      }
-      return result;
-    });
-  });
-
-  const $pitchType = createMemo(() => {
-    const info = $pitchInfos()[0];
-    if (!info) return undefined;
-    return info.patternName as PitchType;
-  });
-
-  return { $pitchInfos, $pitchType };
 }
 
 export function useThemeTransition() {

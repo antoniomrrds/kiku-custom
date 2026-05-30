@@ -4,7 +4,7 @@ import type { PitchInfo } from "#/lib/hatsuon";
 import type { PitchType } from "#/lib/types";
 import { useCtxContext } from "../shared/CtxContext";
 import { useGeneralContext } from "../shared/GeneralContext";
-import { usePitch } from "#/lib/hooks";
+import { usePitch } from "#/hooks/pitch";
 
 export default function Pitches() {
   const { $pitchInfos } = usePitch();

@@ -15,7 +15,7 @@ import { useCtxContext } from "../shared/CtxContext";
 import { useFieldGroupContext } from "../shared/FieldGroupContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { parseHtml } from "#/lib/dom";
-import { usePitch } from "#/lib/hooks";
+import { usePitch } from "#/hooks/pitch";
 
 export default function Sentence() {
   const { $card } = useCardContext();

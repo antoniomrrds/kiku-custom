@@ -3,13 +3,14 @@ import { isServer } from "solid-js/web";
 import { CardStoreContextProvider, useCardContext } from "#/components/shared/CardContext";
 import type { DatasetProp } from "#/lib/config";
 import { isNsfw } from "#/lib/util";
-import { useKanji, useLoadPlugin, useNavigationTransition, usePitch } from "#/lib/hooks";
+import { useKanji, useLoadPlugin, useNavigationTransition } from "#/lib/hooks";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { AnkiFieldContextProvider, useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useCacheContext } from "./shared/CacheContext";
 import { CtxContextProvider } from "./shared/CtxContext";
 import { FieldGroupContextProvider } from "./shared/FieldGroupContext";
+import { usePitch } from "#/hooks/pitch";
 
 // oxfmt-ignore
 const Lazy = {
