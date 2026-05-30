@@ -7,8 +7,8 @@ import { createCompatPair } from "#/lib/context-compat";
 import type { Logger } from "#/lib/logger";
 import type { AnkiDroidAPI, KikuNotesManifest } from "#/lib/types";
 import type { KikuPlugin } from "#/plugins/plugin-types";
-import type { NexApi } from "#/worker/client";
 import { useBreakpointContext } from "./BreakpointContext";
+import type { NexApi } from "#/worker/client";
 
 type GeneralStore = {
   logger: Logger;

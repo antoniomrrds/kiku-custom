@@ -64,7 +64,7 @@ export default defineConfig({
                 const result = /src\/lazy/.test(id);
                 return result;
               },
-              // _kiku_libs contains modules that is imported from node_modules
+              // _kiku_lazy contains modules that is imported from src/lazy
               name: "_kiku_lazy",
             },
           ],

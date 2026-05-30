@@ -1,6 +1,6 @@
 import { parseRelatedExpression } from "#/lib/parse-related-expression";
 import type { AnkiNote } from "#/lib/types";
-import type { MainThreadApi } from "./client";
+import type { MainThreadApi } from "./MainThreadApi";
 
 export class AnkiConnect {
   private fetchJson: MainThreadApi["fetchJson"];
