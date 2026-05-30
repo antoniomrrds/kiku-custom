@@ -1,5 +1,5 @@
 import { createUniqueId, Match, Show, Switch } from "solid-js";
-import { useNavigationTransition, useThemeTransition } from "#/lib/hooks";
+import { useNavigationTransition, useThemeTransition } from "#/hooks/transition";
 import { capitalize } from "#/lib/text";
 import { nextTheme } from "#/lib/theme";
 import { useCardContext } from "../shared/CardContext";

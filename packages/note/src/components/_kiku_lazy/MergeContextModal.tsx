@@ -3,7 +3,7 @@ import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/lib/anki-connect";
 import { nodesToString, parseHtml } from "#/lib/dom";
 import { unique } from "#/lib/es";
-import { useNavigationTransition } from "#/lib/hooks";
+import { useNavigationTransition } from "#/hooks/transition";
 import { type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useCardContext } from "../shared/CardContext";
@@ -418,8 +418,7 @@ function mergeContext(base: ContextField, extra: ContextField) {
 
   const merged = {
     Sentence: normalizedBase.Sentence + normalizedExtra.Sentence,
-    SentenceTranslation:
-      normalizedBase.SentenceTranslation + normalizedExtra.SentenceTranslation,
+    SentenceTranslation: normalizedBase.SentenceTranslation + normalizedExtra.SentenceTranslation,
     SentenceFurigana: getSentenceFurigana(),
     SentenceAudio: normalizedBase.SentenceAudio + normalizedExtra.SentenceAudio,
     MiscInfo: normalizedBase.MiscInfo + normalizedExtra.MiscInfo,
@@ -480,11 +479,10 @@ function normalizeFields(fields: ContextField) {
   );
 
   const sentenceTranslationDoc = parseHtml(fields.SentenceTranslation);
-  const sentenceTranslationWithGroup =
-    sentenceTranslationDoc.querySelectorAll("[data-group-id]");
-  const sentenceTranslationWithoutGroup = Array.from(
-    sentenceTranslationDoc.body.childNodes,
-  ).filter((el) => !(el as HTMLSpanElement).dataset?.groupId);
+  const sentenceTranslationWithGroup = sentenceTranslationDoc.querySelectorAll("[data-group-id]");
+  const sentenceTranslationWithoutGroup = Array.from(sentenceTranslationDoc.body.childNodes).filter(
+    (el) => !(el as HTMLSpanElement).dataset?.groupId,
+  );
 
   const sentenceFuriganaDoc = parseHtml(fields.SentenceFurigana);
   const sentenceFuriganaWithGroup = sentenceFuriganaDoc.querySelectorAll("[data-group-id]");

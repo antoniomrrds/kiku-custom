@@ -16,7 +16,7 @@ import {
 } from "#/lib/config";
 import { constants } from "#/lib/contants";
 import { defaultConfig } from "#/lib/default-config";
-import { useNavigationTransition, useThemeTransition } from "#/lib/hooks";
+import { useNavigationTransition, useThemeTransition } from "#/hooks/transition";
 import { capitalize } from "#/lib/text";
 import { daisyUIThemes } from "#/lib/theme";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";

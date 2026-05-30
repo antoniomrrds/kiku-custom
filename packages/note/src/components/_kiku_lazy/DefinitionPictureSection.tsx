@@ -1,7 +1,7 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import { parseHtml } from "#/lib/dom";
-import { useCollectGlossaryImgs } from "#/lib/hooks";
+import { useCollectGlossaryImgs } from "#/hooks/glossary";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useConfigContext } from "../shared/ConfigContext";
 

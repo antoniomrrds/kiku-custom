@@ -4,7 +4,7 @@ import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { createCompatPair } from "#/lib/context-compat";
 import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
 import type { KanjiPageContextStore } from "../_kiku_lazy/KanjiPageContext";
-import { useViewTransition } from "#/lib/hooks";
+import { useViewTransition } from "#/hooks/transition";
 
 type Query = {
   status: "loading" | "success" | "error";

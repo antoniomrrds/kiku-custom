@@ -1,7 +1,7 @@
 import { createMemo, createSignal, For, Match, Switch } from "solid-js";
 import { Portal } from "solid-js/web";
 import { parseHtml } from "#/lib/dom";
-import { useCollectGlossaryImgs } from "#/lib/hooks";
+import { useCollectGlossaryImgs } from "#/hooks/glossary";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
 import { useGeneralContext } from "../shared/GeneralContext";
 import { useCardContext } from "../shared/CardContext";

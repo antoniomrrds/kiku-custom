@@ -1,7 +1,7 @@
 import { createMemo, createSignal, For, type JSX, Match, onMount, Show, Switch } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
 import { parseHtml } from "#/lib/dom";
-import { useNavigationTransition } from "#/lib/hooks";
+import { useNavigationTransition } from "#/hooks/transition";
 import { extractKanji } from "#/lib/kana";
 import { parseFurigana } from "#/lib/parse-furigana";
 import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";

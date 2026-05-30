@@ -1,4 +1,4 @@
-import { useNavigationTransition } from "#/lib/hooks";
+import { useNavigationTransition } from "#/hooks/transition";
 import { useGeneralContext } from "../shared/GeneralContext";
 import HeaderLayout from "./HeaderLayout";
 import { ArrowLeftIcon, RefreshCwIcon } from "./Icons";

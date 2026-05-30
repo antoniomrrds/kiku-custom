@@ -1,6 +1,6 @@
 import { createEffect, createUniqueId, ErrorBoundary, For, Show } from "solid-js";
 import { createStore } from "solid-js/store";
-import { useNavigationTransition } from "#/lib/hooks";
+import { useNavigationTransition } from "#/hooks/transition";
 import { capitalizeSentence } from "#/lib/text";
 import type { AnkiNote } from "#/lib/types";
 import { useCardContext } from "../shared/CardContext";
