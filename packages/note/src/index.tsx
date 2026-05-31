@@ -34,7 +34,7 @@ import {
   ankiFieldsSkeleton,
   type CacheStore,
 } from "./lib/types.ts";
-import "./styles/tailwind.css";
+import "./styles/main.css";
 
 export async function init({
   root,
@@ -183,11 +183,11 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     if (isAnkiWeb) style?.remove();
 
     if (import.meta.env.DEV) {
-      const tailwind = document.querySelector(
-        'style[type="text/css"][data-vite-dev-id$="tailwind.css"]',
+      const mainCss = document.querySelector(
+        'style[type="text/css"][data-vite-dev-id$="main.css"]',
       );
-      if (!tailwind) throw new Error("tailwind not found");
-      shadow.appendChild(tailwind.cloneNode(true));
+      if (!mainCss) throw new Error("tailwind not found");
+      shadow.appendChild(mainCss.cloneNode(true));
       const ankiCss = document.querySelector('link[href="/anki.css"]');
       if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
     } else {
