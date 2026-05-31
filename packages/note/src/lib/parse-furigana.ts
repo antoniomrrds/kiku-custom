@@ -4,26 +4,27 @@ type Token =
   | { type: "furigana"; value: string }
   | { type: "space" };
 
-const isKanji = (char: string) => /[\u4E00-\u9FFF\u3005]/.test(char);
-const trailingNumericKanjiPattern = /[0-9０-９]+[\u4E00-\u9FFF\u3005]+$/u;
+const isKanji = (char: string) => /\p{Script=Han}/u.test(char);
+const trailingNumericKanjiPattern = /[0-9０-９]+\p{Script=Han}+$/u;
 
 function tokenize(input: string): Token[] {
   const tokens: Token[] = [];
   let i = 0;
+  const chars = Array.from(input);
 
-  while (i < input.length) {
-    const char = input[i];
+  while (i < chars.length) {
+    const char = chars[i];
 
     if (char === "[") {
       let value = "";
       i++;
 
-      while (i < input.length && input[i] !== "]") {
-        value += input[i];
+      while (i < chars.length && chars[i] !== "]") {
+        value += chars[i];
         i++;
       }
 
-      if (input[i] === "]") i++;
+      if (chars[i] === "]") i++;
 
       tokens.push({ type: "furigana", value });
       continue;

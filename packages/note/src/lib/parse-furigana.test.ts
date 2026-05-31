@@ -150,4 +150,10 @@ describe("parseFurigana", () => {
       { type: "ruby", text: "る", reading: " " },
     ]);
   });
+
+  it("should handle rare kanji outside the BMP", () => {
+    const input = "𬵪𩶗𫒼𣶏[よみ]";
+    const result = parseFurigana(input);
+    expect(result).toEqual([{ type: "ruby", text: "𬵪𩶗𫒼𣶏", reading: "よみ" }]);
+  });
 });

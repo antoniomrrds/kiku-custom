@@ -32,7 +32,7 @@ export function getMorae(reading = "") {
   const combineDigraphs = (arr: string[] = [], char = "") =>
     isDigraph(char) ? arr.slice(0, -1).concat(arr.slice(-1) + char) : arr.concat(char);
 
-  return reading.split("").reduce(combineDigraphs, []);
+  return Array.from(reading).reduce(combineDigraphs, []);
 }
 
 /**

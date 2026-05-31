@@ -1,4 +1,4 @@
-import { createMemo, For, Match, onMount, Show, Switch } from "solid-js";
+import { createEffect, createMemo, For, Match, onMount, Show, Switch } from "solid-js";
 import { parseHtml } from "#/src/lib/dom";
 import { extractKanji } from "#/src/lib/kana";
 import { parseFurigana } from "#/src/lib/parse-furigana";
@@ -34,7 +34,7 @@ export default function Expression() {
   function ExpressionNoFurigana() {
     return (
       <ruby>
-        <For each={$ankiFields.Expression.split("")}>{(char) => <CharSpan char={char} />}</For>
+        <For each={Array.from($ankiFields.Expression)}>{(char) => <CharSpan char={char} />}</For>
         <Show
           when={$ankiFields.ExpressionReading && extractKanji($ankiFields.Expression).length > 0}
         >
@@ -52,7 +52,7 @@ export default function Expression() {
             <Match when={item.type === "ruby" && item}>
               {(rubyItem) => (
                 <ruby>
-                  <For each={rubyItem().text.trim().split("")}>
+                  <For each={Array.from(rubyItem().text.trim())}>
                     {(char) => <CharSpan char={char} />}
                   </For>
                   <Show when={rubyItem().reading.trim() !== "" || rubyItem().reading === " "}>
@@ -63,7 +63,7 @@ export default function Expression() {
             </Match>
             <Match when={item.type === "text" && item}>
               <span>
-                <For each={item.text.trim().split("")}>{(char) => <CharSpan char={char} />}</For>
+                <For each={Array.from(item.text.trim())}>{(char) => <CharSpan char={char} />}</For>
               </span>
             </Match>
           </Switch>
@@ -96,7 +96,7 @@ function RenderNode(props: { node: Node }) {
   return (
     <Switch>
       <Match when={$el().nodeType === Node.TEXT_NODE}>
-        <For each={$el().textContent?.split("")}>{(char) => <CharSpan char={char} />}</For>
+        <For each={Array.from($el().textContent)}>{(char) => <CharSpan char={char} />}</For>
       </Match>
       <Match when={$el().nodeType === Node.ELEMENT_NODE}>
         <Switch fallback={<span innerHTML={$el().outerHTML} />}>

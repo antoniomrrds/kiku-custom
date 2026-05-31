@@ -318,7 +318,7 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
   function ExpressionNoFurigana() {
     return (
       <ruby>
-        <For each={$expression().split("")}>
+        <For each={Array.from($expression())}>
           {(char) => (
             <span
               classList={{
@@ -344,7 +344,7 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
             <Match when={item.type === "ruby" && item}>
               {(rubyItem) => (
                 <ruby>
-                  <For each={rubyItem().text.trim().split("")}>
+                  <For each={Array.from(rubyItem().text.trim())}>
                     {(char) => (
                       <span
                         classList={{
