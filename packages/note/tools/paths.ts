@@ -29,6 +29,7 @@ export const paths = {
   "@/template/":                               p("template/"),
   "@/template/front.html":                     p("template/front.html"),
   "@/template/back.html":                      p("template/back.html"),
+  "@/template/error.html":                     p("template/error.html"),
   "@/template/style.css":                      p("template/style.css"),
   "@/template/_kiku_plugin.js":                p("template/_kiku_plugin.js"),
   "@/template/_kiku_plugin.css":               p("template/_kiku_plugin.css"),

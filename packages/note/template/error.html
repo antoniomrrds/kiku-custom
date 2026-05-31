@@ -1,0 +1,82 @@
+<template id="kiku-error">
+  <span>Failed to render card.</span>
+  <span> <b>Error Name:</b> <span data-kiku-error-name></span> </span>
+  <span> <b>Error Message:</b> <span data-kiku-error-message></span> </span>
+  <span> <b>Error Cause:</b> <span data-kiku-error-cause></span> </span>
+  <span>
+    <b>Error Stack:</b><br />
+    <pre
+      data-kiku-error-stack
+      style="
+        white-space: pre-wrap;
+        background: oklch(82% 0.189 84.429);
+        color: oklch(41% 0.112 45.904);
+        padding: 8px;
+      "
+    ></pre>
+  </span>
+  <br />
+  <span>
+    Make sure you have Anki updated to at least
+    <a
+      href="https://apps.ankiweb.net/"
+      target="_blank"
+      style="color: aqua; text-decoration: underline"
+    >
+      25.09
+    </a>
+  </span>
+  <span>If you feel you messed up something, try to reinstall Kiku.</span>
+</template>
+
+<script>
+  (() => {
+    if (!window.renderErrorFallback) {
+      window.renderErrorFallback = (error) => {
+        Object.assign(document.body.style, {
+          margin: 0,
+          padding: 0,
+          height: "100vh",
+          width: "100vw",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "oklch(21.15% .012 254.09)",
+          color: "oklch(71% .194 13.428)",
+          textAlign: "center",
+        });
+
+        const errorTemplate = document.querySelector("#kiku-error");
+        if (!(errorTemplate instanceof HTMLTemplateElement)) return;
+
+        const fragment = errorTemplate.content.cloneNode(true);
+        if (error instanceof Error) {
+          const setText = (selector, value) => {
+            const el = fragment.querySelector(selector);
+            if (el) el.textContent = value;
+          };
+
+          setText("[data-kiku-error-name]", error.name);
+          setText("[data-kiku-error-message]", error.message);
+          setText("[data-kiku-error-cause]", String(error.cause ?? "N/A"));
+          setText("[data-kiku-error-stack]", error.stack ?? "");
+        }
+
+        document.body.replaceChildren(fragment);
+      };
+
+      window.addEventListener(
+        "error",
+        (event) => {
+          if (!(event.target instanceof HTMLScriptElement)) return;
+          if (event.target.id !== "kiku-init-script") return;
+          window.renderErrorFallback?.(
+            new Error("Failed to load _kiku.js. Did you delete Kiku files without reinstalling?"),
+          );
+        },
+        true,
+      );
+    }
+  })();
+</script>

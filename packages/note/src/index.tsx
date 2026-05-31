@@ -271,45 +271,6 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     if (import.meta.env.DEV) root.dataset.side = side;
   } catch (e) {
     sessionStorage.clear();
-    Object.assign(document.body.style, {
-      margin: 0,
-      padding: 0,
-      height: "100vh",
-      width: "100vw",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "oklch(21.15% .012 254.09)",
-      color: "oklch(71% .194 13.428)",
-      textAlign: "center",
-    });
-    const isError = e instanceof Error;
-    const outdatedAnki = typeof Promise.withResolvers !== "function";
-    const updateNotice = `
-        <span>Update Anki to at least 
-          <a 
-            href='https://apps.ankiweb.net/' 
-            target='_blank'
-            style='color: aqua; text-decoration: underline'
-          >
-            25.09
-          </a>
-        </span>`;
-    document.body.innerHTML = isError
-      ? `
-        <span>Failed to render card.</span>
-        <span><b>Error Name:</b> ${e.name}</span>
-        <span><b>Error Message:</b> ${e.message}</span>
-        <span><b>Error Cause:</b> ${e.cause ?? "N/A"}</span>
-        <span><b>Error Stack:</b><br>
-          <pre style="white-space: pre-wrap; background: oklch(82% .189 84.429); color: oklch(41% .112 45.904); padding: 8px;">
-            ${e.stack}
-          </pre>
-        </span><br>
-        ${outdatedAnki ? updateNotice : ""}
-        <span>If you feel you messed up something, try to reinstall Kiku.</span>
-      `
-      : `<span>Something went wrong.</span>`;
+    window.renderErrorFallback?.(e);
   }
 }

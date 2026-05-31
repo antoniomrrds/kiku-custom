@@ -260,6 +260,10 @@ declare global {
         logger?: Logger;
       } & CacheStore)
     | undefined;
+
+  interface Window {
+    renderErrorFallback?: (error: unknown) => void;
+  }
 }
 
 export type CacheStore = {

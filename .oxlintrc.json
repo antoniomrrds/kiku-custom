@@ -7,7 +7,8 @@
   "rules": {
     "no-unused-vars": "off",
     "typescript/no-explicit-any": "warn",
-    "import/no-relative-parent-imports": "warn"
+    "import/no-relative-parent-imports": "warn",
+    "typescript/no-non-null-assertion": "error"
   },
   "env": {
     "builtin": true
