@@ -1,5 +1,5 @@
 import { useNavigationTransition } from "#/hooks/transition";
-import { useGeneralContext } from "../contexts/GeneralContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import HeaderLayout from "./HeaderLayout";
 import { ArrowLeftIcon, RefreshCwIcon } from "./Icons";
 

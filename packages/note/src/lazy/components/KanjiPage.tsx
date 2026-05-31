@@ -5,13 +5,13 @@ import { useNavigationTransition } from "#/hooks/transition";
 import { extractKanji } from "#/lib/kana";
 import { parseFurigana } from "#/lib/parse-furigana";
 import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
-import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
-import { useGeneralContext } from "../contexts/GeneralContext";
+import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import HeaderKanjiPage from "./HeaderKanjiPage";
 import { ArrowLeftIcon } from "./Icons";
-import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
+import { KanjiContextProvider, useKanjiContext } from "../contexts/KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
-import { KanjiPageContextProvider, useKanjiPageContext } from "./KanjiPageContext";
+import { KanjiPageContextProvider, useKanjiPageContext } from "../contexts/KanjiPageContext";
 
 export default function KanjiPage() {
   const { $card } = useCardContext();

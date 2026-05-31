@@ -2,9 +2,12 @@ import { createMemo, For, Match, onMount, Show, Switch } from "solid-js";
 import { parseHtml } from "#/lib/dom";
 import { extractKanji } from "#/lib/kana";
 import { parseFurigana } from "#/lib/parse-furigana";
-import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
-import { useCardContext } from "../contexts/CardContext";
-import { KanjiTooltipContextProvider, useKanjiTooltipContext } from "./KanjiTooltipContext";
+import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
+import { useCardContext } from "../../contexts/CardContext";
+import {
+  KanjiTooltipContextProvider,
+  useKanjiTooltipContext,
+} from "../contexts/KanjiTooltipContext";
 
 export default function Expression() {
   const { $setCard } = useCardContext();

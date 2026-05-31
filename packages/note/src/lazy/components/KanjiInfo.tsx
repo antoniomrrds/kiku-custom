@@ -3,11 +3,11 @@ import { createStore } from "solid-js/store";
 import { useNavigationTransition } from "#/hooks/transition";
 import { capitalizeSentence } from "#/lib/text";
 import type { AnkiNote } from "#/lib/types";
-import { useCardContext } from "../contexts/CardContext";
-import { useCtxContext } from "../contexts/CtxContext";
-import { useGeneralContext } from "../contexts/GeneralContext";
-import { KanjiContextProvider, useKanjiContext } from "./KanjiContext";
-import { type ContextLabel, useKanjiPageContext } from "./KanjiPageContext";
+import { useCardContext } from "../../contexts/CardContext";
+import { useCtxContext } from "../../contexts/CtxContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
+import { KanjiContextProvider, useKanjiContext } from "../contexts/KanjiContext";
+import { type ContextLabel, useKanjiPageContext } from "../contexts/KanjiPageContext";
 
 export function KanjiInfo() {
   const { $kanji } = useKanjiContext();

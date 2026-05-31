@@ -3,9 +3,9 @@ import { Portal } from "solid-js/web";
 import { parseHtml } from "#/lib/dom";
 import { useCollectGlossaryImgs } from "#/hooks/glossary";
 import { usePictureModalTransition } from "#/hooks/transition";
-import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
-import { useGeneralContext } from "../contexts/GeneralContext";
-import { useCardContext } from "../contexts/CardContext";
+import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
+import { useCardContext } from "../../contexts/CardContext";
 
 export default function PictureModal() {
   const { $card } = useCardContext();

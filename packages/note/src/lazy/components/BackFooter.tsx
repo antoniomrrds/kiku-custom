@@ -1,7 +1,7 @@
 import { createMemo, ErrorBoundary, Show } from "solid-js";
-import { useCtxContext } from "../contexts/CtxContext";
-import { useFieldGroupContext } from "../contexts/FieldGroupContext";
-import { useGeneralContext } from "../contexts/GeneralContext";
+import { useCtxContext } from "../../contexts/CtxContext";
+import { useFieldGroupContext } from "../../contexts/FieldGroupContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import { InfoIcon } from "./Icons";
 
 export default function BackFooter() {

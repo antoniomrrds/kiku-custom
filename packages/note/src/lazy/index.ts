@@ -1,18 +1,18 @@
-import AnkiMobileDebug from "./AnkiMobileDebug";
-import AudioButtons from "./AudioButtons";
-import BackBody from "./BackBody";
-import BackFooter from "./BackFooter";
-import Expression from "./Expression";
-import FieldGroupPagination from "./FieldGroupPagination";
-import Frequency from "./Frequency";
-import HeaderMain from "./HeaderMain";
-import KanjiPage from "./KanjiPage";
-import PictureModal from "./PictureModal";
-import Pitches from "./Pitches";
-import RelatedExpression from "./RelatedExpression";
-import Sentence from "./Sentence";
-import Settings from "./Settings";
-import UseAnkiDroid from "./UseAnkiDroid";
+import AnkiMobileDebug from "./components/AnkiMobileDebug";
+import AudioButtons from "./components/AudioButtons";
+import BackBody from "./components/BackBody";
+import BackFooter from "./components/BackFooter";
+import Expression from "./components/Expression";
+import FieldGroupPagination from "./components/FieldGroupPagination";
+import Frequency from "./components/Frequency";
+import HeaderMain from "./components/HeaderMain";
+import KanjiPage from "./components/KanjiPage";
+import PictureModal from "./components/PictureModal";
+import Pitches from "./components/Pitches";
+import RelatedExpression from "./components/RelatedExpression";
+import Sentence from "./components/Sentence";
+import Settings from "./components/Settings";
+import UseAnkiDroid from "./components/UseAnkiDroid";
 
 export {
   HeaderMain,

@@ -5,11 +5,11 @@ import { nodesToString, parseHtml } from "#/lib/dom";
 import { unique } from "#/lib/es";
 import { useNavigationTransition } from "#/hooks/transition";
 import { type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
-import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
-import { useCardContext } from "../contexts/CardContext";
-import { useConfigContext } from "../contexts/ConfigContext";
-import { useRootFieldGroupContext } from "../contexts/FieldGroupContext";
-import { useGeneralContext } from "../contexts/GeneralContext";
+import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
+import { useCardContext } from "../../contexts/CardContext";
+import { useConfigContext } from "../../contexts/ConfigContext";
+import { useRootFieldGroupContext } from "../../contexts/FieldGroupContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
 
 export default function MergeContextModal() {

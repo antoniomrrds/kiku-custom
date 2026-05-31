@@ -5,11 +5,11 @@ import { computePosition, offset, flip, shift, arrow } from "@floating-ui/dom";
 import { createSignal, createEffect } from "solid-js";
 import { Portal } from "solid-js/web";
 import { extractKanji } from "#/lib/kana";
-import { useBreakpointContext } from "../contexts/BreakpointContext";
-import { useGeneralContext } from "../contexts/GeneralContext";
-import { XIcon } from "./Icons";
+import { useBreakpointContext } from "../../contexts/BreakpointContext";
+import { useGeneralContext } from "../../contexts/GeneralContext";
+import { XIcon } from "../components/Icons";
 import { KanjiContextProvider } from "./KanjiContext";
-import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
+import { KanjiInfo, KanjiInfoExtra } from "../components/KanjiInfo";
 
 type KanjiTooltipStore = {
   kanji: string;
