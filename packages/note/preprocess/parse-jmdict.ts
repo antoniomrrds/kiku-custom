@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as cheerio from "cheerio";
-import { paths } from "../tools/paths.ts";
+import { paths } from "#/tools/paths.ts";
 
 type JmdictTerm = {
   kanji: string[];

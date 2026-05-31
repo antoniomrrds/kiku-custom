@@ -1,4 +1,4 @@
-import type { AnkiFields } from "#/lib/types";
+import type { AnkiFields } from "#/src/lib/types";
 
 // oxfmt-ignore
 export const exampleFields1: AnkiFields = {

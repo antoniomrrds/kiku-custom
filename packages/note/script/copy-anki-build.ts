@@ -1,7 +1,7 @@
 import { cp, stat } from "node:fs/promises";
 import { basename, join } from "node:path";
-import { env } from "../tools/env.ts";
-import { paths } from "../tools/paths.ts";
+import { env } from "#/tools/env.ts";
+import { paths } from "#/tools/paths.ts";
 
 class Script {
   async ensureAnkiDir() {

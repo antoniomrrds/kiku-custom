@@ -1,9 +1,9 @@
 import { lazy } from "solid-js";
-import { useFieldGroupContext } from "../contexts/FieldGroupContext";
+import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 
 // oxfmt-ignore
 const Lazy = {
-  FieldGroupPagination: lazy(async () => ({ default: (await import("../lazy")).FieldGroupPagination, })),
+  FieldGroupPagination: lazy(async () => ({ default: (await import("#/src/lazy")).FieldGroupPagination, })),
 };
 
 export function FieldGroupPaginationSection() {

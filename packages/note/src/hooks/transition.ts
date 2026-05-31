@@ -1,8 +1,8 @@
-import { useBreakpointContext } from "#/contexts/BreakpointContext";
-import { useCardContext } from "#/contexts/CardContext";
-import { useConfigContext } from "#/contexts/ConfigContext";
-import { useGeneralContext } from "#/contexts/GeneralContext";
-import type { DaisyUITheme } from "#/lib/theme";
+import { useBreakpointContext } from "#/src/contexts/BreakpointContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import type { DaisyUITheme } from "#/src/lib/theme";
 
 export function useViewTransition() {
   function startViewTransition(callback: () => void, opts: { beforeCallback?: () => void } = {}) {

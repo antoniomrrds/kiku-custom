@@ -1,4 +1,4 @@
-import type { Logger } from "../lib/logger.ts";
+import type { Logger } from "#/src/lib/logger.ts";
 
 export class MainThreadApi {
   private readonly logger: Logger;

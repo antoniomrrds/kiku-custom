@@ -1,9 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
-import { generateCssVars, getCssVar } from "../src/lib/config.js";
-import { defaultConfig } from "../src/lib/default-config.js";
-import { paths } from "../tools/paths.ts";
-import { AnkiConnect, log } from "../tools/util.js";
+import { generateCssVars, getCssVar } from "#/src/lib/config.js";
+import { defaultConfig } from "#/src/lib/default-config.js";
+import { paths } from "#/tools/paths.ts";
+import { AnkiConnect, log } from "#/tools/util.js";
 
 class Script {
   NOTE_TYPE = "Kiku";

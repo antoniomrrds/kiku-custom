@@ -1,12 +1,12 @@
 import { createEffect, For, on, onMount, Show } from "solid-js";
 import { Portal } from "solid-js/web";
-import { useCardContext } from "#/contexts/CardContext";
-import { nodesToString } from "#/lib/dom";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useBreakpointContext } from "../../contexts/BreakpointContext";
-import { useConfigContext } from "../../contexts/ConfigContext";
-import { useFieldGroupContext } from "../../contexts/FieldGroupContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { nodesToString } from "#/src/lib/dom";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useBreakpointContext } from "#/src/contexts/BreakpointContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { PlayIcon } from "./Icons";
 
 function AudioTag(props: { text: string }) {

@@ -1,7 +1,7 @@
 import { createEffect, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { Portal } from "solid-js/web";
-import { AnkiConnect } from "#/lib/anki-connect";
+import { AnkiConnect } from "#/src/lib/anki-connect";
 import {
   type DefinitionStyle,
   getCssVar,
@@ -13,16 +13,16 @@ import {
   tailwindContainerSize,
   tailwindFontSizeVar,
   tailwindSize,
-} from "#/lib/config";
-import { constants } from "#/lib/contants";
-import { defaultConfig } from "#/lib/default-config";
-import { useNavigationTransition, useThemeTransition } from "#/hooks/transition";
-import { capitalize } from "#/lib/text";
-import { daisyUIThemes } from "#/lib/theme";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useConfigContext } from "../../contexts/ConfigContext";
-import { useCtxContext } from "../../contexts/CtxContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+} from "#/src/lib/config";
+import { constants } from "#/src/lib/contants";
+import { defaultConfig } from "#/src/lib/default-config";
+import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
+import { capitalize } from "#/src/lib/text";
+import { daisyUIThemes } from "#/src/lib/theme";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useCtxContext } from "#/src/contexts/CtxContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderSettings from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
 

@@ -1,4 +1,4 @@
-import { useNavigationTransition } from "#/hooks/transition";
+import { useNavigationTransition } from "#/src/hooks/transition";
 import HeaderLayout from "./HeaderLayout";
 import { ArrowLeftIcon } from "./Icons";
 

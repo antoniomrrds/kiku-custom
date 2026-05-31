@@ -19,8 +19,7 @@ export default defineConfig({
   plugins,
   resolve: {
     alias: {
-      "#/plugins": paths["@/plugins/"],
-      "#": paths["@/src/"],
+      "#": paths["@/"],
     },
   },
   define: {

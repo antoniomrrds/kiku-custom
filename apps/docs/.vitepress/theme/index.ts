@@ -1,1 +1,1 @@
-export { default } from "../../vitepress.theme.ts";
+export { default } from "#/vitepress.theme.ts";

@@ -1,11 +1,15 @@
 {
   "name": "docs",
   "version": "0.0.0",
+  "imports": {
+    "#/*": "./*"
+  },
   "scripts": {
     "dev": "vitepress dev --port 5174",
     "build": "vitepress build",
     "preview": "vitepress preview",
-    "start": "vitepress build && vitepress preview"
+    "start": "vitepress build && vitepress preview",
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@repo/note": "workspace:*"

@@ -1,12 +1,12 @@
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
 import { isServer } from "solid-js/web";
-import type { DatasetProp } from "#/lib/config";
-import { parseHtml } from "#/lib/dom";
-import { isNsfw } from "#/lib/util";
-import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
-import { useCardContext } from "../contexts/CardContext";
-import { useFieldGroupContext } from "../contexts/FieldGroupContext";
-import { usePictureModalTransition } from "#/hooks/transition";
+import type { DatasetProp } from "#/src/lib/config";
+import { parseHtml } from "#/src/lib/dom";
+import { isNsfw } from "#/src/lib/util";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
+import { usePictureModalTransition } from "#/src/hooks/transition";
 
 export function PictureSection() {
   const { $card } = useCardContext();

@@ -1,7 +1,7 @@
 import { getOwner, runWithOwner } from "solid-js";
-import { useCtxContext } from "#/contexts/CtxContext";
-import { useGeneralContext } from "#/contexts/GeneralContext";
-import { constants } from "#/lib/contants";
+import { useCtxContext } from "#/src/contexts/CtxContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { constants } from "#/src/lib/contants";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 
 export function useLoadPlugin() {

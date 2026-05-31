@@ -1,6 +1,6 @@
-import type { KikuConfig } from "#/lib/config.ts";
-import type { Constants } from "#/lib/contants.ts";
-import type { Logger } from "../lib/logger.ts";
+import type { KikuConfig } from "#/src/lib/config.ts";
+import type { Constants } from "#/src/lib/contants.ts";
+import type { Logger } from "#/src/lib/logger.ts";
 import { MainThreadApi } from "./MainThreadApi.ts";
 import { NexMain, type NexRemote } from "./nex";
 import type { WorkerThreadApi } from "./WorkerThreadApi.ts";

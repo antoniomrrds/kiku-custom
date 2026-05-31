@@ -1,7 +1,7 @@
-import "#/lib/polyfill";
-import type { KikuConfig } from "#/lib/config";
-import type { Constants } from "#/lib/contants";
-import { parseRelatedExpression } from "#/lib/parse-related-expression";
+import "#/src/lib/polyfill";
+import type { KikuConfig } from "#/src/lib/config";
+import type { Constants } from "#/src/lib/contants";
+import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 import type {
   AnkiFields,
   AnkiNote,
@@ -9,7 +9,7 @@ import type {
   KanjiInfoCompact,
   KikuDbMainManifest,
   KikuNotesManifest,
-} from "#/lib/types";
+} from "#/src/lib/types";
 
 import { AnkiConnect } from "./AnkiConnect";
 import { type NexRemote } from "./nex";

@@ -1,20 +1,20 @@
 import { createMemo, createSignal, lazy, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
-import { useCardContext } from "#/contexts/CardContext";
-import type { DatasetProp } from "#/lib/config";
-import { useLoadPlugin } from "#/hooks/plugin";
+import { useCardContext } from "#/src/contexts/CardContext";
+import type { DatasetProp } from "#/src/lib/config";
+import { useLoadPlugin } from "#/src/hooks/plugin";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
-import { useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
-import { useConfigContext } from "../contexts/ConfigContext";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
 
 // oxfmt-ignore
 const Lazy = {
-  AudioButtons: lazy(async () => ({ default: (await import("../lazy")).AudioButtons })),
-  HeaderMain: lazy(async () => ({ default: (await import("../lazy")).HeaderMain })),
-  FieldGroupPagination: lazy(async () => ({ default: (await import("../lazy")).FieldGroupPagination, })),
-  UseAnkiDroid: lazy(async () => ({ default: (await import("../lazy")).UseAnkiDroid })),
-  Sentence: lazy(async () => ({ default: (await import("../lazy")).Sentence })),
+  AudioButtons: lazy(async () => ({ default: (await import("#/src/lazy")).AudioButtons })),
+  HeaderMain: lazy(async () => ({ default: (await import("#/src/lazy")).HeaderMain })),
+  FieldGroupPagination: lazy(async () => ({ default: (await import("#/src/lazy")).FieldGroupPagination, })),
+  UseAnkiDroid: lazy(async () => ({ default: (await import("#/src/lazy")).UseAnkiDroid })),
+  Sentence: lazy(async () => ({ default: (await import("#/src/lazy")).Sentence })),
 };
 
 export function Front() {

@@ -1,13 +1,13 @@
 import { createEffect, createUniqueId, ErrorBoundary, For, Show } from "solid-js";
 import { createStore } from "solid-js/store";
-import { useNavigationTransition } from "#/hooks/transition";
-import { capitalizeSentence } from "#/lib/text";
-import type { AnkiNote } from "#/lib/types";
-import { useCardContext } from "../../contexts/CardContext";
-import { useCtxContext } from "../../contexts/CtxContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
-import { KanjiContextProvider, useKanjiContext } from "../contexts/KanjiContext";
-import { type ContextLabel, useKanjiPageContext } from "../contexts/KanjiPageContext";
+import { useNavigationTransition } from "#/src/hooks/transition";
+import { capitalizeSentence } from "#/src/lib/text";
+import type { AnkiNote } from "#/src/lib/types";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useCtxContext } from "#/src/contexts/CtxContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { KanjiContextProvider, useKanjiContext } from "#/src/lazy/contexts/KanjiContext";
+import { type ContextLabel, useKanjiPageContext } from "#/src/lazy/contexts/KanjiPageContext";
 
 export function KanjiInfo() {
   const { $kanji } = useKanjiContext();

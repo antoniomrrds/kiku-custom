@@ -2,7 +2,7 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
 import extract from "extract-zip";
-import { paths } from "../tools/paths.ts";
+import { paths } from "#/tools/paths.ts";
 
 export type KanjiComposition = Record<
   string,

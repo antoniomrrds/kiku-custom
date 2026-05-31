@@ -1,8 +1,8 @@
-import { useAnkiFieldContext } from "#/contexts/AnkiFieldsContext";
-import { parseHtml } from "#/lib/dom";
-import { unique } from "#/lib/es";
-import { hatsuon } from "#/lib/hatsuon";
-import { pitchTypes, type PitchType } from "#/lib/types";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { parseHtml } from "#/src/lib/dom";
+import { unique } from "#/src/lib/es";
+import { hatsuon } from "#/src/lib/hatsuon";
+import { pitchTypes, type PitchType } from "#/src/lib/types";
 import { createMemo } from "solid-js";
 
 export function extractPitchNumbers(html: string) {

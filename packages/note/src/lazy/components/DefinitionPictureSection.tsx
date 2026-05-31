@@ -1,9 +1,9 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { isServer } from "solid-js/web";
-import { parseHtml } from "#/lib/dom";
-import { useCollectGlossaryImgs } from "#/hooks/glossary";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useConfigContext } from "../../contexts/ConfigContext";
+import { parseHtml } from "#/src/lib/dom";
+import { useCollectGlossaryImgs } from "#/src/hooks/glossary";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
 
 export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;

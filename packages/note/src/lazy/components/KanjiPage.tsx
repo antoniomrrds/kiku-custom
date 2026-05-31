@@ -1,17 +1,20 @@
 import { createMemo, createSignal, For, type JSX, Match, onMount, Show, Switch } from "solid-js";
-import { useCardContext } from "#/contexts/CardContext";
-import { parseHtml } from "#/lib/dom";
-import { useNavigationTransition } from "#/hooks/transition";
-import { extractKanji } from "#/lib/kana";
-import { parseFurigana } from "#/lib/parse-furigana";
-import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { parseHtml } from "#/src/lib/dom";
+import { useNavigationTransition } from "#/src/hooks/transition";
+import { extractKanji } from "#/src/lib/kana";
+import { parseFurigana } from "#/src/lib/parse-furigana";
+import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/src/lib/types";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderKanjiPage from "./HeaderKanjiPage";
 import { ArrowLeftIcon } from "./Icons";
-import { KanjiContextProvider, useKanjiContext } from "../contexts/KanjiContext";
+import { KanjiContextProvider, useKanjiContext } from "#/src/lazy/contexts/KanjiContext";
 import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
-import { KanjiPageContextProvider, useKanjiPageContext } from "../contexts/KanjiPageContext";
+import {
+  KanjiPageContextProvider,
+  useKanjiPageContext,
+} from "#/src/lazy/contexts/KanjiPageContext";
 
 export default function KanjiPage() {
   const { $card } = useCardContext();

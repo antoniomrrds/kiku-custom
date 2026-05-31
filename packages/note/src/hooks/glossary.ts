@@ -1,6 +1,6 @@
 import { isServer } from "solid-js/web";
-import { useGeneralContext } from "#/contexts/GeneralContext";
-import { parseHtml } from "#/lib/dom";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { parseHtml } from "#/src/lib/dom";
 
 function isSvg(src: string | null) {
   if (!src) return false;

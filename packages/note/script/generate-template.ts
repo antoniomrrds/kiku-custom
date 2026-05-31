@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { paths } from "../tools/paths.ts";
-import { getVersion, log } from "../tools/util.js";
+import { paths } from "#/tools/paths.ts";
+import { getVersion, log } from "#/tools/util.js";
 import { generateSsrTemplate } from "./generate-ssr-template.js";
 
 class Script {

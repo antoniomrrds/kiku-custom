@@ -1,14 +1,14 @@
 import { createEffect } from "solid-js";
 import { unwrap } from "solid-js/store";
-import { useAnkiFieldContext } from "#/contexts/AnkiFieldsContext";
-import { useCacheContext } from "#/contexts/CacheContext";
-import { useCardContext } from "#/contexts/CardContext";
-import { useConfigContext } from "#/contexts/ConfigContext";
-import { useGeneralContext } from "#/contexts/GeneralContext";
-import { constants } from "#/lib/contants";
-import { createWorkerApi } from "#/worker/client";
-import { extractKanji } from "#/lib/kana";
-import { parseRelatedExpression } from "#/lib/parse-related-expression";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useCacheContext } from "#/src/contexts/CacheContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { constants } from "#/src/lib/contants";
+import { createWorkerApi } from "#/src/worker/client";
+import { extractKanji } from "#/src/lib/kana";
+import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 
 export function useKanji() {
   const { $config } = useConfigContext();

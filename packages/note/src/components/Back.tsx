@@ -1,34 +1,34 @@
 import { createMemo, lazy, Match, onMount, Show, Suspense, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
-import { CardStoreContextProvider, useCardContext } from "#/contexts/CardContext";
-import type { DatasetProp } from "#/lib/config";
-import { isNsfw } from "#/lib/util";
-import { useKanji } from "#/hooks/kanji";
-import { useLoadPlugin } from "#/hooks/plugin";
-import { useNavigationTransition, usePictureModalTransition } from "#/hooks/transition";
+import { CardStoreContextProvider, useCardContext } from "#/src/contexts/CardContext";
+import type { DatasetProp } from "#/src/lib/config";
+import { isNsfw } from "#/src/lib/util";
+import { useKanji } from "#/src/hooks/kanji";
+import { useLoadPlugin } from "#/src/hooks/plugin";
+import { useNavigationTransition, usePictureModalTransition } from "#/src/hooks/transition";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
-import { AnkiFieldContextProvider, useAnkiFieldContext } from "../contexts/AnkiFieldsContext";
-import { useCacheContext } from "../contexts/CacheContext";
-import { CtxContextProvider } from "../contexts/CtxContext";
-import { FieldGroupContextProvider } from "../contexts/FieldGroupContext";
-import { usePitch } from "#/hooks/pitch";
+import { AnkiFieldContextProvider, useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useCacheContext } from "#/src/contexts/CacheContext";
+import { CtxContextProvider } from "#/src/contexts/CtxContext";
+import { FieldGroupContextProvider } from "#/src/contexts/FieldGroupContext";
+import { usePitch } from "#/src/hooks/pitch";
 
 // oxfmt-ignore
 const Lazy = {
-  Settings: lazy(async () => ({ default: (await import("../lazy")).Settings })),
-  HeaderMain: lazy(async () => ({ default: (await import("../lazy")).HeaderMain })),
-  BackFooter: lazy(async () => ({ default: (await import("../lazy")).BackFooter })),
-  AudioButtons: lazy(async () => ({ default: (await import("../lazy")).AudioButtons })),
-  PictureModal: lazy(async () => ({ default: (await import("../lazy")).PictureModal })),
-  BackBody: lazy(async () => ({ default: (await import("../lazy")).BackBody })),
-  Pitches: lazy(async () => ({ default: (await import("../lazy")).Pitches })),
-  KanjiPage: lazy(async () => ({ default: (await import("../lazy")).KanjiPage })),
-  UseAnkiDroid: lazy(async () => ({ default: (await import("../lazy")).UseAnkiDroid })),
-  Expression: lazy(async () => ({ default: (await import("../lazy")).Expression })),
-  AnkiMobileDebug: lazy(async () => ({ default: (await import("../lazy")).AnkiMobileDebug })),
-  RelatedExpression: lazy(async () => ({ default: (await import("../lazy")).RelatedExpression, })),
-  Frequency: lazy(async () => ({ default: (await import("../lazy")).Frequency })),
+  Settings: lazy(async () => ({ default: (await import("#/src/lazy")).Settings })),
+  HeaderMain: lazy(async () => ({ default: (await import("#/src/lazy")).HeaderMain })),
+  BackFooter: lazy(async () => ({ default: (await import("#/src/lazy")).BackFooter })),
+  AudioButtons: lazy(async () => ({ default: (await import("#/src/lazy")).AudioButtons })),
+  PictureModal: lazy(async () => ({ default: (await import("#/src/lazy")).PictureModal })),
+  BackBody: lazy(async () => ({ default: (await import("#/src/lazy")).BackBody })),
+  Pitches: lazy(async () => ({ default: (await import("#/src/lazy")).Pitches })),
+  KanjiPage: lazy(async () => ({ default: (await import("#/src/lazy")).KanjiPage })),
+  UseAnkiDroid: lazy(async () => ({ default: (await import("#/src/lazy")).UseAnkiDroid })),
+  Expression: lazy(async () => ({ default: (await import("#/src/lazy")).Expression })),
+  AnkiMobileDebug: lazy(async () => ({ default: (await import("#/src/lazy")).AnkiMobileDebug })),
+  RelatedExpression: lazy(async () => ({ default: (await import("#/src/lazy")).RelatedExpression, })),
+  Frequency: lazy(async () => ({ default: (await import("#/src/lazy")).Frequency })),
 };
 
 export function Back(props: { onExitNested?: () => void }) {

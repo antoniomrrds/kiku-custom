@@ -1,14 +1,14 @@
 import { createContext, onMount, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { AnkiConnect } from "#/lib/anki-connect";
-import type { RootDataset } from "#/lib/config";
-import { createCompatPair } from "#/lib/context-compat";
-import type { Logger } from "#/lib/logger";
-import type { AnkiDroidAPI, KikuNotesManifest } from "#/lib/types";
+import { AnkiConnect } from "#/src/lib/anki-connect";
+import type { RootDataset } from "#/src/lib/config";
+import { createCompatPair } from "#/src/lib/context-compat";
+import type { Logger } from "#/src/lib/logger";
+import type { AnkiDroidAPI, KikuNotesManifest } from "#/src/lib/types";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import { useBreakpointContext } from "./BreakpointContext";
-import type { WorkerApi } from "#/worker/client";
+import type { WorkerApi } from "#/src/worker/client";
 
 type GeneralStore = {
   logger: Logger;

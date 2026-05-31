@@ -1,7 +1,7 @@
 import { onCleanup, onMount } from "solid-js";
-import { useCardContext } from "../../contexts/CardContext";
-import { useConfigContext } from "../../contexts/ConfigContext";
-import { useFieldGroupContext } from "../../contexts/FieldGroupContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { ArrowLeftIcon } from "./Icons";
 
 export default function FieldGroupPagination() {

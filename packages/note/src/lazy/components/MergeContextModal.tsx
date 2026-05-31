@@ -1,15 +1,15 @@
 import { createEffect, createSignal, Match, Show, Switch } from "solid-js";
 import { Portal } from "solid-js/web";
-import { AnkiConnect } from "#/lib/anki-connect";
-import { nodesToString, parseHtml } from "#/lib/dom";
-import { unique } from "#/lib/es";
-import { useNavigationTransition } from "#/hooks/transition";
-import { type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useCardContext } from "../../contexts/CardContext";
-import { useConfigContext } from "../../contexts/ConfigContext";
-import { useRootFieldGroupContext } from "../../contexts/FieldGroupContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { AnkiConnect } from "#/src/lib/anki-connect";
+import { nodesToString, parseHtml } from "#/src/lib/dom";
+import { unique } from "#/src/lib/es";
+import { useNavigationTransition } from "#/src/hooks/transition";
+import { type AnkiNote, ankiFieldsSkeleton } from "#/src/lib/types";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useRootFieldGroupContext } from "#/src/contexts/FieldGroupContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
 
 export default function MergeContextModal() {

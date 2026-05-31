@@ -1,8 +1,8 @@
 import { createEffect, createSignal, Match, onCleanup, Switch } from "solid-js";
 import { isServer, Portal } from "solid-js/web";
-import { useCardContext } from "#/contexts/CardContext";
-import { useConfigContext } from "../../contexts/ConfigContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { CheckIcon, XIcon } from "./Icons";
 
 function reverseEase(ease: "ease1" | "ease3") {

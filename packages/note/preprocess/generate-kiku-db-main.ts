@@ -1,8 +1,8 @@
 import { writeFile } from "node:fs/promises";
 import { basename } from "node:path";
 import * as tar from "tar";
-import { paths } from "../tools/paths.ts";
-import { gzipFile } from "../tools/util.js";
+import { paths } from "#/tools/paths.ts";
+import { gzipFile } from "#/tools/util.js";
 import { jmdictParser } from "./parse-jmdict.js";
 import { kanjiVgParser } from "./parse-kanji-vg.js";
 import { jpdbScraper } from "./scrap-jpdb.js";

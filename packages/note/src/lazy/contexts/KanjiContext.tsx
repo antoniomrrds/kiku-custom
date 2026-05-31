@@ -1,10 +1,10 @@
 import { batch, createContext, createEffect, type JSX, useContext } from "solid-js";
 import { createStore, type SetStoreFunction, type Store, unwrap } from "solid-js/store";
-import { createCompatPair } from "#/lib/context-compat";
-import type { AnkiFields, AnkiNote, KanjiInfo, QuerySharedResult } from "#/lib/types";
-import { useAnkiFieldContext } from "../../contexts/AnkiFieldsContext";
-import { useCacheContext } from "../../contexts/CacheContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { createCompatPair } from "#/src/lib/context-compat";
+import type { AnkiFields, AnkiNote, KanjiInfo, QuerySharedResult } from "#/src/lib/types";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useCacheContext } from "#/src/contexts/CacheContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
 type FetchType = "composedOf" | "usedIn" | "visuallySimilar" | "related";
 

@@ -4,12 +4,12 @@ import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { computePosition, offset, flip, shift, arrow } from "@floating-ui/dom";
 import { createSignal, createEffect } from "solid-js";
 import { Portal } from "solid-js/web";
-import { extractKanji } from "#/lib/kana";
-import { useBreakpointContext } from "../../contexts/BreakpointContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
-import { XIcon } from "../components/Icons";
+import { extractKanji } from "#/src/lib/kana";
+import { useBreakpointContext } from "#/src/contexts/BreakpointContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { XIcon } from "#/src/lazy/components/Icons";
 import { KanjiContextProvider } from "./KanjiContext";
-import { KanjiInfo, KanjiInfoExtra } from "../components/KanjiInfo";
+import { KanjiInfo, KanjiInfoExtra } from "#/src/lazy/components/KanjiInfo";
 
 type KanjiTooltipStore = {
   kanji: string;

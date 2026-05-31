@@ -1,4 +1,4 @@
-import type { WorkerApi } from "#/worker/client";
+import type { WorkerApi } from "#/src/worker/client";
 import type { Logger } from "./logger";
 
 export type AnkiFields = {

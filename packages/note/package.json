@@ -3,6 +3,9 @@
   "version": "1.10.2",
   "private": true,
   "type": "module",
+  "imports": {
+    "#/*": "./*"
+  },
   "exports": {
     ".": {
       "import": "./dist/_kiku.js",

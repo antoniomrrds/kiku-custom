@@ -1,8 +1,8 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
-import { paths } from "../tools/paths.ts";
-import { gzipFile } from "../tools/util.js";
+import { paths } from "#/tools/paths.ts";
+import { gzipFile } from "#/tools/util.js";
 
 type Kanji = {
   position: string;

@@ -1,9 +1,9 @@
 import { createContext, createUniqueId, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { createCompatPair } from "#/lib/context-compat";
-import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/lib/types";
-import type { KanjiPageContextStore } from "../lazy/contexts/KanjiPageContext";
+import { createCompatPair } from "#/src/lib/context-compat";
+import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/src/lib/types";
+import type { KanjiPageContextStore } from "#/src/lazy/contexts/KanjiPageContext";
 
 type Query = {
   status: "loading" | "success" | "error";

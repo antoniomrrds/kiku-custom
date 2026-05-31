@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
-import { paths } from "../tools/paths.ts";
-import { sleep } from "../tools/util.js";
+import { paths } from "#/tools/paths.ts";
+import { sleep } from "#/tools/util.js";
 
 type WkKanji = {
   visuallySimilar: string[];

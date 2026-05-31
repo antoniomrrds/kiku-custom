@@ -1,10 +1,10 @@
 import { createUniqueId, Match, Show, Switch } from "solid-js";
-import { useNavigationTransition, useThemeTransition } from "#/hooks/transition";
-import { capitalize } from "#/lib/text";
-import { nextTheme } from "#/lib/theme";
-import { useCardContext } from "../../contexts/CardContext";
-import { useConfigContext } from "../../contexts/ConfigContext";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
+import { capitalize } from "#/src/lib/text";
+import { nextTheme } from "#/src/lib/theme";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderLayout from "./HeaderLayout";
 import { ArrowLeftIcon, BoltIcon, PaintbrushIcon } from "./Icons";
 import MergeContextModal from "./MergeContextModal";

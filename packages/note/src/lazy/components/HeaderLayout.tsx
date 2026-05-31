@@ -1,6 +1,6 @@
 import type { JSX } from "solid-js/jsx-runtime";
 import { Portal } from "solid-js/web";
-import { useGeneralContext } from "../../contexts/GeneralContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
 export default function HeaderLayout(props: { children: JSX.Element }) {
   const { $general } = useGeneralContext();
