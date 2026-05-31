@@ -97,5 +97,5 @@ This loads `preview/anki/index.html`, which is designed to mimic Anki's WebView 
 The dev server also serves your Anki `collection.media` directory.
 
 Switch between `http://localhost:5173/?side=back#` and `http://localhost:5173/?side=front#` to switch between the back and front sides.
-You can change the note fields by modifying `src/util/examples.ts`.
+You can change the note fields by modifying `src/lib/examples.ts`.
 You can visit **Settings > Debug > AnkiFields** from Kiku to copy the fields.
