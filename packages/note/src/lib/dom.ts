@@ -20,6 +20,20 @@ export function isHtmlEffectivelyEmpty(html: string): boolean {
   return !meaningfulSelectors.some((sel) => doc.body.querySelector(sel));
 }
 
+export function removeBrInsideStyleTag(html: string): string {
+  if (!html) return html;
+
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const styles = doc.querySelectorAll("style");
+
+  for (const style of styles) {
+    const normalizedContent = (style.textContent ?? "").replace(/<br\s*\/?>/gi, "\n");
+    style.textContent = normalizedContent;
+  }
+
+  return doc.body.innerHTML;
+}
+
 export function parseHtml(html: string) {
   return new DOMParser().parseFromString(html, "text/html");
 }

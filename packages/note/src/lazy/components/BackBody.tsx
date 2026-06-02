@@ -1,6 +1,6 @@
 import { createMemo, createSignal, ErrorBoundary, For, onCleanup, onMount, Show } from "solid-js";
 import type { DatasetProp } from "#/src/lib/config";
-import { isHtmlEffectivelyEmpty, parseHtml } from "#/src/lib/dom";
+import { isHtmlEffectivelyEmpty, parseHtml, removeBrInsideStyleTag } from "#/src/lib/dom";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useCtxContext } from "#/src/contexts/CtxContext";
@@ -13,24 +13,33 @@ export default function BackBody(props: { onDefinitionPictureClick?: (picture: s
   const { $ankiFields } = useAnkiFieldContext<"back">();
   const { $config } = useConfigContext();
 
-  const glossary = createMemo(() => {
+  const $glossary = createMemo(() => {
     // empty glossary if it's the same as main definition
     if ($ankiFields.MainDefinition === $ankiFields.Glossary) return "";
-    return removeMainDefinitionFromGlossary($ankiFields.Glossary, $ankiFields.MainDefinition);
+    const glossary = removeMainDefinitionFromGlossary($ankiFields.Glossary, $ankiFields.MainDefinition);
+    return !isHtmlEffectivelyEmpty(glossary) ? removeBrInsideStyleTag(glossary) : "";
+  });
+
+  const $selection = createMemo(() => {
+    return !isHtmlEffectivelyEmpty($ankiFields.SelectionText)
+      ? removeBrInsideStyleTag($ankiFields.SelectionText)
+      : "";
+  });
+
+  const $main = createMemo(() => {
+    return !isHtmlEffectivelyEmpty($ankiFields.MainDefinition)
+      ? removeBrInsideStyleTag($ankiFields.MainDefinition)
+      : "";
   });
 
   const $pages = createMemo(() => {
     const p: { name: string; html: string }[] = [];
-    const selection = !isHtmlEffectivelyEmpty($ankiFields.SelectionText)
-      ? $ankiFields.SelectionText
-      : "";
-    const main = !isHtmlEffectivelyEmpty($ankiFields.MainDefinition)
-      ? $ankiFields.MainDefinition
-      : "";
-    const gHtml = glossary();
+    const selection = $selection();
+    const main = $main();
+    const glossary = $glossary();
 
     if ($config.definitionStyle === "single-page") {
-      const combined = [selection, main, gHtml].filter(Boolean);
+      const combined = [selection, main, glossary].filter(Boolean);
       if (combined.length > 0) {
         const html = combined.join('<div class="divider my-4"></div>');
         p.push({ name: "Definition", html });
@@ -54,8 +63,8 @@ export default function BackBody(props: { onDefinitionPictureClick?: (picture: s
       p.push({ name, html: main });
     }
 
-    if (!isHtmlEffectivelyEmpty(gHtml)) {
-      const doc = parseHtml(gHtml);
+    if (!isHtmlEffectivelyEmpty(glossary)) {
+      const doc = parseHtml(glossary);
       const entries = doc.querySelectorAll("li[data-dictionary]");
       if ($config.definitionStyle === "glossary-split" && entries.length > 0) {
         const styles = Array.from(doc.querySelectorAll("style"))
@@ -75,7 +84,7 @@ export default function BackBody(props: { onDefinitionPictureClick?: (picture: s
           });
         }
       } else {
-        p.push({ name: "Glossary", html: gHtml });
+        p.push({ name: "Glossary", html: glossary });
       }
     }
     return p;
