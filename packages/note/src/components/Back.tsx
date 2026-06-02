@@ -1,4 +1,4 @@
-import { createMemo, lazy, Match, onMount, Show, Suspense, Switch } from "solid-js";
+import { createEffect, createMemo, lazy, Match, onMount, Show, Suspense, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
 import { CardStoreContextProvider, useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
@@ -157,9 +157,11 @@ function ExpressionSection() {
         : $ankiFields.Expression;
   });
 
-  const $pitchFieldDataset = createMemo<DatasetProp>(() => ({
-    "data-pitch-type": isServer ? "{{PitchCategories}}" : ($pitchType() ?? ""),
-  }));
+  const $pitchFieldDataset = createMemo<DatasetProp>(() => {
+    return {
+      "data-pitch-type": isServer ? "{{PitchCategories}}" : $card.ready ? ($pitchType() ?? "") : "",
+    };
+  });
 
   return (
     <>
