@@ -39,35 +39,8 @@ export type AnkiFields = {
   __IS_ROOT__?: boolean;
 };
 
-const frontKeys = [
-  "Expression",
-  "ExpressionReading",
-  "ExpressionAudio",
-  "Sentence",
-  "kanji:Sentence",
-  "furigana:Sentence",
-  "SentenceFurigana",
-  "furigana:SentenceFurigana",
-  "kana:SentenceFurigana",
-  "SentenceAudio",
-  "SentenceTranslation",
-  "Picture",
-  "Hint",
-
-  "IsWordAndSentenceCard",
-  "IsSentenceCard",
-  "IsClickCard",
-  "IsAudioCard",
-  "MiscInfo",
-  "Tags",
-  "CardID",
-] satisfies readonly (keyof AnkiFields)[];
-
-type ExtractUsedFields<T, U extends readonly (keyof T)[]> = Pick<T, U[number]>;
-
-export type AnkiFrontFields = ExtractUsedFields<AnkiFields, typeof frontKeys> & {
-  __IS_ROOT__?: boolean;
-};
+//TODO: remove
+export type AnkiFrontFields = AnkiFields;
 export type AnkiBackFields = AnkiFields;
 
 export type AnkiNote = {
