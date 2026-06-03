@@ -4,7 +4,6 @@ import type { Constants } from "#/src/lib/contants";
 import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 import type {
   AnkiBackFields,
-  AnkiFields,
   AnkiFrontFields,
   AnkiNote,
   KanjiInfo,
@@ -192,7 +191,7 @@ export class WorkerThreadApi {
       readingResult: Record<string, AnkiNote[]>;
       expressionResult: Record<string, AnkiNote[]>;
       newNotes: number[];
-    }>((resolve) => {
+    }>((resolve, reject) => {
       this.pendingQueryShared.push({
         kanjiList,
         readingList: readingList ?? [],
@@ -203,7 +202,9 @@ export class WorkerThreadApi {
       if (this.debounceTimer) clearTimeout(this.debounceTimer);
 
       this.debounceTimer = setTimeout(() => {
-        this.actualQueryShared();
+        this.actualQueryShared().catch((e) => {
+          reject(e);
+        });
       }, this.debounceMs);
     });
   }
