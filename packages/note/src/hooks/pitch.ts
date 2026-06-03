@@ -4,6 +4,7 @@ import { unique } from "#/src/lib/es";
 import { hatsuon } from "#/src/lib/hatsuon";
 import { pitchTypes, type PitchType } from "#/src/lib/types";
 import { createMemo } from "solid-js";
+import { isServer } from "solid-js/web";
 
 export function extractPitchNumbers(html: string) {
   if (!html) return [];
@@ -26,12 +27,12 @@ export function extractPitchNumbers(html: string) {
 }
 
 export function usePitch() {
-  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
 
   const $pitchNumbers = createMemo(() => extractPitchNumbers($ankiFields.PitchPosition));
 
   const $reading = createMemo(() => {
-    if (!$isRootAnkiFields()) return $ankiFields.ExpressionReading;
+    if (!$isRootAnkiFields() || isServer) return $ankiFields.ExpressionReading;
     const doc = parseHtml($ankiFields.ExpressionFurigana);
     const isRuby = !!doc.querySelector("ruby");
     if (isRuby) return $ankiFields.ExpressionReading;

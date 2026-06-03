@@ -1,4 +1,4 @@
-import { createMemo, createSignal, lazy, onMount } from "solid-js";
+import { createEffect, createMemo, createSignal, lazy, Match, onMount, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
 import { useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
@@ -8,6 +8,7 @@ import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { usePitch } from "#/src/hooks/pitch";
 
 // oxfmt-ignore
 const Lazy = {
@@ -17,6 +18,7 @@ const Lazy = {
   UseAnkiDroid: lazy(async () => ({ default: (await import("#/src/lazy")).UseAnkiDroid })),
   Sentence: lazy(async () => ({ default: (await import("#/src/lazy")).Sentence })),
   RelatedExpression: lazy(async () => ({ default: (await import("#/src/lazy")).RelatedExpression, })),
+  Expression: lazy(async () => ({ default: (await import("#/src/lazy")).Expression })),
 };
 
 export function Front() {
@@ -60,15 +62,6 @@ export function Front() {
     "data-has-hint": isServer ? "{{#Hint}}true{{/Hint}}" : $ankiFields.Hint ? "true" : "",
   }));
 
-  //TODO: reading
-  const $expressionInnerHtml = createMemo(() => {
-    if (isServer) return undefined;
-    if (!$ankiFields.IsSentenceCard || !$ankiFields.IsAudioCard) {
-      return $ankiFields.Expression;
-    }
-    return "?";
-  });
-
   return (
     <>
       {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
@@ -88,22 +81,8 @@ export function Front() {
             on:touchend={(e) => e.stopPropagation()}
           >
             <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
-              <div
-                class="expression font-secondary text-center vertical-rl transition-colors"
-                classList={{
-                  "border-b-2 border-dotted border-base-content-soft":
-                    !!$ankiFields.IsClickCard && !$isInitialSide(),
-                  "transition-opacity duration-[1000ms] opacity-0":
-                    $hideExpression() && !$isInitialSide(),
-                }}
-                innerHTML={$expressionInnerHtml()}
-              >
-                {isServer
-                  ? `{{#IsSentenceCard}} <span>?</span> {{/IsSentenceCard}} {{#IsAudioCard}} <span>?</span> {{/IsAudioCard}} {{^IsSentenceCard}} {{^IsAudioCard}} {{Expression}} {{/IsAudioCard}} {{/IsSentenceCard}}`
-                  : undefined}
-              </div>
+              <ExpressionSection hideExpression={$hideExpression()} />
             </div>
-
             <PictureSection />
           </div>
         </div>
@@ -133,5 +112,59 @@ export function Front() {
         </div>
       )}
     </>
+  );
+}
+
+function ExpressionSection(props: { hideExpression: boolean }) {
+  const { $card, $isInitialSide } = useCardContext();
+  const { $ankiFields } = useAnkiFieldContext();
+  const { $pitchType } = usePitch();
+  const $hideExpression = createMemo(() => props.hideExpression);
+
+  const $expressionInnerHtml = createMemo(() => {
+    if (isServer) return undefined;
+    if (!$ankiFields.IsSentenceCard || !$ankiFields.IsAudioCard) {
+      return $ankiFields.Expression;
+    }
+    return "?";
+  });
+
+  const $pitchFieldDataset = createMemo<DatasetProp>(() => {
+    if (!$isInitialSide()) return {};
+    return {
+      "data-pitch-type": isServer ? "{{PitchCategories}}" : $card.ready ? ($pitchType() ?? "") : "",
+    };
+  });
+
+  return (
+    <Switch>
+      <Match when={$isInitialSide()}>
+        <div
+          class="expression font-secondary text-center vertical-rl transition-colors"
+          classList={{
+            "border-b-2 border-dotted border-base-content-soft":
+              !!$ankiFields.IsClickCard && !$isInitialSide(),
+            "transition-opacity duration-[1000ms] opacity-0":
+              $hideExpression() && !$isInitialSide(),
+          }}
+          innerHTML={$expressionInnerHtml()}
+        >
+          {isServer
+            ? `{{#IsSentenceCard}} <span>?</span> {{/IsSentenceCard}} {{#IsAudioCard}} <span>?</span> {{/IsAudioCard}} {{^IsSentenceCard}} {{^IsAudioCard}} {{Expression}} {{/IsAudioCard}} {{/IsSentenceCard}}`
+            : undefined}
+        </div>
+      </Match>
+      <Match when={!$isInitialSide()}>
+        <div
+          class="expression font-secondary text-center vertical-rl transition-colors"
+          style={{
+            color: "var(--pitch-color)",
+          }}
+          {...$pitchFieldDataset()}
+        >
+          {$card.ready && <Lazy.Expression />}
+        </div>
+      </Match>
+    </Switch>
   );
 }

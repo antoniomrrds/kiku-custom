@@ -1,4 +1,4 @@
-import { createEffect, createMemo, For, Match, onMount, Show, Switch } from "solid-js";
+import { createMemo, For, Match, onMount, Show, Switch } from "solid-js";
 import { parseHtml } from "#/src/lib/dom";
 import { extractKanji } from "#/src/lib/kana";
 import { parseFurigana } from "#/src/lib/parse-furigana";
