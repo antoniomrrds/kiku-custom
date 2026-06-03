@@ -6,9 +6,9 @@ import { useCardContext } from "#/src/contexts/CardContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { constants } from "#/src/lib/contants";
-import { createWorkerApi } from "#/src/worker/client";
 import { extractKanji } from "#/src/lib/kana";
 import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
+import { createWorkerApi } from "#/src/worker/client";
 
 export function useKanji() {
   const { $config } = useConfigContext();
@@ -22,19 +22,25 @@ export function useKanji() {
     set = true;
     try {
       const ankiFields = unwrap($ankiFields);
-      const kanjiList = extractKanji(
-        ankiFields.ExpressionFurigana
-          ? $isRootAnkiFields()
-            ? ankiFields["furigana:ExpressionFurigana"]
-            : ankiFields.Expression
-          : ankiFields.Expression,
-      );
-      const readingList = ankiFields.ExpressionReading ? [ankiFields.ExpressionReading] : [];
-      const relatedExpressions = parseRelatedExpression(ankiFields.RelatedExpression);
-      const expressionList = [
-        ...(ankiFields.Expression ? [ankiFields.Expression] : []),
-        ...relatedExpressions,
-      ];
+      const isFront = $card.side === "front";
+      const kanjiList = isFront
+        ? []
+        : extractKanji(
+            ankiFields.ExpressionFurigana
+              ? $isRootAnkiFields()
+                ? ankiFields["furigana:ExpressionFurigana"]
+                : ankiFields.Expression
+              : ankiFields.Expression,
+          );
+      const readingList = isFront
+        ? []
+        : ankiFields.ExpressionReading
+          ? [ankiFields.ExpressionReading]
+          : [];
+      const relatedExpressions = isFront
+        ? []
+        : parseRelatedExpression(ankiFields.RelatedExpression);
+      const expressionList = ankiFields.Expression ? [ankiFields.Expression] : [];
 
       const opts = {
         constants,
@@ -48,12 +54,14 @@ export function useKanji() {
       if (cacheStore && !cacheStore.workerApi) {
         cacheStore.workerApi = workerApi;
       }
-      const { kanjiResult, readingResult, expressionResult, newNotes } = await workerApi.queryShared({
-        kanjiList,
-        readingList,
-        ankiFields: unwrap(ankiFields),
-        expressionList,
-      });
+      //TODO: no newNotes if front
+      const { kanjiResult, readingResult, expressionResult, newNotes } =
+        await workerApi.queryShared({
+          kanjiList,
+          readingList,
+          ankiFields: unwrap(ankiFields),
+          expressionList,
+        });
 
       if ($general.aborter.signal.aborted) return;
 
@@ -61,22 +69,36 @@ export function useKanji() {
       const sameExpression = currentExpressionResults.filter(
         (n) => n.fields.Expression.value === ankiFields.Expression,
       );
-      const incomingRelated = currentExpressionResults.filter(
-        (n) => n.fields.Expression.value !== ankiFields.Expression,
-      );
-      const outgoingRelated = relatedExpressions.flatMap((e) => expressionResult[e] ?? []);
 
-      const combinedRelated = [...incomingRelated, ...outgoingRelated];
-      const uniqueRelated = Array.from(new Map(combinedRelated.map((n) => [n.noteId, n])).values());
+      if (isFront) {
+        $setCard("query", {
+          status: "success",
+          noteList: [],
+          sameReading: [],
+          sameExpression,
+          relatedExpression: [],
+          newNotes,
+        });
+      } else {
+        const incomingRelated = currentExpressionResults.filter(
+          (n) => n.fields.Expression.value !== ankiFields.Expression,
+        );
+        const outgoingRelated = relatedExpressions.flatMap((e) => expressionResult[e] ?? []);
 
-      $setCard("query", {
-        status: "success",
-        noteList: Object.entries(kanjiResult),
-        sameReading: readingResult[ankiFields.ExpressionReading],
-        sameExpression,
-        relatedExpression: uniqueRelated,
-        newNotes,
-      });
+        const combinedRelated = [...incomingRelated, ...outgoingRelated];
+        const uniqueRelated = Array.from(
+          new Map(combinedRelated.map((n) => [n.noteId, n])).values(),
+        );
+
+        $setCard("query", {
+          status: "success",
+          noteList: Object.entries(kanjiResult),
+          sameReading: readingResult[ankiFields.ExpressionReading],
+          sameExpression,
+          relatedExpression: uniqueRelated,
+          newNotes,
+        });
+      }
 
       workerApi
         .notesManifest()

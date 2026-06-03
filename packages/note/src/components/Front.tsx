@@ -3,6 +3,7 @@ import { isServer } from "solid-js/web";
 import { useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
 import { useLoadPlugin } from "#/src/hooks/plugin";
+import { useKanji } from "#/src/hooks/kanji";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
@@ -24,6 +25,7 @@ export function Front() {
   const [$hideExpression, $setHideExpression] = createSignal(false);
   const { $config } = useConfigContext();
   const loadPlugin = useLoadPlugin();
+  useKanji();
   const $hidden = createMemo(() => {
     if (isServer) return true;
     if (

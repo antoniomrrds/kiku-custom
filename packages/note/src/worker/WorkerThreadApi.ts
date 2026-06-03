@@ -3,7 +3,9 @@ import type { KikuConfig } from "#/src/lib/config";
 import type { Constants } from "#/src/lib/contants";
 import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 import type {
+  AnkiBackFields,
   AnkiFields,
+  AnkiFrontFields,
   AnkiNote,
   KanjiInfo,
   KanjiInfoCompact,
@@ -183,7 +185,7 @@ export class WorkerThreadApi {
     kanjiList: string[];
     readingList?: string[];
     expressionList?: string[];
-    ankiFields: AnkiFields;
+    ankiFields: AnkiFrontFields | AnkiBackFields;
   }) {
     return new Promise<{
       kanjiResult: Record<string, AnkiNote[]>;
@@ -210,7 +212,7 @@ export class WorkerThreadApi {
     kanjiList: string[];
     readingList: string[];
     expressionList: string[];
-    ankiFields: AnkiFields;
+    ankiFields: AnkiFrontFields | AnkiBackFields;
     resolve: (v: {
       kanjiResult: Record<string, AnkiNote[]>;
       readingResult: Record<string, AnkiNote[]>;
@@ -227,11 +229,13 @@ export class WorkerThreadApi {
     const batchedReadingList = [...new Set(requests.flatMap((r) => r.readingList))];
     const batchedExpressionList = [...new Set(requests.flatMap((r) => r.expressionList))];
 
-    const { kanjiListResult, readingListResult, expressionListResult, newNotes } = await this.query({
-      kanjiList: batchedKanjiList,
-      readingList: batchedReadingList,
-      expressionList: batchedExpressionList,
-    });
+    const { kanjiListResult, readingListResult, expressionListResult, newNotes } = await this.query(
+      {
+        kanjiList: batchedKanjiList,
+        readingList: batchedReadingList,
+        expressionList: batchedExpressionList,
+      },
+    );
 
     for (const req of requests) {
       const { kanjiList, readingList, expressionList, ankiFields } = req;
