@@ -4,13 +4,13 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 
 export default function RelatedExpression() {
-  const { $card, $initialSide } = useCardContext();
+  const { $card, $setCard, $initialSide } = useCardContext();
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields } = useAnkiFieldContext();
   const $relatedExpression = createMemo(() => {
     if ($initialSide() === "front") {
       return [...($card.query.sameExpression ?? [])]
         .filter((v) => {
-          return v.fields["ExpressionReading"].value !== $ankiFields.ExpressionReading;
+          return v.fields["ExpressionReading"].value !== initialAnkiFields.ExpressionReading;
         })
         .sort((a, b) => b.noteId - a.noteId);
     }
@@ -42,6 +42,7 @@ export default function RelatedExpression() {
           }}
           on:click={() => {
             resetAnkiFields();
+            $setCard("side", $initialSide());
           }}
           on:touchend={(e) => e.stopPropagation()}
         >
@@ -74,6 +75,7 @@ export default function RelatedExpression() {
                   Tags: note.tags.join(" "),
                   __IS_ROOT__: false,
                 });
+                $setCard("side", "back");
               }}
               on:touchend={(e) => e.stopPropagation()}
             >

@@ -1,9 +1,17 @@
-import { createContext, createMemo, createUniqueId, useContext, type Accessor } from "solid-js";
+import {
+  createContext,
+  createEffect,
+  createMemo,
+  createUniqueId,
+  useContext,
+  type Accessor,
+} from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { createCompatPair } from "#/src/lib/context-compat";
 import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/src/lib/types";
 import type { KanjiPageContextStore } from "#/src/lazy/contexts/KanjiPageContext";
+import { useGeneralContext } from "./GeneralContext";
 
 type Query = {
   status: "loading" | "success" | "error";
@@ -43,6 +51,7 @@ type CardContextValue = {
   $card: Store<CardStore>;
   $setCard: SetStoreFunction<CardStore>;
   $initialSide: Accessor<CardStore["side"]>;
+  $isInitialSide: Accessor<boolean>;
   onKanjiPageMount: Set<(ctx: { $setKanjiPage: SetStoreFunction<KanjiPageContextStore> }) => void>;
 };
 
@@ -55,6 +64,7 @@ export function CardStoreContextProvider(props: {
   initialSide: "front" | "back";
   initialNsfw: boolean;
 }) {
+  const { $general } = useGeneralContext();
   const [$card, $setCard] = createStore<CardStore>({
     side: props.initialSide,
     page: "main",
@@ -88,10 +98,20 @@ export function CardStoreContextProvider(props: {
   });
 
   const $initialSide = createMemo(() => props.initialSide);
+  const $isInitialSide = createMemo(() => $initialSide() === $card.side);
   const onKanjiPageMount: CardContextValue["onKanjiPageMount"] = new Set();
 
+  createEffect(() => {
+    const root = $general.root;
+    const side = $card.side;
+    if (!root) return;
+    root.dataset.side = side;
+  });
+
   return (
-    <CardStoreContext.Provider value={{ $card, $setCard, onKanjiPageMount, $initialSide }}>
+    <CardStoreContext.Provider
+      value={{ $card, $setCard, onKanjiPageMount, $initialSide, $isInitialSide }}
+    >
       {props.children}
     </CardStoreContext.Provider>
   );
@@ -102,6 +122,7 @@ export function useCardContext() {
   if (!cardStore) throw new Error("Missing CardStoreContext");
   return Object.assign(createCompatPair("$card", "$setCard", cardStore.$card, cardStore.$setCard), {
     $initialSide: cardStore.$initialSide,
+    $isInitialSide: cardStore.$isInitialSide,
     onKanjiPageMount: cardStore.onKanjiPageMount,
   });
 }

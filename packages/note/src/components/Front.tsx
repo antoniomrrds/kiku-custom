@@ -20,7 +20,7 @@ const Lazy = {
 };
 
 export function Front() {
-  const { $card, $setCard } = useCardContext();
+  const { $card, $setCard, $isInitialSide } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext<"front">();
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
@@ -29,6 +29,7 @@ export function Front() {
   useKanji();
   const $hidden = createMemo(() => {
     if (isServer) return true;
+    if (!$isInitialSide()) return false;
     if (
       $ankiFields.IsSentenceCard ||
       $ankiFields.IsWordAndSentenceCard ||
@@ -59,6 +60,15 @@ export function Front() {
     "data-has-hint": isServer ? "{{#Hint}}true{{/Hint}}" : $ankiFields.Hint ? "true" : "",
   }));
 
+  //TODO: reading
+  const $expressionInnerHtml = createMemo(() => {
+    if (isServer) return undefined;
+    if (!$ankiFields.IsSentenceCard || !$ankiFields.IsAudioCard) {
+      return $ankiFields.Expression;
+    }
+    return "?";
+  });
+
   return (
     <>
       {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
@@ -67,10 +77,11 @@ export function Front() {
         <div class="flex justify-between gap-2 min-h-lh text-xl sm:text-2xl">
           <Lazy.RelatedExpression />
         </div>
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 relative z-10">
           <div
             class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
             on:click={() => {
+              if (!$isInitialSide()) return;
               $setClicked((prev) => !prev);
               $setHideExpression(false);
             }}
@@ -78,18 +89,14 @@ export function Front() {
           >
             <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
               <div
-                class="expression font-secondary text-center vertical-rl"
+                class="expression font-secondary text-center vertical-rl transition-colors"
                 classList={{
-                  "border-b-2 border-dotted border-base-content-soft": !!$ankiFields.IsClickCard,
-                  "transition-opacity duration-[1000ms] opacity-0": $hideExpression(),
+                  "border-b-2 border-dotted border-base-content-soft":
+                    !!$ankiFields.IsClickCard && !$isInitialSide(),
+                  "transition-opacity duration-[1000ms] opacity-0":
+                    $hideExpression() && !$isInitialSide(),
                 }}
-                innerHTML={
-                  isServer
-                    ? undefined
-                    : !$ankiFields.IsSentenceCard && !$ankiFields.IsAudioCard
-                      ? $ankiFields.Expression
-                      : "?"
-                }
+                innerHTML={$expressionInnerHtml()}
               >
                 {isServer
                   ? `{{#IsSentenceCard}} <span>?</span> {{/IsSentenceCard}} {{#IsAudioCard}} <span>?</span> {{/IsAudioCard}} {{^IsSentenceCard}} {{^IsAudioCard}} {{Expression}} {{/IsAudioCard}} {{/IsSentenceCard}}`
@@ -99,30 +106,32 @@ export function Front() {
 
             <PictureSection />
           </div>
-          {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
         </div>
+        {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
       </div>
       <div
         class="flex flex-col gap-4 items-center text-center justify-center"
         classList={{
-          "transition-opacity duration-[1000ms] opacity-0": $hideExpression(),
+          "transition-opacity duration-[1000ms] opacity-0": $hideExpression() && !$isInitialSide(),
         }}
       >
         {$card.ready && !$hidden() && <Lazy.Sentence />}
       </div>
-      {$card.ready && $ankiFields.IsAudioCard && (
+      {$card.ready && $ankiFields.IsAudioCard && $isInitialSide() && (
         <div class="flex gap-2 justify-center animate-fade-in-sm">
           <Lazy.AudioButtons position={1} />
         </div>
       )}
-      <div
-        class={`flex gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
-        {...$hintFieldDataset()}
-      >
-        <div innerHTML={isServer ? undefined : $ankiFields.Hint}>
-          {isServer ? "{{Hint}}" : undefined}
+      {$isInitialSide() && (
+        <div
+          class={`flex gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
+          {...$hintFieldDataset()}
+        >
+          <div innerHTML={isServer ? undefined : $ankiFields.Hint}>
+            {isServer ? "{{Hint}}" : undefined}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

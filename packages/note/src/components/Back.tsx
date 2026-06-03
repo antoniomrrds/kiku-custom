@@ -146,15 +146,15 @@ export function Back(props: { onExitNested?: () => void }) {
 
 function ExpressionSection() {
   const { $card } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
   const { $pitchType } = usePitch();
 
   const $expressionInnerHtml = createMemo(() => {
-    return isServer
-      ? undefined
-      : $ankiFields.ExpressionFurigana
-        ? $ankiFields["furigana:ExpressionFurigana"]
-        : $ankiFields.Expression;
+    if (isServer) return undefined;
+    if ($isRootAnkiFields() && $ankiFields.ExpressionFurigana) {
+      return $ankiFields["furigana:ExpressionFurigana"];
+    }
+    return $ankiFields.Expression;
   });
 
   const $pitchFieldDataset = createMemo<DatasetProp>(() => {
