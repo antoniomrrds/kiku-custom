@@ -4,9 +4,17 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 
 export default function RelatedExpression() {
-  const { $card } = useCardContext();
+  const { $card, $initialSide } = useCardContext();
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields } = useAnkiFieldContext();
   const $relatedExpression = createMemo(() => {
+    if ($initialSide() === "front") {
+      return [...($card.query.sameExpression ?? [])]
+        .filter((v) => {
+          return v.fields["ExpressionReading"].value !== $ankiFields.ExpressionReading;
+        })
+        .sort((a, b) => b.noteId - a.noteId);
+    }
+
     if ($card.query.relatedExpression?.length) return $card.query.relatedExpression;
     return [
       ...($card.query.sameExpression ?? []),
