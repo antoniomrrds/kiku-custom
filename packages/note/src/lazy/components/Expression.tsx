@@ -123,21 +123,29 @@ function RenderNode(props: { node: Node }) {
 }
 
 function CharSpan(props: { char: string }) {
+  const { $initialSide } = useCardContext();
   const $kanji = createMemo(() => extractKanji(props.char)[0]);
   const { onInactive, onActive } = useKanjiTooltipContext();
 
   return (
-    <span
-      tabindex={0}
-      class="tappable"
-      on:mouseenter={(e) => onActive(e, $kanji())}
-      on:mouseleave={onInactive}
-      on:focus={(e) => onActive(e, $kanji())}
-      on:blur={onInactive}
-      on:touchstart={(e) => onActive(e, $kanji())}
-      on:touchend={(e) => e.stopPropagation()}
-    >
-      {props.char}
-    </span>
+    <Switch>
+      <Match when={$initialSide() === "back"}>
+        <span
+          tabindex={0}
+          class="tappable"
+          on:mouseenter={(e) => onActive(e, $kanji())}
+          on:mouseleave={onInactive}
+          on:focus={(e) => onActive(e, $kanji())}
+          on:blur={onInactive}
+          on:touchstart={(e) => onActive(e, $kanji())}
+          on:touchend={(e) => e.stopPropagation()}
+        >
+          {props.char}
+        </span>
+      </Match>
+      <Match when={$initialSide() === "front"}>
+        <span>{props.char}</span>
+      </Match>
+    </Switch>
   );
 }
