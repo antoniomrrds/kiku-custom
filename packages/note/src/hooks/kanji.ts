@@ -48,7 +48,7 @@ export function useKanji() {
       if (cacheStore && !cacheStore.workerApi) {
         cacheStore.workerApi = workerApi;
       }
-      const { kanjiResult, readingResult, expressionResult } = await workerApi.queryShared({
+      const { kanjiResult, readingResult, expressionResult, newNotes } = await workerApi.queryShared({
         kanjiList,
         readingList,
         ankiFields: unwrap(ankiFields),
@@ -75,6 +75,7 @@ export function useKanji() {
         sameReading: readingResult[ankiFields.ExpressionReading],
         sameExpression,
         relatedExpression: uniqueRelated,
+        newNotes,
       });
 
       workerApi

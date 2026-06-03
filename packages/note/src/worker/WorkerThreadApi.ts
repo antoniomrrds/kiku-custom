@@ -60,6 +60,7 @@ export class WorkerThreadApi {
       const kanjiListResult: Record<string, AnkiNote[]> = {};
       const readingListResult: Record<string, AnkiNote[]> = {};
       const expressionListResult: Record<string, AnkiNote[]> = {};
+      const newNotes: number[] = [];
 
       const manifest = await this.notesManifest();
 
@@ -122,6 +123,7 @@ export class WorkerThreadApi {
         kanjiListResult,
         readingListResult,
         expressionListResult,
+        newNotes,
       };
     };
 
@@ -129,6 +131,7 @@ export class WorkerThreadApi {
       kanjiListResult: Record<string, AnkiNote[]>;
       readingListResult: Record<string, AnkiNote[]>;
       expressionListResult: Record<string, AnkiNote[]>;
+      newNotes: number[];
     };
 
     if (this.preferAnkiConnect) {
@@ -186,6 +189,7 @@ export class WorkerThreadApi {
       kanjiResult: Record<string, AnkiNote[]>;
       readingResult: Record<string, AnkiNote[]>;
       expressionResult: Record<string, AnkiNote[]>;
+      newNotes: number[];
     }>((resolve) => {
       this.pendingQueryShared.push({
         kanjiList,
@@ -211,6 +215,7 @@ export class WorkerThreadApi {
       kanjiResult: Record<string, AnkiNote[]>;
       readingResult: Record<string, AnkiNote[]>;
       expressionResult: Record<string, AnkiNote[]>;
+      newNotes: number[];
     }) => void;
   }[] = [];
 
@@ -222,7 +227,7 @@ export class WorkerThreadApi {
     const batchedReadingList = [...new Set(requests.flatMap((r) => r.readingList))];
     const batchedExpressionList = [...new Set(requests.flatMap((r) => r.expressionList))];
 
-    const { kanjiListResult, readingListResult, expressionListResult } = await this.query({
+    const { kanjiListResult, readingListResult, expressionListResult, newNotes } = await this.query({
       kanjiList: batchedKanjiList,
       readingList: batchedReadingList,
       expressionList: batchedExpressionList,
@@ -264,6 +269,7 @@ export class WorkerThreadApi {
         kanjiResult,
         readingResult,
         expressionResult,
+        newNotes,
       });
     }
   }

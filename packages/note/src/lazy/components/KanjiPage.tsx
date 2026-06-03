@@ -304,13 +304,14 @@ function NoteList(props: { list: AnkiNote[] }) {
 
 function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
   const { navigate } = useNavigationTransition();
-  const { $setCard } = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { $setKanjiPage } = useKanjiPageContext();
   const $data = createMemo(() => props.data);
   const $expression = createMemo(() => $data().fields.Expression.value);
   const $expressionFurigana = createMemo(() => $data().fields.ExpressionFurigana.value);
   const $expressionReading = createMemo(() => $data().fields.ExpressionReading.value);
   const $leech = createMemo(() => $data().tags.includes("leech"));
+  const $isNew = createMemo(() => $card.query.newNotes.includes($data().noteId));
   const $doc = createMemo(() => parseHtml($expressionFurigana()));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));
   const $furiganaData = createMemo(() => parseFurigana($isRuby() ? "" : $expressionFurigana()));
@@ -419,7 +420,12 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
             {new Date($data().noteId).toLocaleDateString()}
           </div>
         </div>
-        {$leech() && <div class="status status-warning"></div>}
+        <Show when={$isNew() || $leech()}>
+          <div class="flex items-center gap-1">
+            {$leech() && <div class="status status-warning"></div>}
+            {$isNew() && <div class="status status-info"></div>}
+          </div>
+        </Show>
       </li>
 
       <li class="list-row">

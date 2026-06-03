@@ -67,10 +67,13 @@ export class AnkiConnect {
             .flatMap((e) => [`"Expression:${e}"`, `"RelatedExpression:*${e}*"`])
             .join(" OR ")})`;
 
-    const queries = [kanjiQuery, readingQuery, expressionQuery].filter(Boolean) as string[];
+    const newQuery = `${noteFilter} AND is:new`;
+
+    const queries = [kanjiQuery, readingQuery, expressionQuery, newQuery].filter(Boolean) as string[];
     const idsLists = await this.batchFindNotes(queries);
     const allIds = [...new Set(idsLists.flat())];
     const [allNotes] = await this.batchNotesInfo([allIds]);
+    const newNotes = idsLists[queries.length - 1] ?? [];
 
     const kanjiListResult: Record<string, AnkiNote[]> = {};
     const readingListResult: Record<string, AnkiNote[]> = {};
@@ -100,6 +103,7 @@ export class AnkiConnect {
       kanjiListResult,
       readingListResult,
       expressionListResult,
+      newNotes,
     };
   }
 }

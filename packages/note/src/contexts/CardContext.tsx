@@ -11,6 +11,7 @@ type Query = {
   sameExpression: AnkiNote[] | undefined;
   relatedExpression: AnkiNote[] | undefined;
   noteList: [string, AnkiNote[]][];
+  newNotes: number[];
 };
 
 type CardStore = {
@@ -70,6 +71,7 @@ export function CardStoreContextProvider(props: {
       sameExpression: undefined,
       relatedExpression: undefined,
       noteList: [],
+      newNotes: [],
     },
     initialFocus: {
       kanji: undefined,
