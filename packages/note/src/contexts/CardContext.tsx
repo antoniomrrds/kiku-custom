@@ -1,4 +1,4 @@
-import { createContext, createUniqueId, useContext } from "solid-js";
+import { createContext, createMemo, createUniqueId, useContext, type Accessor } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { createCompatPair } from "#/src/lib/context-compat";
@@ -42,6 +42,7 @@ type CardStore = {
 type CardContextValue = {
   $card: Store<CardStore>;
   $setCard: SetStoreFunction<CardStore>;
+  $initialSide: Accessor<CardStore["side"]>;
   onKanjiPageMount: Set<(ctx: { $setKanjiPage: SetStoreFunction<KanjiPageContextStore> }) => void>;
 };
 
@@ -51,11 +52,11 @@ export function CardStoreContextProvider(props: {
   children: JSX.Element;
   nested?: boolean;
   isMergePreview?: boolean;
-  side: "front" | "back";
+  initialSide: "front" | "back";
   initialNsfw: boolean;
 }) {
   const [$card, $setCard] = createStore<CardStore>({
-    side: props.side,
+    side: props.initialSide,
     page: "main",
     ready: false,
     expressionReady: false,
@@ -85,10 +86,12 @@ export function CardStoreContextProvider(props: {
     nestedIsMergePreview: false,
     isMergePreview: props.isMergePreview ?? false,
   });
+
+  const $initialSide = createMemo(() => props.initialSide);
   const onKanjiPageMount: CardContextValue["onKanjiPageMount"] = new Set();
 
   return (
-    <CardStoreContext.Provider value={{ $card, $setCard, onKanjiPageMount }}>
+    <CardStoreContext.Provider value={{ $card, $setCard, onKanjiPageMount, $initialSide }}>
       {props.children}
     </CardStoreContext.Provider>
   );
@@ -98,6 +101,7 @@ export function useCardContext() {
   const cardStore = useContext(CardStoreContext);
   if (!cardStore) throw new Error("Missing CardStoreContext");
   return Object.assign(createCompatPair("$card", "$setCard", cardStore.$card, cardStore.$setCard), {
+    $initialSide: cardStore.$initialSide,
     onKanjiPageMount: cardStore.onKanjiPageMount,
   });
 }

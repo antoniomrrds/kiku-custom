@@ -41,7 +41,7 @@ export function generateSsrTemplate() {
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
-              <CardStoreContextProvider side="front" initialNsfw={false}>
+              <CardStoreContextProvider initialSide="front" initialNsfw={false}>
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
                     <CtxContextProvider>
@@ -75,7 +75,7 @@ export function generateSsrTemplate() {
         >
           <ConfigContextProvider value={{ $config: $config, $setConfig: $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton}>
-              <CardStoreContextProvider side="back" initialNsfw={false}>
+              <CardStoreContextProvider initialSide="back" initialNsfw={false}>
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
                     <CtxContextProvider>

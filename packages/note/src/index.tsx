@@ -93,7 +93,7 @@ export async function init({
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
-              <CardStoreContextProvider side={side} initialNsfw={isNsfw(ankiFields.Tags)}>
+              <CardStoreContextProvider initialSide={side} initialNsfw={isNsfw(ankiFields.Tags)}>
                 <FieldGroupContextProvider>
                   <RootFieldGroupContextProvider>
                     <CtxContextProvider>

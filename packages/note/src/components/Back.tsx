@@ -74,7 +74,7 @@ export function Back(props: { onExitNested?: () => void }) {
           >
             <CardStoreContextProvider
               nested
-              side="back"
+              initialSide="back"
               isMergePreview={$card.nestedIsMergePreview}
               initialNsfw={isNsfw($card.nestedAnkiFields.Tags)}
             >
