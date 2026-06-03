@@ -46,7 +46,7 @@ export function AnkiFieldContextProvider(props: {
 type UseAnkiFieldSide = {
   front: {
     $ankiFields: Store<AnkiFrontFields>;
-    $setAnkiFields: SetStoreFunction<AnkiFrontFields>;
+    $setAnkiFields: SetStoreFunction<AnkiFields>;
     $isRootAnkiFields: Accessor<boolean>;
     noteId?: number;
     initialAnkiFields: AnkiFrontFields;

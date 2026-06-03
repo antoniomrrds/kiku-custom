@@ -5,8 +5,7 @@ import { useCardContext } from "#/src/contexts/CardContext";
 
 export default function RelatedExpression() {
   const { $card } = useCardContext();
-  const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields } =
-    useAnkiFieldContext<"back">();
+  const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields } = useAnkiFieldContext();
   const $relatedExpression = createMemo(() => {
     if ($card.query.relatedExpression?.length) return $card.query.relatedExpression;
     return [

@@ -1,4 +1,4 @@
-import { createEffect, createMemo, lazy, Match, onMount, Show, Suspense, Switch } from "solid-js";
+import { createMemo, lazy, Match, onMount, Show, Suspense, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
 import { CardStoreContextProvider, useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";

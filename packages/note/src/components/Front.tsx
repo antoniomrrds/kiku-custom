@@ -16,6 +16,7 @@ const Lazy = {
   FieldGroupPagination: lazy(async () => ({ default: (await import("#/src/lazy")).FieldGroupPagination, })),
   UseAnkiDroid: lazy(async () => ({ default: (await import("#/src/lazy")).UseAnkiDroid })),
   Sentence: lazy(async () => ({ default: (await import("#/src/lazy")).Sentence })),
+  RelatedExpression: lazy(async () => ({ default: (await import("#/src/lazy")).RelatedExpression, })),
 };
 
 export function Front() {
@@ -63,7 +64,9 @@ export function Front() {
       {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
       {$card.ready && <Lazy.HeaderMain />}
       <div class="flex flex-col gap-2">
-        <div class="flex gap-2 flex-wrap min-h-lh text-2xl"></div>
+        <div class="flex justify-between gap-2 min-h-lh text-xl sm:text-2xl">
+          <Lazy.RelatedExpression />
+        </div>
         <div class="flex flex-col gap-4">
           <div
             class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
