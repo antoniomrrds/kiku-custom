@@ -97,7 +97,7 @@ function SentenceFieldWithTranslation() {
 }
 
 function SentenceField() {
-  const { $card } = useCardContext();
+  const { $card, $initialSide } = useCardContext();
   const { $pitchType } = usePitch();
   const { $group } = useFieldGroupContext();
   const { $ankiFields } = useAnkiFieldContext<"back">();
@@ -121,7 +121,7 @@ function SentenceField() {
   });
 
   const $animateFadeIn = createMemo(() => {
-    if ($card.side === "back") {
+    if ($initialSide() === "back") {
       if (
         $ankiFields.IsAudioCard ||
         $ankiFields.IsSentenceCard ||

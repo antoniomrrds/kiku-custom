@@ -27,7 +27,7 @@ export default function UseAnkiDroid() {
   if (!ankiDroidAPI && !import.meta.env.DEV) return;
   $general.logger.info("Using AnkiDroid");
 
-  const { $card } = useCardContext();
+  const { $card, $initialSide } = useCardContext();
   const el$ = () => document.documentElement;
   const reverse = $config.ankiDroidReverseSwipeDirection;
 
@@ -69,7 +69,7 @@ export default function UseAnkiDroid() {
     if (Math.abs(diffY) > DEADZONE || Math.abs(diffX) > DEADZONE) {
       isSwiping = true;
     }
-    if ($card.side === "front") return;
+    if ($initialSide() === "front") return;
 
     // Detect vertical scroll intent
     if (Math.abs(diffY) > SCROLL_TOLERANCE && Math.abs(diffY) > Math.abs(diffX)) {
@@ -107,10 +107,10 @@ export default function UseAnkiDroid() {
 
   function handleTouchEnd() {
     isTouching = false;
-    if ($card.side === "front") {
+    if ($initialSide() === "front") {
       if (isSwiping) return;
       ankiDroidAPI?.ankiShowAnswer();
-    } else if ($card.side === "back") {
+    } else if ($initialSide() === "back") {
       $setRightIconOffset(0);
       $setLeftIconOffset(0);
 
@@ -147,7 +147,7 @@ export default function UseAnkiDroid() {
     });
   });
 
-  if ($card.side === "front") return null;
+  if ($initialSide() === "front") return null;
 
   return (
     <Portal mount={$general.layoutRef}>

@@ -19,9 +19,9 @@ export const plugin = {
 
     const randomFont = fontsPool[Math.floor(Math.random() * fontsPool.length)];
 
-    const { $card } = ctx.useCardContext();
+    const { $initialSide } = ctx.useCardContext();
     let font = sessionStorage.getItem("random-font") ?? randomFont;
-    if ($card.side === "front") {
+    if ($initialSide() === "front") {
       font = randomFont;
       sessionStorage.setItem("random-font", font);
     }

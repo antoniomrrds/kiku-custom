@@ -10,7 +10,7 @@ import { ArrowLeftIcon, BoltIcon, PaintbrushIcon } from "./Icons";
 import MergeContextModal from "./MergeContextModal";
 
 export default function HeaderMain(props: { onExitNested?: () => void }) {
-  const { $card } = useCardContext();
+  const { $card, $initialSide } = useCardContext();
   const { $config } = useConfigContext();
   const { $general } = useGeneralContext();
   const { navigate } = useNavigationTransition();
@@ -31,14 +31,14 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
               <div
                 class="tooltip tooltip-bottom flex items-center"
                 data-tip={
-                  $card.side === "front"
+                  $initialSide() === "front"
                     ? "Settings page is only accessible from the back side of the card"
                     : undefined
                 }
               >
                 <button
                   on:click={() => {
-                    if ($card.side === "front") return;
+                    if ($initialSide() === "front") return;
                     navigate("settings", "forward", () => navigate("main", "back"));
                   }}
                   on:touchend={(e) => e.stopPropagation()}
@@ -46,8 +46,8 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
                   <BoltIcon
                     class="size-5"
                     classList={{
-                      "text-base-content-soft cursor-pointer": $card.side === "back",
-                      "text-base-content-subtle-100 cursor-not-allowed": $card.side === "front",
+                      "text-base-content-soft cursor-pointer": $initialSide() === "back",
+                      "text-base-content-subtle-100 cursor-not-allowed": $initialSide() === "front",
                     }}
                   ></BoltIcon>
                 </button>
@@ -83,13 +83,13 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
       <div class="flex gap-1 sm:gap-2 items-center">
         <Show when={!$card.isMergePreview}>
           <Switch>
-            <Match when={$card.query.status === "loading" && $card.side === "back"}>
+            <Match when={$card.query.status === "loading"}>
               <span class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"></span>
             </Match>
-            <Match when={$card.query.status === "error" && $card.side === "back"}>
+            <Match when={$card.query.status === "error"}>
               <div class="status status-error animate-ping"></div>
             </Match>
-            <Match when={$card.query.status === "success" && $card.side === "back"}>
+            <Match when={$card.query.status === "success" && $initialSide() === "back"}>
               <div class="text-base-content-soft cursor-pointer animate-fade-in-sm">
                 <KanjiPageIndicator />
               </div>
