@@ -147,8 +147,8 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
   try {
     const qa = document.querySelector("#qa");
     if (!qa) throw new Error("#qa not found");
-    const shadowParent = document.querySelector("#kiku-shadow-parent");
-    if (!shadowParent) throw new Error("#kiku-shadow-parent not found");
+    const shadowParent = document.querySelector("#kiku-host");
+    if (!shadowParent) throw new Error("#kiku-host not found");
 
     let root = document.getElementById("kiku-root");
     if (!root) {

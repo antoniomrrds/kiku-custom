@@ -31,12 +31,12 @@ function adjustThemeSelectors(rules: CssInJs): CssInJs {
     let newSelector: string = selector;
     for (const themeName of getThemeNames(selector)) {
       newSelector = [
-        `#kiku-shadow-parent[data-theme="${themeName}"] #kiku-root`,
-        `.nightMode #kiku-shadow-parent[data-theme-dark="${themeName}"] #kiku-root`,
+        `#kiku-host[data-theme="${themeName}"] #kiku-root`,
+        `.nightMode #kiku-host[data-theme-dark="${themeName}"] #kiku-root`,
         `:host([data-theme="${themeName}"])`,
         `:host([data-theme-dark="${themeName}"])`,
-        `#kiku-shadow-parent[data-theme="${themeName}"]::part(root)`,
-        `.nightMode #kiku-shadow-parent[data-theme-dark="${themeName}"]::part(root)`,
+        `#kiku-host[data-theme="${themeName}"]::part(root)`,
+        `.nightMode #kiku-host[data-theme-dark="${themeName}"]::part(root)`,
         `[data-theme-preview="${themeName}"]`,
       ].join(", ");
     }
