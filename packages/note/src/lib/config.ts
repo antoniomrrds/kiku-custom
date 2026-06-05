@@ -264,7 +264,7 @@ export function generateCssVars(vars: Record<string, string>): string {
     .map(([key, value]) => `  ${key}: ${value};`)
     .join("\n");
 
-  return `:root,\n:host {\n${lines}\n}`;
+  return `.card:has(> #qa), #kiku-shadow-parent::part(root) {\n${lines}\n}`;
 }
 
 export function generateCssVarsDark(vars: Record<string, string>): string {
@@ -272,5 +272,5 @@ export function generateCssVarsDark(vars: Record<string, string>): string {
     .map(([key, value]) => `  ${key}: ${value};`)
     .join("\n");
 
-  return `body.nightMode, :host(body.nightMode) {\n${lines}\n}`;
+  return `.card:has(> #qa).nightMode, .nightMode #kiku-shadow-parent::part(root) {\n${lines}\n}`;
 }

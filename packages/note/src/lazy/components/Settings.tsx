@@ -532,7 +532,8 @@ function ThemeSettings() {
     <div class="flex flex-col gap-4 animate-fade-in">
       <div class="text-2xl font-bold">Theme</div>
       <div class="grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] rounded-box gap-4">
-        {daisyUIThemes.map((theme) => {
+        {daisyUIThemes.map((theme, i) => {
+          const even = i % 2 === 0;
           return (
             <div
               class="border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline-2 outline-offset-2 tappable"
@@ -555,16 +556,18 @@ function ThemeSettings() {
                     <div class="font-bold">{capitalize(theme)}</div>
                     <div class="flex flex-wrap gap-1">
                       <div class="bg-primary flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-primary-content text-sm font-bold">A</div>
+                        <div class="text-primary-content text-sm font-bold">{even ? "J" : "R"}</div>
                       </div>
                       <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-secondary-content text-sm font-bold">A</div>
+                        <div class="text-secondary-content text-sm font-bold">
+                          {even ? "U" : "E"}
+                        </div>
                       </div>
                       <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-accent-content text-sm font-bold">A</div>
+                        <div class="text-accent-content text-sm font-bold">{even ? "S" : "A"}</div>
                       </div>
                       <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-neutral-content text-sm font-bold">A</div>
+                        <div class="text-neutral-content text-sm font-bold">{even ? "T" : "D"}</div>
                       </div>
                     </div>
                   </div>
