@@ -82,6 +82,13 @@ export function Front() {
           >
             <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
               <ExpressionSection hideExpression={$hideExpression()} />
+              <div class="hidden sm:block sm:h-8 sm:mt-2">
+                {$card.ready && (
+                  <div class="animate-fade-in-sm flex gap-2">
+                    <Lazy.AudioButtons position={1} />
+                  </div>
+                )}
+              </div>
             </div>
             <PictureSection />
           </div>
@@ -111,6 +118,7 @@ export function Front() {
           </div>
         </div>
       )}
+      {$card.ready && <Lazy.AudioButtons position={2} />}
     </>
   );
 }
