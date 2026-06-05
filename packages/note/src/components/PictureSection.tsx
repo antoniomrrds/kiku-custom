@@ -9,7 +9,7 @@ import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { usePictureModalTransition } from "#/src/hooks/transition";
 
 export function PictureSection() {
-  const { $card } = useCardContext();
+  const { $card, $isInitialSide } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $ankiFields } = useAnkiFieldContext();
   const { $setPictureModal } = usePictureModalTransition();
@@ -40,6 +40,12 @@ export function PictureSection() {
         : "",
   }));
 
+  const $opacity = createMemo(() => {
+    if ($clicked()) return 1;
+    if (!$clicked() && $isInitialSide()) return undefined;
+    if (!$clicked() && !$isInitialSide()) return 0;
+  });
+
   createEffect(
     on(
       () => $group.pictureField,
@@ -67,7 +73,7 @@ export function PictureSection() {
       <div
         class="picture-field-background"
         style={{
-          opacity: $clicked() ? 1 : undefined,
+          opacity: $opacity(),
         }}
         innerHTML={isServer ? undefined : $currentPicture()}
       >
@@ -76,7 +82,7 @@ export function PictureSection() {
       <div
         class="picture-field tappable"
         style={{
-          opacity: $clicked() ? 1 : undefined,
+          opacity: $opacity(),
         }}
         on:click={() => $setPictureModal($currentPicture())}
         on:touchend={(e) => e.stopPropagation()}
