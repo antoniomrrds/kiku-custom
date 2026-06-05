@@ -1,6 +1,11 @@
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
-import { generateCssVars, getCssVar } from "#/src/lib/config.js";
+import {
+  generateCssVars,
+  generateCssVarsDark,
+  getCssVar,
+  getCssVarDark,
+} from "#/src/lib/config.js";
 import { defaultConfig } from "#/src/lib/default-config.js";
 import { paths } from "#/tools/paths.ts";
 import { AnkiConnect, log } from "#/tools/util.js";
@@ -24,7 +29,8 @@ class Script {
 
   applyDataAttributes(template: string) {
     return template
-      .replace("__DATA_THEME__", defaultConfig.theme)
+      .replaceAll("__DATA_THEME__", defaultConfig.theme)
+      .replaceAll("__DATA_THEME_DARK__", defaultConfig.themeDark)
       .replace("__DATA_BLUR_NSFW__", defaultConfig.blurNsfw.toString())
       .replace("__DATA_PICTURE_ON_FRONT__", defaultConfig.pictureOnFront.toString())
       .replace("__DATA_MOD_VERTICAL__", defaultConfig.modVertical.toString());
@@ -32,7 +38,10 @@ class Script {
 
   buildStyleTemplate(styleSrc: string) {
     const cssVars = generateCssVars(getCssVar(defaultConfig));
-    return styleSrc.replace("/* __CSS_VARIABLE__ */", cssVars);
+    const cssVarsDark = generateCssVarsDark(getCssVarDark(defaultConfig));
+    return styleSrc
+      .replace("/* __CSS_VARIABLE__ */", cssVars)
+      .replace("/* __CSS_VARIABLE_DARK__ */", cssVarsDark);
   }
 
   async updateTemplates(frontSrc: string, backSrc: string) {

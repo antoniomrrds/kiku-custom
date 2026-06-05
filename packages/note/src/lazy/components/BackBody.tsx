@@ -16,7 +16,10 @@ export default function BackBody(props: { onDefinitionPictureClick?: (picture: s
   const $glossary = createMemo(() => {
     // empty glossary if it's the same as main definition
     if ($ankiFields.MainDefinition === $ankiFields.Glossary) return "";
-    const glossary = removeMainDefinitionFromGlossary($ankiFields.Glossary, $ankiFields.MainDefinition);
+    const glossary = removeMainDefinitionFromGlossary(
+      $ankiFields.Glossary,
+      $ankiFields.MainDefinition,
+    );
     return !isHtmlEffectivelyEmpty(glossary) ? removeBrInsideStyleTag(glossary) : "";
   });
 

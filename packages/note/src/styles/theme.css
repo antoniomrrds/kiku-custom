@@ -1,0 +1,81 @@
+/* prettier-ignore */
+@theme {
+  --animate-fade-in: fade-in 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in-sm: fade-in-sm 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in-sm {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  --animate-slide-to-left: slide-to-left 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-slide-to-right: slide-to-right 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-slide-from-left: slide-from-left 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-slide-from-right: slide-from-right 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  @keyframes slide-to-left {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-100%); }
+  }
+  @keyframes slide-to-right {
+    from { transform: translateX(0); }
+    to   { transform: translateX(100%); }
+  }
+  @keyframes slide-from-left {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0); }
+  }
+  @keyframes slide-from-right {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+  }
+
+  --animate-unclip: unclip 600ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  @keyframes unclip {
+    0% {
+      clip-path: polygon(100% 100%, 100% 100%, 100% 100%);
+    }
+  }
+
+  --animate-modal-in: modal-in 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-modal-out: modal-out 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes modal-out {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(4px); }
+  }
+
+  --color-pitch-heiban: var(--color-info);
+  --color-pitch-atamadaka: var(--color-error);
+  --color-pitch-nakadaka: var(--color-warning);
+  --color-pitch-odaka: var(--color-success);
+  --color-pitch-kifuku: var(--color-accent);
+}
+
+@layer theme {
+  [data-pitch-type^="heiban"] {
+    --pitch-color: var(--color-pitch-heiban);
+    --pitch-content-color: var(--color-info-content);
+  }
+  [data-pitch-type^="atamadaka"] {
+    --pitch-color: var(--color-pitch-atamadaka);
+    --pitch-content-color: var(--color-error-content);
+  }
+  [data-pitch-type^="nakadaka"] {
+    --pitch-color: var(--color-pitch-nakadaka);
+    --pitch-content-color: var(--color-warning-content);
+  }
+  [data-pitch-type^="odaka"] {
+    --pitch-color: var(--color-pitch-odaka);
+    --pitch-content-color: var(--color-success-content);
+  }
+  [data-pitch-type^="kifuku"] {
+    --pitch-color: var(--color-pitch-kifuku);
+    --pitch-content-color: var(--color-accent-content);
+  }
+}

@@ -1,4 +1,10 @@
-import { generateCssVars, getCssVar, type KikuConfig } from "#/src/lib/config";
+import {
+  generateCssVars,
+  generateCssVarsDark,
+  getCssVar,
+  getCssVarDark,
+  type KikuConfig,
+} from "#/src/lib/config";
 import { constants } from "#/src/lib/contants";
 
 export const base64 = {
@@ -63,18 +69,24 @@ export const AnkiConnect = {
     ]);
 
     const frontTemplate = frontSrc
-      .replace("__DATA_THEME__", config.theme)
+      .replaceAll("__DATA_THEME__", config.theme)
+      .replaceAll("__DATA_THEME_DARK__", config.themeDark)
       .replace("__DATA_BLUR_NSFW__", config.blurNsfw.toString())
       .replace("__DATA_PICTURE_ON_FRONT__", config.pictureOnFront.toString())
       .replace("__DATA_MOD_VERTICAL__", config.modVertical.toString());
     const backTemplate = backSrc
-      .replace("__DATA_THEME__", config.theme)
+      .replaceAll("__DATA_THEME__", config.theme)
+      .replaceAll("__DATA_THEME_DARK__", config.themeDark)
       .replace("__DATA_BLUR_NSFW__", config.blurNsfw.toString())
       .replace("__DATA_PICTURE_ON_FRONT__", config.pictureOnFront.toString())
       .replace("__DATA_MOD_VERTICAL__", config.modVertical.toString());
     const cssVar = getCssVar(config);
+    const cssVarDark = getCssVarDark(config);
     const cssVarTemplate = generateCssVars(cssVar);
-    const styleTemplate = styleSrc.replace("/* __CSS_VARIABLE__ */", cssVarTemplate);
+    const cssVarDarkTemplate = generateCssVarsDark(cssVarDark);
+    const styleTemplate = styleSrc
+      .replace("/* __CSS_VARIABLE__ */", cssVarTemplate)
+      .replace("/* __CSS_VARIABLE_DARK__ */", cssVarDarkTemplate);
 
     await AnkiConnect.invoke("updateModelTemplates", {
       model: {

@@ -110,7 +110,7 @@ export function Front() {
       )}
       {$isInitialSide() && (
         <div
-          class={`flex gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
+          class={`gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
           {...$hintFieldDataset()}
         >
           <div innerHTML={isServer ? undefined : $ankiFields.Hint}>

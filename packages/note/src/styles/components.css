@@ -1,0 +1,83 @@
+@layer components {
+  .pitch-segment {
+    padding-inline-end: 0.25rem;
+    position: relative;
+  }
+  .pitch-segment::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 8px;
+    background-color: var(--pitch-color);
+  }
+
+  .sentence-field {
+    b {
+      color: var(--pitch-color, var(--color-base-content-primary));
+    }
+  }
+
+  .picture-field-background {
+    @apply [&_*:not(img)]:contents;
+    @apply [&_:not(:first-child)]:hidden;
+    @apply absolute size-full [&_img]:size-full [&_img]:object-cover [&_img]:scale-110 [&_img]:filter [&_img]:brightness-50 [&_img]:blur-[16px];
+  }
+
+  .picture-field {
+    @apply [&_*:not(img)]:contents;
+    @apply [&_:not(:first-child)]:hidden;
+    @apply relative h-48 sm:h-56 cursor-pointer [&_img]:h-full [&_img]:object-contain [&_img]:hover:filter-none;
+    &[data-nsfw="true"],
+    &[data-tags~="nsfw"],
+    &[data-tags~="NSFW"],
+    &[data-tags~="Nsfw"] {
+      @apply [&_img]:filter [&_img]:blur-[16px] [&_img]:brightness-50;
+    }
+    &[data-transition="true"] {
+      @apply [&_img]:transition-[filter];
+    }
+    img[data-nsfw="false"] {
+      filter: none;
+    }
+  }
+
+  [data-blur-nsfw="false"] .picture-field {
+    @apply [&_img]:filter-none;
+  }
+
+  .picture-field-container {
+    display: none;
+    &:not([data-has-picture=""]) {
+      display: flex;
+    }
+  }
+
+  [data-side="front"][data-picture-on-front="false"] .picture-field-container {
+    display: none;
+  }
+
+  [data-side="front"] .picture-field,
+  [data-side="front"] .picture-field-background {
+    @apply opacity-0;
+  }
+
+  .picture-field:hover {
+    @apply [&_img]:filter-none;
+  }
+
+  .pitch-field {
+    display: none;
+    &[data-has-pitch="true"] {
+      display: flex;
+    }
+  }
+
+  .hint-field {
+    display: none;
+    &[data-has-hint="true"] {
+      display: flex;
+    }
+  }
+}

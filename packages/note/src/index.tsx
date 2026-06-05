@@ -70,8 +70,6 @@ export async function init({
   const [$startupTime, $setStartupTime] = createSignal(0);
   const now = performance.now();
 
-  root.part.add("root-part");
-
   config = typeof config === "function" ? config(defaultConfig) : config;
   updateConfigState(root, config, !isAnkiWeb);
   const [$config, $setConfig] = createStore(config);
@@ -147,35 +145,31 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
   }
 
   try {
+    const qa = document.querySelector("#qa");
+    if (!qa) throw new Error("#qa not found");
+    const shadowParent = document.querySelector("#kiku-shadow-parent");
+    if (!shadowParent) throw new Error("#kiku-shadow-parent not found");
+
     let root = document.getElementById("kiku-root");
     if (!root) {
-      const shadowParent = document.querySelector("#kiku-shadow-parent");
-      if (shadowParent) {
-        const existingRoot = shadowParent.shadowRoot?.querySelector("#kiku-root") as
-          | HTMLElement
-          | undefined
-          | null;
-        if (existingRoot && existingRoot.innerHTML.trim() === "") {
-          root = existingRoot;
-        } else {
-          return;
-        }
+      const existingRoot = shadowParent.shadowRoot?.querySelector("#kiku-root") as
+        | HTMLElement
+        | undefined
+        | null;
+      if (existingRoot && existingRoot.innerHTML.trim() === "") {
+        root = existingRoot;
       } else {
-        throw new Error("root not found");
+        return;
       }
     }
     const rootDataset = {
       theme: root.dataset.theme,
+      themeDark: root.dataset.themeDark,
       blurNsfw: root.dataset.blurNsfw,
       pictureOnFront: root.dataset.pictureOnFront,
       modVertical: root.dataset.modVertical,
     } satisfies RootDataset;
 
-    const qa = document.querySelector("#qa");
-    if (!qa) throw new Error("qa not found");
-    const shadowParent = document.createElement("div");
-    shadowParent.setAttribute("id", "kiku-shadow-parent");
-    qa.appendChild(shadowParent);
     const shadow = shadowParent.attachShadow({ mode: "open" });
 
     const style = qa.querySelector("style");

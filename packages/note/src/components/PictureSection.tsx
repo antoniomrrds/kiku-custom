@@ -65,7 +65,7 @@ export function PictureSection() {
 
   return (
     <div
-      class="sm:max-w-1/2 bg-base-200 flex sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic tappable"
+      class="sm:max-w-1/2 bg-base-200 sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic tappable"
       on:click={() => $setClicked((prev) => !prev)}
       on:touchend={(e) => e.stopPropagation()}
       {...$dataSet1()}

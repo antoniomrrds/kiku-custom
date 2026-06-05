@@ -106,7 +106,7 @@ export default function AnkiMobileDebug() {
             Clear
           </button>
         </div>
-        <div class="bg-black text-green-500 p-2 h-60 overflow-auto text-[10px] font-mono leading-tight">
+        <div class="bg-black text-success p-2 h-60 overflow-auto text-[10px] font-mono leading-tight">
           <For each={$logs()}>{(l) => <div>{l}</div>}</For>
         </div>
       </div>

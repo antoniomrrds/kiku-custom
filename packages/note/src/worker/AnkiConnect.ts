@@ -69,7 +69,9 @@ export class AnkiConnect {
 
     const newQuery = `${noteFilter} AND is:new`;
 
-    const queries = [kanjiQuery, readingQuery, expressionQuery, newQuery].filter(Boolean) as string[];
+    const queries = [kanjiQuery, readingQuery, expressionQuery, newQuery].filter(
+      Boolean,
+    ) as string[];
     const idsLists = await this.batchFindNotes(queries);
     const allIds = [...new Set(idsLists.flat())];
     const [allNotes] = await this.batchNotesInfo([allIds]);

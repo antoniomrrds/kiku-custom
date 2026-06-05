@@ -13,6 +13,7 @@ import {
   tailwindContainerSize,
   tailwindFontSizeVar,
   tailwindSize,
+  getCssVarDark,
 } from "#/src/lib/config";
 import { constants } from "#/src/lib/contants";
 import { defaultConfig } from "#/src/lib/default-config";
@@ -543,8 +544,11 @@ function ThemeSettings() {
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
-              <div class="bg-base-100 text-base-content w-full cursor-pointer">
-                <div class="grid grid-cols-5 grid-rows-3" data-theme={theme}>
+              <div class="bg-base-100 w-full cursor-pointer">
+                <div
+                  class="grid grid-cols-5 grid-rows-3 text-base-content"
+                  data-theme-preview={theme}
+                >
                   <div class="bg-base-200 col-start-1 row-span-2 row-start-1"></div>
                   <div class="bg-base-300 col-start-1 row-start-3"></div>
                   <div class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2">
@@ -920,6 +924,8 @@ function DebugSettings() {
   };
 
   const cssVar = () => getCssVar($config);
+  //TODO: display this
+  const cssVarDark = () => getCssVarDark($config);
 
   return (
     <div class="collapse collapse-arrow">

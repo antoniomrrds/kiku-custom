@@ -41,20 +41,21 @@
     <link rel="stylesheet" href="./anki.css" />
   </head>
 
-  <body class="isLin nightMode night_mode reduce-motion fancy">
+  <body class="card isLin nightMode night_mode reduce-motion fancy">
     <div id="_mark" hidden>&#x2605;</div>
     <div id="_flag" hidden>&#x2691;</div>
-
     <div id="qa">
-      <div id="kiku-root">
-        <script type="module">
-        import { initAnki } from "#/src/index.tsx";
+      <div id="kiku-shadow-parent" data-theme="light" data-theme-dark="dark">
+        <div id="kiku-root">
+          <script type="module">
+            import { initAnki } from "#/src/index.tsx";
 
-        const params = new URLSearchParams(window.location.search);
-        const side = (params.get("side") || "back");
+            const params = new URLSearchParams(window.location.search);
+            const side = (params.get("side") || "back");
 
-        initAnki({ side });
-        </script>
+            initAnki({ side });
+          </script>
+        </div>
       </div>
     </div>
   </body>

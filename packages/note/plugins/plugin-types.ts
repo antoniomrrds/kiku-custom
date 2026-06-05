@@ -43,7 +43,7 @@ export type Ctx = {
   /**
    * The Hyperscript function for creating UI elements.
    * Kiku uses Solid.js with Hyperscript to ensure high performance and reactivity.
-   * @example h('div', { class: 'text-red-500' }, 'Hello Kiku')
+   * @example h('div', { class: 'text-base-content-soft' }, 'Hello Kiku')
    */
   h: typeof h;
 

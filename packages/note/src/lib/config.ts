@@ -3,6 +3,7 @@ import { colorBase100Map, type DaisyUITheme, daisyUIThemes } from "./theme";
 
 export type KikuConfig = {
   theme: DaisyUITheme;
+  themeDark: DaisyUITheme;
   systemFontPrimary: string;
   systemFontSecondary: string;
   blurNsfw: boolean;
@@ -69,7 +70,13 @@ export const tailwindContainerSizeVar = {
   "7xl": { maxWidth: "var(--container-7xl)" },
 };
 
-const rootDatasetArray = ["theme", "blurNsfw", "pictureOnFront", "modVertical"] as const;
+const rootDatasetArray = [
+  "theme",
+  "themeDark",
+  "blurNsfw",
+  "pictureOnFront",
+  "modVertical",
+] as const;
 export type RootDatasetKey = (typeof rootDatasetArray)[number];
 export type RootDataset = Partial<Record<RootDatasetKey, string>>;
 export const rootDatasetConfigWhitelist = new Set<RootDatasetKey>(rootDatasetArray);
@@ -81,6 +88,7 @@ export function validateConfig(config: KikuConfig): KikuConfig {
     // oxfmt-ignore
     const valid: KikuConfig = {
       theme: daisyUIThemes.includes(config.theme) ? config.theme : defaultConfig.theme,
+      themeDark: daisyUIThemes.includes(config.themeDark) ? config.themeDark : defaultConfig.themeDark,
       systemFontPrimary: typeof config.systemFontPrimary === "string" ? config.systemFontPrimary : defaultConfig.systemFontPrimary,
       systemFontSecondary: typeof config.systemFontSecondary === "string" ? config.systemFontSecondary : defaultConfig.systemFontSecondary,
 
@@ -157,8 +165,13 @@ export type CssVar = {
   "--color-base-100": string;
 };
 
+export type CssVarDark = {
+  "--color-base-100": string;
+};
+
 export type Dataset = {
   "data-theme": string;
+  "data-theme-dark": string;
   //
   "data-field": string;
   "data-transition": "true" | "false";
@@ -177,6 +190,7 @@ export type DatasetProp = Partial<Dataset>;
 export function getRootDatasetConfig(config: KikuConfig): RootDataset {
   return {
     theme: config.theme,
+    themeDark: config.themeDark,
     blurNsfw: config.blurNsfw ? "true" : "false",
     pictureOnFront: config.pictureOnFront ? "true" : "false",
     modVertical: config.modVertical ? "true" : "false",
@@ -218,20 +232,31 @@ export function getCssVar(config: KikuConfig) {
   return cssVar;
 }
 
+export function getCssVarDark(config: KikuConfig) {
+  // oxfmt-ignore
+  const cssVar: CssVarDark = {
+    "--color-base-100": colorBase100Map[config.themeDark],
+  }
+
+  return cssVar;
+}
+
 export function updateConfigState(el: HTMLElement, config: KikuConfig, updateDocument: boolean) {
   const dataset = getRootDatasetConfig(config);
   el.dataset.theme = dataset.theme;
+  el.dataset.themeDark = dataset.themeDark;
   el.dataset.blurNsfw = dataset.blurNsfw;
   el.dataset.pictureOnFront = dataset.pictureOnFront;
   el.dataset.modVertical = dataset.modVertical;
 
-  const cssVar = getCssVar(config);
-  Object.entries(cssVar).forEach(([key, value]) => {
-    if (updateDocument) {
-      document.documentElement.style.setProperty(key, value);
-    }
-    el.style.setProperty(key, value);
-  });
+  // TODO: do we still need this?
+  // const cssVar = getCssVar(config);
+  // Object.entries(cssVar).forEach(([key, value]) => {
+  //   if (updateDocument) {
+  //     document.documentElement.style.setProperty(key, value);
+  //   }
+  //   el.style.setProperty(key, value);
+  // });
 }
 
 export function generateCssVars(vars: Record<string, string>): string {
@@ -240,4 +265,12 @@ export function generateCssVars(vars: Record<string, string>): string {
     .join("\n");
 
   return `:root,\n:host {\n${lines}\n}`;
+}
+
+export function generateCssVarsDark(vars: Record<string, string>): string {
+  const lines = Object.entries(vars)
+    .map(([key, value]) => `  ${key}: ${value};`)
+    .join("\n");
+
+  return `body.nightMode, :host(body.nightMode) {\n${lines}\n}`;
 }

@@ -1,0 +1,43 @@
+@layer base {
+  :root::view-transition-group(root) {
+    animation: none;
+  }
+
+  :root[data-transition-direction="forward"]::view-transition-old(slide-root) {
+    animation: var(--animate-slide-to-left);
+  }
+  :root[data-transition-direction="forward"]::view-transition-new(slide-root) {
+    animation: var(--animate-slide-from-right);
+  }
+  :root[data-transition-direction="back"]::view-transition-old(slide-root) {
+    animation: var(--animate-slide-to-right);
+  }
+  :root[data-transition-direction="back"]::view-transition-new(slide-root) {
+    animation: var(--animate-slide-from-left);
+  }
+  :root[data-transition-direction] ::part(root) {
+    view-transition-name: slide-root;
+  }
+
+  :root[data-theme-transition="true"]::view-transition-old(angled-swipe) {
+    animation: none;
+    z-index: -1;
+  }
+  :root[data-theme-transition="true"]::view-transition-new(angled-swipe) {
+    animation: var(--animate-unclip);
+    clip-path: polygon(-100vmax 100%, 100% 100%, 100% -100vmax);
+  }
+  :root[data-theme-transition="true"] ::part(root) {
+    view-transition-name: angled-swipe;
+  }
+
+  :root::view-transition-old(modal-fade) {
+    animation: var(--animate-modal-out);
+  }
+  :root::view-transition-new(modal-fade) {
+    animation: var(--animate-modal-in);
+  }
+  :root ::part(picture-modal) {
+    view-transition-name: modal-fade;
+  }
+}
