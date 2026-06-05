@@ -79,7 +79,9 @@ export default function RelatedExpression() {
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
-              {note.fields.Expression.value}
+              {$initialSide() === "front"
+                ? note.fields.ExpressionReading.value
+                : note.fields.Expression.value}
             </button>
           );
         }}
