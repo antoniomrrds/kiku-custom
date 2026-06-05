@@ -40,7 +40,10 @@ export function useKanji() {
       const relatedExpressions = isFront
         ? []
         : parseRelatedExpression(ankiFields.RelatedExpression);
-      const expressionList = ankiFields.Expression ? [ankiFields.Expression] : [];
+      const expressionList = [
+        ...(ankiFields.Expression ? [ankiFields.Expression] : []),
+        ...relatedExpressions,
+      ];
 
       const opts = {
         constants,
