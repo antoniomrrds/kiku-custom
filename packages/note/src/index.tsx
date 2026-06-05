@@ -147,12 +147,12 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
   try {
     const qa = document.querySelector("#qa");
     if (!qa) throw new Error("#qa not found");
-    const shadowParent = document.querySelector("#kiku-host");
-    if (!shadowParent) throw new Error("#kiku-host not found");
+    const host = document.querySelector("#kiku-host");
+    if (!host) throw new Error("#kiku-host not found");
 
     let root = document.getElementById("kiku-root");
     if (!root) {
-      const existingRoot = shadowParent.shadowRoot?.querySelector("#kiku-root") as
+      const existingRoot = host.shadowRoot?.querySelector("#kiku-root") as
         | HTMLElement
         | undefined
         | null;
@@ -170,7 +170,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       modVertical: root.dataset.modVertical,
     } satisfies RootDataset;
 
-    const shadow = shadowParent.attachShadow({ mode: "open" });
+    const shadow = host.shadowRoot ?? host.attachShadow({ mode: "open" });
 
     const style = qa.querySelector("style");
     if (style) shadow.appendChild(style.cloneNode(true));
@@ -180,7 +180,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       const mainCss = document.querySelector(
         'style[type="text/css"][data-vite-dev-id$="main.css"]',
       );
-      if (!mainCss) throw new Error("tailwind not found");
+      if (!mainCss) throw new Error("main.css not found");
       shadow.appendChild(mainCss.cloneNode(true));
       const ankiCss = document.querySelector('link[href="/anki.css"]');
       if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
