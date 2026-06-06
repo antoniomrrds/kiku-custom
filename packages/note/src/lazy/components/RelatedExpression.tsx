@@ -57,11 +57,14 @@ export default function RelatedExpression() {
             <button
               class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
               classList={{
-                "text-base-content-soft":
+                "text-base-content-soft underline underline-offset-4":
                   $ankiFields.CardID !== cardId && !$isFallbackRelatedExpression(),
-                "text-base-content-faint":
+                "text-base-content-soft":
                   $ankiFields.CardID !== cardId && $isFallbackRelatedExpression(),
-                "text-base-content": $ankiFields.CardID === cardId,
+                "text-base-content underline underline-offset-4":
+                  $ankiFields.CardID === cardId && !$isFallbackRelatedExpression(),
+                "text-base-content":
+                  $ankiFields.CardID === cardId && $isFallbackRelatedExpression(),
               }}
               on:click={() => {
                 $setAnkiFields({
