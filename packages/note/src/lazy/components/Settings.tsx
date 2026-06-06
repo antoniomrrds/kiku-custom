@@ -1,4 +1,13 @@
-import { createEffect, createSignal, For, on, onCleanup, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  on,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import { unwrap } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/src/lib/anki-connect";
@@ -14,6 +23,8 @@ import {
   tailwindFontSizeVar,
   tailwindSize,
   getCssVarDark,
+  generateCssVars,
+  generateCssVarsDark,
 } from "#/src/lib/config";
 import { constants } from "#/src/lib/contants";
 import { defaultConfig } from "#/src/lib/default-config";
@@ -42,16 +53,6 @@ function toDatasetString(obj: Record<string, string | number | boolean>) {
       return `${toDatasetKey(dashed)}="${value}"`;
     })
     .join("\n");
-}
-
-function toCssVarString(obj: Record<string, string>) {
-  const txt = Object.entries(obj)
-    .map(([key, value]) => {
-      if (value === "") value = "undefined";
-      return `${key}: ${value.replaceAll("\n", "").replaceAll("'", '"')};`;
-    })
-    .join("\n");
-  return txt;
 }
 
 export default function Settings() {
@@ -983,9 +984,13 @@ function DebugSettings() {
     );
   };
 
-  const cssVar = () => getCssVar($config);
-  //TODO: display this
-  const cssVarDark = () => getCssVarDark($config);
+  const $expectedCssVar = createMemo(() => {
+    const cssVar = getCssVar($config);
+    const cssVarDark = getCssVarDark($config);
+    const cssVarTemplate = generateCssVars(cssVar);
+    const cssVarDarkTemplate = generateCssVarsDark(cssVarDark);
+    return `${cssVarTemplate}\n\n${cssVarDarkTemplate}`;
+  });
 
   return (
     <div class="collapse collapse-arrow">
@@ -1050,14 +1055,10 @@ function DebugSettings() {
 
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
-              <div class="text-lg">Expected CSS Variable</div>
-              <ClipboardCopyButton text={() => toCssVarString(cssVar())} />
+              <div class="text-lg">Expected CSS Variables</div>
+              <ClipboardCopyButton text={() => $expectedCssVar()} />
             </div>
-            <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
-              <span class="opacity-25 select-none">{":root, :host {\n"}</span>
-              {toCssVarString(cssVar())}
-              <span class="opacity-25 select-none">{"\n}"}</span>
-            </pre>
+            <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">{$expectedCssVar()}</pre>
           </div>
 
           <div class="flex flex-col gap-2">
