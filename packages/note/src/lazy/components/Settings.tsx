@@ -976,13 +976,13 @@ function DebugSettings() {
     $setLogs($general.logger.get());
   });
 
-  const rootDataset = () => {
+  const $rootDataset = createMemo(() => {
     return Object.fromEntries(
       Object.entries($config).filter(([key]) => {
         return rootDatasetConfigWhitelist.has(key as RootDatasetKey);
       }),
     );
-  };
+  });
 
   const $expectedCssVar = createMemo(() => {
     const cssVar = getCssVar($config);
@@ -990,6 +990,25 @@ function DebugSettings() {
     const cssVarTemplate = generateCssVars(cssVar);
     const cssVarDarkTemplate = generateCssVarsDark(cssVarDark);
     return `${cssVarTemplate}\n\n${cssVarDarkTemplate}`;
+  });
+
+  const $expectedRootTemplate = createMemo(() => {
+    const dataset = $rootDataset();
+    const rootDatasetStr = toDatasetString({
+      theme: dataset.theme ?? "",
+      themeDark: dataset.themeDark ?? "",
+      blurNsfw: dataset.blurNsfw ?? "",
+      pictureOnFront: dataset.pictureOnFront ?? "",
+      modVertical: dataset.modVertical ?? "",
+    });
+    return `<div id="kiku-host" data-theme="${dataset.theme ?? ""}" data-theme-dark="${dataset.themeDark ?? ""}">
+  <div
+    id="kiku-root"
+    part="root"
+    data-kiku-cloak
+    data-side="back"
+    ${rootDatasetStr.replaceAll("\n", "\n    ")}
+  >`;
   });
 
   return (
@@ -1043,13 +1062,11 @@ function DebugSettings() {
           </div>
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
-              <div class="text-lg">Expected Root Dataset</div>
-              <ClipboardCopyButton text={() => toDatasetString(rootDataset())} />
+              <div class="text-lg">Expected Root Template</div>
+              <ClipboardCopyButton text={() => $expectedRootTemplate()} />
             </div>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
-              <span class="opacity-25 select-none">{"<div\n"}</span>
-              {toDatasetString(rootDataset())}
-              <span class="opacity-25 select-none">{"\n>"}</span>
+              {$expectedRootTemplate()}
             </pre>
           </div>
 
