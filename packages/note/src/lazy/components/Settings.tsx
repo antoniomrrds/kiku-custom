@@ -526,8 +526,10 @@ function ModSettings() {
 
 function ThemeSettings() {
   const { $config } = useConfigContext();
+  const { $general } = useGeneralContext();
   const changeTheme = useThemeTransition();
-  const [$mode, $setMode] = createSignal<"light" | "dark">("light");
+  const [$mode, $setMode] = createSignal<"light" | "dark">($general.initialMode);
+  const [$hasModified, $setHasModified] = createSignal(false);
 
   createEffect(
     on(
@@ -537,6 +539,7 @@ function ThemeSettings() {
         if (!body) return;
         if (mode === "light") body.classList.remove("nightMode");
         if (mode === "dark") body.classList.add("nightMode");
+        $setHasModified(true);
       },
       { defer: true },
     ),
@@ -545,25 +548,38 @@ function ThemeSettings() {
   return (
     <div class="flex flex-col gap-4 animate-fade-in">
       <div class="text-2xl font-bold">Theme</div>
-      <div role="tablist" class="tabs tabs-box self-start">
-        <button
-          role="tab"
-          class="tab"
-          classList={{ "tab-active": $mode() === "light" }}
-          on:click={() => $setMode("light")}
-          on:touchend={(e) => e.stopPropagation()}
-        >
-          Light
-        </button>
-        <button
-          role="tab"
-          class="tab"
-          classList={{ "tab-active": $mode() === "dark" }}
-          on:click={() => $setMode("dark")}
-          on:touchend={(e) => e.stopPropagation()}
-        >
-          Dark
-        </button>
+      <div class="flex items-center gap-2 flex-wrap">
+        <div role="tablist" class="tabs tabs-box self-start">
+          <button
+            role="tab"
+            class="tab"
+            classList={{ "tab-active": $mode() === "light" }}
+            on:click={() => $setMode("light")}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            Light
+          </button>
+          <button
+            role="tab"
+            class="tab"
+            classList={{ "tab-active": $mode() === "dark" }}
+            on:click={() => $setMode("dark")}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            Dark
+          </button>
+        </div>
+        <Show when={$hasModified() && $mode() !== $general.initialMode}>
+          <div class="text-xs text-base-content-faint flex items-center gap-2">
+            <span>{$mode() === "dark" ? "Dark" : "Light"} theme has been emulated</span>
+            <button
+              on:click={() => $setMode($general.initialMode)}
+              on:touchend={(e) => e.stopPropagation()}
+            >
+              <UndoIcon class="size-4 cursor-pointer" />
+            </button>
+          </div>
+        </Show>
       </div>
       <ThemeGrid
         selected={$mode() === "dark" ? $config.themeDark : $config.theme}

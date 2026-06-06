@@ -53,6 +53,7 @@ export async function init({
   workerPath,
   rootDataset,
   styleTags = [],
+  initialMode = document.body?.classList.contains("nightMode") ? "dark" : "light",
 }: {
   root: HTMLElement;
   host: HTMLElement;
@@ -70,6 +71,7 @@ export async function init({
   workerPath?: string;
   rootDataset?: RootDataset;
   styleTags?: HTMLStyleElement[];
+  initialMode?: "light" | "dark";
 }) {
   const [$startupTime, $setStartupTime] = createSignal(0);
   const now = performance.now();
@@ -94,6 +96,7 @@ export async function init({
           root={root}
           host={host}
           styleTags={styleTags}
+          initialMode={initialMode}
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
