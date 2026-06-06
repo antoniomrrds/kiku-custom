@@ -63,11 +63,12 @@ export function useThemeTransition() {
   const startViewTransition = useViewTransition();
   const { $card } = useCardContext();
 
-  function changeTheme(theme: DaisyUITheme) {
+  function changeTheme(theme: DaisyUITheme, mode: "light" | "dark") {
+    const key = mode === "dark" ? "themeDark" : "theme";
     if ($card.query.status === "loading" || $general.isAnkiDesktop) {
-      $setConfig("theme", theme);
+      $setConfig(key, theme);
     } else {
-      startViewTransition(() => $setConfig("theme", theme), {
+      startViewTransition(() => $setConfig(key, theme), {
         beforeCallback() {
           document.documentElement.dataset.themeTransition = "true";
         },

@@ -19,7 +19,7 @@ import { constants } from "#/src/lib/contants";
 import { defaultConfig } from "#/src/lib/default-config";
 import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
 import { capitalize } from "#/src/lib/text";
-import { daisyUIThemes } from "#/src/lib/theme";
+import { daisyUIThemes, type DaisyUITheme } from "#/src/lib/theme";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useCtxContext } from "#/src/contexts/CtxContext";
@@ -525,58 +525,86 @@ function ModSettings() {
 }
 
 function ThemeSettings() {
-  const { $config, $setConfig: _$setConfig } = useConfigContext();
+  const { $config } = useConfigContext();
   const changeTheme = useThemeTransition();
+  const [$mode, $setMode] = createSignal<"light" | "dark">("light");
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in">
       <div class="text-2xl font-bold">Theme</div>
-      <div class="grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] rounded-box gap-4">
-        {daisyUIThemes.map((theme, i) => {
-          const even = i % 2 === 0;
-          return (
-            <div
-              class="border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline-2 outline-offset-2 tappable"
-              classList={{
-                "outline-2": theme === $config.theme,
-              }}
-              on:click={() => {
-                changeTheme(theme);
-              }}
-              on:touchend={(e) => e.stopPropagation()}
-            >
-              <div class="bg-base-100 w-full cursor-pointer">
-                <div
-                  class="grid grid-cols-5 grid-rows-3 text-base-content"
-                  data-theme-preview={theme}
-                >
-                  <div class="bg-base-200 col-start-1 row-span-2 row-start-1"></div>
-                  <div class="bg-base-300 col-start-1 row-start-3"></div>
-                  <div class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2">
-                    <div class="font-bold">{capitalize(theme)}</div>
-                    <div class="flex flex-wrap gap-1">
-                      <div class="bg-primary flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-primary-content text-sm font-bold">{even ? "J" : "R"}</div>
-                      </div>
-                      <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-secondary-content text-sm font-bold">
-                          {even ? "U" : "E"}
-                        </div>
-                      </div>
-                      <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-accent-content text-sm font-bold">{even ? "S" : "A"}</div>
-                      </div>
-                      <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded">
-                        <div class="text-neutral-content text-sm font-bold">{even ? "T" : "D"}</div>
-                      </div>
+      <div role="tablist" class="tabs tabs-box self-start">
+        <button
+          role="tab"
+          class="tab"
+          classList={{ "tab-active": $mode() === "light" }}
+          on:click={() => $setMode("light")}
+          on:touchend={(e) => e.stopPropagation()}
+        >
+          Light
+        </button>
+        <button
+          role="tab"
+          class="tab"
+          classList={{ "tab-active": $mode() === "dark" }}
+          on:click={() => $setMode("dark")}
+          on:touchend={(e) => e.stopPropagation()}
+        >
+          Dark
+        </button>
+      </div>
+      <ThemeGrid
+        selected={$mode() === "dark" ? $config.themeDark : $config.theme}
+        onSelect={(theme) => {
+          changeTheme(theme, $mode());
+        }}
+      />
+    </div>
+  );
+}
+
+function ThemeGrid(props: { selected: DaisyUITheme; onSelect: (theme: DaisyUITheme) => void }) {
+  return (
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] rounded-box gap-4">
+      {daisyUIThemes.map((theme, i) => {
+        const even = i % 2 === 0;
+        return (
+          <div
+            class="border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline-2 outline-offset-2 tappable"
+            classList={{
+              "outline-2": theme === props.selected,
+            }}
+            on:click={() => props.onSelect(theme)}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            <div class="bg-base-100 w-full cursor-pointer">
+              <div
+                class="grid grid-cols-5 grid-rows-3 text-base-content"
+                data-theme-preview={theme}
+              >
+                <div class="bg-base-200 col-start-1 row-span-2 row-start-1"></div>
+                <div class="bg-base-300 col-start-1 row-start-3"></div>
+                <div class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2">
+                  <div class="font-bold">{capitalize(theme)}</div>
+                  <div class="flex flex-wrap gap-1">
+                    <div class="bg-primary flex aspect-square w-5 items-center justify-center rounded">
+                      <div class="text-primary-content text-sm font-bold">{even ? "J" : "R"}</div>
+                    </div>
+                    <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded">
+                      <div class="text-secondary-content text-sm font-bold">{even ? "U" : "E"}</div>
+                    </div>
+                    <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded">
+                      <div class="text-accent-content text-sm font-bold">{even ? "S" : "A"}</div>
+                    </div>
+                    <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded">
+                      <div class="text-neutral-content text-sm font-bold">{even ? "T" : "D"}</div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
