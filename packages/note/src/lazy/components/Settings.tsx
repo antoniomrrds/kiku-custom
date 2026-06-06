@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import { createEffect, createSignal, For, on, onCleanup, onMount, Show } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/src/lib/anki-connect";
@@ -528,6 +528,19 @@ function ThemeSettings() {
   const { $config } = useConfigContext();
   const changeTheme = useThemeTransition();
   const [$mode, $setMode] = createSignal<"light" | "dark">("light");
+
+  createEffect(
+    on(
+      $mode,
+      (mode) => {
+        const body = document.querySelector("body");
+        if (!body) return;
+        if (mode === "light") body.classList.remove("nightMode");
+        if (mode === "dark") body.classList.add("nightMode");
+      },
+      { defer: true },
+    ),
+  );
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in">
