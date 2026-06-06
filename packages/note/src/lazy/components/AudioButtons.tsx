@@ -1,4 +1,4 @@
-import { createEffect, For, on, onMount, Show } from "solid-js";
+import { createEffect, createMemo, For, on, onMount, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { nodesToString } from "#/src/lib/dom";
@@ -10,16 +10,14 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { PlayIcon } from "./Icons";
 
 function AudioTag(props: { text: string }) {
-  const { $general } = useGeneralContext();
   // Find all `[sound:filename.mp3]` occurrences
-  const matches = () => [...props.text.matchAll(/\[sound:([^\]]+)\]/g)];
-  const sounds = () => matches().map((m) => m[1]);
-  $general.logger.info("Using sounds:", sounds().join(", "));
+  const $matches = createMemo(() => [...props.text.matchAll(/\[sound:([^\]]+)\]/g)]);
+  const $sounds = createMemo(() => $matches().map((m) => m[1]));
 
   return (
-    <Show when={sounds().length > 0}>
+    <Show when={$sounds().length > 0}>
       <div class="flex flex-wrap gap-2">
-        <For each={sounds()}>
+        <For each={$sounds()}>
           {(src) => {
             return <audio src={src} preload="none" />;
           }}

@@ -347,7 +347,6 @@ export class WorkerThreadApi {
         { cache: "no-store" },
       )) as KikuNotesManifest;
     } catch {
-      this.log.error("Failed to load manifest");
       throw new Error("Failed to load manifest");
     }
     this.cache.set(key, manifest);

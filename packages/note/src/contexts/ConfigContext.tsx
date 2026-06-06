@@ -1,4 +1,4 @@
-import { createContext, createEffect, useContext } from "solid-js";
+import { createContext, createEffect, on, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { type SetStoreFunction, type Store, unwrap } from "solid-js/store";
 import { AnkiConnect } from "#/src/lib/anki-connect";
@@ -31,14 +31,6 @@ export function ConfigContextProvider(props: { children: JSX.Element; value: Con
       updateDocument: !$general.isAnkiWeb,
     });
     AnkiConnect.changeAddress(config.ankiConnectAddress);
-    $general.workerApi.promise.then((workerApi) => {
-      workerApi.init({
-        constants,
-        config,
-        assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
-        preferAnkiConnect: config.preferAnkiConnect && $general.isAnkiDesktop,
-      });
-    });
 
     sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
     const rootDataset = getRootDatasetConfig(config);
@@ -47,6 +39,27 @@ export function ConfigContextProvider(props: { children: JSX.Element; value: Con
     });
     $setGeneral("isConfigOutOfSync", isConfigOutOfSync);
   });
+
+  createEffect(
+    on(
+      () => ({
+        config: unwrap({ ...$config }),
+        assetsPath: $general.assetsPath,
+        isAnkiDesktop: $general.isAnkiDesktop,
+      }),
+      ({ config, assetsPath, isAnkiDesktop }) => {
+        $general.workerApi.promise.then((workerApi) => {
+          workerApi.init({
+            constants,
+            config,
+            assetsPath: import.meta.env.DEV ? "" : assetsPath,
+            preferAnkiConnect: config.preferAnkiConnect && isAnkiDesktop,
+          });
+        });
+      },
+      { defer: true },
+    ),
+  );
 
   return <ConfigContext.Provider value={props.value}>{props.children}</ConfigContext.Provider>;
 }
