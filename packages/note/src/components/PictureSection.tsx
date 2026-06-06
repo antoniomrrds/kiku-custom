@@ -53,6 +53,13 @@ export function PictureSection() {
     ),
   );
 
+  createEffect(
+    on(
+      () => $isInitialSide(),
+      () => $setClicked(false),
+    ),
+  );
+
   const next = (e: MouseEvent) => {
     e.stopPropagation();
     $setSubIndex((prev) => (prev + 1) % $pictures().length);
