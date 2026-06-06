@@ -241,15 +241,20 @@ export function getCssVarDark(config: KikuConfig) {
   return cssVar;
 }
 
+const LIGHT_VARS_REGEX = /\.card:has\(> #qa\), #kiku-host::part\(root\) \{[^]*?\}/;
+const DARK_VARS_REGEX = /\.card:has\(> #qa\)\.nightMode, \.nightMode #kiku-host::part\(root\) \{[^]*?\}/;
+
 export function updateConfigState({
   host,
   root,
   config,
+  styleTags = [],
   updateDocument,
 }: {
   host: HTMLElement;
   root: HTMLElement;
   config: KikuConfig;
+  styleTags?: HTMLStyleElement[];
   updateDocument: boolean;
 }) {
   const dataset = getRootDatasetConfig(config);
@@ -262,6 +267,17 @@ export function updateConfigState({
   root.dataset.blurNsfw = dataset.blurNsfw;
   root.dataset.pictureOnFront = dataset.pictureOnFront;
   root.dataset.modVertical = dataset.modVertical;
+
+  if (styleTags.length > 0) {
+    const lightTemplate = generateCssVars(getCssVar(config));
+    const darkTemplate = generateCssVarsDark(getCssVarDark(config));
+    for (const tag of styleTags) {
+      if (!tag?.textContent) continue;
+      tag.textContent = tag.textContent
+        .replace(LIGHT_VARS_REGEX, lightTemplate)
+        .replace(DARK_VARS_REGEX, darkTemplate);
+    }
+  }
 
   // TODO: do we still need this?
   // const cssVar = getCssVar(config);

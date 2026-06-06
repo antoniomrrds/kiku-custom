@@ -39,6 +39,7 @@ export function generateSsrTemplate() {
           logger={logger}
           root={undefined}
           host={undefined}
+          styleTags={[]}
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
@@ -74,6 +75,7 @@ export function generateSsrTemplate() {
           logger={logger}
           root={undefined}
           host={undefined}
+          styleTags={[]}
         >
           <ConfigContextProvider value={{ $config: $config, $setConfig: $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>

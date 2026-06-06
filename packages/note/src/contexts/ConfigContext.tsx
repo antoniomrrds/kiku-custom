@@ -27,6 +27,7 @@ export function ConfigContextProvider(props: { children: JSX.Element; value: Con
       host: $general.host,
       root: $general.root,
       config,
+      styleTags: $general.styleTags,
       updateDocument: !$general.isAnkiWeb,
     });
     AnkiConnect.changeAddress(config.ankiConnectAddress);

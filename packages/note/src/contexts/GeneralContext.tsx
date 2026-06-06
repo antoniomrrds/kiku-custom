@@ -32,6 +32,7 @@ type GeneralStore = {
   workerApi: PromiseWithResolvers<WorkerApi>;
   checkAnkiConnect: () => Promise<void>;
   useCheckAnkiConnect: () => void;
+  styleTags: HTMLStyleElement[];
 };
 
 type Toast = {
@@ -61,6 +62,7 @@ export function GeneralContextProvider(props: {
   logger: Logger;
   root: HTMLElement | undefined;
   host: HTMLElement | undefined;
+  styleTags: HTMLStyleElement[];
 }) {
   let timeout: ReturnType<typeof setTimeout>;
   const success = (message: string) => {
@@ -123,6 +125,7 @@ export function GeneralContextProvider(props: {
     workerApi: workerApi,
     checkAnkiConnect,
     useCheckAnkiConnect,
+    styleTags: props.styleTags,
   });
 
   return (

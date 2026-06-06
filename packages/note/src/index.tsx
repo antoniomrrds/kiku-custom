@@ -52,6 +52,7 @@ export async function init({
   isAnkiDesktop = typeof pycmd !== "undefined",
   workerPath,
   rootDataset,
+  styleTags = [],
 }: {
   root: HTMLElement;
   host: HTMLElement;
@@ -68,12 +69,13 @@ export async function init({
   isAnkiDesktop?: boolean;
   workerPath?: string;
   rootDataset?: RootDataset;
+  styleTags?: HTMLStyleElement[];
 }) {
   const [$startupTime, $setStartupTime] = createSignal(0);
   const now = performance.now();
 
   config = typeof config === "function" ? config(defaultConfig) : config;
-  updateConfigState({ host, root, config, updateDocument: !isAnkiWeb });
+  updateConfigState({ host, root, config, styleTags, updateDocument: !isAnkiWeb });
   const [$config, $setConfig] = createStore(config);
 
   const App = () => (
@@ -91,6 +93,7 @@ export async function init({
           logger={logger}
           root={root}
           host={host}
+          styleTags={styleTags}
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
@@ -175,9 +178,11 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
 
     const shadow = host.shadowRoot ?? host.attachShadow({ mode: "open" });
 
-    const style = qa.querySelector("style");
-    if (style) shadow.appendChild(style.cloneNode(true));
+    const style = qa.querySelector<HTMLStyleElement>("style");
+    const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;
+    if (shadowStyle) shadow.appendChild(shadowStyle);
     if (isAnkiWeb) style?.remove();
+    const styleTags = [style, shadowStyle].filter(Boolean) as HTMLStyleElement[];
 
     if (import.meta.env.DEV) {
       const mainCss = document.querySelector(
@@ -262,6 +267,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       assetsPath,
       isAnkiWeb,
       rootDataset,
+      styleTags,
     });
     setTimeout(resetKanjiTooltip, 50);
 
