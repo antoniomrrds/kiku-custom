@@ -38,6 +38,7 @@ import "./styles/main.css";
 
 export async function init({
   root,
+  host,
   side,
   ankiFields,
   ssr,
@@ -53,6 +54,7 @@ export async function init({
   rootDataset,
 }: {
   root: HTMLElement;
+  host: HTMLElement;
   side: "front" | "back";
   ankiFields: AnkiFields;
   ssr?: boolean;
@@ -71,7 +73,7 @@ export async function init({
   const now = performance.now();
 
   config = typeof config === "function" ? config(defaultConfig) : config;
-  updateConfigState(root, config, !isAnkiWeb);
+  updateConfigState({ host, root, config, updateDocument: !isAnkiWeb });
   const [$config, $setConfig] = createStore(config);
 
   const App = () => (
@@ -88,6 +90,7 @@ export async function init({
           assetsPath={assetsPath}
           logger={logger}
           root={root}
+          host={host}
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
@@ -147,7 +150,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
   try {
     const qa = document.querySelector("#qa");
     if (!qa) throw new Error("#qa not found");
-    const host = document.querySelector("#kiku-host");
+    const host = document.querySelector<HTMLElement>("#kiku-host");
     if (!host) throw new Error("#kiku-host not found");
 
     let root = document.getElementById("kiku-root");
@@ -247,6 +250,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
 
     const res = await init({
       root,
+      host,
       side,
       ankiFields,
       ssr,

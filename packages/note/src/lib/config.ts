@@ -241,13 +241,27 @@ export function getCssVarDark(config: KikuConfig) {
   return cssVar;
 }
 
-export function updateConfigState(el: HTMLElement, config: KikuConfig, updateDocument: boolean) {
+export function updateConfigState({
+  host,
+  root,
+  config,
+  updateDocument,
+}: {
+  host: HTMLElement;
+  root: HTMLElement;
+  config: KikuConfig;
+  updateDocument: boolean;
+}) {
   const dataset = getRootDatasetConfig(config);
-  el.dataset.theme = dataset.theme;
-  el.dataset.themeDark = dataset.themeDark;
-  el.dataset.blurNsfw = dataset.blurNsfw;
-  el.dataset.pictureOnFront = dataset.pictureOnFront;
-  el.dataset.modVertical = dataset.modVertical;
+
+  host.dataset.theme = dataset.theme;
+  host.dataset.themeDark = dataset.themeDark;
+
+  root.dataset.theme = dataset.theme;
+  root.dataset.themeDark = dataset.themeDark;
+  root.dataset.blurNsfw = dataset.blurNsfw;
+  root.dataset.pictureOnFront = dataset.pictureOnFront;
+  root.dataset.modVertical = dataset.modVertical;
 
   // TODO: do we still need this?
   // const cssVar = getCssVar(config);
@@ -255,7 +269,7 @@ export function updateConfigState(el: HTMLElement, config: KikuConfig, updateDoc
   //   if (updateDocument) {
   //     document.documentElement.style.setProperty(key, value);
   //   }
-  //   el.style.setProperty(key, value);
+  //   root.style.setProperty(key, value);
   // });
 }
 

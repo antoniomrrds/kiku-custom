@@ -22,7 +22,13 @@ export function ConfigContextProvider(props: { children: JSX.Element; value: Con
     const config = unwrap({ ...$config });
     $general.logger.debug("Updating config:", config);
     if (!$general.root) throw new Error("Missing root");
-    updateConfigState($general.root, config, !$general.isAnkiWeb);
+    if (!$general.host) throw new Error("Missing host");
+    updateConfigState({
+      host: $general.host,
+      root: $general.root,
+      config,
+      updateDocument: !$general.isAnkiWeb,
+    });
     AnkiConnect.changeAddress(config.ankiConnectAddress);
     $general.workerApi.promise.then((workerApi) => {
       workerApi.init({
