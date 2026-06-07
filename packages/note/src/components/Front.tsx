@@ -13,6 +13,7 @@ import { usePitch } from "#/src/hooks/pitch";
 // oxfmt-ignore
 const Lazy = {
   AudioButtons: lazy(async () => ({ default: (await import("#/src/lazy")).AudioButtons })),
+  AudioElements: lazy(async () => ({ default: (await import("#/src/lazy")).AudioElements })),
   HeaderMain: lazy(async () => ({ default: (await import("#/src/lazy")).HeaderMain })),
   FieldGroupPagination: lazy(async () => ({ default: (await import("#/src/lazy")).FieldGroupPagination, })),
   UseAnkiDroid: lazy(async () => ({ default: (await import("#/src/lazy")).UseAnkiDroid })),
@@ -119,6 +120,7 @@ export function Front() {
         </div>
       )}
       {$card.ready && <Lazy.AudioButtons position={2} />}
+      {$card.ready && <Lazy.AudioElements />}
     </>
   );
 }

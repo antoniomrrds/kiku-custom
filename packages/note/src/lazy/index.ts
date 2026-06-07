@@ -1,5 +1,6 @@
 import AnkiMobileDebug from "./components/AnkiMobileDebug";
 import AudioButtons from "./components/AudioButtons";
+import AudioElements from "./components/AudioElements";
 import BackBody from "./components/BackBody";
 import BackFooter from "./components/BackFooter";
 import Expression from "./components/Expression";
@@ -18,6 +19,7 @@ export {
   HeaderMain,
   BackFooter,
   AudioButtons,
+  AudioElements,
   Settings,
   PictureModal,
   BackBody,

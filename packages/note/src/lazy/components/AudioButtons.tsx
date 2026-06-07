@@ -1,33 +1,10 @@
-import { createEffect, createMemo, For, on, onMount, Show } from "solid-js";
-import { Portal } from "solid-js/web";
+import { For, Match, Portal, Show, Switch } from "solid-js/web";
 import { useCardContext } from "#/src/contexts/CardContext";
-import { nodesToString } from "#/src/lib/dom";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
-import { useBreakpointContext } from "#/src/contexts/BreakpointContext";
-import { useConfigContext } from "#/src/contexts/ConfigContext";
-import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { PlayIcon } from "./Icons";
 
-function AudioTag(props: { text: string }) {
-  // Find all `[sound:filename.mp3]` occurrences
-  const $matches = createMemo(() => [...props.text.matchAll(/\[sound:([^\]]+)\]/g)]);
-  const $sounds = createMemo(() => $matches().map((m) => m[1]));
-
-  return (
-    <Show when={$sounds().length > 0}>
-      <div class="flex flex-wrap gap-2">
-        <For each={$sounds()}>
-          {(src) => {
-            return <audio src={src} preload="none" />;
-          }}
-        </For>
-      </div>
-    </Show>
-  );
-}
-
-export function NotePlayIcon(props: { "on:click"?: () => void; color: "primary" | "secondary" }) {
+function NotePlayIcon(props: { "on:click"?: () => void; color: "primary" | "secondary" }) {
   return (
     <button on:click={props["on:click"]} on:touchend={(e) => e.stopPropagation()}>
       <PlayIcon
@@ -41,141 +18,57 @@ export function NotePlayIcon(props: { "on:click"?: () => void; color: "primary" 
   );
 }
 
-export default function AudioButtons(props: { position: 1 | 2 }) {
-  const { $general } = useGeneralContext();
-  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
-  const { $card, $setCard } = useCardContext();
-  const { $group } = useFieldGroupContext();
-  const { $config } = useConfigContext();
-  const bp = useBreakpointContext();
-  const hiddenStyle = {
-    width: "0",
-    height: "0",
-    overflow: "hidden",
-    position: "absolute",
-  } as const;
+function NotePlayIcons() {
+  const { $ankiFields } = useAnkiFieldContext();
+  const { $card } = useCardContext();
 
-  createEffect(
-    on(
-      () => $group.sentenceAudioField,
-      () => {
-        const anchors = $card.sentenceAudioRef?.querySelectorAll("a");
-        if (anchors?.length) {
-          $setCard("sentenceAudios", Array.from(anchors));
-          const anchorsHtml = nodesToString(Array.from(anchors));
-          $general.logger.info("Anchors in sentence audios:", anchorsHtml);
-        }
-
-        const audios = $card.sentenceAudioRef?.querySelectorAll("audio");
-        if (audios?.length) {
-          $setCard("sentenceAudios", Array.from(audios));
-          const audiosHtml = nodesToString(Array.from(audios));
-          $general.logger.info("Audios in sentence audios:", audiosHtml);
-        }
-
-        if (!anchors?.length && !audios?.length) {
-          $setCard("sentenceAudios", undefined);
-        }
-      },
-    ),
-  );
-
-  let autoPlay = true;
-  createEffect(
-    on(
-      () => $group.sentenceAudioField,
-      () => {
-        const useWebVolume = bp.isAtLeast("sm") || $general.isAnkiWeb;
-        $card.expressionAudioRef?.querySelectorAll("audio").forEach((el) => {
-          el.volume = useWebVolume ? $config.volume / 100 : 1;
-        });
-        $card.sentenceAudioRef?.querySelectorAll("audio").forEach((el) => {
-          el.volume = useWebVolume ? $config.volume / 100 : 1;
-        });
-
-        if ($card.nested && autoPlay) {
-          autoPlay = false;
-          const audio = $card.expressionAudioRef?.querySelector("audio");
-          if (audio) {
-            audio.play();
-            audio.onpause = () => {
-              const audio = $card.sentenceAudioRef?.querySelectorAll("audio")[0];
-              if (audio) {
-                audio.play();
-              }
-            };
-          }
-        }
-      },
-    ),
-  );
-
-  onMount(() => {
-    if ($card.isNsfw && $config.muteNsfw) {
-      $card.expressionAudioRef?.querySelector("a")?.click();
-    }
-  });
-
-  const NotePlayIcons = () => {
-    return (
-      <>
-        {$ankiFields.ExpressionAudio && (
+  return (
+    <>
+      <Show when={$ankiFields.ExpressionAudio}>
+        <NotePlayIcon
+          color="primary"
+          on:click={() => {
+            $card.expressionAudioRef?.querySelector("a")?.click();
+            $card.expressionAudioRef?.querySelector("audio")?.play();
+          }}
+        ></NotePlayIcon>
+      </Show>
+      <For each={$card.sentenceAudios}>
+        {(el) => (
           <NotePlayIcon
-            color="primary"
+            color="secondary"
             on:click={() => {
-              $card.expressionAudioRef?.querySelector("a")?.click();
-              $card.expressionAudioRef?.querySelector("audio")?.play();
+              el.click();
+              if (el instanceof HTMLAudioElement) el.play();
             }}
           ></NotePlayIcon>
         )}
-        {$card.sentenceAudios?.map((el) => {
-          return (
-            <NotePlayIcon
-              color="secondary"
-              on:click={() => {
-                el.click();
-                if (el instanceof HTMLAudioElement) el.play();
-              }}
-            ></NotePlayIcon>
-          );
-        })}
-      </>
-    );
-  };
+      </For>
+    </>
+  );
+}
 
-  if (props.position === 1)
-    return (
-      <>
-        <div
-          style={hiddenStyle}
-          ref={(ref) => $setCard("expressionAudioRef", ref)}
-          innerHTML={$isRootAnkiFields() ? $ankiFields.ExpressionAudio : undefined}
-        >
-          {!$isRootAnkiFields() && <AudioTag text={$ankiFields.ExpressionAudio} />}
-        </div>
-        <div
-          style={hiddenStyle}
-          ref={(ref) => $setCard("sentenceAudioRef", ref)}
-          innerHTML={$isRootAnkiFields() ? $group.sentenceAudioField : undefined}
-        >
-          {!$isRootAnkiFields() && <AudioTag text={$group.sentenceAudioField} />}
-        </div>
+export default function AudioButtons(props: { position: 1 | 2 }) {
+  const { $general } = useGeneralContext();
+
+  return (
+    <Switch>
+      <Match when={props.position === 1}>
         <NotePlayIcons />
-      </>
-    );
-
-  if (props.position === 2)
-    return (
-      <Portal mount={$general.layoutRef}>
-        <div
-          class="bottom-4 left-4 flex sm:hidden flex-col gap-2 items-center animate-fade-in-sm"
-          classList={{
-            fixed: !$general.isAnkiWeb,
-            absolute: $general.isAnkiWeb,
-          }}
-        >
-          <NotePlayIcons />
-        </div>
-      </Portal>
-    );
+      </Match>
+      <Match when={props.position === 2}>
+        <Portal mount={$general.layoutRef}>
+          <div
+            class="bottom-4 left-4 flex sm:hidden flex-col gap-2 items-center animate-fade-in-sm"
+            classList={{
+              fixed: !$general.isAnkiWeb,
+              absolute: $general.isAnkiWeb,
+            }}
+          >
+            <NotePlayIcons />
+          </div>
+        </Portal>
+      </Match>
+    </Switch>
+  );
 }

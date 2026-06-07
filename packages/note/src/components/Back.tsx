@@ -20,6 +20,7 @@ const Lazy = {
   HeaderMain: lazy(async () => ({ default: (await import("#/src/lazy")).HeaderMain })),
   BackFooter: lazy(async () => ({ default: (await import("#/src/lazy")).BackFooter })),
   AudioButtons: lazy(async () => ({ default: (await import("#/src/lazy")).AudioButtons })),
+  AudioElements: lazy(async () => ({ default: (await import("#/src/lazy")).AudioElements })),
   PictureModal: lazy(async () => ({ default: (await import("#/src/lazy")).PictureModal })),
   BackBody: lazy(async () => ({ default: (await import("#/src/lazy")).BackBody })),
   Pitches: lazy(async () => ({ default: (await import("#/src/lazy")).Pitches })),
@@ -140,6 +141,7 @@ export function Back(props: { onExitNested?: () => void }) {
         </Match>
       </Switch>
       {$card.ready && <Lazy.PictureModal />}
+      {$card.ready && <Lazy.AudioElements />}
     </>
   );
 }
