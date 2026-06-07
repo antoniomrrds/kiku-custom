@@ -26,32 +26,15 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
             <MergeContextModal />
           </Match>
           <Match when={!$card.nested}>
-            <div
-              class="relative"
-              data-anki-mobile-hide={$initialSide() === "front" ? "front" : undefined}
-            >
-              <div
-                class="tooltip tooltip-bottom flex items-center"
-                data-tip={
-                  $initialSide() === "front"
-                    ? "Settings page is only accessible from the back side of the card"
-                    : undefined
-                }
-              >
+            <div class="relative">
+              <div class="flex items-center">
                 <button
                   on:click={() => {
-                    if ($initialSide() === "front") return;
                     navigate("settings", "forward", () => navigate("main", "back"));
                   }}
                   on:touchend={(e) => e.stopPropagation()}
                 >
-                  <BoltIcon
-                    class="size-5"
-                    classList={{
-                      "text-base-content-soft cursor-pointer": $initialSide() === "back",
-                      "text-base-content-subtle-100 cursor-not-allowed": $initialSide() === "front",
-                    }}
-                  ></BoltIcon>
+                  <BoltIcon class="size-5 text-base-content-soft cursor-pointer"></BoltIcon>
                 </button>
               </div>
 

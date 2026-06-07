@@ -37,6 +37,7 @@ import { useCtxContext } from "#/src/contexts/CtxContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderSettings from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
+import { useCardContext } from "#/src/contexts/CardContext";
 
 function toDashed(str: string) {
   return str.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
@@ -934,7 +935,8 @@ function DebugSettings() {
   const { $ankiFields } = useAnkiFieldContext();
   const [$kikuFiles, $setKikuFiles] = createSignal<string>();
   const [$missingFiles, $setMissingFiles] = createSignal<string>();
-  const { $general, $setGeneral: _$setGeneral } = useGeneralContext();
+  const { $general } = useGeneralContext();
+  const { $initialSide } = useCardContext();
 
   createEffect(async () => {
     if ($general.isAnkiConnectAvailable) {
@@ -988,7 +990,7 @@ function DebugSettings() {
     id="kiku-root"
     part="root"
     data-kiku-cloak
-    data-side="back"
+    data-side=${$initialSide()}
     ${rootDatasetStr.replaceAll("\n", "\n    ")}
   >`;
   });
@@ -1075,6 +1077,12 @@ function DebugSettings() {
               <div class="text-lg">Anki Fields</div>
               <ClipboardCopyButton text={() => JSON.stringify(unwrap($ankiFields), null, 2)} />
             </div>
+
+            <Show when={$initialSide() === "front"}>
+              <div role="alert" class="alert alert-warning">
+                Switch to back side for full Anki Fields
+              </div>
+            </Show>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
               {JSON.stringify(unwrap($ankiFields), null, 2)}
             </pre>

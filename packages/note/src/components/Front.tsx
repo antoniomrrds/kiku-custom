@@ -21,6 +21,7 @@ const Lazy = {
   Sentence: lazy(async () => ({ default: (await import("#/src/lazy")).Sentence })),
   RelatedExpression: lazy(async () => ({ default: (await import("#/src/lazy")).RelatedExpression, })),
   Expression: lazy(async () => ({ default: (await import("#/src/lazy")).Expression })),
+  Settings: lazy(async () => ({ default: (await import("#/src/lazy")).Settings })),
 };
 
 export function Front() {
@@ -69,60 +70,68 @@ export function Front() {
   return (
     <>
       {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
-      {$card.ready && <Lazy.HeaderMain />}
-      <div class="flex flex-col gap-2">
-        <div class="flex justify-between gap-2 min-h-lh text-xl sm:text-2xl">
-          <Lazy.RelatedExpression />
-        </div>
-        <div class="flex flex-col gap-4 relative z-10">
-          <div
-            class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
-            on:click={() => {
-              if (!$isInitialSide()) return;
-              $setClicked((prev) => !prev);
-              $setHideExpression(false);
-            }}
-            on:touchend={(e) => e.stopPropagation()}
-          >
-            <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
-              <ExpressionSection hideExpression={$hideExpression()} />
-              <div class="hidden sm:block sm:h-8 sm:mt-2">
-                {$card.ready && (
-                  <div class="animate-fade-in-sm flex gap-2">
-                    <Lazy.AudioButtons position={1} />
+      <Switch>
+        <Match when={$card.page === "settings" && $card.ready}>
+          <Lazy.Settings />
+        </Match>
+        <Match when={$card.page === "main"}>
+          {$card.ready && <Lazy.HeaderMain />}
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between gap-2 min-h-lh text-xl sm:text-2xl">
+              <Lazy.RelatedExpression />
+            </div>
+            <div class="flex flex-col gap-4 relative z-10">
+              <div
+                class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
+                on:click={() => {
+                  if (!$isInitialSide()) return;
+                  $setClicked((prev) => !prev);
+                  $setHideExpression(false);
+                }}
+                on:touchend={(e) => e.stopPropagation()}
+              >
+                <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
+                  <ExpressionSection hideExpression={$hideExpression()} />
+                  <div class="hidden sm:block sm:h-8 sm:mt-2">
+                    {$card.ready && (
+                      <div class="animate-fade-in-sm flex gap-2">
+                        <Lazy.AudioButtons position={1} />
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+                <PictureSection />
               </div>
             </div>
-            <PictureSection />
+            {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
           </div>
-        </div>
-        {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
-      </div>
-      <div
-        class="flex flex-col gap-4 items-center text-center justify-center"
-        classList={{
-          "transition-opacity duration-[1000ms] opacity-0": $hideExpression() && !$isInitialSide(),
-        }}
-      >
-        {$card.ready && !$hidden() && <Lazy.Sentence />}
-      </div>
-      {$card.ready && $ankiFields.IsAudioCard && $isInitialSide() && (
-        <div class="flex gap-2 justify-center animate-fade-in-sm">
-          <Lazy.AudioButtons position={1} />
-        </div>
-      )}
-      {$isInitialSide() && (
-        <div
-          class={`gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
-          {...$hintFieldDataset()}
-        >
-          <div innerHTML={isServer ? undefined : $ankiFields.Hint}>
-            {isServer ? "{{Hint}}" : undefined}
+          <div
+            class="flex flex-col gap-4 items-center text-center justify-center"
+            classList={{
+              "transition-opacity duration-[1000ms] opacity-0":
+                $hideExpression() && !$isInitialSide(),
+            }}
+          >
+            {$card.ready && !$hidden() && <Lazy.Sentence />}
           </div>
-        </div>
-      )}
-      {$card.ready && <Lazy.AudioButtons position={2} />}
+          {$card.ready && $ankiFields.IsAudioCard && $isInitialSide() && (
+            <div class="flex gap-2 justify-center animate-fade-in-sm">
+              <Lazy.AudioButtons position={1} />
+            </div>
+          )}
+          {$isInitialSide() && (
+            <div
+              class={`gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
+              {...$hintFieldDataset()}
+            >
+              <div innerHTML={isServer ? undefined : $ankiFields.Hint}>
+                {isServer ? "{{Hint}}" : undefined}
+              </div>
+            </div>
+          )}
+          {$card.ready && <Lazy.AudioButtons position={2} />}
+        </Match>
+      </Switch>
       {$card.ready && <Lazy.AudioElements />}
     </>
   );
