@@ -21,6 +21,7 @@ function NotePlayIcon(props: { "on:click"?: () => void; color: "primary" | "seco
 function NotePlayIcons() {
   const { $ankiFields } = useAnkiFieldContext();
   const { $card } = useCardContext();
+  const { $general } = useGeneralContext();
 
   return (
     <>
@@ -28,16 +29,18 @@ function NotePlayIcons() {
         <NotePlayIcon
           color="primary"
           on:click={() => {
+            $general.logger.debug("[AudioButtons] click: expression");
             $card.expressionAudioRef?.querySelector("a")?.click();
             $card.expressionAudioRef?.querySelector("audio")?.play();
           }}
         ></NotePlayIcon>
       </Show>
       <For each={$card.sentenceAudios}>
-        {(el) => (
+        {(el, i) => (
           <NotePlayIcon
             color="secondary"
             on:click={() => {
+              $general.logger.debug("[AudioButtons] click: sentence", i());
               el.click();
               if (el instanceof HTMLAudioElement) el.play();
             }}

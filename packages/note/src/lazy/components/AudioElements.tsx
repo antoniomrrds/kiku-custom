@@ -3,6 +3,7 @@ import { useCardContext } from "#/src/contexts/CardContext";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
 function AudioTag(props: { text: string }) {
   // Find all `[sound:filename.mp3]` occurrences
@@ -27,6 +28,7 @@ export default function AudioElements() {
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
+  const { $general } = useGeneralContext();
   const hiddenStyle = {
     width: "0",
     height: "0",
@@ -39,10 +41,14 @@ export default function AudioElements() {
       () => $group.sentenceAudioField,
       () => {
         const anchors = $card.sentenceAudioRef?.querySelectorAll("a");
+        const audios = $card.sentenceAudioRef?.querySelectorAll("audio");
+        $general.logger.debug("[AudioElements] sentenceAudioRef scan:", {
+          anchors: anchors?.length ?? 0,
+          audios: audios?.length ?? 0,
+        });
         if (anchors?.length) {
           $setCard("sentenceAudios", Array.from(anchors));
         }
-        const audios = $card.sentenceAudioRef?.querySelectorAll("audio");
         if (audios?.length) {
           $setCard("sentenceAudios", Array.from(audios));
         }
@@ -62,13 +68,19 @@ export default function AudioElements() {
           autoPlay = false;
           const audio = $card.expressionAudioRef?.querySelector("audio");
           if (audio) {
+            $general.logger.info("[AudioElements] autoPlay: expression");
             audio.play();
             audio.onpause = () => {
               const audio = $card.sentenceAudioRef?.querySelectorAll("audio")[0];
               if (audio) {
+                $general.logger.info("[AudioElements] autoPlay: sentence");
                 audio.play();
+              } else {
+                $general.logger.debug("[AudioElements] autoPlay: no sentence audio to chain");
               }
             };
+          } else {
+            $general.logger.debug("[AudioElements] autoPlay: no expression audio to play");
           }
         }
       },
@@ -77,7 +89,12 @@ export default function AudioElements() {
 
   onMount(() => {
     if ($card.isNsfw && $config.muteNsfw) {
-      $card.expressionAudioRef?.querySelector("a")?.click();
+      const anchor = $card.expressionAudioRef?.querySelector("a");
+      $general.logger.info(
+        "[AudioElements] NSFW mute:",
+        anchor ? "applied" : "no expression audio anchor to click",
+      );
+      anchor?.click();
     }
   });
 

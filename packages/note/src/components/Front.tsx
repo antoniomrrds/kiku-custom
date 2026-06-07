@@ -8,6 +8,7 @@ import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { usePitch } from "#/src/hooks/pitch";
 
 // oxfmt-ignore
@@ -28,6 +29,7 @@ export function Front() {
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
   const { $config } = useConfigContext();
+  const { $general } = useGeneralContext();
   const loadPlugin = useLoadPlugin();
   useKanji();
   const $hidden = createMemo(() => {
@@ -49,6 +51,7 @@ export function Front() {
   onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
+      $general.logger.info("[Front] ready, expression:", $ankiFields.Expression);
       loadPlugin();
     }, 0);
 

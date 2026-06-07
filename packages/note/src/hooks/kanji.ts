@@ -23,6 +23,10 @@ export function useKanji() {
     try {
       const ankiFields = unwrap($ankiFields);
       const isFront = $initialSide() === "front";
+      $general.logger.info("[Kanji] setKanji start:", {
+        expression: ankiFields.Expression,
+        side: isFront ? "front" : "back",
+      });
       const kanjiList = isFront
         ? []
         : extractKanji(
@@ -102,6 +106,14 @@ export function useKanji() {
           newNotes,
         });
       }
+
+      $general.logger.info("[Kanji] setKanji done:", {
+        kanji: Object.keys(kanjiResult).length,
+        reading: Object.keys(readingResult).length,
+        expression: Object.keys(expressionResult).length,
+        sameExpression: sameExpression.length,
+        newNotes: newNotes.length,
+      });
 
       workerApi
         .notesManifest()

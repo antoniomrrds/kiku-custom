@@ -38,8 +38,6 @@ export class WorkerThreadApi {
     config: KikuConfig;
     preferAnkiConnect: boolean;
   }) {
-    this.log.debug("init Worker", payload);
-
     this.assetsPath = payload.assetsPath;
     this.constants = payload.constants;
     this.config = payload.config;

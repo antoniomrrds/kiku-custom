@@ -76,6 +76,14 @@ export async function init({
   const [$startupTime, $setStartupTime] = createSignal(0);
   const now = performance.now();
 
+  logger.info("[init] start", {
+    side,
+    expression: ankiFields.Expression,
+    ssr: !!ssr,
+    isAnkiWeb,
+    isAnkiDesktop,
+  });
+
   config = typeof config === "function" ? config(defaultConfig) : config;
   updateConfigState({ host, root, config, styleTags, updateDocument: !isAnkiWeb });
   const [$config, $setConfig] = createStore(config);
@@ -118,10 +126,14 @@ export async function init({
 
   const dispose = ssr ? hydrate(App, root) : render(App, root);
   $setStartupTime(performance.now() - now);
+  logger.info("[init] done, startup:", `${$startupTime().toFixed(1)}ms`);
   return { dispose, logger };
 }
 
 export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: boolean }) {
+  const logger = globalThis.KIKU?.logger ?? new Logger();
+  logger.info("[initAnki] start, side:", side, "ssr:", !!ssr);
+
   if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
   if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
 
@@ -130,6 +142,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
   globalThis.KIKU ??= {};
   globalThis.KIKU.aborter = aborter;
   globalThis.KIKU.relax = false;
+  globalThis.KIKU.logger = logger;
 
   if (!globalThis.KIKU.unload && !import.meta.env.DEV) {
     globalThis.KIKU.unload = () => {
@@ -143,6 +156,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       version: "0.0.3",
       developer: "youyoumu",
     });
+    logger.info("[initAnki] AnkiDroidAPI initialized");
   }
 
   let assetsPath = window.location.origin;
@@ -151,6 +165,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     assetsPath = `${window.location.origin}/study/media`;
     const kikuCss = document.getElementById("kiku-css");
     kikuCss?.remove();
+    logger.info("[initAnki] AnkiWeb mode, assetsPath:", assetsPath);
   }
 
   try {
@@ -168,6 +183,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       if (existingRoot && existingRoot.innerHTML.trim() === "") {
         root = existingRoot;
       } else {
+        logger.debug("[initAnki] no #kiku-root with content, skipping");
         return;
       }
     }
@@ -178,6 +194,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       pictureOnFront: root.dataset.pictureOnFront,
       modVertical: root.dataset.modVertical,
     } satisfies RootDataset;
+    logger.debug("[initAnki] rootDataset:", rootDataset);
 
     const shadow = host.shadowRoot ?? host.attachShadow({ mode: "open" });
 
@@ -214,6 +231,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       const cache = sessionStorage.getItem(constants.key["kiku-config"]);
       if (cache) {
         config = validateConfig(JSON.parse(cache));
+        logger.info("[initAnki] config loaded from sessionStorage");
       } else {
         const res = await fetch(constants.assets["_kiku_config.json"], {
           cache: "no-store",
@@ -222,8 +240,11 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
         config = validateConfig(json);
         if (aborter.signal.aborted) return;
         sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
+        logger.info("[initAnki] config fetched and cached");
       }
-    } catch {}
+    } catch (e) {
+      logger.warn("[initAnki] config load failed:", e instanceof Error ? e.message : e);
+    }
 
     const ankiFieldsTemplate = document.querySelector("#anki-fields");
     let templates: NodeListOf<HTMLTemplateElement> | HTMLTemplateElement[] | undefined =
@@ -265,7 +286,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       config,
       aborter,
       ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
-      logger: globalThis.KIKU.logger,
+      logger,
       cacheStore: globalThis.KIKU,
       assetsPath,
       isAnkiWeb,

@@ -68,6 +68,13 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     ids.clear();
     $setGroup("ids", []);
 
+    $general.logger.info(
+      "[Groups] parsing fields for expression:",
+      $ankiFields.Expression,
+      "side:",
+      $initialSide(),
+    );
+
     const sentenceFieldDoc = parseHtml($sentenceField());
     const sentenceFieldWithGroup = sentenceFieldDoc.querySelectorAll("[data-group-id]");
     sentenceFieldWithGroup.forEach((el) => {
@@ -151,6 +158,12 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     if ($group.ids.length > 0) {
       const sorted = $group.ids.map((id) => Number(id)).sort((a, b) => b - a);
       const id = sorted[$group.index];
+      $general.logger.info("[Groups] selected:", {
+        count: sorted.length,
+        index: $group.index,
+        groupId: id,
+        ids: sorted,
+      });
       let sentenceField: string | undefined;
       let sentenceTranslationField: string | undefined;
       let sentenceAudioField: string | undefined;

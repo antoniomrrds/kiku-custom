@@ -12,6 +12,7 @@ import { AnkiFieldContextProvider, useAnkiFieldContext } from "#/src/contexts/An
 import { useCacheContext } from "#/src/contexts/CacheContext";
 import { CtxContextProvider } from "#/src/contexts/CtxContext";
 import { FieldGroupContextProvider } from "#/src/contexts/FieldGroupContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { usePitch } from "#/src/hooks/pitch";
 
 // oxfmt-ignore
@@ -39,6 +40,7 @@ export function Back(props: { onExitNested?: () => void }) {
   const { $setPictureModal } = usePictureModalTransition();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
+  const { $general } = useGeneralContext();
   useKanji();
   usePitch();
 
@@ -46,6 +48,7 @@ export function Back(props: { onExitNested?: () => void }) {
     setTimeout(() => {
       $setCard("ready", true);
       cacheStore.relax = true;
+      $general.logger.info("[Back] ready, expression:", $ankiFields.Expression);
       loadPlugin();
     }, 0);
   });
