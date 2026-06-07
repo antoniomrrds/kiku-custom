@@ -23,6 +23,20 @@ function NotePlayIcons() {
   const { $card } = useCardContext();
   const { $general } = useGeneralContext();
 
+  const stopAllAudios = () => {
+    const exprAudio = $card.expressionAudioRef?.querySelector("audio");
+    if (exprAudio instanceof HTMLAudioElement) {
+      exprAudio.pause();
+      exprAudio.currentTime = 0;
+    }
+    $card.sentenceAudios?.forEach((el) => {
+      if (el instanceof HTMLAudioElement) {
+        el.pause();
+        el.currentTime = 0;
+      }
+    });
+  };
+
   return (
     <>
       <Show when={$ankiFields.ExpressionAudio}>
@@ -30,6 +44,7 @@ function NotePlayIcons() {
           color="primary"
           on:click={() => {
             $general.logger.debug("[AudioButtons] click: expression");
+            stopAllAudios();
             $card.expressionAudioRef?.querySelector("a")?.click();
             $card.expressionAudioRef?.querySelector("audio")?.play();
           }}
@@ -41,6 +56,7 @@ function NotePlayIcons() {
             color="secondary"
             on:click={() => {
               $general.logger.debug("[AudioButtons] click: sentence", i());
+              stopAllAudios();
               el.click();
               if (el instanceof HTMLAudioElement) el.play();
             }}
