@@ -10,7 +10,7 @@ import { useCardContext } from "#/src/contexts/CardContext";
 export default function PictureModal() {
   const { $card } = useCardContext();
   const { $general } = useGeneralContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
   const { $setPictureModal } = usePictureModalTransition();
   const [$showAll, $setShowAll] = createSignal(false);
   const collectGlossaryImgs = useCollectGlossaryImgs();

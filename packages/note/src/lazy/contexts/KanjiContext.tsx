@@ -48,7 +48,7 @@ function getQuerySharedCacheKey(ankiFields: AnkiFields, kanjiList: readonly stri
 export function KanjiContextProvider(props: { kanji: string; children: JSX.Element }) {
   const { $general } = useGeneralContext();
   const cacheStore = useCacheContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
   const [$kanji, $setKanji] = createStore<KanjiStore>({
     kanji: props.kanji,
     kanjiInfo: undefined,

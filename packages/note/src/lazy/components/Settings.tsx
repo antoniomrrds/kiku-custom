@@ -925,7 +925,7 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
 
 function DebugSettings() {
   const { $config, $setConfig } = useConfigContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
   const [$kikuFiles, $setKikuFiles] = createSignal<string>();
   const [$missingFiles, $setMissingFiles] = createSignal<string>();
   const { $general, $setGeneral: _$setGeneral } = useGeneralContext();

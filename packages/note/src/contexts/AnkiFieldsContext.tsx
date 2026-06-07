@@ -1,7 +1,7 @@
 import { type Accessor, createContext, createMemo, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import type { AnkiFields, AnkiFrontFields } from "#/src/lib/types";
+import type { AnkiFields } from "#/src/lib/types";
 
 const AnkiFieldsContext = createContext<{
   $ankiFields: Store<AnkiFields>;
@@ -43,29 +43,10 @@ export function AnkiFieldContextProvider(props: {
   );
 }
 
-type UseAnkiFieldSide = {
-  front: {
-    $ankiFields: Store<AnkiFrontFields>;
-    $setAnkiFields: SetStoreFunction<AnkiFields>;
-    $isRootAnkiFields: Accessor<boolean>;
-    noteId?: number;
-    initialAnkiFields: AnkiFrontFields;
-    resetAnkiFields: () => void;
-  };
-  back: {
-    $ankiFields: Store<AnkiFields>;
-    $setAnkiFields: SetStoreFunction<AnkiFields>;
-    $isRootAnkiFields: Accessor<boolean>;
-    noteId?: number;
-    initialAnkiFields: AnkiFields;
-    resetAnkiFields: () => void;
-  };
-};
-
-export function useAnkiFieldContext<T extends "front" | "back">() {
+export function useAnkiFieldContext() {
   const ankiField = useContext(AnkiFieldsContext);
   if (!ankiField) throw new Error("Missing AnkiFieldContext");
-  return ankiField as UseAnkiFieldSide[T];
+  return ankiField;
 }
 
 export type UseAnkiFieldContext = typeof useAnkiFieldContext;

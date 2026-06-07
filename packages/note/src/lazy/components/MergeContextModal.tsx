@@ -19,7 +19,7 @@ export default function MergeContextModal() {
   const { navigate } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
   const { $ankiFields: $rootAnkiFields } = useRootFieldGroupContext();
-  const { noteId: currentNoteId } = useAnkiFieldContext<"back">();
+  const { noteId: currentNoteId } = useAnkiFieldContext();
 
   const [$rootNote, $setRootNote] = createSignal<AnkiNote>();
   const [$currentNote, $setCurrentNote] = createSignal<AnkiNote>();

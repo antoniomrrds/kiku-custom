@@ -38,7 +38,7 @@ export default function KanjiPage() {
 function Page() {
   const { onKanjiPageMount } = useCardContext();
   const { $general } = useGeneralContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
   const $hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
   const $hasSameReading = createMemo(

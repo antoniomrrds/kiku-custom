@@ -13,7 +13,7 @@ import { createWorkerApi } from "#/src/worker/client";
 export function useKanji() {
   const { $config } = useConfigContext();
   const { $card, $setCard, $initialSide } = useCardContext();
-  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $general, $setGeneral } = useGeneralContext();
   const cacheStore = useCacheContext();
 

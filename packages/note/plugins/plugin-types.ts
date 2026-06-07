@@ -30,7 +30,7 @@ import type { UseCardContext } from "#/src/contexts/CardContext";
 import type { UseConfigContext } from "#/src/contexts/ConfigContext";
 import type { UseGeneralContext } from "#/src/contexts/GeneralContext";
 import type { PitchInfo } from "#/src/lib/hatsuon";
-import type { AnkiBackFields, AnkiFrontFields } from "#/src/lib/types";
+import type { AnkiFields } from "#/src/lib/types";
 
 /**
  * The Plugin Context (Ctx) provides the essential building blocks for creating
@@ -102,8 +102,8 @@ export type Ctx = {
    * The raw field data of the current Anki card.
    * These are strings as defined in your Anki note type.
    */
-  ankiFields: AnkiFrontFields | AnkiBackFields;
-  $ankiFields: Store<AnkiFrontFields | AnkiBackFields>;
+  ankiFields: AnkiFields;
+  $ankiFields: Store<AnkiFields>;
 
   // --- Kiku Hooks ---
   /** Provides reactive access to all Anki fields. */

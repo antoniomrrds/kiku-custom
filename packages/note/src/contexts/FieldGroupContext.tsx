@@ -2,7 +2,7 @@ import { createContext, createEffect, createMemo, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { nodesToString, parseHtml } from "#/src/lib/dom";
-import type { AnkiFields, AnkiFrontFields } from "#/src/lib/types";
+import type { AnkiFields } from "#/src/lib/types";
 import { useAnkiFieldContext } from "./AnkiFieldsContext";
 import { useCardContext } from "./CardContext";
 import { useGeneralContext } from "./GeneralContext";
@@ -22,7 +22,7 @@ const FieldGroupContext = createContext<{
   $setGroup: SetStoreFunction<GroupStore>;
   $next: () => boolean;
   $prev: () => boolean;
-  $ankiFields: Store<AnkiFields | AnkiFrontFields>;
+  $ankiFields: Store<AnkiFields>;
 }>();
 
 export function FieldGroupContextProvider(props: { children: JSX.Element }) {
@@ -256,7 +256,7 @@ const RootFieldGroupConext = createContext<{
   $next: () => void;
   $prev: () => void;
   //TODO: remove from here
-  $ankiFields: Store<AnkiFields | AnkiFrontFields>;
+  $ankiFields: Store<AnkiFields>;
 }>();
 
 export function RootFieldGroupContextProvider(props: { children: JSX.Element }) {

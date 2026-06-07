@@ -36,7 +36,7 @@ const Lazy = {
 export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
   const { $setPictureModal } = usePictureModalTransition();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
@@ -151,7 +151,7 @@ export function Back(props: { onExitNested?: () => void }) {
 
 function ExpressionSection() {
   const { $card } = useCardContext();
-  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $pitchType } = usePitch();
 
   const $expressionInnerHtml = createMemo(() => {

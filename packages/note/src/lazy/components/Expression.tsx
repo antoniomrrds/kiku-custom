@@ -11,7 +11,7 @@ import {
 
 export default function Expression() {
   const { $setCard } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
 
   onMount(() => {
     setTimeout(() => {

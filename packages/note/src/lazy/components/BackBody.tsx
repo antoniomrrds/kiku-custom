@@ -10,7 +10,7 @@ import Sentence from "./Sentence";
 
 export default function BackBody(props: { onDefinitionPictureClick?: (picture: string) => void }) {
   const [$modalRef, $setModalRef] = createSignal<HTMLDialogElement>();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
   const { $config } = useConfigContext();
 
   const $glossary = createMemo(() => {
@@ -260,7 +260,7 @@ function ExternalLinks() {
 }
 
 function DefaultExternalLinks() {
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
 
   return (
     <>

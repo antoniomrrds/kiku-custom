@@ -3,8 +3,7 @@ import type { KikuConfig } from "#/src/lib/config";
 import type { Constants } from "#/src/lib/contants";
 import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 import type {
-  AnkiBackFields,
-  AnkiFrontFields,
+  AnkiFields,
   AnkiNote,
   KanjiInfo,
   KanjiInfoCompact,
@@ -182,7 +181,7 @@ export class WorkerThreadApi {
     kanjiList: string[];
     readingList?: string[];
     expressionList?: string[];
-    ankiFields: AnkiFrontFields | AnkiBackFields;
+    ankiFields: AnkiFields;
   }) {
     return new Promise<{
       kanjiResult: Record<string, AnkiNote[]>;
@@ -211,7 +210,7 @@ export class WorkerThreadApi {
     kanjiList: string[];
     readingList: string[];
     expressionList: string[];
-    ankiFields: AnkiFrontFields | AnkiBackFields;
+    ankiFields: AnkiFields;
     resolve: (v: {
       kanjiResult: Record<string, AnkiNote[]>;
       readingResult: Record<string, AnkiNote[]>;

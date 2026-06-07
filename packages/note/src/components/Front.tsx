@@ -25,7 +25,7 @@ const Lazy = {
 
 export function Front() {
   const { $card, $setCard, $isInitialSide } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext<"front">();
+  const { $ankiFields } = useAnkiFieldContext();
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
   const { $config } = useConfigContext();

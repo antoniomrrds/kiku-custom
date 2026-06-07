@@ -100,7 +100,7 @@ function SentenceField() {
   const { $card, $initialSide } = useCardContext();
   const { $pitchType } = usePitch();
   const { $group } = useFieldGroupContext();
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
 
   const $sentence = createMemo(() => {
     const doc = parseHtml($group.sentenceField);

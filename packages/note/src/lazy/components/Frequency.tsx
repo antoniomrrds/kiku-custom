@@ -3,7 +3,7 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { CircleChevronDownIcon } from "./Icons";
 
 export default function Frequency() {
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
   const $freqSort = createMemo(() => $ankiFields.FreqSort);
   const $frequency = createMemo(() => $ankiFields.Frequency);
   return (

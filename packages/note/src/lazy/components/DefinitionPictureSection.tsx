@@ -9,7 +9,7 @@ export default function DefinitionPictureSection(props: {
   onDefinitionPictureClick?: (picture: string) => void;
   currentHtml?: string;
 }) {
-  const { $ankiFields } = useAnkiFieldContext<"back">();
+  const { $ankiFields } = useAnkiFieldContext();
   const { $config } = useConfigContext();
   const collectGlossaryImgs = useCollectGlossaryImgs();
 

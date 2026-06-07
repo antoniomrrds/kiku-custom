@@ -39,10 +39,6 @@ export type AnkiFields = {
   __IS_ROOT__?: boolean;
 };
 
-//TODO: remove
-export type AnkiFrontFields = AnkiFields;
-export type AnkiBackFields = AnkiFields;
-
 export type AnkiNote = {
   cards: number[];
   fields: Record<keyof AnkiFields, { order: number; value: string }>;
