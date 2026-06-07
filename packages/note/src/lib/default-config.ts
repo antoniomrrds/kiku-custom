@@ -14,7 +14,6 @@ export const defaultConfig: KikuConfig = {
   ankiConnectAddress: "http://127.0.0.1:8765",
   ankiDroidEnableIntegration: true,
   ankiDroidReverseSwipeDirection: false,
-  volume: 100,
   swapSentenceAndDefinitionOnMobile: true,
   preferAnkiConnect: false,
   modHidden: false,

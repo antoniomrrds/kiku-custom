@@ -223,30 +223,6 @@ function GeneralSettings() {
         <div class="text-2xl font-bold">General</div>
       </div>
       <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">
-            Web Volume
-            <div
-              class="tooltip"
-              data-tip="Controls the volume of audio played in the webview (Desktop and AnkiWeb only)."
-            >
-              <InfoIcon class="size-4 text-base-content-calm" />
-            </div>
-          </legend>
-
-          <input
-            on:change={(e) => {
-              const value = e.target.value;
-              $setConfig("volume", Number(value));
-            }}
-            type="range"
-            min="0"
-            max={"100"}
-            value={$config.volume.toString()}
-            class="range w-full range-sm"
-            step="1"
-          />
-        </fieldset>
         <fieldset class="fieldset py-0">
           <legend class="fieldset-legend">Blur NSFW</legend>
           <label class="label">

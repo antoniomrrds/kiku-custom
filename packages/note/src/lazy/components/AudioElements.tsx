@@ -1,10 +1,8 @@
 import { createEffect, createMemo, For, on, onMount, Show } from "solid-js";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
-import { useBreakpointContext } from "#/src/contexts/BreakpointContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
-import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
 function AudioTag(props: { text: string }) {
   // Find all `[sound:filename.mp3]` occurrences
@@ -25,12 +23,10 @@ function AudioTag(props: { text: string }) {
 }
 
 export default function AudioElements() {
-  const { $general } = useGeneralContext();
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext<"back">();
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
-  const bp = useBreakpointContext();
   const hiddenStyle = {
     width: "0",
     height: "0",
@@ -62,14 +58,6 @@ export default function AudioElements() {
     on(
       () => $group.sentenceAudioField,
       () => {
-        const useWebVolume = bp.isAtLeast("sm") || $general.isAnkiWeb;
-        $card.expressionAudioRef?.querySelectorAll("audio").forEach((el) => {
-          el.volume = useWebVolume ? $config.volume / 100 : 1;
-        });
-        $card.sentenceAudioRef?.querySelectorAll("audio").forEach((el) => {
-          el.volume = useWebVolume ? $config.volume / 100 : 1;
-        });
-
         if ($card.nested && autoPlay) {
           autoPlay = false;
           const audio = $card.expressionAudioRef?.querySelector("audio");

@@ -14,7 +14,6 @@ export type KikuConfig = {
   ankiConnectAddress: string;
   ankiDroidEnableIntegration: boolean;
   ankiDroidReverseSwipeDirection: boolean;
-  volume: number;
   swapSentenceAndDefinitionOnMobile: boolean;
   preferAnkiConnect: boolean;
   modHidden: boolean;
@@ -100,7 +99,6 @@ export function validateConfig(config: KikuConfig): KikuConfig {
       ankiConnectAddress: typeof config.ankiConnectAddress === "string" ? config.ankiConnectAddress : defaultConfig.ankiConnectAddress,
       ankiDroidEnableIntegration: typeof config.ankiDroidEnableIntegration === "boolean" ? config.ankiDroidEnableIntegration : defaultConfig.ankiDroidEnableIntegration,
       ankiDroidReverseSwipeDirection: typeof config.ankiDroidReverseSwipeDirection === "boolean" ? config.ankiDroidReverseSwipeDirection : defaultConfig.ankiDroidReverseSwipeDirection,
-      volume: typeof config.volume === "number" && config.volume >= 0 && config.volume <= 100 ? config.volume : defaultConfig.volume,
       swapSentenceAndDefinitionOnMobile: typeof config.swapSentenceAndDefinitionOnMobile === "boolean" ? config.swapSentenceAndDefinitionOnMobile : defaultConfig.swapSentenceAndDefinitionOnMobile,
       preferAnkiConnect: typeof config.preferAnkiConnect === "boolean" ? config.preferAnkiConnect : defaultConfig.preferAnkiConnect,
 
