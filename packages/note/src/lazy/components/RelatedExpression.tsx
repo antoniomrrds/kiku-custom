@@ -1,9 +1,11 @@
-import { createMemo, For, Show } from "solid-js";
+import { createEffect, createMemo, For, on, Show } from "solid-js";
 import { ankiFieldsSkeleton } from "#/src/lib/types";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
 export default function RelatedExpression() {
+  const { $general } = useGeneralContext();
   const { $card, $setCard, $initialSide } = useCardContext();
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields } = useAnkiFieldContext();
   const $relatedExpression = createMemo(() => {
@@ -30,6 +32,31 @@ export default function RelatedExpression() {
   const $isFallbackRelatedExpression = createMemo(() => {
     return !$card.query.relatedExpression?.length;
   });
+
+  const played = new Set<string>();
+  createEffect(
+    on(
+      () => $ankiFields.CardID,
+      () => {
+        if ($ankiFields.CardID === initialAnkiFields.CardID) return;
+        if (played.has($ankiFields.CardID)) return;
+        played.add($ankiFields.CardID);
+        const audio =
+          $card.expressionAudioRef?.querySelector("a") ??
+          $card.expressionAudioRef?.querySelector("audio");
+        if (audio) {
+          $general.logger.info("[RelatedExpression] autoPlay: expression");
+          if (audio instanceof HTMLAnchorElement) audio.click();
+          if (audio instanceof HTMLAudioElement) audio.play();
+        } else {
+          $general.logger.debug("[RelatedExpression] autoPlay: no expression audio to play");
+        }
+      },
+      {
+        defer: true,
+      },
+    ),
+  );
 
   return (
     <div class="flex gap-2 sm:gap-4 flex-wrap">
