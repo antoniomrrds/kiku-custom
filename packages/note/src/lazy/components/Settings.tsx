@@ -500,8 +500,7 @@ function ThemeSettings() {
     on(
       $mode,
       (mode) => {
-        const body = document.querySelector("body");
-        if (!body) return;
+        const body = document.body;
         if (mode === "light") body.classList.remove("nightMode");
         if (mode === "dark") body.classList.add("nightMode");
         $setHasModified(true);
@@ -509,6 +508,14 @@ function ThemeSettings() {
       { defer: true },
     ),
   );
+
+  onCleanup(() => {
+    if ($hasModified()) {
+      const body = document.body;
+      if ($general.initialMode === "light") body.classList.remove("nightMode");
+      if ($general.initialMode === "dark") body.classList.add("nightMode");
+    }
+  });
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in">
