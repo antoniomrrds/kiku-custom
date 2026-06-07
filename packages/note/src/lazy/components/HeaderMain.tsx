@@ -1,7 +1,6 @@
 import { createUniqueId, Match, Show, Switch } from "solid-js";
 import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
 import { capitalize } from "#/src/lib/text";
-import { nextTheme } from "#/src/lib/theme";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
@@ -14,7 +13,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
   const { $config } = useConfigContext();
   const { $general } = useGeneralContext();
   const { navigate } = useNavigationTransition();
-  const changeTheme = useThemeTransition();
+  const { $changeThemeNext } = useThemeTransition();
 
   return (
     <HeaderLayout>
@@ -63,15 +62,12 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
             <Show when={$config.showTheme}>
               <button
                 class="flex gap-1 sm:gap-2 items-center cursor-pointer"
-                on:click={() => {
-                  //TODO: dark
-                  if ($general.root) changeTheme(nextTheme($general.root), "light");
-                }}
+                on:click={() => $changeThemeNext()}
                 on:touchend={(e) => e.stopPropagation()}
               >
                 <PaintbrushIcon class="size-5 cursor-pointer text-base-content-soft"></PaintbrushIcon>
                 <span class="text-base-content-soft text-xs sm:text-sm">
-                  {capitalize($config.theme)}
+                  {capitalize($general.initialMode === "light" ? $config.theme : $config.themeDark)}
                 </span>
               </button>
             </Show>

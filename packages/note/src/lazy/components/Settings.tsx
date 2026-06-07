@@ -504,7 +504,7 @@ function ModSettings() {
 function ThemeSettings() {
   const { $config } = useConfigContext();
   const { $general } = useGeneralContext();
-  const changeTheme = useThemeTransition();
+  const { $changeTheme } = useThemeTransition();
   const [$mode, $setMode] = createSignal<"light" | "dark">($general.initialMode);
   const [$hasModified, $setHasModified] = createSignal(false);
 
@@ -561,7 +561,7 @@ function ThemeSettings() {
       <ThemeGrid
         selected={$mode() === "dark" ? $config.themeDark : $config.theme}
         onSelect={(theme) => {
-          changeTheme(theme, $mode());
+          $changeTheme(theme, $mode());
         }}
       />
     </div>

@@ -2,7 +2,7 @@ import { useBreakpointContext } from "#/src/contexts/BreakpointContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
-import type { DaisyUITheme } from "#/src/lib/theme";
+import { daisyUIThemes, type DaisyUITheme } from "#/src/lib/theme";
 
 export function useViewTransition() {
   function startViewTransition(callback: () => void, opts: { beforeCallback?: () => void } = {}) {
@@ -59,11 +59,11 @@ export function useNavigationTransition() {
 
 export function useThemeTransition() {
   const { $general } = useGeneralContext();
-  const { $setConfig } = useConfigContext();
+  const { $config, $setConfig } = useConfigContext();
   const startViewTransition = useViewTransition();
   const { $card } = useCardContext();
 
-  function changeTheme(theme: DaisyUITheme, mode: "light" | "dark") {
+  function $changeTheme(theme: DaisyUITheme, mode: "light" | "dark") {
     const key = mode === "dark" ? "themeDark" : "theme";
     if ($card.query.status === "loading" || $general.isAnkiDesktop) {
       $setConfig(key, theme);
@@ -77,7 +77,15 @@ export function useThemeTransition() {
       });
     }
   }
-  return changeTheme;
+
+  function $changeThemeNext() {
+    const current = $general.initialMode === "light" ? $config.theme : $config.themeDark;
+    const index = daisyUIThemes.indexOf(current);
+    const nextTheme = daisyUIThemes[(index + 1) % daisyUIThemes.length];
+    $changeTheme(nextTheme, $general.initialMode);
+  }
+
+  return { $changeTheme, $changeThemeNext };
 }
 
 export function usePictureModalTransition() {
