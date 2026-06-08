@@ -60,6 +60,8 @@ export const paths = {
   "@/.db/kiku_db_kanji.json":                  p(".db/kiku_db_kanji.json"),
   "@/.db/kiku_db_kanji_compact.json":          p(".db/kiku_db_kanji_compact.json"),
   "@/.db/kiku_db_kanji_compact.json.gz":       p(".db/kiku_db_kanji_compact.json.gz"),
+  "@/.db/kiku_db_terms_compact.json":          p(".db/kiku_db_terms_compact.json"),
+  "@/.db/kiku_db_terms_compact.json.gz":       p(".db/kiku_db_terms_compact.json.gz"),
   "@/.db/_kiku_db_main.tar":                   p(".db/_kiku_db_main.tar"),
   "@/.db/_kiku_db_main_manifest.json":         p(".db/_kiku_db_main_manifest.json"),
 

@@ -73,13 +73,17 @@ export class JmdictParser {
     terms.forEach((term) => {
       term.forms.forEach((form) => {
         if (termMap[form]) {
-          termMap[form] = {
-            forms: Array.from(new Set([...term.forms, ...termMap[form].forms])),
-            reading: Array.from(new Set([...term.reading, ...termMap[form].reading])),
-            meanings: Array.from(new Set([...term.meanings, ...termMap[form].meanings])),
-            antonym: Array.from(new Set([...term.antonym, ...termMap[form].antonym])),
-            referenced: Array.from(new Set([...term.referenced, ...termMap[form].referenced])),
-          };
+          const existing = termMap[form];
+          const hasCommonReading = term.reading.some((r) => existing.reading.includes(r));
+          if (hasCommonReading) {
+            termMap[form] = {
+              forms: existing.forms,
+              reading: Array.from(new Set([...term.reading, ...existing.reading])),
+              meanings: Array.from(new Set([...term.meanings, ...existing.meanings])),
+              antonym: existing.antonym,
+              referenced: existing.referenced,
+            };
+          }
         } else {
           termMap[form] = term;
         }

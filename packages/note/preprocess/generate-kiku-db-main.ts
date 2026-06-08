@@ -1,12 +1,12 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { basename } from "node:path";
 import * as tar from "tar";
 import { paths } from "#/tools/paths.ts";
-import { gzipFile } from "#/tools/util.js";
-import { jmdictParser } from "./parse-jmdict.js";
-import { kanjiVgParser } from "./parse-kanji-vg.js";
-import { jpdbScraper } from "./scrap-jpdb.js";
-import { wkScraper } from "./scrap-wk.js";
+import { gzipFile } from "#/tools/util.ts";
+import { jmdictParser, type JmdictTerm } from "./parse-jmdict.ts";
+import { kanjiVgParser } from "./parse-kanji-vg.ts";
+import { jpdbScraper } from "./scrap-jpdb.ts";
+import { wkScraper } from "./scrap-wk.ts";
 
 type KikuKanji = {
   composedOf: string[];
@@ -36,6 +36,18 @@ type KikuKanjiCompact = [
 
 type KikuDbKanji = Record<string, KikuKanji>;
 type KikuDbKanjiCompact = Record<string, KikuKanjiCompact>;
+
+type KikuTerm = {
+  forms: string[];
+  antonym: string[];
+  referenced: string[];
+};
+
+type KikuTermCompact = [
+  string[], // forms
+  string[], // antonym
+  string[], // referenced
+];
 
 type KikuDbMainManifest = {
   files: Record<string, { start: number; end: number; size: number }>;
@@ -183,10 +195,32 @@ class Script {
     );
   }
 
+  async writeKikuDbTerms() {
+    const termMap = JSON.parse(await readFile(paths["@/.jmdict/termMap.json"], "utf8")) as Record<
+      string,
+      JmdictTerm
+    >;
+
+    const kikuDbTerms: Record<string, KikuTermCompact> = {};
+    for (const [term, entry] of Object.entries(termMap)) {
+      kikuDbTerms[term] = [entry.forms, entry.antonym, entry.referenced];
+    }
+
+    await writeFile(paths["@/.db/kiku_db_terms_compact.json"], JSON.stringify(kikuDbTerms));
+  }
+
+  async gzipKikuDbTermsCompactJson() {
+    await gzipFile(
+      paths["@/.db/kiku_db_terms_compact.json"],
+      paths["@/.db/kiku_db_terms_compact.json.gz"],
+      false,
+    );
+  }
+
   async generateDbMainTar() {
     const filesToInclude = [
       paths["@/.db/kiku_db_kanji_compact.json.gz"],
-      // paths["@/.db/kiku_db_kanji_compact.json"],
+      paths["@/.db/kiku_db_terms_compact.json.gz"],
     ].map((file) => basename(file));
 
     await tar.create(
@@ -228,7 +262,7 @@ class Script {
           size: fileSize,
         };
 
-        offset += entry.startBlockSize; // skip header + padded data
+        offset += headerSize + entry.startBlockSize; // skip header + padded data
       },
     });
 
@@ -236,18 +270,12 @@ class Script {
   }
 }
 
-const kikuDbMainScript = new Script();
-// step 1
+export const kikuDbMainScript = new Script();
+
 // await kikuDbMainScript.compareKanjiVgAndJpdb();
-
-// step 2
 // await kikuDbMainScript.writeKikuDbKanji();
-
-// step 3
 // await kikuDbMainScript.gzipKikuDbKanjiCompactJson();
-
-// step 4
-await kikuDbMainScript.generateDbMainTar();
-
-// step 5
+// await kikuDbMainScript.writeKikuDbTerms();
+// await kikuDbMainScript.gzipKikuDbTermsCompactJson();
+// await kikuDbMainScript.generateDbMainTar();
 await kikuDbMainScript.writeDbMainManifest();
