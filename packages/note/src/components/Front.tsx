@@ -3,7 +3,7 @@ import { isServer } from "solid-js/web";
 import { useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
 import { useLoadPlugin } from "#/src/hooks/plugin";
-import { useKanji } from "#/src/hooks/kanji";
+import { useQueryNotes } from "#/src/hooks/query";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
@@ -32,7 +32,7 @@ export function Front() {
   const { $config } = useConfigContext();
   const { $general } = useGeneralContext();
   const loadPlugin = useLoadPlugin();
-  useKanji();
+  useQueryNotes();
   const $hidden = createMemo(() => {
     if (isServer) return true;
     if (!$isInitialSide()) return false;

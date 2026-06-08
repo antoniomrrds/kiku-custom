@@ -3,7 +3,7 @@ import { isServer } from "solid-js/web";
 import { CardStoreContextProvider, useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
 import { isNsfw } from "#/src/lib/util";
-import { useKanji } from "#/src/hooks/kanji";
+import { useQueryNotes } from "#/src/hooks/query";
 import { useLoadPlugin } from "#/src/hooks/plugin";
 import { useNavigationTransition, usePictureModalTransition } from "#/src/hooks/transition";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
@@ -41,7 +41,7 @@ export function Back(props: { onExitNested?: () => void }) {
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
   const { $general } = useGeneralContext();
-  useKanji();
+  useQueryNotes();
   usePitch();
 
   onMount(() => {

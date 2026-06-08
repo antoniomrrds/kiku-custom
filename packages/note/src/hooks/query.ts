@@ -11,16 +11,16 @@ import { type AnkiNote, type Source } from "#/src/lib/types";
 import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 import { createWorkerApi } from "#/src/worker/client";
 
-export function useKanji() {
+export function useQueryNotes() {
   const { $config } = useConfigContext();
   const { $card, $setCard, $initialSide } = useCardContext();
   const { initialAnkiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $general, $setGeneral } = useGeneralContext();
   const cacheStore = useCacheContext();
 
-  let set = false;
-  async function setKanji() {
-    set = true;
+  let fetched = false;
+  async function query() {
+    fetched = true;
     try {
       const ankiFields = initialAnkiFields;
       const isFront = $initialSide() === "front";
@@ -160,9 +160,7 @@ export function useKanji() {
   }
 
   createEffect(() => {
-    if (!set && $card.ready) {
-      setKanji();
-    }
+    if (!fetched && $card.ready) query();
   });
 }
 

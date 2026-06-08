@@ -2,7 +2,7 @@ import { createUniqueId, Match, Show, Switch } from "solid-js";
 import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
 import { capitalize } from "#/src/lib/text";
 import { useCardContext } from "#/src/contexts/CardContext";
-import { useRelatedItems } from "#/src/hooks/kanji";
+import { useRelatedItems } from "#/src/hooks/query";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderLayout from "./HeaderLayout";

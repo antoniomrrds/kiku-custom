@@ -2,7 +2,7 @@ import { createMemo, createSignal, For, type JSX, Match, onMount, Show, Switch }
 import { useCardContext } from "#/src/contexts/CardContext";
 import { parseHtml } from "#/src/lib/dom";
 import { useNavigationTransition } from "#/src/hooks/transition";
-import { useRelatedItems } from "#/src/hooks/kanji";
+import { useRelatedItems } from "#/src/hooks/query";
 import { extractKanji } from "#/src/lib/kana";
 import { parseFurigana } from "#/src/lib/parse-furigana";
 import { type AnkiFields, type AnkiNote, type Source, ankiFieldsSkeleton } from "#/src/lib/types";
