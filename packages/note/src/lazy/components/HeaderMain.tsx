@@ -2,6 +2,7 @@ import { createUniqueId, Match, Show, Switch } from "solid-js";
 import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
 import { capitalize } from "#/src/lib/text";
 import { useCardContext } from "#/src/contexts/CardContext";
+import { useRelatedItems } from "#/src/hooks/kanji";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderLayout from "./HeaderLayout";
@@ -88,11 +89,13 @@ function KanjiPageIndicator() {
   const { $card, $setCard } = useCardContext();
   const { navigate } = useNavigationTransition();
 
+  const $relatedItems = useRelatedItems();
+
   const length = () =>
     $card.query.noteList.length +
     ($card.query.sameReading?.length ? 1 : 0) +
     ($card.query.sameExpression?.length ? 1 : 0) +
-    ($card.query.relatedExpression?.length ? 1 : 0);
+    ($relatedItems().length ? 1 : 0);
 
   const onClick = ({
     initialTab,
@@ -104,7 +107,7 @@ function KanjiPageIndicator() {
     const isKanjiResult = $card.query.noteList.length > 0;
     const isSameReadingResult = ($card.query.sameReading?.length ?? 0) > 0;
     const isSameExpressionResult = ($card.query.sameExpression?.length ?? 0) > 0;
-    const isRelatedResult = ($card.query.relatedExpression?.length ?? 0) > 0;
+    const isRelatedResult = $relatedItems().length > 0;
     const canOpen =
       (initialTab === "kanji" && isKanjiResult) ||
       (initialTab === "reading" && isSameReadingResult) ||
@@ -207,7 +210,7 @@ function KanjiPageIndicator() {
             "p-0": length() > 4,
           }}
         >
-          {$card.query.relatedExpression?.length ?? 0}
+          {$relatedItems().length}
         </span>
       </button>
     );
@@ -227,7 +230,7 @@ function KanjiPageIndicator() {
         when={
           $card.query.sameReading?.length ||
           $card.query.sameExpression?.length ||
-          $card.query.relatedExpression?.length
+          $relatedItems().length
         }
       >
         <span>•</span>
@@ -238,7 +241,7 @@ function KanjiPageIndicator() {
       <Show when={$card.query.sameExpression?.length}>
         <SameExpressionIndicator />
       </Show>
-      <Show when={$card.query.relatedExpression?.length}>
+      <Show when={$relatedItems().length}>
         <RelatedExpressionIndicator />
       </Show>
     </div>

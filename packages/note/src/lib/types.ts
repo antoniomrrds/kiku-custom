@@ -79,6 +79,20 @@ export type KanjiInfo = {
   related: string[];
 };
 
+export type TermInfo = {
+  forms: string[];
+  antonym: string[];
+  referenced: string[];
+};
+
+export type TermInfoCompact = [
+  string[], // forms
+  string[], // antonym
+  string[], // referenced
+];
+
+export type Source = "forms" | "antonym" | "referenced" | "related";
+
 export type KanjiInfoCompact = [
   string[], // composedOf
   string[], // usedIn

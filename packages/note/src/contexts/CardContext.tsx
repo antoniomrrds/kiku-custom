@@ -18,6 +18,9 @@ type Query = {
   sameReading: AnkiNote[] | undefined;
   sameExpression: AnkiNote[] | undefined;
   relatedExpression: AnkiNote[] | undefined;
+  forms: AnkiNote[] | undefined;
+  antonym: AnkiNote[] | undefined;
+  referenced: AnkiNote[] | undefined;
   noteList: [string, AnkiNote[]][];
   newNotes: number[];
 };
@@ -81,6 +84,9 @@ export function CardStoreContextProvider(props: {
       sameReading: undefined,
       sameExpression: undefined,
       relatedExpression: undefined,
+      forms: undefined,
+      antonym: undefined,
+      referenced: undefined,
       noteList: [],
       newNotes: [],
     },

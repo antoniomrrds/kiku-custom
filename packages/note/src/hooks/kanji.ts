@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js";
+import { createEffect, createMemo } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCacheContext } from "#/src/contexts/CacheContext";
@@ -7,13 +7,14 @@ import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { constants } from "#/src/lib/contants";
 import { extractKanji } from "#/src/lib/kana";
+import { type AnkiNote, type Source } from "#/src/lib/types";
 import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 import { createWorkerApi } from "#/src/worker/client";
 
 export function useKanji() {
   const { $config } = useConfigContext();
   const { $card, $setCard, $initialSide } = useCardContext();
-  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
+  const { initialAnkiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $general, $setGeneral } = useGeneralContext();
   const cacheStore = useCacheContext();
 
@@ -21,7 +22,7 @@ export function useKanji() {
   async function setKanji() {
     set = true;
     try {
-      const ankiFields = unwrap($ankiFields);
+      const ankiFields = initialAnkiFields;
       const isFront = $initialSide() === "front";
       $general.logger.info("[Kanji] setKanji start:", {
         expression: ankiFields.Expression,
@@ -61,6 +62,19 @@ export function useKanji() {
       if (cacheStore && !cacheStore.workerApi) {
         cacheStore.workerApi = workerApi;
       }
+
+      let termInfo: Awaited<ReturnType<typeof workerApi.lookupTerm>> | undefined;
+      if (!isFront && ankiFields.Expression) {
+        termInfo = await workerApi.lookupTerm(ankiFields.Expression);
+        //oxfmt-ignore
+        if (termInfo) {
+          const seen = new Set(expressionList);
+          for (const f of termInfo.forms) if (!seen.has(f)) { seen.add(f); expressionList.push(f); }
+          for (const a of termInfo.antonym) if (!seen.has(a)) { seen.add(a); expressionList.push(a); }
+          for (const r of termInfo.referenced) if (!seen.has(r)) { seen.add(r); expressionList.push(r); }
+        }
+      }
+
       //TODO: no newNotes if front
       const { kanjiResult, readingResult, expressionResult, newNotes } =
         await workerApi.queryShared({
@@ -77,6 +91,15 @@ export function useKanji() {
         (n) => n.fields.Expression.value === ankiFields.Expression,
       );
 
+      let formsResult: AnkiNote[] = [];
+      let antonymResult: AnkiNote[] = [];
+      let referencedResult: AnkiNote[] = [];
+      if (termInfo) {
+        formsResult = termInfo.forms.flatMap((f) => expressionResult[f] ?? []);
+        antonymResult = termInfo.antonym.flatMap((a) => expressionResult[a] ?? []);
+        referencedResult = termInfo.referenced.flatMap((r) => expressionResult[r] ?? []);
+      }
+
       if (isFront) {
         $setCard("query", {
           status: "success",
@@ -84,6 +107,9 @@ export function useKanji() {
           sameReading: [],
           sameExpression,
           relatedExpression: [],
+          forms: [],
+          antonym: [],
+          referenced: [],
           newNotes,
         });
       } else {
@@ -103,6 +129,9 @@ export function useKanji() {
           sameReading: readingResult[ankiFields.ExpressionReading],
           sameExpression,
           relatedExpression: uniqueRelated,
+          forms: formsResult,
+          antonym: antonymResult,
+          referenced: referencedResult,
           newNotes,
         });
       }
@@ -134,5 +163,46 @@ export function useKanji() {
     if (!set && $card.ready) {
       setKanji();
     }
+  });
+}
+
+export function useRelatedItems() {
+  const { $card } = useCardContext();
+  const { initialAnkiFields } = useAnkiFieldContext();
+
+  return createMemo(() => {
+    const currentExpression = initialAnkiFields.Expression;
+    const noteMap = new Map<number, { note: AnkiNote; sources: Source[] }>();
+
+    for (const note of $card.query.relatedExpression ?? []) {
+      if (!noteMap.has(note.noteId)) noteMap.set(note.noteId, { note, sources: ["related"] });
+    }
+    for (const note of $card.query.forms ?? []) {
+      if (note.fields.Expression.value === currentExpression) continue;
+      const existing = noteMap.get(note.noteId);
+      if (existing) {
+        existing.sources = [...new Set<Source>([...existing.sources, "forms"])];
+      } else {
+        noteMap.set(note.noteId, { note, sources: ["forms"] });
+      }
+    }
+    for (const note of $card.query.antonym ?? []) {
+      const existing = noteMap.get(note.noteId);
+      if (existing) {
+        existing.sources = [...new Set<Source>([...existing.sources, "antonym"])];
+      } else {
+        noteMap.set(note.noteId, { note, sources: ["antonym"] });
+      }
+    }
+    for (const note of $card.query.referenced ?? []) {
+      const existing = noteMap.get(note.noteId);
+      if (existing) {
+        existing.sources = [...new Set<Source>([...existing.sources, "referenced"])];
+      } else {
+        noteMap.set(note.noteId, { note, sources: ["referenced"] });
+      }
+    }
+
+    return [...noteMap.values()];
   });
 }

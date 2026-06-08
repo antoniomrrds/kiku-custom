@@ -9,6 +9,8 @@ import type {
   KanjiInfoCompact,
   KikuDbMainManifest,
   KikuNotesManifest,
+  TermInfo,
+  TermInfoCompact,
 } from "#/src/lib/types";
 
 import { AnkiConnect } from "./AnkiConnect";
@@ -317,6 +319,47 @@ export class WorkerThreadApi {
     return result;
   }
 
+  lookupTermPromise: PromiseWithResolvers<Record<string, TermInfo>> | undefined;
+  async lookupTerm(term: string): Promise<TermInfo | undefined> {
+    const key = this.lookupTerm.name;
+    const cached = this.cache.get(key);
+    let result: TermInfo | undefined;
+    if (cached) {
+      result = cached[term];
+    } else if (this.lookupTermPromise) {
+      result = (await this.lookupTermPromise.promise)[term];
+    } else {
+      this.lookupTermPromise = Promise.withResolvers();
+      const manifest = await this.dbMainManifest();
+      const file = manifest.files[this.constants.tar["kiku_db_terms_compact.json.gz"]];
+      const buf = await this.main.fetchArrayBuffer(
+        `${this.assetsPath}/${this.constants.assets["_kiku_db_main.tar"]}`,
+        {
+          headers: { Range: `bytes=${file.start}-${file.end}` },
+        },
+        {
+          range: {
+            start: file.start,
+            end: file.end,
+            size: file.size,
+          },
+        },
+      );
+
+      const text = await gunzipArrayBuffer(buf).text();
+      const dbTermsCompact = JSON.parse(text);
+      const dbTerms: Record<string, TermInfo> = {};
+      for (const term of Object.keys(dbTermsCompact)) {
+        const data = fromCompactTerm(dbTermsCompact[term]);
+        if (data) dbTerms[term] = data;
+      }
+      this.cache.set(key, dbTerms);
+      this.lookupTermPromise.resolve(dbTerms);
+      result = dbTerms[term];
+    }
+    return result;
+  }
+
   async dbMainManifest(): Promise<KikuDbMainManifest> {
     const key = this.dbMainManifest.name;
     if (this.cache.has(key)) return this.cache.get(key);
@@ -377,5 +420,14 @@ function fromCompact(c: KanjiInfoCompact | undefined): KanjiInfo | undefined {
     kind: c[7],
     visuallySimilar: c[8],
     related: c[9],
+  };
+}
+
+function fromCompactTerm(c: TermInfoCompact | undefined): TermInfo | undefined {
+  if (!c) return undefined;
+  return {
+    forms: c[0],
+    antonym: c[1],
+    referenced: c[2],
   };
 }

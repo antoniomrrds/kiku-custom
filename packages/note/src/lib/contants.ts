@@ -38,6 +38,7 @@ export const constants = {
   assets,
   tar: {
     "kiku_db_kanji_compact.json.gz": "kiku_db_kanji_compact.json.gz",
+    "kiku_db_terms_compact.json.gz": "kiku_db_terms_compact.json.gz",
   },
   IMPORTANT_FILES: [
     assets["_kiku.js"],

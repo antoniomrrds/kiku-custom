@@ -2,9 +2,10 @@ import { createMemo, createSignal, For, type JSX, Match, onMount, Show, Switch }
 import { useCardContext } from "#/src/contexts/CardContext";
 import { parseHtml } from "#/src/lib/dom";
 import { useNavigationTransition } from "#/src/hooks/transition";
+import { useRelatedItems } from "#/src/hooks/kanji";
 import { extractKanji } from "#/src/lib/kana";
 import { parseFurigana } from "#/src/lib/parse-furigana";
-import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/src/lib/types";
+import { type AnkiFields, type AnkiNote, type Source, ankiFieldsSkeleton } from "#/src/lib/types";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderKanjiPage from "./HeaderKanjiPage";
@@ -15,6 +16,7 @@ import {
   KanjiPageContextProvider,
   useKanjiPageContext,
 } from "#/src/lazy/contexts/KanjiPageContext";
+import { capitalize } from "#/src/lib/text";
 
 export default function KanjiPage() {
   const { $card } = useCardContext();
@@ -37,7 +39,7 @@ export default function KanjiPage() {
 }
 
 function Page() {
-  const { onKanjiPageMount } = useCardContext();
+  const { $card, onKanjiPageMount } = useCardContext();
   const { $general } = useGeneralContext();
   const { $ankiFields } = useAnkiFieldContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
@@ -48,9 +50,9 @@ function Page() {
   const $hasSameExpression = createMemo(
     () => $kanjiPage.sameExpression && $kanjiPage.sameExpression.length > 0,
   );
-  const $hasRelatedExpression = createMemo(
-    () => $kanjiPage.relatedExpression && $kanjiPage.relatedExpression.length > 0,
-  );
+  const $relatedItems = useRelatedItems();
+
+  const $hasRelatedExpression = createMemo(() => $relatedItems().length > 0);
   const $title = createMemo(() => {
     if ($kanjiPage.tab === "kanji") {
       if ($kanjiPage.contextLabel?.type === "similar") return "Similar";
@@ -132,7 +134,7 @@ function Page() {
             <TabItem
               active={$kanjiPage.tab === "related"}
               disabled={!$hasRelatedExpression()}
-              count={$kanjiPage.relatedExpression?.length ?? 0}
+              count={$relatedItems().length}
               onClick={() => {
                 if ($hasRelatedExpression()) $setKanjiPage("tab", "related");
               }}
@@ -213,7 +215,7 @@ function Page() {
                 <NoteList list={$kanjiPage.sameExpression ?? []} />
               </Match>
               <Match when={$kanjiPage.tab === "related"}>
-                <NoteList list={$kanjiPage.relatedExpression ?? []} />
+                <NoteList items={$relatedItems()} />
               </Match>
             </Switch>
           </div>
@@ -309,19 +311,22 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
   );
 }
 
-function NoteList(props: { list: AnkiNote[] }) {
+function NoteList(props: { list?: AnkiNote[]; items?: { note: AnkiNote; sources: Source[] }[] }) {
   return (
     <ul class="list bg-base-100 rounded-box shadow-md animate-fade-in">
-      <For each={props.list ?? []}>
-        {(data) => {
-          return <AnkiNoteItem data={data} />;
+      <For each={props.items ?? props.list ?? []}>
+        {(item) => {
+          if ("note" in item) {
+            return <AnkiNoteItem data={item.note} sources={item.sources} />;
+          }
+          return <AnkiNoteItem data={item} />;
         }}
       </For>
     </ul>
   );
 }
 
-function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
+function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string; sources?: Source[] }) {
   const { navigate } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
   const { $setKanjiPage } = useKanjiPageContext();
@@ -438,6 +443,25 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string }) {
           <div class="text-base-content-calm text-xs sm:text-sm">
             {new Date($data().noteId).toLocaleDateString()}
           </div>
+          <Show when={props.sources && props.sources.length > 0}>
+            <div class="flex gap-1 flex-wrap">
+              <For each={props.sources}>
+                {(s) => (
+                  <span
+                    class="badge badge-sm"
+                    classList={{
+                      "badge-primary": s === "related",
+                      "badge-success": s === "forms",
+                      "badge-error": s === "antonym",
+                      "badge-warning": s === "referenced",
+                    }}
+                  >
+                    {capitalize(s)}
+                  </span>
+                )}
+              </For>
+            </div>
+          </Show>
         </div>
         <Show when={$isNew() || $leech()}>
           <div class="flex items-center gap-1">
