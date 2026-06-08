@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
 import { paths } from "#/tools/paths.ts";
-import { sleep } from "#/tools/util.js";
+import { sleep } from "#/tools/util.ts";
 
 type WkKanji = {
   visuallySimilar: string[];
@@ -268,23 +268,10 @@ class WkScraper {
 export const wkScraper = new WkScraper();
 await wkScraper.ensureWkDir();
 
-//step 1
 // await wkScraper.writeWkKanjiHtml();
-
-//step 2
 // await wkScraper.writeAllKanji();
-
-//step 3
 // await wkScraper.writeWkKanjiInfoHtml();
-
-//step 4
 // await wkScraper.writeParsedKanjiJson();
-
-//step 5
 // await wkScraper.writeWkVocabHtml();
-
-//step 6
 // await wkScraper.writeAllVocab();
-
-//step 7
 // await wkScraper.writeWkVocabInfoHtml();

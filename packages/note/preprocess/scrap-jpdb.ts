@@ -2,7 +2,7 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
 import { paths } from "#/tools/paths.ts";
-import { gzipFile } from "#/tools/util.js";
+import { gzipFile } from "#/tools/util.ts";
 
 type Kanji = {
   position: string;
@@ -271,17 +271,8 @@ class JpdbScraper {
 export const jpdbScraper = new JpdbScraper();
 await jpdbScraper.ensureDir();
 
-// step 1
 // jpdbScraper.writeKanjiByFrequencyHtml();
-
-// step 2
 // await jpdbScraper.writeKanjiByFrequencyJson();
-
-// step 3
 // await jpdbScraper.writeKanjiHtml();
-
-// step 4
 // await jpdbScraper.writeKanjiJson();
-
-// step 5
 // await jpdbScraper.gzipKanjiJson();

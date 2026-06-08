@@ -95,8 +95,6 @@ class KanjiVgParser {
 }
 
 export const kanjiVgParser = new KanjiVgParser();
-// step 1
-// await kanjiVgParser.fetchAndExtractKanjiVG();
 
-// step 2
+// await kanjiVgParser.fetchAndExtractKanjiVG();
 // await kanjiVgParser.writeKanjiVgJson();

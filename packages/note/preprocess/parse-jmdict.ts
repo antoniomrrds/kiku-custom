@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as cheerio from "cheerio";
 import { paths } from "#/tools/paths.ts";
 
-type JmdictTerm = {
+export type JmdictTerm = {
   forms: string[];
   reading: string[];
   meanings: string[];
@@ -100,8 +100,5 @@ export class JmdictParser {
 
 export const jmdictParser = new JmdictParser();
 
-// step 1
 // await jmdictParser.writeTerm();
-
-// step 2
 // await jmdictParser.writeTermMap();
