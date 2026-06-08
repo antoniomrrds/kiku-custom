@@ -1,8 +1,10 @@
 import { createEffect, createMemo, For, on, Show } from "solid-js";
-import { ankiFieldsSkeleton } from "#/src/lib/types";
+import { ankiFieldsSkeleton, type AnkiNote } from "#/src/lib/types";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
+
+const sortNote = (a: AnkiNote, b: AnkiNote) => b.noteId - a.noteId;
 
 export default function RelatedExpression() {
   const { $general } = useGeneralContext();
@@ -14,24 +16,36 @@ export default function RelatedExpression() {
         .filter((v) => {
           return v.fields["ExpressionReading"].value !== initialAnkiFields.ExpressionReading;
         })
-        .sort((a, b) => b.noteId - a.noteId);
+        .sort(sortNote);
     }
 
-    if ($card.query.relatedExpression?.length) return $card.query.relatedExpression;
-    return [
+    const fallbackPriority1 = [
       ...($card.query.sameExpression ?? []),
       ...($card.query.sameReading ?? []),
       ...$card.query.noteList.flatMap((n) => {
         return n[1];
       }),
-    ]
-      .sort((a, b) => b.noteId - a.noteId)
-      .slice(0, 2);
+    ].sort(sortNote);
+
+    const fallbackPriority2 = [
+      ...($card.query.forms ?? []),
+      ...($card.query.antonym ?? []),
+      ...($card.query.referenced ?? []),
+    ].sort(sortNote);
+
+    if ($card.query.relatedExpression?.length) {
+      if ($card.query.relatedExpression.length < 2) {
+        return [...$card.query.relatedExpression, ...fallbackPriority2].slice(0, 2);
+      }
+      return $card.query.relatedExpression;
+    }
+
+    return [...fallbackPriority2, ...fallbackPriority1].slice(0, 2);
   });
 
-  const $isFallbackRelatedExpression = createMemo(() => {
-    return !$card.query.relatedExpression?.length;
-  });
+  const isExplicitRelatedExpression = (note: AnkiNote) => {
+    return $card.query.relatedExpression?.some((n) => n.noteId === note.noteId);
+  };
 
   const played = new Set<string>();
   createEffect(
@@ -84,13 +98,13 @@ export default function RelatedExpression() {
               class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
               classList={{
                 "text-base-content-soft underline underline-offset-4":
-                  $ankiFields.CardID !== cardId && !$isFallbackRelatedExpression(),
+                  $ankiFields.CardID !== cardId && isExplicitRelatedExpression(note),
                 "text-base-content-soft":
-                  $ankiFields.CardID !== cardId && $isFallbackRelatedExpression(),
+                  $ankiFields.CardID !== cardId && !isExplicitRelatedExpression(note),
                 "text-base-content underline underline-offset-4":
-                  $ankiFields.CardID === cardId && !$isFallbackRelatedExpression(),
+                  $ankiFields.CardID === cardId && isExplicitRelatedExpression(note),
                 "text-base-content":
-                  $ankiFields.CardID === cardId && $isFallbackRelatedExpression(),
+                  $ankiFields.CardID === cardId && !isExplicitRelatedExpression(note),
               }}
               on:click={() => {
                 $setAnkiFields({
