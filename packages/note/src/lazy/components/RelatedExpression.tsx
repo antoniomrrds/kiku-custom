@@ -78,7 +78,6 @@ export default function RelatedExpression() {
       </Show>
       <For each={$relatedExpression()}>
         {(note) => {
-          // TODO: I'm not sure how to handle if the note has multiple cards
           const cardId = note.cards[0]?.toString() ?? "";
           return (
             <button

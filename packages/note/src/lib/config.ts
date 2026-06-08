@@ -277,15 +277,6 @@ export function updateConfigState({
         .replace(DARK_VARS_REGEX, darkTemplate);
     }
   }
-
-  // TODO: do we still need this?
-  // const cssVar = getCssVar(config);
-  // Object.entries(cssVar).forEach(([key, value]) => {
-  //   if (updateDocument) {
-  //     document.documentElement.style.setProperty(key, value);
-  //   }
-  //   root.style.setProperty(key, value);
-  // });
 }
 
 export function generateCssVars(vars: Record<string, string>): string {
