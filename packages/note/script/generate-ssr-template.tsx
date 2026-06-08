@@ -2,15 +2,15 @@ import { createStore } from "solid-js/store";
 import { generateHydrationScript, renderToString } from "solid-js/web";
 import { Front } from "#/src/components/Front";
 import { Layout } from "#/src/components/Layout";
-import { AnkiFieldContextProvider } from "#/src/contexts/AnkiFieldsContext";
+import {
+  AnkiFieldContextProvider,
+  RootAnkiFieldsContextProvider,
+} from "#/src/contexts/AnkiFieldsContext";
 import { CacheContextProvider } from "#/src/contexts/CacheContext";
 import { CardStoreContextProvider } from "#/src/contexts/CardContext";
 import { ConfigContextProvider } from "#/src/contexts/ConfigContext";
 import { CtxContextProvider } from "#/src/contexts/CtxContext";
-import {
-  FieldGroupContextProvider,
-  RootFieldGroupContextProvider,
-} from "#/src/contexts/FieldGroupContext";
+import { FieldGroupContextProvider } from "#/src/contexts/FieldGroupContext";
 import { GeneralContextProvider } from "#/src/contexts/GeneralContext";
 import { Logger } from "#/src/lib/logger";
 import { ankiFieldsSkeleton } from "#/src/lib/types";
@@ -44,17 +44,17 @@ export function generateSsrTemplate() {
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
-              <CardStoreContextProvider initialSide="front" initialNsfw={false}>
-                <FieldGroupContextProvider>
-                  <RootFieldGroupContextProvider>
+              <RootAnkiFieldsContextProvider>
+                <CardStoreContextProvider initialSide="front" initialNsfw={false}>
+                  <FieldGroupContextProvider>
                     <CtxContextProvider>
                       <Layout>
                         <Front />
                       </Layout>
                     </CtxContextProvider>
-                  </RootFieldGroupContextProvider>
-                </FieldGroupContextProvider>
-              </CardStoreContextProvider>
+                  </FieldGroupContextProvider>
+                </CardStoreContextProvider>
+              </RootAnkiFieldsContextProvider>
             </AnkiFieldContextProvider>
           </ConfigContextProvider>
         </GeneralContextProvider>
@@ -81,17 +81,17 @@ export function generateSsrTemplate() {
         >
           <ConfigContextProvider value={{ $config: $config, $setConfig: $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
-              <CardStoreContextProvider initialSide="back" initialNsfw={false}>
-                <FieldGroupContextProvider>
-                  <RootFieldGroupContextProvider>
+              <RootAnkiFieldsContextProvider>
+                <CardStoreContextProvider initialSide="back" initialNsfw={false}>
+                  <FieldGroupContextProvider>
                     <CtxContextProvider>
                       <Layout>
                         <Back />
                       </Layout>
                     </CtxContextProvider>
-                  </RootFieldGroupContextProvider>
-                </FieldGroupContextProvider>
-              </CardStoreContextProvider>
+                  </FieldGroupContextProvider>
+                </CardStoreContextProvider>
+              </RootAnkiFieldsContextProvider>
             </AnkiFieldContextProvider>
           </ConfigContextProvider>
         </GeneralContextProvider>

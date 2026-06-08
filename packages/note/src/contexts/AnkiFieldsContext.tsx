@@ -50,3 +50,26 @@ export function useAnkiFieldContext() {
 }
 
 export type UseAnkiFieldContext = typeof useAnkiFieldContext;
+
+const RootAnkiFieldsContext = createContext<{
+  $ankiFields: Store<AnkiFields>;
+  $setAnkiFields: SetStoreFunction<AnkiFields>;
+  $isRootAnkiFields: Accessor<boolean>;
+  noteId?: number;
+  initialAnkiFields: AnkiFields;
+  resetAnkiFields: () => void;
+}>();
+
+export function RootAnkiFieldsContextProvider(props: { children: JSX.Element }) {
+  const value = useAnkiFieldContext();
+
+  return (
+    <RootAnkiFieldsContext.Provider value={value}>{props.children}</RootAnkiFieldsContext.Provider>
+  );
+}
+
+export function useRootAnkiFieldsContext() {
+  const value = useContext(RootAnkiFieldsContext);
+  if (!value) throw new Error("Missing RootAnkiFieldsContext");
+  return value;
+}

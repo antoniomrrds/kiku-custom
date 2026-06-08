@@ -39,9 +39,9 @@ export default function KanjiPage() {
 }
 
 function Page() {
-  const { $card, onKanjiPageMount } = useCardContext();
+  const { onKanjiPageMount } = useCardContext();
   const { $general } = useGeneralContext();
-  const { $ankiFields } = useAnkiFieldContext();
+  const { initialAnkiFields } = useAnkiFieldContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
   const $hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
   const $hasSameReading = createMemo(
@@ -66,10 +66,10 @@ function Page() {
     if ($kanjiPage.tab === "related") return "Related";
   });
 
-  const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
+  const $doc = createMemo(() => parseHtml(initialAnkiFields.ExpressionFurigana));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));
   const $furiganaData = createMemo(() =>
-    parseFurigana($isRuby() ? "" : $ankiFields.ExpressionFurigana),
+    parseFurigana($isRuby() ? "" : initialAnkiFields.ExpressionFurigana),
   );
 
   onMount(() => {
@@ -147,22 +147,23 @@ function Page() {
               <Switch>
                 <Match when={$kanjiPage.contextLabel}>{$kanjiPage.contextLabel?.text}</Match>
                 <Match when={$isRuby()}>
-                  <div innerHTML={$ankiFields.ExpressionFurigana}></div>
+                  <div innerHTML={initialAnkiFields.ExpressionFurigana}></div>
                 </Match>
                 <Match
                   when={
-                    $furiganaData().length === 0 || !$ankiFields.ExpressionFurigana.includes("[")
+                    $furiganaData().length === 0 ||
+                    !initialAnkiFields.ExpressionFurigana.includes("[")
                   }
                 >
                   <ruby>
-                    {$ankiFields.Expression}
+                    {initialAnkiFields.Expression}
                     <Show
                       when={
-                        $ankiFields.ExpressionFurigana &&
-                        extractKanji($ankiFields.Expression).length > 0
+                        initialAnkiFields.ExpressionFurigana &&
+                        extractKanji(initialAnkiFields.Expression).length > 0
                       }
                     >
-                      <rt>{$ankiFields.ExpressionReading}</rt>
+                      <rt>{initialAnkiFields.ExpressionReading}</rt>
                     </Show>
                   </ruby>
                 </Match>

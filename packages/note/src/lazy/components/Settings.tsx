@@ -8,7 +8,6 @@ import {
   onMount,
   Show,
 } from "solid-js";
-import { unwrap } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/src/lib/anki-connect";
 import {
@@ -938,7 +937,7 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
 
 function DebugSettings() {
   const { $config, $setConfig } = useConfigContext();
-  const { $ankiFields } = useAnkiFieldContext();
+  const { initialAnkiFields } = useAnkiFieldContext();
   const [$kikuFiles, $setKikuFiles] = createSignal<string>();
   const [$missingFiles, $setMissingFiles] = createSignal<string>();
   const { $general } = useGeneralContext();
@@ -1081,7 +1080,7 @@ function DebugSettings() {
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Anki Fields</div>
-              <ClipboardCopyButton text={() => JSON.stringify(unwrap($ankiFields), null, 2)} />
+              <ClipboardCopyButton text={() => JSON.stringify(initialAnkiFields, null, 2)} />
             </div>
 
             <Show when={$initialSide() === "front"}>
@@ -1090,7 +1089,7 @@ function DebugSettings() {
               </div>
             </Show>
             <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">
-              {JSON.stringify(unwrap($ankiFields), null, 2)}
+              {JSON.stringify(initialAnkiFields, null, 2)}
             </pre>
           </div>
           <Show when={$kikuFiles()}>

@@ -22,7 +22,6 @@ const FieldGroupContext = createContext<{
   $setGroup: SetStoreFunction<GroupStore>;
   $next: () => boolean;
   $prev: () => boolean;
-  $ankiFields: Store<AnkiFields>;
 }>();
 
 export function FieldGroupContextProvider(props: { children: JSX.Element }) {
@@ -236,7 +235,6 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
         $setGroup,
         $next,
         $prev,
-        $ankiFields,
       }}
     >
       {props.children}
@@ -247,28 +245,5 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
 export function useFieldGroupContext() {
   const fieldGroup = useContext(FieldGroupContext);
   if (!fieldGroup) throw new Error("Missing FieldGroupContext");
-  return fieldGroup;
-}
-
-const RootFieldGroupConext = createContext<{
-  $group: Store<GroupStore>;
-  $setGroup: SetStoreFunction<GroupStore>;
-  $next: () => void;
-  $prev: () => void;
-  //TODO: remove from here
-  $ankiFields: Store<AnkiFields>;
-}>();
-
-export function RootFieldGroupContextProvider(props: { children: JSX.Element }) {
-  const value = useFieldGroupContext();
-
-  return (
-    <RootFieldGroupConext.Provider value={value}>{props.children}</RootFieldGroupConext.Provider>
-  );
-}
-
-export function useRootFieldGroupContext() {
-  const fieldGroup = useContext(RootFieldGroupConext);
-  if (!fieldGroup) throw new Error("Missing RootFieldGroupContext");
   return fieldGroup;
 }

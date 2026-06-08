@@ -5,10 +5,9 @@ import { nodesToString, parseHtml } from "#/src/lib/dom";
 import { unique } from "#/src/lib/es";
 import { useNavigationTransition } from "#/src/hooks/transition";
 import { type AnkiNote, ankiFieldsSkeleton } from "#/src/lib/types";
-import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useAnkiFieldContext, useRootAnkiFieldsContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
-import { useRootFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
 
@@ -18,7 +17,7 @@ export default function MergeContextModal() {
   const { $config } = useConfigContext();
   const { navigate } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
-  const { $ankiFields: $rootAnkiFields } = useRootFieldGroupContext();
+  const { initialAnkiFields } = useRootAnkiFieldsContext();
   const { noteId: currentNoteId } = useAnkiFieldContext();
 
   const [$rootNote, $setRootNote] = createSignal<AnkiNote>();
@@ -36,7 +35,7 @@ export default function MergeContextModal() {
       $setLoading(true);
       try {
         const noteIds = await AnkiConnect.invoke("findNotes", {
-          query: `cid:${$rootAnkiFields.CardID}`,
+          query: `cid:${initialAnkiFields.CardID}`,
         });
         const rootNoteId = noteIds.result[0];
         const notes = await AnkiConnect.invoke("notesInfo", {

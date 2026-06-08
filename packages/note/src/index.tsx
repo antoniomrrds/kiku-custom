@@ -6,16 +6,16 @@ import { hydrate, render } from "solid-js/web";
 import { Back } from "./components/Back.tsx";
 import { Front } from "./components/Front.tsx";
 import { Layout } from "./components/Layout.tsx";
-import { AnkiFieldContextProvider } from "./contexts/AnkiFieldsContext.tsx";
+import {
+  AnkiFieldContextProvider,
+  RootAnkiFieldsContextProvider,
+} from "./contexts/AnkiFieldsContext.tsx";
 import { BreakpointContextProvider } from "./contexts/BreakpointContext.tsx";
 import { CacheContextProvider } from "./contexts/CacheContext.tsx";
 import { CardStoreContextProvider } from "./contexts/CardContext.tsx";
 import { ConfigContextProvider } from "./contexts/ConfigContext.tsx";
 import { CtxContextProvider } from "./contexts/CtxContext.tsx";
-import {
-  FieldGroupContextProvider,
-  RootFieldGroupContextProvider,
-} from "./contexts/FieldGroupContext.tsx";
+import { FieldGroupContextProvider } from "./contexts/FieldGroupContext.tsx";
 import { GeneralContextProvider } from "./contexts/GeneralContext.tsx";
 import {
   generateCssVars,
@@ -112,15 +112,15 @@ export async function init({
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
-              <CardStoreContextProvider initialSide={side} initialNsfw={isNsfw(ankiFields.Tags)}>
-                <FieldGroupContextProvider>
-                  <RootFieldGroupContextProvider>
+              <RootAnkiFieldsContextProvider>
+                <CardStoreContextProvider initialSide={side} initialNsfw={isNsfw(ankiFields.Tags)}>
+                  <FieldGroupContextProvider>
                     <CtxContextProvider>
                       <Layout>{side === "front" ? <Front /> : <Back />}</Layout>
                     </CtxContextProvider>
-                  </RootFieldGroupContextProvider>
-                </FieldGroupContextProvider>
-              </CardStoreContextProvider>
+                  </FieldGroupContextProvider>
+                </CardStoreContextProvider>
+              </RootAnkiFieldsContextProvider>
             </AnkiFieldContextProvider>
           </ConfigContextProvider>
         </GeneralContextProvider>

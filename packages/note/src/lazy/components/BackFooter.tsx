@@ -3,9 +3,10 @@ import { useCtxContext } from "#/src/contexts/CtxContext";
 import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { InfoIcon } from "./Icons";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 
 export default function BackFooter() {
-  const { $ankiFields } = useFieldGroupContext();
+  const { $ankiFields } = useAnkiFieldContext();
   const { $general } = useGeneralContext();
   const { $group } = useFieldGroupContext();
   const ctx = useCtxContext();
