@@ -23,6 +23,7 @@ export default function KanjiPage() {
       noteList={$card.query.noteList}
       sameReading={$card.query.sameReading}
       sameExpression={$card.query.sameExpression}
+      relatedExpression={$card.query.relatedExpression}
       initialFocus={{
         kanji: $card.initialFocus.kanji,
         noteId: $card.initialFocus.noteId,
@@ -47,6 +48,9 @@ function Page() {
   const $hasSameExpression = createMemo(
     () => $kanjiPage.sameExpression && $kanjiPage.sameExpression.length > 0,
   );
+  const $hasRelatedExpression = createMemo(
+    () => $kanjiPage.relatedExpression && $kanjiPage.relatedExpression.length > 0,
+  );
   const $title = createMemo(() => {
     if ($kanjiPage.tab === "kanji") {
       if ($kanjiPage.contextLabel?.type === "similar") return "Similar";
@@ -57,6 +61,7 @@ function Page() {
     }
     if ($kanjiPage.tab === "reading") return "Same Reading";
     if ($kanjiPage.tab === "same") return "Same Expression";
+    if ($kanjiPage.tab === "related") return "Related";
   });
 
   const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
@@ -79,6 +84,7 @@ function Page() {
           noteList={$kanjiPage.nestedNoteList}
           sameReading={[]}
           sameExpression={[]}
+          relatedExpression={[]}
           initialFocus={{
             kanji: $kanjiPage.nestedFocus.kanji,
             noteId: $kanjiPage.nestedFocus.noteId,
@@ -122,6 +128,16 @@ function Page() {
               }}
             >
               同
+            </TabItem>
+            <TabItem
+              active={$kanjiPage.tab === "related"}
+              disabled={!$hasRelatedExpression()}
+              count={$kanjiPage.relatedExpression?.length ?? 0}
+              onClick={() => {
+                if ($hasRelatedExpression()) $setKanjiPage("tab", "related");
+              }}
+            >
+              関
             </TabItem>
           </div>
           <div class="flex flex-col items-center gap-2">
@@ -195,6 +211,9 @@ function Page() {
               </Match>
               <Match when={$kanjiPage.tab === "same"}>
                 <NoteList list={$kanjiPage.sameExpression ?? []} />
+              </Match>
+              <Match when={$kanjiPage.tab === "related"}>
+                <NoteList list={$kanjiPage.relatedExpression ?? []} />
               </Match>
             </Switch>
           </div>

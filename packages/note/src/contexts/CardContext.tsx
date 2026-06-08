@@ -38,7 +38,7 @@ type CardStore = {
     kanji: string | undefined;
     noteId: number | undefined;
   };
-  initialTab: "kanji" | "reading" | "same";
+  initialTab: "kanji" | "reading" | "same" | "related";
   navigateBack: (() => void)[];
   nested: boolean;
   nestedAnkiFields: AnkiFields;

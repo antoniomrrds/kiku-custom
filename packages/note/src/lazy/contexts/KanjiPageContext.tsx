@@ -12,11 +12,12 @@ export type KanjiPageContextStore = {
   noteList: [string, AnkiNote[]][];
   sameReading?: AnkiNote[];
   sameExpression?: AnkiNote[];
+  relatedExpression?: AnkiNote[];
   focus: {
     kanji: string | undefined;
     noteId: number | undefined;
   };
-  tab: "kanji" | "reading" | "same";
+  tab: "kanji" | "reading" | "same" | "related";
   contextLabel?: ContextLabel;
   nested: boolean;
   nestedId: string;
@@ -42,11 +43,12 @@ export function KanjiPageContextProvider(props: {
   noteList: [string, AnkiNote[]][];
   sameReading?: AnkiNote[];
   sameExpression?: AnkiNote[];
+  relatedExpression?: AnkiNote[];
   initialFocus: {
     kanji: string | undefined;
     noteId: number | undefined;
   };
-  initialTab: "kanji" | "reading" | "same";
+  initialTab: "kanji" | "reading" | "same" | "related";
   contextLabel?: ContextLabel;
   nested?: boolean;
   id: string;
@@ -64,6 +66,7 @@ export function KanjiPageContextProvider(props: {
       contextLabel: props.contextLabel,
       sameReading: props.sameReading,
       sameExpression: props.sameExpression,
+      relatedExpression: props.relatedExpression,
       focus: {
         kanji: props.initialFocus?.kanji,
         noteId: props.initialFocus?.noteId,

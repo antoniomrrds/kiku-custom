@@ -240,7 +240,8 @@ export function getCssVarDark(config: KikuConfig) {
 }
 
 export const LIGHT_VARS_REGEX = /\.card:has\(> #qa\), #kiku-host::part\(root\) \{[^]*?\}/;
-export const DARK_VARS_REGEX = /\.card:has\(> #qa\)\.nightMode, \.nightMode #kiku-host::part\(root\) \{[^]*?\}/;
+export const DARK_VARS_REGEX =
+  /\.card:has\(> #qa\)\.nightMode, \.nightMode #kiku-host::part\(root\) \{[^]*?\}/;
 
 export function updateConfigState({
   host,
