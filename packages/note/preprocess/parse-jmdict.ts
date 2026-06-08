@@ -3,9 +3,11 @@ import * as cheerio from "cheerio";
 import { paths } from "#/tools/paths.ts";
 
 type JmdictTerm = {
-  kanji: string[];
+  forms: string[];
   reading: string[];
   meanings: string[];
+  antonym: string[];
+  referenced: string[];
 };
 
 export class JmdictParser {
@@ -23,16 +25,12 @@ export class JmdictParser {
   async parseAll() {
     const $ = await this.load();
 
-    const entries: {
-      kanji: string[];
-      reading: string[];
-      meanings: string[];
-    }[] = [];
+    const entries: JmdictTerm[] = [];
 
     $("entry").each((_, entry) => {
       const $entry = $(entry);
 
-      const kanji = $entry
+      const forms = $entry
         .find("k_ele keb")
         .map((_, el) => $(el).text())
         .get();
@@ -47,7 +45,17 @@ export class JmdictParser {
         .map((_, el) => $(el).text())
         .get();
 
-      entries.push({ kanji, reading, meanings });
+      const antonym = $entry
+        .find("sense ant")
+        .map((_, el) => $(el).text().split("・")[0])
+        .get();
+
+      const referenced = $entry
+        .find("sense xref")
+        .map((_, el) => $(el).text().split("・")[0])
+        .get();
+
+      entries.push({ forms, reading, meanings, antonym, referenced });
     });
 
     console.log(entries);
@@ -63,15 +71,17 @@ export class JmdictParser {
     const terms = JSON.parse(await readFile(paths["@/.jmdict/term.json"], "utf8")) as JmdictTerm[];
     const termMap: Record<string, JmdictTerm> = {};
     terms.forEach((term) => {
-      term.kanji.forEach((kanji) => {
-        if (termMap[kanji]) {
-          termMap[kanji] = {
-            kanji: Array.from(new Set([...term.kanji, ...termMap[kanji].kanji])),
-            meanings: Array.from(new Set([...term.meanings, ...termMap[kanji].meanings])),
-            reading: Array.from(new Set([...term.reading, ...termMap[kanji].reading])),
+      term.forms.forEach((form) => {
+        if (termMap[form]) {
+          termMap[form] = {
+            forms: Array.from(new Set([...term.forms, ...termMap[form].forms])),
+            reading: Array.from(new Set([...term.reading, ...termMap[form].reading])),
+            meanings: Array.from(new Set([...term.meanings, ...termMap[form].meanings])),
+            antonym: Array.from(new Set([...term.antonym, ...termMap[form].antonym])),
+            referenced: Array.from(new Set([...term.referenced, ...termMap[form].referenced])),
           };
         } else {
-          termMap[kanji] = term;
+          termMap[form] = term;
         }
       });
     });
