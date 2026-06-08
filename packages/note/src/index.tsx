@@ -18,6 +18,10 @@ import {
 } from "./contexts/FieldGroupContext.tsx";
 import { GeneralContextProvider } from "./contexts/GeneralContext.tsx";
 import {
+  generateCssVars,
+  generateCssVarsDark,
+  getCssVar,
+  getCssVarDark,
   type KikuConfig,
   type RootDataset,
   updateConfigState,
@@ -204,28 +208,6 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     if (isAnkiWeb) style?.remove();
     const styleTags = [style, shadowStyle].filter(Boolean) as HTMLStyleElement[];
 
-    if (import.meta.env.DEV) {
-      const mainCss = document.querySelector(
-        'style[type="text/css"][data-vite-dev-id$="main.css"]',
-      );
-      if (!mainCss) throw new Error("main.css not found");
-      shadow.appendChild(mainCss.cloneNode(true));
-      const ankiCss = document.querySelector('link[href="/anki.css"]');
-      if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
-    } else {
-      const kikuCss = document.createElement("link");
-      kikuCss.rel = "stylesheet";
-      kikuCss.href = "./_kiku.css";
-      shadow.prepend(kikuCss);
-    }
-
-    const kikuPluginCss = document.createElement("link");
-    kikuPluginCss.rel = "stylesheet";
-    kikuPluginCss.href = "./_kiku_plugin.css";
-    shadow.prepend(kikuPluginCss);
-
-    shadow.appendChild(root);
-
     let config: KikuConfig | undefined;
     try {
       const cache = sessionStorage.getItem(constants.key["kiku-config"]);
@@ -245,6 +227,31 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     } catch (e) {
       logger.warn("[initAnki] config load failed:", e instanceof Error ? e.message : e);
     }
+
+    if (import.meta.env.DEV) {
+      const mainCss = document.querySelector(
+        'style[type="text/css"][data-vite-dev-id$="main.css"]',
+      );
+      if (!mainCss) throw new Error("main.css not found");
+      shadow.appendChild(mainCss.cloneNode(true));
+      const ankiCss = document.querySelector('link[href="/anki.css"]');
+      if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
+      const style = document.createElement("style");
+      style.innerHTML = `${generateCssVars(getCssVar(config ?? defaultConfig))}\n\n${generateCssVarsDark(getCssVarDark(config ?? defaultConfig))}`;
+      document.head.appendChild(style);
+      shadow.appendChild(style.cloneNode(true));
+    } else {
+      const kikuCss = document.createElement("link");
+      kikuCss.rel = "stylesheet";
+      kikuCss.href = "./_kiku.css";
+      shadow.prepend(kikuCss);
+    }
+
+    const kikuPluginCss = document.createElement("link");
+    kikuPluginCss.rel = "stylesheet";
+    kikuPluginCss.href = "./_kiku_plugin.css";
+    shadow.prepend(kikuPluginCss);
+    shadow.appendChild(root);
 
     const ankiFieldsTemplate = document.querySelector("#anki-fields");
     let templates: NodeListOf<HTMLTemplateElement> | HTMLTemplateElement[] | undefined =
