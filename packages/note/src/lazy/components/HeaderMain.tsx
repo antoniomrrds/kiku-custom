@@ -10,7 +10,7 @@ import MergeContextModal from "./MergeContextModal";
 
 export default function HeaderMain(props: { onExitNested?: () => void }) {
   const { $card, $initialSide } = useCardContext();
-  const { $config } = useConfigContext();
+  const { $config, $isConfigOutOfSync } = useConfigContext();
   const { $general } = useGeneralContext();
   const { navigate } = useNavigationTransition();
   const { $changeThemeNext } = useThemeTransition();
@@ -38,7 +38,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
                 </button>
               </div>
 
-              <Show when={$general.isConfigOutOfSync}>
+              <Show when={$isConfigOutOfSync()}>
                 <div class="status status-warning absolute top-0 right-0 translate-x-0.5 -translate-y-0.5"></div>
               </Show>
             </div>

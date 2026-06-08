@@ -15,7 +15,6 @@ type GeneralStore = {
   plugin: KikuPlugin | undefined;
   root: HTMLElement | undefined;
   host: HTMLElement | undefined;
-  isConfigOutOfSync: boolean;
   templateDataset: RootDataset;
   isAnkiWeb: boolean;
   isAnkiDesktop: boolean;
@@ -110,7 +109,6 @@ export function GeneralContextProvider(props: {
     plugin: undefined,
     root: props.root,
     host: props.host,
-    isConfigOutOfSync: false,
     templateDataset: props.templateDataset,
     isAnkiWeb: props.isAnkiWeb,
     isAnkiDesktop: props.isAnkiDesktop,
