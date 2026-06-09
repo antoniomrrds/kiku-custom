@@ -88,7 +88,7 @@ export function useConfigContext() {
   if (!config) throw new Error("Missing ConfigContext");
   return Object.assign(
     createCompatPair("$config", "$setConfig", config.$config, config.$setConfig),
-    { $isConfigOutOfSync: config.$isConfigOutOfSync },
+    { ...config },
   );
 }
 

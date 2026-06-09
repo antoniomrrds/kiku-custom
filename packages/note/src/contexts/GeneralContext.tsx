@@ -133,23 +133,7 @@ export function useGeneralContext() {
       generalContext.$general,
       generalContext.$setGeneral,
     ),
-    {
-      $startupTime: generalContext.$startupTime,
-      aborter: generalContext.aborter,
-      workerPath: generalContext.workerPath,
-      assetsPath: generalContext.assetsPath,
-      isAnkiWeb: generalContext.isAnkiWeb,
-      isAnkiDesktop: generalContext.isAnkiDesktop,
-      isAnkiDroid: generalContext.isAnkiDroid,
-      isAnkiDroidOldStudyScreen: generalContext.isAnkiDroidOldStudyScreen,
-      isAnkiDroidNewStudyScreen: generalContext.isAnkiDroidNewStudyScreen,
-      initialDarkMode: generalContext.initialDarkMode,
-      workerApi: generalContext.workerApi,
-      styleTags: generalContext.styleTags,
-      ankiDroidAPI: generalContext.ankiDroidAPI,
-      logger: generalContext.logger,
-      templateDataset: generalContext.templateDataset,
-    },
+    { ...generalContext },
   );
 }
 

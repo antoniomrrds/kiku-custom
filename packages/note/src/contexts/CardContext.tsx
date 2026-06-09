@@ -127,9 +127,7 @@ export function useCardContext() {
   const cardStore = useContext(CardStoreContext);
   if (!cardStore) throw new Error("Missing CardStoreContext");
   return Object.assign(createCompatPair("$card", "$setCard", cardStore.$card, cardStore.$setCard), {
-    $initialSide: cardStore.$initialSide,
-    $isInitialSide: cardStore.$isInitialSide,
-    onKanjiPageMount: cardStore.onKanjiPageMount,
+    ...cardStore,
   });
 }
 
