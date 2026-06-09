@@ -21,7 +21,7 @@ function NotePlayIcon(props: { "on:click"?: () => void; color: "primary" | "seco
 function NotePlayIcons() {
   const { $ankiFields } = useAnkiFieldContext();
   const { $card } = useCardContext();
-  const { $general, logger } = useGeneralContext();
+  const { logger } = useGeneralContext();
 
   const stopAllAudios = () => {
     const exprAudio = $card.expressionAudioRef?.querySelector("audio");

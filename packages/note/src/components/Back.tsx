@@ -37,7 +37,6 @@ export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
   const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
-  const { $setPictureModal } = usePictureModalTransition();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
   const { $general, logger } = useGeneralContext();
@@ -138,13 +137,7 @@ export function Back(props: { onExitNested?: () => void }) {
             </div>
             {$card.ready && <FieldGroupPaginationSection />}
           </div>
-          {$card.ready && (
-            <Lazy.BackBody
-              onDefinitionPictureClick={(picture) => {
-                $setPictureModal(picture);
-              }}
-            />
-          )}
+          {$card.ready && <Lazy.BackBody />}
           {$card.ready && (
             <>
               <Lazy.BackFooter />

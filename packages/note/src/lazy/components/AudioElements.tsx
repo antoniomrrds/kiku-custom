@@ -28,7 +28,7 @@ export default function AudioElements() {
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
-  const { $general, logger, isAnkiDroidOldStudyScreen } = useGeneralContext();
+  const { logger, isAnkiDroidOldStudyScreen } = useGeneralContext();
   const hiddenStyle = {
     width: "0",
     height: "0",

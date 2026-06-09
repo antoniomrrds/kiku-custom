@@ -4,11 +4,10 @@ import { parseHtml } from "#/src/lib/dom";
 import { useCollectGlossaryImgs } from "#/src/hooks/glossary";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { usePictureModalTransition } from "#/src/hooks/transition";
 
-export default function DefinitionPictureSection(props: {
-  onDefinitionPictureClick?: (picture: string) => void;
-  currentHtml?: string;
-}) {
+export default function DefinitionPictureSection(props: { currentHtml?: string }) {
+  const { $setPictureModal } = usePictureModalTransition();
   const { $ankiFields } = useAnkiFieldContext();
   const { $config } = useConfigContext();
   const collectGlossaryImgs = useCollectGlossaryImgs();
@@ -47,7 +46,7 @@ export default function DefinitionPictureSection(props: {
         class="max-w-1/3 float-right [&_img]:rounded-sm px-2 cursor-pointer relative group/defpic tappable"
         on:click={() => {
           const picture = currentDefPic();
-          if (picture) props.onDefinitionPictureClick?.(picture);
+          if (picture) $setPictureModal(picture);
         }}
         on:touchend={(e) => e.stopPropagation()}
       >
