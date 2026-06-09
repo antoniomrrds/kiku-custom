@@ -37,6 +37,7 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderSettings from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
 import { useCardContext } from "#/src/contexts/CardContext";
+import { useCheckAnkiConnect } from "#/src/hooks/connection";
 
 function toDashed(str: string) {
   return str.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
@@ -59,6 +60,7 @@ export default function Settings() {
   const { $config } = useConfigContext();
   const { $general } = useGeneralContext();
   const { navigateBack } = useNavigationTransition();
+  const { $checkAnkiConnect } = useCheckAnkiConnect();
 
   const saveConfig = async () => {
     try {
@@ -75,6 +77,10 @@ export default function Settings() {
     try {
       $general.plugin?.onSettingsMount?.({ ctx });
     } catch {}
+  });
+
+  onMount(() => {
+    if ($general.isAnkiDesktop) $checkAnkiConnect();
   });
 
   return (

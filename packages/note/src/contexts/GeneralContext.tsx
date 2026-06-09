@@ -1,13 +1,11 @@
-import { createContext, onMount, useContext } from "solid-js";
+import { createContext, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
-import { AnkiConnect } from "#/src/lib/anki-connect";
 import type { RootDataset } from "#/src/lib/config";
 import { createCompatPair } from "#/src/lib/context-compat";
 import type { Logger } from "#/src/lib/logger";
 import type { AnkiDroidAPI, KikuNotesManifest } from "#/src/lib/types";
 import type { KikuPlugin } from "#/plugins/plugin-types";
-import { useBreakpointContext } from "./BreakpointContext";
 import type { WorkerApi } from "#/src/worker/client";
 
 type GeneralStore = {
@@ -32,8 +30,6 @@ type GeneralStore = {
   contentRef: HTMLDivElement | undefined;
   toast: Toast;
   workerApi: PromiseWithResolvers<WorkerApi>;
-  checkAnkiConnect: () => Promise<void>;
-  useCheckAnkiConnect: () => void;
   styleTags: HTMLStyleElement[];
   initialDarkMode: boolean;
 };
@@ -87,27 +83,6 @@ export function GeneralContextProvider(props: {
     }, 3000);
   };
 
-  async function checkAnkiConnect() {
-    try {
-      const version = await AnkiConnect.getVersion();
-      if (version) {
-        $general.logger.info("AnkiConnect version:", version);
-        $setGeneral("isAnkiConnectAvailable", true);
-      }
-    } catch {
-      $general.logger.warn("AnkiConnect is not available");
-      $setGeneral("isAnkiConnectAvailable", false);
-    }
-  }
-
-  function useCheckAnkiConnect() {
-    const bp = useBreakpointContext();
-    onMount(() => {
-      if (!bp.isAtLeast("sm")) return;
-      $general.checkAnkiConnect();
-    });
-  }
-
   const workerApi = Promise.withResolvers<WorkerApi>();
 
   const [$general, $setGeneral] = createStore<GeneralStore>({
@@ -132,8 +107,6 @@ export function GeneralContextProvider(props: {
     contentRef: undefined,
     toast: { success, error, message: undefined, type: "success" },
     workerApi: workerApi,
-    checkAnkiConnect,
-    useCheckAnkiConnect,
     styleTags: props.styleTags,
     initialDarkMode: props.initialDarkMode,
   });

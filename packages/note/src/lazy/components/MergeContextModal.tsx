@@ -10,6 +10,7 @@ import { useCardContext } from "#/src/contexts/CardContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
+import { useCheckAnkiConnect } from "#/src/hooks/connection";
 
 export default function MergeContextModal() {
   const [$dialogRef, $setDialogRef] = createSignal<HTMLDialogElement>();
@@ -19,6 +20,7 @@ export default function MergeContextModal() {
   const { $card, $setCard } = useCardContext();
   const { initialAnkiFields } = useRootAnkiFieldsContext();
   const { noteId: currentNoteId } = useAnkiFieldContext();
+  const { $checkAnkiConnect } = useCheckAnkiConnect();
 
   const [$rootNote, $setRootNote] = createSignal<AnkiNote>();
   const [$currentNote, $setCurrentNote] = createSignal<AnkiNote>();
@@ -27,8 +29,6 @@ export default function MergeContextModal() {
   const [$loading, $setLoading] = createSignal(true);
 
   if ($card.isMergePreview) return null;
-
-  $general.useCheckAnkiConnect();
 
   createEffect(async () => {
     if ($general.isAnkiConnectAvailable) {
@@ -212,11 +212,9 @@ export default function MergeContextModal() {
             <div class="flex items-center">
               <button
                 on:click={async () => {
-                  try {
-                    await $general.checkAnkiConnect();
-                  } catch {
+                  await $checkAnkiConnect(() => {
                     $general.toast.error("AnkiConnect is not available");
-                  }
+                  });
                 }}
                 on:touchend={(e) => e.stopPropagation()}
               >

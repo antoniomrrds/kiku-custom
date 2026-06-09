@@ -2,12 +2,12 @@ import { useNavigationTransition } from "#/src/hooks/transition";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderLayout from "./HeaderLayout";
 import { ArrowLeftIcon, RefreshCwIcon } from "./Icons";
+import { useCheckAnkiConnect } from "#/src/hooks/connection";
 
 export default function HeaderSettings() {
   const { $general } = useGeneralContext();
   const { navigateBack } = useNavigationTransition();
-
-  $general.useCheckAnkiConnect();
+  const { $checkAnkiConnect } = useCheckAnkiConnect();
 
   return (
     <HeaderLayout>
@@ -30,11 +30,9 @@ export default function HeaderSettings() {
           <>
             <button
               on:click={async () => {
-                try {
-                  await $general.checkAnkiConnect();
-                } catch {
+                await $checkAnkiConnect(() => {
                   $general.toast.error("AnkiConnect is not available");
-                }
+                });
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
