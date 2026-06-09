@@ -79,7 +79,7 @@ export function Front() {
           <div class="flex flex-col gap-2">
             <div class="flex justify-between gap-2 items-start">
               <div
-                class="text-xl sm:text-2xl hover:h-auto overflow-hidden transition-[height] [interpolate-size:allow-keywords] w-full"
+                class="text-xl sm:text-2xl min-h-lh hover:h-auto overflow-hidden transition-[height] [interpolate-size:allow-keywords] w-full"
                 classList={{
                   "h-lh": $isInitialAnkiFields(),
                   "h-auto": !$isInitialAnkiFields(),

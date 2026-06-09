@@ -209,7 +209,7 @@ export default function MergeContextModal() {
         </Match>
         <Match when={!$general.isAnkiConnectAvailable}>
           <div class="indicator animate-fade-in-sm">
-            <div class="place-items-center">
+            <div class="flex items-center">
               <button
                 on:click={async () => {
                   try {

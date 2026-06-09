@@ -34,7 +34,7 @@ function adjustThemeSelectors(rules: CssInJs): CssInJs {
         `#kiku-host[data-theme="${themeName}"] #kiku-root`,
         `.nightMode #kiku-host[data-theme-dark="${themeName}"] #kiku-root`,
         `:host([data-theme="${themeName}"])`,
-        `:host([data-theme-dark="${themeName}"])`,
+        `:host([data-dark-mode][data-theme-dark="${themeName}"])`,
         `#kiku-host[data-theme="${themeName}"]::part(root)`,
         `.nightMode #kiku-host[data-theme-dark="${themeName}"]::part(root)`,
         `[data-theme-preview="${themeName}"]`,
