@@ -28,7 +28,7 @@ export default function AudioElements() {
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
-  const { $general } = useGeneralContext();
+  const { $general, logger, isAnkiDroidOldStudyScreen } = useGeneralContext();
   const hiddenStyle = {
     width: "0",
     height: "0",
@@ -42,7 +42,7 @@ export default function AudioElements() {
       () => {
         const anchors = $card.sentenceAudioRef?.querySelectorAll("a");
         const audios = $card.sentenceAudioRef?.querySelectorAll("audio");
-        $general.logger.debug("[AudioElements] sentenceAudioRef scan:", {
+        logger.debug("[AudioElements] sentenceAudioRef scan:", {
           anchors: anchors?.length ?? 0,
           audios: audios?.length ?? 0,
         });
@@ -68,19 +68,19 @@ export default function AudioElements() {
           autoPlay = false;
           const audio = $card.expressionAudioRef?.querySelector("audio");
           if (audio) {
-            $general.logger.info("[AudioElements] autoPlay: expression");
+            logger.info("[AudioElements] autoPlay: expression");
             audio.play();
             audio.onpause = () => {
               const audio = $card.sentenceAudioRef?.querySelectorAll("audio")[0];
               if (audio) {
-                $general.logger.info("[AudioElements] autoPlay: sentence");
+                logger.info("[AudioElements] autoPlay: sentence");
                 audio.play();
               } else {
-                $general.logger.debug("[AudioElements] autoPlay: no sentence audio to chain");
+                logger.debug("[AudioElements] autoPlay: no sentence audio to chain");
               }
             };
           } else {
-            $general.logger.debug("[AudioElements] autoPlay: no expression audio to play");
+            logger.debug("[AudioElements] autoPlay: no expression audio to play");
           }
         }
       },
@@ -88,9 +88,9 @@ export default function AudioElements() {
   );
 
   onMount(() => {
-    if ($card.isNsfw && $config.muteNsfw && !$general.isAnkiDroidOldStudyScreen) {
+    if ($card.isNsfw && $config.muteNsfw && !isAnkiDroidOldStudyScreen) {
       const anchor = $card.expressionAudioRef?.querySelector("a");
-      $general.logger.info(
+      logger.info(
         "[AudioElements] NSFW mute:",
         anchor ? "applied" : "no expression audio anchor to click",
       );

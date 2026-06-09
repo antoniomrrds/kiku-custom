@@ -58,14 +58,14 @@ export function useNavigationTransition() {
 }
 
 export function useThemeTransition() {
-  const { $general } = useGeneralContext();
+  const { $general, isAnkiDesktop, initialDarkMode } = useGeneralContext();
   const { $config, $setConfig } = useConfigContext();
   const startViewTransition = useViewTransition();
   const { $card } = useCardContext();
 
   function $changeTheme(theme: DaisyUITheme, mode: "light" | "dark") {
     const key = mode === "dark" ? "themeDark" : "theme";
-    if ($card.query.status === "loading" || $general.isAnkiDesktop) {
+    if ($card.query.status === "loading" || isAnkiDesktop) {
       $setConfig(key, theme);
     } else {
       startViewTransition(() => $setConfig(key, theme), {
@@ -79,10 +79,10 @@ export function useThemeTransition() {
   }
 
   function $changeThemeNext() {
-    const current = $general.initialDarkMode ? $config.themeDark : $config.theme;
+    const current = initialDarkMode ? $config.themeDark : $config.theme;
     const index = daisyUIThemes.indexOf(current);
     const nextTheme = daisyUIThemes[(index + 1) % daisyUIThemes.length];
-    $changeTheme(nextTheme, $general.initialDarkMode ? "dark" : "light");
+    $changeTheme(nextTheme, initialDarkMode ? "dark" : "light");
   }
 
   return { $changeTheme, $changeThemeNext };

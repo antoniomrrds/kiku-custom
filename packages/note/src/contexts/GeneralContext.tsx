@@ -1,4 +1,4 @@
-import { createContext, useContext } from "solid-js";
+import { createContext, useContext, type Accessor } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import type { RootDataset } from "#/src/lib/config";
@@ -9,29 +9,14 @@ import type { KikuPlugin } from "#/plugins/plugin-types";
 import type { WorkerApi } from "#/src/worker/client";
 
 type GeneralStore = {
-  logger: Logger;
   plugin: KikuPlugin | undefined;
   root: HTMLElement | undefined;
   host: HTMLElement | undefined;
-  templateDataset: RootDataset;
-  isAnkiWeb: boolean;
-  isAnkiDesktop: boolean;
-  workerPath: string | undefined;
-  ankiDroidAPI: AnkiDroidAPI | undefined;
-  startupTime: () => number;
-  assetsPath: string;
-  aborter: AbortController;
   isAnkiConnectAvailable: boolean;
-  isAnkiDroidOldStudyScreen: boolean;
-  isAnkiDroidNewStudyScreen: boolean;
-  isAnkiDroid: boolean;
   notesManifest: KikuNotesManifest | undefined;
   layoutRef: HTMLDivElement | undefined;
   contentRef: HTMLDivElement | undefined;
   toast: Toast;
-  workerApi: PromiseWithResolvers<WorkerApi>;
-  styleTags: HTMLStyleElement[];
-  initialDarkMode: boolean;
 };
 
 type Toast = {
@@ -44,6 +29,21 @@ type Toast = {
 type GeneralContextValue = {
   $general: Store<GeneralStore>;
   $setGeneral: SetStoreFunction<GeneralStore>;
+  $startupTime: Accessor<number>;
+  aborter: AbortController;
+  workerPath: string | undefined;
+  assetsPath: string;
+  isAnkiWeb: boolean;
+  isAnkiDesktop: boolean;
+  isAnkiDroid: boolean;
+  isAnkiDroidOldStudyScreen: boolean;
+  isAnkiDroidNewStudyScreen: boolean;
+  initialDarkMode: boolean;
+  workerApi: PromiseWithResolvers<WorkerApi>;
+  styleTags: HTMLStyleElement[];
+  ankiDroidAPI: AnkiDroidAPI | undefined;
+  logger: Logger;
+  templateDataset: RootDataset;
 };
 
 const GeneralContext = createContext<GeneralContextValue>();
@@ -55,7 +55,7 @@ export function GeneralContextProvider(props: {
   workerPath: string | undefined;
   templateDataset: RootDataset;
   ankiDroidAPI: AnkiDroidAPI | undefined;
-  startupTime: () => number;
+  $startupTime: Accessor<number>;
   assetsPath: string;
   aborter: AbortController;
   logger: Logger;
@@ -86,33 +86,38 @@ export function GeneralContextProvider(props: {
   const workerApi = Promise.withResolvers<WorkerApi>();
 
   const [$general, $setGeneral] = createStore<GeneralStore>({
-    logger: props.logger,
     plugin: undefined,
     root: props.root,
     host: props.host,
-    templateDataset: props.templateDataset,
-    isAnkiWeb: props.isAnkiWeb,
-    isAnkiDesktop: props.isAnkiDesktop,
-    workerPath: props.workerPath,
-    ankiDroidAPI: props.ankiDroidAPI,
-    startupTime: props.startupTime,
-    assetsPath: props.assetsPath,
-    aborter: props.aborter,
     isAnkiConnectAvailable: false,
-    isAnkiDroidOldStudyScreen: props.isAnkiDroidOldStudyScreen,
-    isAnkiDroidNewStudyScreen: props.isAnkiDroidNewStudyScreen,
-    isAnkiDroid: props.isAnkiDroid,
     notesManifest: undefined,
     layoutRef: undefined,
     contentRef: undefined,
     toast: { success, error, message: undefined, type: "success" },
-    workerApi: workerApi,
-    styleTags: props.styleTags,
-    initialDarkMode: props.initialDarkMode,
   });
 
   return (
-    <GeneralContext.Provider value={{ $general, $setGeneral }}>
+    <GeneralContext.Provider
+      value={{
+        $general,
+        $setGeneral,
+        $startupTime: props.$startupTime,
+        aborter: props.aborter,
+        workerPath: props.workerPath,
+        assetsPath: props.assetsPath,
+        isAnkiWeb: props.isAnkiWeb,
+        isAnkiDesktop: props.isAnkiDesktop,
+        isAnkiDroid: props.isAnkiDroid,
+        isAnkiDroidOldStudyScreen: props.isAnkiDroidOldStudyScreen,
+        isAnkiDroidNewStudyScreen: props.isAnkiDroidNewStudyScreen,
+        initialDarkMode: props.initialDarkMode,
+        workerApi,
+        styleTags: props.styleTags,
+        ankiDroidAPI: props.ankiDroidAPI,
+        logger: props.logger,
+        templateDataset: props.templateDataset,
+      }}
+    >
       {props.children}
     </GeneralContext.Provider>
   );
@@ -121,11 +126,30 @@ export function GeneralContextProvider(props: {
 export function useGeneralContext() {
   const generalContext = useContext(GeneralContext);
   if (!generalContext) throw new Error("Missing GeneralContext");
-  return createCompatPair(
-    "$general",
-    "$setGeneral",
-    generalContext.$general,
-    generalContext.$setGeneral,
+  return Object.assign(
+    createCompatPair(
+      "$general",
+      "$setGeneral",
+      generalContext.$general,
+      generalContext.$setGeneral,
+    ),
+    {
+      $startupTime: generalContext.$startupTime,
+      aborter: generalContext.aborter,
+      workerPath: generalContext.workerPath,
+      assetsPath: generalContext.assetsPath,
+      isAnkiWeb: generalContext.isAnkiWeb,
+      isAnkiDesktop: generalContext.isAnkiDesktop,
+      isAnkiDroid: generalContext.isAnkiDroid,
+      isAnkiDroidOldStudyScreen: generalContext.isAnkiDroidOldStudyScreen,
+      isAnkiDroidNewStudyScreen: generalContext.isAnkiDroidNewStudyScreen,
+      initialDarkMode: generalContext.initialDarkMode,
+      workerApi: generalContext.workerApi,
+      styleTags: generalContext.styleTags,
+      ankiDroidAPI: generalContext.ankiDroidAPI,
+      logger: generalContext.logger,
+      templateDataset: generalContext.templateDataset,
+    },
   );
 }
 

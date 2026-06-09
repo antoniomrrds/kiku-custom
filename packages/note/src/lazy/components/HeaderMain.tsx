@@ -12,7 +12,7 @@ import MergeContextModal from "./MergeContextModal";
 export default function HeaderMain(props: { onExitNested?: () => void }) {
   const { $card, $initialSide } = useCardContext();
   const { $config, $isConfigOutOfSync } = useConfigContext();
-  const { $general } = useGeneralContext();
+  const { $general, initialDarkMode, $startupTime } = useGeneralContext();
   const { navigate } = useNavigationTransition();
   const { $changeThemeNext } = useThemeTransition();
 
@@ -51,14 +51,14 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
               >
                 <PaintbrushIcon class="size-5 cursor-pointer text-base-content-soft"></PaintbrushIcon>
                 <span class="text-base-content-soft text-xs sm:text-sm">
-                  {capitalize($general.initialDarkMode ? $config.themeDark : $config.theme)}
+                  {capitalize(initialDarkMode ? $config.themeDark : $config.theme)}
                 </span>
               </button>
             </Show>
             <Show when={$config.showStartupTime}>
               <div class="text-base-content-soft bg-warning/10 rounded-sm px-px sm:px-1 text-xs sm:text-sm">
-                {Math.round($general.startupTime())}
-                {$general.startupTime() !== 0 && "ms"}
+                {Math.round($startupTime())}
+                {$startupTime() !== 0 && "ms"}
               </div>
             </Show>
           </Match>

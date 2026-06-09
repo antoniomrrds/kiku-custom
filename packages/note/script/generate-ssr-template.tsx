@@ -34,7 +34,7 @@ export function generateSsrTemplate() {
           workerPath={undefined}
           templateDataset={{}}
           ankiDroidAPI={undefined}
-          startupTime={() => 0}
+          $startupTime={() => 0}
           assetsPath=""
           logger={logger}
           root={undefined}
@@ -74,7 +74,7 @@ export function generateSsrTemplate() {
           workerPath={undefined}
           templateDataset={{}}
           ankiDroidAPI={undefined}
-          startupTime={() => 0}
+          $startupTime={() => 0}
           assetsPath=""
           logger={logger}
           root={undefined}

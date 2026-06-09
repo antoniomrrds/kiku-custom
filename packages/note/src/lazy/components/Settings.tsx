@@ -58,13 +58,13 @@ function toDatasetString(obj: Record<string, string | number | boolean>) {
 
 export default function Settings() {
   const { $config } = useConfigContext();
-  const { $general } = useGeneralContext();
+  const { $general, logger, isAnkiDesktop, isAnkiWeb } = useGeneralContext();
   const { navigateBack } = useNavigationTransition();
   const { $checkAnkiConnect } = useCheckAnkiConnect();
 
   const saveConfig = async () => {
     try {
-      $general.logger.debug("Saving config:", $config);
+      logger.debug("Saving config:", $config);
       await AnkiConnect.saveConfig($config);
       $general.toast.success("Saved! Restart Anki to apply changes.");
     } catch (e) {
@@ -80,7 +80,7 @@ export default function Settings() {
   });
 
   onMount(() => {
-    if ($general.isAnkiDesktop) $checkAnkiConnect();
+    if (isAnkiDesktop) $checkAnkiConnect();
   });
 
   return (
@@ -110,8 +110,8 @@ export default function Settings() {
           <div
             class="bottom-0 w-full"
             classList={{
-              fixed: !$general.isAnkiWeb,
-              absolute: $general.isAnkiWeb,
+              fixed: !isAnkiWeb,
+              absolute: isAnkiWeb,
             }}
           >
             <div class="mx-auto w-full relative layout-max-width">
@@ -495,9 +495,9 @@ function ModSettings() {
 
 function ThemeSettings() {
   const { $config, $setConfig } = useConfigContext();
-  const { $general } = useGeneralContext();
+  const { $general, initialDarkMode } = useGeneralContext();
   const { $changeTheme } = useThemeTransition();
-  const [$darkMode, $setDarkMode] = createSignal($general.initialDarkMode);
+  const [$darkMode, $setDarkMode] = createSignal(initialDarkMode);
   const [$hasModified, $setHasModified] = createSignal(false);
 
   createEffect(
@@ -516,7 +516,7 @@ function ThemeSettings() {
   onCleanup(() => {
     if ($hasModified()) {
       const body = document.body;
-      if ($general.initialDarkMode) body.classList.add("nightMode");
+      if (initialDarkMode) body.classList.add("nightMode");
       else body.classList.remove("nightMode");
     }
   });
@@ -546,11 +546,11 @@ function ThemeSettings() {
               Dark
             </button>
           </div>
-          <Show when={$hasModified() && $darkMode() !== $general.initialDarkMode}>
+          <Show when={$hasModified() && $darkMode() !== initialDarkMode}>
             <div class="text-xs text-base-content-faint flex items-center gap-2">
               <span>{$darkMode() ? "Dark" : "Light"} theme has been emulated</span>
               <button
-                on:click={() => $setDarkMode($general.initialDarkMode)}
+                on:click={() => $setDarkMode(initialDarkMode)}
                 on:touchend={(e) => e.stopPropagation()}
               >
                 <UndoIcon class="size-4 cursor-pointer" />
@@ -803,7 +803,7 @@ function FontSizeSettingsFieldset(props: { configKey: keyof KikuConfig; label: s
 }
 
 function ClipboardCopyButton(props: { text: string | (() => string) }) {
-  const { $general } = useGeneralContext();
+  const { $general, isAnkiDesktop } = useGeneralContext();
 
   function copyToClipboard() {
     const text = typeof props.text === "function" ? props.text() : props.text;
@@ -824,7 +824,7 @@ function ClipboardCopyButton(props: { text: string | (() => string) }) {
       on:click={copyToClipboard}
       on:touchend={(e) => e.stopPropagation()}
       classList={{
-        hidden: $general.isAnkiDesktop,
+        hidden: isAnkiDesktop,
       }}
     >
       <ClipboardCopyIcon class="size-4 text-base-content-calm cursor-pointer" />
@@ -834,13 +834,13 @@ function ClipboardCopyButton(props: { text: string | (() => string) }) {
 
 function AnkiDroidSettings() {
   const { $config, $setConfig } = useConfigContext();
-  const { $general } = useGeneralContext();
+  const { $general, isAnkiDroidNewStudyScreen } = useGeneralContext();
 
   return (
     <div class="flex flex-col gap-2 animate-fade-in">
       <div class="text-2xl font-bold">AnkiDroid</div>
 
-      <Show when={$general.isAnkiDroidNewStudyScreen}>
+      <Show when={isAnkiDroidNewStudyScreen}>
         <div role="alert" class="alert alert-warning">
           AnkiDroid integration is not available on AnkiDroid new study screen yet.
         </div>
@@ -953,7 +953,7 @@ function DebugSettings() {
   const { initialAnkiFields } = useAnkiFieldContext();
   const [$kikuFiles, $setKikuFiles] = createSignal<string>();
   const [$missingFiles, $setMissingFiles] = createSignal<string>();
-  const { $general } = useGeneralContext();
+  const { $general, logger } = useGeneralContext();
   const { $initialSide } = useCardContext();
 
   createEffect(async () => {
@@ -970,12 +970,12 @@ function DebugSettings() {
   const [$logs, $setLogs] = createSignal<string>();
   onMount(() => {
     const id = setInterval(() => {
-      $setLogs($general.logger.get());
+      $setLogs(logger.get());
     }, 8000);
     onCleanup(() => {
       clearInterval(id);
     });
-    $setLogs($general.logger.get());
+    $setLogs(logger.get());
   });
 
   const $rootDataset = createMemo(() => {
@@ -1131,7 +1131,7 @@ function DebugSettings() {
 
               <button
                 on:click={() => {
-                  $setLogs($general.logger.get());
+                  $setLogs(logger.get());
                 }}
                 on:touchend={(e) => e.stopPropagation()}
               >

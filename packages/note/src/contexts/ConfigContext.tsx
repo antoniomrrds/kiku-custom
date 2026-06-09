@@ -20,19 +20,28 @@ export function ConfigContextProvider(props: {
   value: Omit<ConfigContextValue, "$isConfigOutOfSync">;
 }) {
   const { $config } = props.value;
-  const { $general } = useGeneralContext();
+  const {
+    $general,
+    logger,
+    styleTags,
+    isAnkiWeb,
+    assetsPath,
+    isAnkiDesktop,
+    workerApi,
+    templateDataset,
+  } = useGeneralContext();
 
   createEffect(() => {
     const config = unwrap({ ...$config });
-    $general.logger.debug("Updating config:", config);
+    logger.debug("Updating config:", config);
     if (!$general.root) throw new Error("Missing root");
     if (!$general.host) throw new Error("Missing host");
     updateConfigState({
       host: $general.host,
       root: $general.root,
       config,
-      styleTags: $general.styleTags,
-      updateDocument: !$general.isAnkiWeb,
+      styleTags,
+      updateDocument: !isAnkiWeb,
     });
     AnkiConnect.changeAddress(config.ankiConnectAddress);
     sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
@@ -42,11 +51,11 @@ export function ConfigContextProvider(props: {
     on(
       () => ({
         config: unwrap({ ...$config }),
-        assetsPath: $general.assetsPath,
-        isAnkiDesktop: $general.isAnkiDesktop,
+        assetsPath,
+        isAnkiDesktop,
       }),
       ({ config, assetsPath, isAnkiDesktop }) => {
-        $general.workerApi.promise.then((workerApi) => {
+        workerApi.promise.then((workerApi) => {
           workerApi.init({
             constants,
             config,
@@ -63,7 +72,7 @@ export function ConfigContextProvider(props: {
     const config = unwrap({ ...$config });
     const rootDataset = getRootDatasetConfig(config);
     return Object.entries(rootDataset).some(([key, value]) => {
-      return $general.templateDataset[key as keyof typeof rootDataset] !== value;
+      return templateDataset[key as keyof typeof rootDataset] !== value;
     });
   });
 

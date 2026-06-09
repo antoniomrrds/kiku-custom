@@ -40,7 +40,7 @@ export function Back(props: { onExitNested?: () => void }) {
   const { $setPictureModal } = usePictureModalTransition();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
-  const { $general } = useGeneralContext();
+  const { $general, logger } = useGeneralContext();
   useQueryNotes();
   usePitch();
 
@@ -48,7 +48,7 @@ export function Back(props: { onExitNested?: () => void }) {
     setTimeout(() => {
       $setCard("ready", true);
       cacheStore.relax = true;
-      $general.logger.info("[Back] ready, expression:", $ankiFields.Expression);
+      logger.info("[Back] ready, expression:", $ankiFields.Expression);
       loadPlugin();
     }, 0);
   });

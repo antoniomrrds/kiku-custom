@@ -21,7 +21,7 @@ function NotePlayIcon(props: { "on:click"?: () => void; color: "primary" | "seco
 function NotePlayIcons() {
   const { $ankiFields } = useAnkiFieldContext();
   const { $card } = useCardContext();
-  const { $general } = useGeneralContext();
+  const { $general, logger } = useGeneralContext();
 
   const stopAllAudios = () => {
     const exprAudio = $card.expressionAudioRef?.querySelector("audio");
@@ -43,7 +43,7 @@ function NotePlayIcons() {
         <NotePlayIcon
           color="primary"
           on:click={() => {
-            $general.logger.debug("[AudioButtons] click: expression");
+            logger.debug("[AudioButtons] click: expression");
             stopAllAudios();
             $card.expressionAudioRef?.querySelector("a")?.click();
             $card.expressionAudioRef?.querySelector("audio")?.play();
@@ -55,7 +55,7 @@ function NotePlayIcons() {
           <NotePlayIcon
             color="secondary"
             on:click={() => {
-              $general.logger.debug("[AudioButtons] click: sentence", i());
+              logger.debug("[AudioButtons] click: sentence", i());
               stopAllAudios();
               el.click();
               if (el instanceof HTMLAudioElement) el.play();
@@ -68,7 +68,7 @@ function NotePlayIcons() {
 }
 
 export default function AudioButtons(props: { position: 1 | 2 }) {
-  const { $general } = useGeneralContext();
+  const { $general, isAnkiWeb } = useGeneralContext();
 
   return (
     <Switch>
@@ -80,8 +80,8 @@ export default function AudioButtons(props: { position: 1 | 2 }) {
           <div
             class="bottom-4 left-4 flex sm:hidden flex-col gap-2 items-center animate-fade-in-sm"
             classList={{
-              fixed: !$general.isAnkiWeb,
-              absolute: $general.isAnkiWeb,
+              fixed: !isAnkiWeb,
+              absolute: isAnkiWeb,
             }}
           >
             <NotePlayIcons />

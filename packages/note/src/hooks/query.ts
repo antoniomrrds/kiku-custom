@@ -15,7 +15,15 @@ export function useQueryNotes() {
   const { $config } = useConfigContext();
   const { $card, $setCard, $initialSide } = useCardContext();
   const { initialAnkiFields, $isRootAnkiFields } = useAnkiFieldContext();
-  const { $general, $setGeneral } = useGeneralContext();
+  const {
+    $setGeneral,
+    logger,
+    assetsPath,
+    isAnkiDesktop,
+    workerPath,
+    workerApi: workerApiContainer,
+    aborter,
+  } = useGeneralContext();
   const cacheStore = useCacheContext();
 
   let fetched = false;
@@ -24,7 +32,7 @@ export function useQueryNotes() {
     try {
       const ankiFields = initialAnkiFields;
       const isFront = $initialSide() === "front";
-      $general.logger.info("[Kanji] setKanji start:", {
+      logger.info("[Kanji] setKanji start:", {
         expression: ankiFields.Expression,
         side: isFront ? "front" : "back",
       });
@@ -53,12 +61,12 @@ export function useQueryNotes() {
       const opts = {
         constants,
         config: unwrap($config),
-        assetsPath: import.meta.env.DEV ? "" : $general.assetsPath,
-        preferAnkiConnect: $config.preferAnkiConnect && $general.isAnkiDesktop,
-        workerPath: $general.workerPath,
+        assetsPath: import.meta.env.DEV ? "" : assetsPath,
+        preferAnkiConnect: $config.preferAnkiConnect && isAnkiDesktop,
+        workerPath,
       };
-      const workerApi = await createWorkerApi(opts, $general.logger, cacheStore?.workerApi);
-      $general.workerApi.resolve(workerApi);
+      const workerApi = await createWorkerApi(opts, logger, cacheStore?.workerApi);
+      workerApiContainer.resolve(workerApi);
       if (cacheStore && !cacheStore.workerApi) {
         cacheStore.workerApi = workerApi;
       }
@@ -84,7 +92,7 @@ export function useQueryNotes() {
           expressionList,
         });
 
-      if ($general.aborter.signal.aborted) return;
+      if (aborter.signal.aborted) return;
 
       const currentExpressionResults = expressionResult[ankiFields.Expression] ?? [];
       const sameExpression = currentExpressionResults.filter(
@@ -136,7 +144,7 @@ export function useQueryNotes() {
         });
       }
 
-      $general.logger.info("[Kanji] setKanji done:", {
+      logger.info("[Kanji] setKanji done:", {
         kanji: Object.keys(kanjiResult).length,
         reading: Object.keys(readingResult).length,
         expression: Object.keys(expressionResult).length,
@@ -148,14 +156,11 @@ export function useQueryNotes() {
         .notesManifest()
         .then((manifest) => $setGeneral("notesManifest", manifest))
         .catch(() => {
-          $general.logger.warn("Failed to load manifest");
+          logger.warn("Failed to load manifest");
         });
     } catch (e) {
       $setCard("query", { status: "error" });
-      $general.logger.error(
-        "Failed to load kanji information:",
-        e instanceof Error ? e.message : "",
-      );
+      logger.error("Failed to load kanji information:", e instanceof Error ? e.message : "");
     }
   }
 

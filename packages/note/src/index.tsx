@@ -108,7 +108,7 @@ export async function init({
           workerPath={workerPath}
           templateDataset={rootDataset ?? {}}
           ankiDroidAPI={ankiDroidAPI}
-          startupTime={$startupTime}
+          $startupTime={$startupTime}
           assetsPath={assetsPath}
           logger={logger}
           root={root}

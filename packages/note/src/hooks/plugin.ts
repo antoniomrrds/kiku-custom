@@ -5,7 +5,7 @@ import { constants } from "#/src/lib/contants";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 
 export function useLoadPlugin() {
-  const { $general, $setGeneral } = useGeneralContext();
+  const { $general, $setGeneral, assetsPath } = useGeneralContext();
   const ctx = useCtxContext();
   const owner = getOwner();
 
@@ -22,7 +22,7 @@ export function useLoadPlugin() {
   }
 
   function loadPlugin() {
-    getPlugin($general.assetsPath).then((plugin) => {
+    getPlugin(assetsPath).then((plugin) => {
       try {
         runWithOwner(owner, () => {
           plugin?.onPluginLoad?.({ ctx });

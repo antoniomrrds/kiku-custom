@@ -27,7 +27,7 @@ const FieldGroupContext = createContext<{
 export function FieldGroupContextProvider(props: { children: JSX.Element }) {
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $initialSide } = useCardContext();
-  const { $general } = useGeneralContext();
+  const { $general, logger } = useGeneralContext();
 
   const $sentenceField = createMemo(() => {
     if (!$isRootAnkiFields()) return $ankiFields.Sentence;
@@ -67,7 +67,7 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     ids.clear();
     $setGroup("ids", []);
 
-    $general.logger.info(
+    logger.info(
       "[Groups] parsing fields for expression:",
       $ankiFields.Expression,
       "side:",
@@ -157,7 +157,7 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
     if ($group.ids.length > 0) {
       const sorted = $group.ids.map((id) => Number(id)).sort((a, b) => b - a);
       const id = sorted[$group.index];
-      $general.logger.info("[Groups] selected:", {
+      logger.info("[Groups] selected:", {
         count: sorted.length,
         index: $group.index,
         groupId: id,
@@ -200,11 +200,11 @@ export function FieldGroupContextProvider(props: { children: JSX.Element }) {
       $setGroup("miscInfoField", miscInfoField ?? "");
       $setGroup("pictureField", pictureField ?? "");
 
-      $general.logger.info("[Groups] sentenceField:", sentenceField);
-      $general.logger.info("[Groups] sentenceTranslationField:", sentenceTranslationField);
-      $general.logger.info("[Groups] sentenceAudioField:", sentenceAudioField);
-      $general.logger.info("[Groups] miscInfoField:", miscInfoField);
-      $general.logger.info("[Groups] pictureField:", pictureField);
+      logger.info("[Groups] sentenceField:", sentenceField);
+      logger.info("[Groups] sentenceTranslationField:", sentenceTranslationField);
+      logger.info("[Groups] sentenceAudioField:", sentenceAudioField);
+      logger.info("[Groups] miscInfoField:", miscInfoField);
+      logger.info("[Groups] pictureField:", pictureField);
     }
   });
 

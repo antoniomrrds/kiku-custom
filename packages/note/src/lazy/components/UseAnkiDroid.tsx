@@ -21,11 +21,10 @@ export default function UseAnkiDroid() {
   if (window.innerWidth > 768) return;
   const { $config } = useConfigContext();
   if (!$config.ankiDroidEnableIntegration) return;
-  const { $general } = useGeneralContext();
-  const ankiDroidAPI = $general.ankiDroidAPI;
+  const { $general, ankiDroidAPI, logger } = useGeneralContext();
 
   if (!ankiDroidAPI && !import.meta.env.DEV) return;
-  $general.logger.info("Using AnkiDroid");
+  logger.info("Using AnkiDroid");
 
   const { $card, $initialSide } = useCardContext();
   const el$ = () => document.documentElement;

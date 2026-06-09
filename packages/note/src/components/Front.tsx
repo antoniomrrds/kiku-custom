@@ -30,7 +30,7 @@ export function Front() {
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
   const { $config } = useConfigContext();
-  const { $general } = useGeneralContext();
+  const { $general, logger } = useGeneralContext();
   const loadPlugin = useLoadPlugin();
   useQueryNotes();
   const $hidden = createMemo(() => {
@@ -52,7 +52,7 @@ export function Front() {
   onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
-      $general.logger.info("[Front] ready, expression:", $ankiFields.Expression);
+      logger.info("[Front] ready, expression:", $ankiFields.Expression);
       loadPlugin();
     }, 0);
 

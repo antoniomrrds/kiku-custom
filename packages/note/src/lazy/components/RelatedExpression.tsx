@@ -17,7 +17,7 @@ import { MoveDown } from "./Icons";
 const sortNote = (a: AnkiNote, b: AnkiNote) => b.noteId - a.noteId;
 
 export default function RelatedExpression() {
-  const { $general } = useGeneralContext();
+  const { $general, logger } = useGeneralContext();
   const { $card, $setCard, $initialSide } = useCardContext();
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields, $isInitialAnkiFields } =
     useAnkiFieldContext();
@@ -71,11 +71,11 @@ export default function RelatedExpression() {
           $card.expressionAudioRef?.querySelector("a") ??
           $card.expressionAudioRef?.querySelector("audio");
         if (audio) {
-          $general.logger.info("[RelatedExpression] autoPlay: expression");
+          logger.info("[RelatedExpression] autoPlay: expression");
           if (audio instanceof HTMLAnchorElement) audio.click();
           if (audio instanceof HTMLAudioElement) audio.play();
         } else {
-          $general.logger.debug("[RelatedExpression] autoPlay: no expression audio to play");
+          logger.debug("[RelatedExpression] autoPlay: no expression audio to play");
         }
       },
       {

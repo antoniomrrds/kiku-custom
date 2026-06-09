@@ -9,7 +9,7 @@ import { useCardContext } from "#/src/contexts/CardContext";
 
 export default function PictureModal() {
   const { $card } = useCardContext();
-  const { $general } = useGeneralContext();
+  const { $general, isAnkiWeb } = useGeneralContext();
   const { $ankiFields } = useAnkiFieldContext();
   const { $setPictureModal } = usePictureModalTransition();
   const [$showAll, $setShowAll] = createSignal(false);
@@ -41,8 +41,8 @@ export default function PictureModal() {
         part="picture-modal"
         class="z-40 top-0 left-0 w-full h-full p-4 sm:p-8 bg-black/75 flex flex-col transition-opacity overflow-auto tappable"
         classList={{
-          fixed: !$general.isAnkiWeb,
-          absolute: $general.isAnkiWeb,
+          fixed: !isAnkiWeb,
+          absolute: isAnkiWeb,
           hidden: !$card.pictureModal,
         }}
         on:click={() => $setPictureModal(undefined)}

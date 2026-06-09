@@ -46,7 +46,7 @@ function getQuerySharedCacheKey(ankiFields: AnkiFields, kanjiList: readonly stri
 }
 
 export function KanjiContextProvider(props: { kanji: string; children: JSX.Element }) {
-  const { $general } = useGeneralContext();
+  const { $general, workerApi: workerApiContainer } = useGeneralContext();
   const cacheStore = useCacheContext();
   const { $ankiFields } = useAnkiFieldContext();
   const [$kanji, $setKanji] = createStore<KanjiStore>({
@@ -68,7 +68,7 @@ export function KanjiContextProvider(props: { kanji: string; children: JSX.Eleme
   async function fetchNotes(type: FetchType) {
     const kanji = $kanji.kanji;
     if (!kanji) return;
-    const workerApi = await $general.workerApi.promise;
+    const workerApi = await workerApiContainer.promise;
     const kanjiInfo = unwrap($kanji.kanjiInfo) ?? (await workerApi.lookupKanji(kanji));
     if (kanji !== $kanji.kanji) return;
     if (!kanjiInfo) return;
@@ -123,7 +123,7 @@ export function KanjiContextProvider(props: { kanji: string; children: JSX.Eleme
     if (kanji) {
       let kanjiInfo = lookupKanjiCache.get(kanji);
       if (!kanjiInfo) {
-        $general.workerApi.promise.then(async (workerApi) => {
+        workerApiContainer.promise.then(async (workerApi) => {
           if (workerApi) {
             kanjiInfo = await workerApi.lookupKanji(kanji);
             lookupKanjiCache.set(kanji, kanjiInfo);

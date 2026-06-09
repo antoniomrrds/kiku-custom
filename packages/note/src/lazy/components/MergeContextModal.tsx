@@ -14,7 +14,7 @@ import { useCheckAnkiConnect } from "#/src/hooks/connection";
 
 export default function MergeContextModal() {
   const [$dialogRef, $setDialogRef] = createSignal<HTMLDialogElement>();
-  const { $general } = useGeneralContext();
+  const { $general, logger } = useGeneralContext();
   const { $config } = useConfigContext();
   const { navigate } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
@@ -50,7 +50,7 @@ export default function MergeContextModal() {
         $setCurrentNote(currentNote);
       } catch (e) {
         $general.toast.error(e instanceof Error ? e.message : "Failed to load notes");
-        $general.logger.error(e);
+        logger.error(e);
       }
     }
     $setLoading(false);
