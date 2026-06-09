@@ -828,10 +828,17 @@ function ClipboardCopyButton(props: { text: string | (() => string) }) {
 
 function AnkiDroidSettings() {
   const { $config, $setConfig } = useConfigContext();
+  const { $general } = useGeneralContext();
 
   return (
     <div class="flex flex-col gap-2 animate-fade-in">
       <div class="text-2xl font-bold">AnkiDroid</div>
+
+      <Show when={$general.isAnkiDroidNewStudyScreen}>
+        <div role="alert" class="alert alert-warning">
+          AnkiDroid integration is not available on AnkiDroid new study screen yet.
+        </div>
+      </Show>
       <div>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] rounded-box gap-x-4 gap-y-2">
           <fieldset class="fieldset bg-base-100 border-base-300 rounded-box">
