@@ -14,7 +14,7 @@ export const plugin = {
       "'Noto Serif CJK JP'",
       "'Noto Serif JP'",
       "'Yu Mincho'",
-      "'HanaMinA', 'HanaMinB', 'serif'",
+      "'HanaMinA', 'HanaMinB', serif",
     ];
 
     const randomFont = fontsPool[Math.floor(Math.random() * fontsPool.length)];
