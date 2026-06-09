@@ -24,7 +24,5 @@ function capitalizeSmart(word: string, isFirst: boolean, isLast: boolean): strin
 export function capitalizeSentence(sentence?: string) {
   if (!sentence) return sentence;
   const words = sentence.split(" ").filter(Boolean);
-  return words
-    .map((word, i) => capitalizeSmart(word, i === 0, i === words.length - 1))
-    .join(" ");
+  return words.map((word, i) => capitalizeSmart(word, i === 0, i === words.length - 1)).join(" ");
 }

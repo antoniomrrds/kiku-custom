@@ -491,16 +491,16 @@ function ThemeSettings() {
   const { $config, $setConfig } = useConfigContext();
   const { $general } = useGeneralContext();
   const { $changeTheme } = useThemeTransition();
-  const [$mode, $setMode] = createSignal<"light" | "dark">($general.initialMode);
+  const [$darkMode, $setDarkMode] = createSignal($general.initialDarkMode);
   const [$hasModified, $setHasModified] = createSignal(false);
 
   createEffect(
     on(
-      $mode,
-      (mode) => {
+      $darkMode,
+      (darkMode) => {
         const body = document.body;
-        if (mode === "light") body.classList.remove("nightMode");
-        if (mode === "dark") body.classList.add("nightMode");
+        if (darkMode) body.classList.add("nightMode");
+        else body.classList.remove("nightMode");
         $setHasModified(true);
       },
       { defer: true },
@@ -510,8 +510,8 @@ function ThemeSettings() {
   onCleanup(() => {
     if ($hasModified()) {
       const body = document.body;
-      if ($general.initialMode === "light") body.classList.remove("nightMode");
-      if ($general.initialMode === "dark") body.classList.add("nightMode");
+      if ($general.initialDarkMode) body.classList.add("nightMode");
+      else body.classList.remove("nightMode");
     }
   });
 
@@ -524,8 +524,8 @@ function ThemeSettings() {
             <button
               role="tab"
               class="tab"
-              classList={{ "tab-active": $mode() === "light" }}
-              on:click={() => $setMode("light")}
+              classList={{ "tab-active": !$darkMode() }}
+              on:click={() => $setDarkMode(false)}
               on:touchend={(e) => e.stopPropagation()}
             >
               Light
@@ -533,18 +533,18 @@ function ThemeSettings() {
             <button
               role="tab"
               class="tab"
-              classList={{ "tab-active": $mode() === "dark" }}
-              on:click={() => $setMode("dark")}
+              classList={{ "tab-active": $darkMode() }}
+              on:click={() => $setDarkMode(true)}
               on:touchend={(e) => e.stopPropagation()}
             >
               Dark
             </button>
           </div>
-          <Show when={$hasModified() && $mode() !== $general.initialMode}>
+          <Show when={$hasModified() && $darkMode() !== $general.initialDarkMode}>
             <div class="text-xs text-base-content-faint flex items-center gap-2">
-              <span>{$mode() === "dark" ? "Dark" : "Light"} theme has been emulated</span>
+              <span>{$darkMode() ? "Dark" : "Light"} theme has been emulated</span>
               <button
-                on:click={() => $setMode($general.initialMode)}
+                on:click={() => $setDarkMode($general.initialDarkMode)}
                 on:touchend={(e) => e.stopPropagation()}
               >
                 <UndoIcon class="size-4 cursor-pointer" />
@@ -571,9 +571,9 @@ function ThemeSettings() {
       </div>
 
       <ThemeGrid
-        selected={$mode() === "dark" ? $config.themeDark : $config.theme}
+        selected={$darkMode() ? $config.themeDark : $config.theme}
         onSelect={(theme) => {
-          $changeTheme(theme, $mode());
+          $changeTheme(theme, $darkMode() ? "dark" : "light");
         }}
       />
     </div>

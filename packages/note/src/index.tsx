@@ -57,7 +57,7 @@ export async function init({
   workerPath,
   rootDataset,
   styleTags = [],
-  initialMode = document.body?.classList.contains("nightMode") ? "dark" : "light",
+  initialDarkMode = document.body?.classList.contains("nightMode"),
   isAnkiDroidOldStudyScreen = false,
   isAnkiDroidNewStudyScreen = false,
   isAnkiDroid = false,
@@ -78,7 +78,7 @@ export async function init({
   workerPath?: string;
   rootDataset?: RootDataset;
   styleTags?: HTMLStyleElement[];
-  initialMode?: "light" | "dark";
+  initialDarkMode?: boolean;
   isAnkiDroidOldStudyScreen?: boolean;
   isAnkiDroidNewStudyScreen?: boolean;
   isAnkiDroid?: boolean;
@@ -114,7 +114,7 @@ export async function init({
           root={root}
           host={host}
           styleTags={styleTags}
-          initialMode={initialMode}
+          initialDarkMode={initialDarkMode}
           isAnkiDroidOldStudyScreen={isAnkiDroidOldStudyScreen ?? false}
           isAnkiDroidNewStudyScreen={isAnkiDroidNewStudyScreen ?? false}
           isAnkiDroid={isAnkiDroid ?? false}

@@ -51,7 +51,7 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
               >
                 <PaintbrushIcon class="size-5 cursor-pointer text-base-content-soft"></PaintbrushIcon>
                 <span class="text-base-content-soft text-xs sm:text-sm">
-                  {capitalize($general.initialMode === "light" ? $config.theme : $config.themeDark)}
+                  {capitalize($general.initialDarkMode ? $config.themeDark : $config.theme)}
                 </span>
               </button>
             </Show>

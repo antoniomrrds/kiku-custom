@@ -79,10 +79,10 @@ export function useThemeTransition() {
   }
 
   function $changeThemeNext() {
-    const current = $general.initialMode === "light" ? $config.theme : $config.themeDark;
+    const current = $general.initialDarkMode ? $config.themeDark : $config.theme;
     const index = daisyUIThemes.indexOf(current);
     const nextTheme = daisyUIThemes[(index + 1) % daisyUIThemes.length];
-    $changeTheme(nextTheme, $general.initialMode);
+    $changeTheme(nextTheme, $general.initialDarkMode ? "dark" : "light");
   }
 
   return { $changeTheme, $changeThemeNext };

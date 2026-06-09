@@ -35,7 +35,7 @@ type GeneralStore = {
   checkAnkiConnect: () => Promise<void>;
   useCheckAnkiConnect: () => void;
   styleTags: HTMLStyleElement[];
-  initialMode: "light" | "dark";
+  initialDarkMode: boolean;
 };
 
 type Toast = {
@@ -66,7 +66,7 @@ export function GeneralContextProvider(props: {
   root: HTMLElement | undefined;
   host: HTMLElement | undefined;
   styleTags: HTMLStyleElement[];
-  initialMode: "light" | "dark";
+  initialDarkMode: boolean;
   isAnkiDroidOldStudyScreen: boolean;
   isAnkiDroidNewStudyScreen: boolean;
   isAnkiDroid: boolean;
@@ -135,7 +135,7 @@ export function GeneralContextProvider(props: {
     checkAnkiConnect,
     useCheckAnkiConnect,
     styleTags: props.styleTags,
-    initialMode: props.initialMode,
+    initialDarkMode: props.initialDarkMode,
   });
 
   return (

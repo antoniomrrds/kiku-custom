@@ -40,7 +40,7 @@ export function generateSsrTemplate() {
           root={undefined}
           host={undefined}
           styleTags={[]}
-          initialMode="light"
+          initialDarkMode={false}
           isAnkiDroidOldStudyScreen={false}
           isAnkiDroidNewStudyScreen={false}
           isAnkiDroid={false}
@@ -80,7 +80,7 @@ export function generateSsrTemplate() {
           root={undefined}
           host={undefined}
           styleTags={[]}
-          initialMode="light"
+          initialDarkMode={false}
           isAnkiDroidOldStudyScreen={false}
           isAnkiDroidNewStudyScreen={false}
           isAnkiDroid={false}
