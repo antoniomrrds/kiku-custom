@@ -58,6 +58,9 @@ export async function init({
   rootDataset,
   styleTags = [],
   initialMode = document.body?.classList.contains("nightMode") ? "dark" : "light",
+  isAnkiDroidOldStudyScreen = false,
+  isAnkiDroidNewStudyScreen = false,
+  isAnkiDroid = false,
 }: {
   root: HTMLElement;
   host: HTMLElement;
@@ -76,6 +79,9 @@ export async function init({
   rootDataset?: RootDataset;
   styleTags?: HTMLStyleElement[];
   initialMode?: "light" | "dark";
+  isAnkiDroidOldStudyScreen?: boolean;
+  isAnkiDroidNewStudyScreen?: boolean;
+  isAnkiDroid?: boolean;
 }) {
   const [$startupTime, $setStartupTime] = createSignal(0);
   const now = performance.now();
@@ -109,6 +115,9 @@ export async function init({
           host={host}
           styleTags={styleTags}
           initialMode={initialMode}
+          isAnkiDroidOldStudyScreen={isAnkiDroidOldStudyScreen ?? false}
+          isAnkiDroidNewStudyScreen={isAnkiDroidNewStudyScreen ?? false}
+          isAnkiDroid={isAnkiDroid ?? false}
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
@@ -155,7 +164,22 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     window.addEventListener("unload", globalThis.KIKU.unload);
   }
 
-  if (!globalThis.KIKU.ankiDroidAPI && typeof AnkiDroidJS !== "undefined") {
+  const isAnkiDroidOldStudyScreen =
+    typeof AnkiDroidJS !== "undefined" &&
+    document.documentElement.classList.contains("android") &&
+    !!document.querySelector("body > div#content > #qa");
+  const isAnkiDroidNewStudyScreen =
+    typeof AnkiDroidJS !== "undefined" &&
+    document.documentElement.classList.contains("android") &&
+    !!document.querySelector("body > div#qa");
+  const isAnkiDroid = document.documentElement.classList.contains("android");
+
+  //TODO: enable when AnkiDroidAPI is ready on new study screen https://github.com/youyoumu/kiku/issues/30
+  if (
+    !globalThis.KIKU.ankiDroidAPI &&
+    typeof AnkiDroidJS !== "undefined" &&
+    isAnkiDroidOldStudyScreen
+  ) {
     globalThis.KIKU.ankiDroidAPI = new AnkiDroidJS({
       version: "0.0.3",
       developer: "youyoumu",
@@ -299,6 +323,9 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       isAnkiWeb,
       rootDataset,
       styleTags,
+      isAnkiDroidOldStudyScreen,
+      isAnkiDroidNewStudyScreen,
+      isAnkiDroid,
     });
     setTimeout(resetKanjiTooltip, 50);
 

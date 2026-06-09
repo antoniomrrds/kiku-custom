@@ -253,7 +253,7 @@ function GeneralSettings() {
             Mute NSFW
             <div
               class="tooltip"
-              data-tip="Prevent SentenceAudio from playing on NSFW cards. Has known problem with old AnkiDroid study screen"
+              data-tip="Prevent SentenceAudio from playing on NSFW cards. Does not work with AnkiDroid old study screen"
             >
               <InfoIcon class="size-4 text-base-content-calm" />
             </div>

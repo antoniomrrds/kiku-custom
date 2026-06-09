@@ -88,7 +88,7 @@ export default function AudioElements() {
   );
 
   onMount(() => {
-    if ($card.isNsfw && $config.muteNsfw) {
+    if ($card.isNsfw && $config.muteNsfw && !$general.isAnkiDroidOldStudyScreen) {
       const anchor = $card.expressionAudioRef?.querySelector("a");
       $general.logger.info(
         "[AudioElements] NSFW mute:",

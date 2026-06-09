@@ -24,6 +24,9 @@ type GeneralStore = {
   assetsPath: string;
   aborter: AbortController;
   isAnkiConnectAvailable: boolean;
+  isAnkiDroidOldStudyScreen: boolean;
+  isAnkiDroidNewStudyScreen: boolean;
+  isAnkiDroid: boolean;
   notesManifest: KikuNotesManifest | undefined;
   layoutRef: HTMLDivElement | undefined;
   contentRef: HTMLDivElement | undefined;
@@ -64,6 +67,9 @@ export function GeneralContextProvider(props: {
   host: HTMLElement | undefined;
   styleTags: HTMLStyleElement[];
   initialMode: "light" | "dark";
+  isAnkiDroidOldStudyScreen: boolean;
+  isAnkiDroidNewStudyScreen: boolean;
+  isAnkiDroid: boolean;
 }) {
   let timeout: ReturnType<typeof setTimeout>;
   const success = (message: string) => {
@@ -118,6 +124,9 @@ export function GeneralContextProvider(props: {
     assetsPath: props.assetsPath,
     aborter: props.aborter,
     isAnkiConnectAvailable: false,
+    isAnkiDroidOldStudyScreen: props.isAnkiDroidOldStudyScreen,
+    isAnkiDroidNewStudyScreen: props.isAnkiDroidNewStudyScreen,
+    isAnkiDroid: props.isAnkiDroid,
     notesManifest: undefined,
     layoutRef: undefined,
     contentRef: undefined,

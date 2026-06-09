@@ -41,6 +41,9 @@ export function generateSsrTemplate() {
           host={undefined}
           styleTags={[]}
           initialMode="light"
+          isAnkiDroidOldStudyScreen={false}
+          isAnkiDroidNewStudyScreen={false}
+          isAnkiDroid={false}
         >
           <ConfigContextProvider value={{ $config, $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
@@ -78,6 +81,9 @@ export function generateSsrTemplate() {
           host={undefined}
           styleTags={[]}
           initialMode="light"
+          isAnkiDroidOldStudyScreen={false}
+          isAnkiDroidNewStudyScreen={false}
+          isAnkiDroid={false}
         >
           <ConfigContextProvider value={{ $config: $config, $setConfig: $setConfig }}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
