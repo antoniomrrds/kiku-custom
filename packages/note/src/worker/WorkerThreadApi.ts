@@ -68,14 +68,18 @@ export class WorkerThreadApi {
       const readingSet = new Set(readingList);
       const expressionSet = new Set(expressionList);
 
-      for (const chunk of manifest.chunks) {
-        let notes = this.chunkCache.get(chunk.file);
-        if (!notes) {
+      await Promise.all(
+        manifest.chunks.map(async (chunk) => {
+          if (this.chunkCache.has(chunk.file)) return;
           const buf = await this.main.fetchArrayBuffer(`${this.assetsPath}/${chunk.file}`);
           const text = await gunzipArrayBuffer(buf).text();
-          notes = JSON.parse(text) as AnkiNote[];
-          this.chunkCache.set(chunk.file, notes);
-        }
+          this.chunkCache.set(chunk.file, JSON.parse(text) as AnkiNote[]);
+        }),
+      );
+
+      for (const chunk of manifest.chunks) {
+        const notes = this.chunkCache.get(chunk.file);
+        if (!notes) continue;
 
         for (const note of notes) {
           if (note.modelName !== "Kiku" && note.modelName !== "Lapis") continue;
