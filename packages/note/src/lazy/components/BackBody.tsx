@@ -13,9 +13,7 @@ export default function BackBody() {
         "flex-col": !$config.swapSentenceAndDefinitionOnMobile,
       }}
     >
-      <div class="flex flex-col justify-center gap-2 items-center text-center">
-        <Sentence />
-      </div>
+      <Sentence />
       <Definition />
     </div>
   );

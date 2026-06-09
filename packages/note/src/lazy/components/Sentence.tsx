@@ -1,5 +1,4 @@
 import {
-  createEffect,
   createMemo,
   createSignal,
   ErrorBoundary,
@@ -25,14 +24,16 @@ export default function Sentence() {
 
   function DefaultSentence() {
     return (
-      <Switch>
-        <Match when={$card.side === "back" && $group.sentenceTranslationField}>
-          <SentenceFieldWithTranslation />
-        </Match>
-        <Match when={true}>
-          <SentenceField />
-        </Match>
-      </Switch>
+      <div class="flex flex-col justify-center gap-2 items-center text-center">
+        <Switch>
+          <Match when={$card.side === "back" && $group.sentenceTranslationField}>
+            <SentenceFieldWithTranslation />
+          </Match>
+          <Match when={true}>
+            <SentenceField />
+          </Match>
+        </Switch>
+      </div>
     );
   }
 
