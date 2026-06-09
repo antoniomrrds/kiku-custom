@@ -26,7 +26,7 @@ const Lazy = {
 
 export function Front() {
   const { $card, $setCard, $isInitialSide } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext();
+  const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
   const { $config } = useConfigContext();
@@ -77,8 +77,16 @@ export function Front() {
         <Match when={$card.page === "main"}>
           {$card.ready && <Lazy.HeaderMain />}
           <div class="flex flex-col gap-2">
-            <div class="flex justify-between gap-2 min-h-lh text-xl sm:text-2xl">
-              <Lazy.RelatedExpression />
+            <div class="flex justify-between gap-2 items-start">
+              <div
+                class="text-xl sm:text-2xl hover:h-auto overflow-hidden transition-[height] [interpolate-size:allow-keywords] w-full"
+                classList={{
+                  "h-lh": $isInitialAnkiFields(),
+                  "h-auto": !$isInitialAnkiFields(),
+                }}
+              >
+                <Lazy.RelatedExpression />
+              </div>
             </div>
             <div class="flex flex-col gap-4 relative z-10">
               <div

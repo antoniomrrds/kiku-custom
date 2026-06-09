@@ -7,6 +7,7 @@ const AnkiFieldsContext = createContext<{
   $ankiFields: Store<AnkiFields>;
   $setAnkiFields: SetStoreFunction<AnkiFields>;
   $isRootAnkiFields: Accessor<boolean>;
+  $isInitialAnkiFields: Accessor<boolean>;
   noteId?: number;
   initialAnkiFields: AnkiFields;
   resetAnkiFields: () => void;
@@ -23,6 +24,10 @@ export function AnkiFieldContextProvider(props: {
     __IS_ROOT__: props.isRoot ?? false,
   });
   const $isRootAnkiFields = createMemo(() => Boolean($ankiFields.__IS_ROOT__));
+  const $isInitialAnkiFields = createMemo(
+    () => $ankiFields.CardID === props.initialAnkiFields.CardID,
+  );
+
   const resetAnkiFields = () => {
     $setAnkiFields({ ...props.initialAnkiFields, __IS_ROOT__: props.isRoot });
   };
@@ -34,6 +39,7 @@ export function AnkiFieldContextProvider(props: {
         $ankiFields,
         $setAnkiFields,
         $isRootAnkiFields,
+        $isInitialAnkiFields,
         initialAnkiFields: props.initialAnkiFields,
         resetAnkiFields,
       }}
@@ -55,6 +61,7 @@ const RootAnkiFieldsContext = createContext<{
   $ankiFields: Store<AnkiFields>;
   $setAnkiFields: SetStoreFunction<AnkiFields>;
   $isRootAnkiFields: Accessor<boolean>;
+  $isInitialAnkiFields: Accessor<boolean>;
   noteId?: number;
   initialAnkiFields: AnkiFields;
   resetAnkiFields: () => void;

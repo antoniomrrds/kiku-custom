@@ -1,15 +1,27 @@
-import { createEffect, createMemo, For, on, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  on,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import { ankiFieldsSkeleton, type AnkiNote } from "#/src/lib/types";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { MoveDown } from "./Icons";
 
 const sortNote = (a: AnkiNote, b: AnkiNote) => b.noteId - a.noteId;
 
 export default function RelatedExpression() {
   const { $general } = useGeneralContext();
   const { $card, $setCard, $initialSide } = useCardContext();
-  const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields } = useAnkiFieldContext();
+  const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields, $isInitialAnkiFields } =
+    useAnkiFieldContext();
+  const [$ref, $setRef] = createSignal<HTMLDivElement>();
   const $relatedExpression = createMemo(() => {
     if ($initialSide() === "front") {
       return [...($card.query.sameExpression ?? [])]
@@ -52,7 +64,7 @@ export default function RelatedExpression() {
     on(
       () => $ankiFields.CardID,
       () => {
-        if ($ankiFields.CardID === initialAnkiFields.CardID) return;
+        if ($isInitialAnkiFields()) return;
         if (played.has($ankiFields.CardID)) return;
         played.add($ankiFields.CardID);
         const audio =
@@ -72,23 +84,49 @@ export default function RelatedExpression() {
     ),
   );
 
+  const [$hasMultipleRows, $setHasMultipleRows] = createSignal(false);
+
+  onMount(() => {
+    const ref = $ref();
+    if (!ref) return;
+    const observer = new ResizeObserver(() => {
+      if (ref.children.length <= 1) {
+        $setHasMultipleRows(false);
+        return;
+      }
+      const children = Array.from(ref.children) as HTMLElement[];
+      const firstTop = children[0].offsetTop;
+      $setHasMultipleRows(children.some((child) => child.offsetTop > firstTop));
+    });
+    observer.observe(ref);
+    onCleanup(() => observer.disconnect());
+  });
+
   return (
-    <div class="flex gap-x-2 sm:gap-x-4 flex-wrap">
+    <div ref={$setRef} class="flex gap-x-2 sm:gap-x-4 flex-wrap relative">
       <Show when={$relatedExpression().length}>
-        <button
-          class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
-          classList={{
-            "text-base-content-soft": $ankiFields.CardID !== initialAnkiFields.CardID,
-            "text-base-content": $ankiFields.CardID === initialAnkiFields.CardID,
-          }}
-          on:click={() => {
-            resetAnkiFields();
-            $setCard("side", $initialSide());
-          }}
-          on:touchend={(e) => e.stopPropagation()}
-        >
-          {initialAnkiFields.Expression}
-        </button>
+        <div class="flex gap-px items-center">
+          <MoveDown
+            class="size-4 sm:size-5 text-base-content-faint"
+            classList={{
+              hidden: !$hasMultipleRows(),
+            }}
+          ></MoveDown>
+          <button
+            class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
+            classList={{
+              "text-base-content-soft": !$isInitialAnkiFields(),
+              "text-base-content": $isInitialAnkiFields(),
+            }}
+            on:click={() => {
+              resetAnkiFields();
+              $setCard("side", $initialSide());
+            }}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            {initialAnkiFields.Expression}
+          </button>
+        </div>
       </Show>
       <For each={$relatedExpression()}>
         {(note) => {

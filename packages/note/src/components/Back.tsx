@@ -36,7 +36,7 @@ const Lazy = {
 export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext();
+  const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
   const { $setPictureModal } = usePictureModalTransition();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
@@ -93,9 +93,19 @@ export function Back(props: { onExitNested?: () => void }) {
         <Match when={$card.page === "main"}>
           {$card.ready && <Lazy.HeaderMain onExitNested={props.onExitNested} />}
           <div class="flex flex-col gap-2">
-            <div class="flex justify-between gap-2 min-h-lh text-xl sm:text-2xl">
-              <Lazy.RelatedExpression />
-              <Lazy.Frequency />
+            <div class="flex justify-between gap-2 items-start">
+              <div
+                class="text-xl sm:text-2xl hover:h-auto overflow-hidden transition-[height] [interpolate-size:allow-keywords] w-full"
+                classList={{
+                  "h-lh": $isInitialAnkiFields(),
+                  "h-auto": !$isInitialAnkiFields(),
+                }}
+              >
+                <Lazy.RelatedExpression />
+              </div>
+              <div class="mt-1">
+                <Lazy.Frequency />
+              </div>
             </div>
             <div class="flex flex-col gap-4 relative z-10">
               <div
