@@ -263,7 +263,10 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       const style = document.createElement("style");
       style.innerHTML = `${generateCssVars(getCssVar(config ?? defaultConfig))}\n\n${generateCssVarsDark(getCssVarDark(config ?? defaultConfig))}`;
       document.head.appendChild(style);
-      shadow.appendChild(style.cloneNode(true));
+      const shadowStyle = style?.cloneNode(true) as HTMLStyleElement;
+      shadow.appendChild(shadowStyle);
+      styleTags.push(shadowStyle);
+      styleTags.push(style);
     } else {
       const kikuCss = document.createElement("link");
       kikuCss.rel = "stylesheet";

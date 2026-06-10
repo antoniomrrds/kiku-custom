@@ -58,7 +58,7 @@ export function useNavigationTransition() {
 }
 
 export function useThemeTransition() {
-  const { $general, isAnkiDesktop, initialDarkMode } = useGeneralContext();
+  const { isAnkiDesktop, initialDarkMode } = useGeneralContext();
   const { $config, $setConfig } = useConfigContext();
   const startViewTransition = useViewTransition();
   const { $card } = useCardContext();

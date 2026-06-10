@@ -27,7 +27,7 @@
     animation: var(--animate-unclip);
     clip-path: polygon(-100vmax 100%, 100% 100%, 100% -100vmax);
   }
-  :root[data-theme-transition="true"] ::part(root) {
+  :root[data-theme-transition="true"] {
     view-transition-name: angled-swipe;
   }
 
