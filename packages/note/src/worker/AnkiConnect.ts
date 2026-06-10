@@ -43,10 +43,12 @@ export class AnkiConnect {
     kanjiList,
     readingList,
     expressionList,
+    withNewNotes = true,
   }: {
     kanjiList: string[];
     readingList: string[];
     expressionList: string[];
+    withNewNotes?: boolean;
   }) {
     const noteFilter = `("note:Kiku" OR "note:Lapis")`;
 
@@ -69,13 +71,14 @@ export class AnkiConnect {
 
     const newQuery = `${noteFilter} AND is:new`;
 
-    const queries = [kanjiQuery, readingQuery, expressionQuery, newQuery].filter(
+    const queries = [kanjiQuery, readingQuery, expressionQuery].filter(
       Boolean,
     ) as string[];
+    if (withNewNotes) queries.push(newQuery);
     const idsLists = await this.batchFindNotes(queries);
     const allIds = [...new Set(idsLists.flat())];
     const [allNotes] = await this.batchNotesInfo([allIds]);
-    const newNotes = idsLists[queries.length - 1] ?? [];
+    const newNotes = withNewNotes ? (idsLists[idsLists.length - 1] ?? []) : [];
 
     const kanjiListResult: Record<string, AnkiNote[]> = {};
     const readingListResult: Record<string, AnkiNote[]> = {};

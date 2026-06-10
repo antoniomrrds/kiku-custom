@@ -51,10 +51,12 @@ export class WorkerThreadApi {
     kanjiList,
     readingList,
     expressionList,
+    withNewNotes = true,
   }: {
     kanjiList: string[];
     readingList: string[];
     expressionList: string[];
+    withNewNotes?: boolean;
   }) {
     const queryWithNotesCache = async () => {
       const kanjiListResult: Record<string, AnkiNote[]> = {};
@@ -146,6 +148,7 @@ export class WorkerThreadApi {
           kanjiList,
           readingList,
           expressionList,
+          withNewNotes,
         });
         isNotesCache = false;
       } catch {
@@ -164,6 +167,7 @@ export class WorkerThreadApi {
           kanjiList,
           readingList,
           expressionList,
+          withNewNotes,
         });
         isNotesCache = false;
       }
@@ -188,11 +192,13 @@ export class WorkerThreadApi {
     readingList,
     expressionList,
     ankiFields,
+    withNewNotes = true,
   }: {
     kanjiList: string[];
     readingList?: string[];
     expressionList?: string[];
     ankiFields: AnkiFields;
+    withNewNotes?: boolean;
   }) {
     return new Promise<{
       kanjiResult: Record<string, AnkiNote[]>;
@@ -206,6 +212,7 @@ export class WorkerThreadApi {
         readingList: readingList ?? [],
         expressionList: expressionList ?? [],
         ankiFields,
+        withNewNotes,
         resolve,
       });
       if (this.debounceTimer) clearTimeout(this.debounceTimer);
@@ -223,6 +230,7 @@ export class WorkerThreadApi {
     readingList: string[];
     expressionList: string[];
     ankiFields: AnkiFields;
+    withNewNotes: boolean;
     resolve: (v: {
       kanjiResult: Record<string, AnkiNote[]>;
       readingResult: Record<string, AnkiNote[]>;
@@ -239,12 +247,14 @@ export class WorkerThreadApi {
     const batchedKanjiList = [...new Set(requests.flatMap((r) => r.kanjiList))];
     const batchedReadingList = [...new Set(requests.flatMap((r) => r.readingList))];
     const batchedExpressionList = [...new Set(requests.flatMap((r) => r.expressionList))];
+    const needsNewNotes = requests.some((r) => r.withNewNotes);
 
     const { kanjiListResult, readingListResult, expressionListResult, newNotes, isNotesCache } = await this.query(
       {
         kanjiList: batchedKanjiList,
         readingList: batchedReadingList,
         expressionList: batchedExpressionList,
+        withNewNotes: needsNewNotes,
       },
     );
 

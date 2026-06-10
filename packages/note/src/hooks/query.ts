@@ -83,13 +83,13 @@ export function useQueryNotes() {
         }
       }
 
-      //TODO: no newNotes if front
       const { kanjiResult, readingResult, expressionResult, newNotes, isNotesCache } =
         await workerApi.queryShared({
           kanjiList,
           readingList,
           ankiFields: unwrap(ankiFields),
           expressionList,
+          withNewNotes: !isFront,
         });
 
       if (aborter.signal.aborted) return;
