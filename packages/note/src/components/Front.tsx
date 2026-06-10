@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, lazy, Match, onMount, Switch } from "solid-js";
+import { createMemo, createSignal, lazy, Match, onMount, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
 import { useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
@@ -30,7 +30,7 @@ export function Front() {
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
   const { $config } = useConfigContext();
-  const { $general, logger } = useGeneralContext();
+  const { logger } = useGeneralContext();
   const loadPlugin = useLoadPlugin();
   useQueryNotes();
   const $hidden = createMemo(() => {
@@ -76,7 +76,7 @@ export function Front() {
         </Match>
         <Match when={$card.page === "main"}>
           {$card.ready && <Lazy.HeaderMain />}
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-1 sm:gap-2">
             <div class="flex justify-between gap-2 items-start">
               <div
                 class="text-xl sm:text-2xl min-h-lh hover:h-auto overflow-hidden transition-[height] [interpolate-size:allow-keywords] w-full"
@@ -88,28 +88,26 @@ export function Front() {
                 <Lazy.RelatedExpression />
               </div>
             </div>
-            <div class="flex flex-col gap-4 relative z-10">
-              <div
-                class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
-                on:click={() => {
-                  if (!$isInitialSide()) return;
-                  $setClicked((prev) => !prev);
-                  $setHideExpression(false);
-                }}
-                on:touchend={(e) => e.stopPropagation()}
-              >
-                <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
-                  <ExpressionSection hideExpression={$hideExpression()} />
-                  <div class="hidden sm:block sm:h-8 sm:mt-2">
-                    {$card.ready && (
-                      <div class="animate-fade-in-sm flex gap-2">
-                        <Lazy.AudioButtons position={1} />
-                      </div>
-                    )}
-                  </div>
+            <div
+              class="flex rounded-lg gap-2 sm:gap-4 flex-col sm:flex-row tappable relative z-10"
+              on:click={() => {
+                if (!$isInitialSide()) return;
+                $setClicked((prev) => !prev);
+                $setHideExpression(false);
+              }}
+              on:touchend={(e) => e.stopPropagation()}
+            >
+              <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
+                <ExpressionSection hideExpression={$hideExpression()} />
+                <div class="hidden sm:block sm:h-8 sm:mt-2">
+                  {$card.ready && (
+                    <div class="animate-fade-in-sm flex gap-2">
+                      <Lazy.AudioButtons position={1} />
+                    </div>
+                  )}
                 </div>
-                <PictureSection />
               </div>
+              <PictureSection />
             </div>
             {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
           </div>

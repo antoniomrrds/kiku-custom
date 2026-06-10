@@ -73,4 +73,4 @@ const exampleFields2: AnkiFields = {
   "kana:SentenceFurigana": ""
 }
 
-export const exampleFields = exampleFields2;
+export const exampleFields = exampleFields1;

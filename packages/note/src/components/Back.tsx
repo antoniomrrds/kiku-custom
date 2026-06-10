@@ -91,7 +91,7 @@ export function Back(props: { onExitNested?: () => void }) {
         </Match>
         <Match when={$card.page === "main"}>
           {$card.ready && <Lazy.HeaderMain onExitNested={props.onExitNested} />}
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-1 sm:gap-2">
             <div class="flex justify-between gap-2 items-start">
               <div
                 class="text-xl sm:text-2xl min-h-lh hover:h-auto overflow-hidden transition-[height] [interpolate-size:allow-keywords] w-full"
@@ -106,34 +106,32 @@ export function Back(props: { onExitNested?: () => void }) {
                 <Lazy.Frequency />
               </div>
             </div>
-            <div class="flex flex-col gap-4 relative z-10">
-              <div
-                class="flex rounded-lg gap-4 flex-col sm:flex-row"
-                classList={{ "animate-fade-in": !!cacheStore.relax }}
-              >
-                <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
-                  <ExpressionSection />
-                  <div class={`mt-6 flex gap-4 pitch pitch-field`} {...$pitchFieldDataset()}>
-                    {$ankiFields.PitchPosition && $card.ready ? (
-                      <Suspense fallback={<span>&nbsp;</span>}>
-                        <Lazy.Pitches />
-                      </Suspense>
-                    ) : isServer ? (
-                      "{{#PitchPosition}}<span>&nbsp;</span>{{/PitchPosition}}"
-                    ) : (
-                      $ankiFields.PitchPosition && <span>&nbsp;</span>
-                    )}
-                  </div>
-                  <div class="hidden sm:block sm:h-8 sm:mt-2">
-                    {$card.ready && (
-                      <div class="animate-fade-in-sm flex gap-2">
-                        <Lazy.AudioButtons position={1} />
-                      </div>
-                    )}
-                  </div>
+            <div
+              class="flex rounded-lg gap-2 sm:gap-4 flex-col sm:flex-row relative z-10"
+              classList={{ "animate-fade-in": !!cacheStore.relax }}
+            >
+              <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
+                <ExpressionSection />
+                <div class={`mt-6 flex gap-4 pitch pitch-field`} {...$pitchFieldDataset()}>
+                  {$ankiFields.PitchPosition && $card.ready ? (
+                    <Suspense fallback={<span>&nbsp;</span>}>
+                      <Lazy.Pitches />
+                    </Suspense>
+                  ) : isServer ? (
+                    "{{#PitchPosition}}<span>&nbsp;</span>{{/PitchPosition}}"
+                  ) : (
+                    $ankiFields.PitchPosition && <span>&nbsp;</span>
+                  )}
                 </div>
-                <PictureSection />
+                <div class="hidden sm:block sm:h-8 sm:mt-2">
+                  {$card.ready && (
+                    <div class="animate-fade-in-sm flex gap-2">
+                      <Lazy.AudioButtons position={1} />
+                    </div>
+                  )}
+                </div>
               </div>
+              <PictureSection />
             </div>
             {$card.ready && <FieldGroupPaginationSection />}
           </div>
