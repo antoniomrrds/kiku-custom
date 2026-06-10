@@ -43,16 +43,8 @@ function Page() {
   const { $general } = useGeneralContext();
   const { initialAnkiFields } = useAnkiFieldContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
-  const $hasSameKanji = createMemo(() => $kanjiPage.noteList.length > 0);
-  const $hasSameReading = createMemo(
-    () => $kanjiPage.sameReading && $kanjiPage.sameReading.length > 0,
-  );
-  const $hasSameExpression = createMemo(
-    () => $kanjiPage.sameExpression && $kanjiPage.sameExpression.length > 0,
-  );
   const $relatedItems = useRelatedItems();
 
-  const $hasRelatedExpression = createMemo(() => $relatedItems().length > 0);
   const $title = createMemo(() => {
     if ($kanjiPage.tab === "kanji") {
       if ($kanjiPage.contextLabel?.type === "similar") return "Similar";
@@ -104,39 +96,36 @@ function Page() {
           <div role="tablist" class="tabs tabs-box">
             <TabItem
               active={$kanjiPage.tab === "kanji"}
-              disabled={!$hasSameKanji()}
+              neverDisabled={true}
               onClick={() => {
-                if ($hasSameKanji()) $setKanjiPage("tab", "kanji");
+                $setKanjiPage("tab", "kanji");
               }}
             >
               漢字
             </TabItem>
             <TabItem
               active={$kanjiPage.tab === "reading"}
-              disabled={!$hasSameReading()}
               count={$kanjiPage.sameReading?.length ?? 0}
               onClick={() => {
-                if ($hasSameReading()) $setKanjiPage("tab", "reading");
+                $setKanjiPage("tab", "reading");
               }}
             >
               読
             </TabItem>
             <TabItem
               active={$kanjiPage.tab === "same"}
-              disabled={!$hasSameExpression()}
               count={$kanjiPage.sameExpression?.length ?? 0}
               onClick={() => {
-                if ($hasSameExpression()) $setKanjiPage("tab", "same");
+                $setKanjiPage("tab", "same");
               }}
             >
               同
             </TabItem>
             <TabItem
               active={$kanjiPage.tab === "related"}
-              disabled={!$hasRelatedExpression()}
               count={$relatedItems().length}
               onClick={() => {
-                if ($hasRelatedExpression()) $setKanjiPage("tab", "related");
+                $setKanjiPage("tab", "related");
               }}
             >
               関
@@ -240,19 +229,23 @@ function Page() {
 function TabItem(props: {
   active: boolean;
   children: JSX.Element;
+  neverDisabled?: boolean;
   count?: number;
-  disabled: boolean;
   onClick: () => void;
 }) {
+  const $disabled = createMemo(() => !props.count && !props.neverDisabled);
+
   return (
     <button
       role="tab"
-      class="tab gap-1"
+      class="tab gap-0.5 text-lg"
       classList={{
         "tab-active": props.active,
-        "cursor-not-allowed": props.disabled,
+        "cursor-not-allowed": $disabled(),
       }}
-      on:click={props.onClick}
+      on:click={() => {
+        if (!$disabled()) props.onClick();
+      }}
       on:touchend={(e) => e.stopPropagation()}
     >
       {props.children}
