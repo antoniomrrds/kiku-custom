@@ -2,7 +2,6 @@ import { createContext, createEffect, createMemo, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { nodesToString, parseHtml } from "#/src/lib/dom";
-import type { AnkiFields } from "#/src/lib/types";
 import { useAnkiFieldContext } from "./AnkiFieldsContext";
 import { useCardContext } from "./CardContext";
 import { useGeneralContext } from "./GeneralContext";
@@ -27,7 +26,7 @@ const FieldGroupContext = createContext<{
 export function FieldGroupContextProvider(props: { children: JSX.Element }) {
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $initialSide } = useCardContext();
-  const { $general, logger } = useGeneralContext();
+  const { logger } = useGeneralContext();
 
   const $sentenceField = createMemo(() => {
     if (!$isRootAnkiFields()) return $ankiFields.Sentence;

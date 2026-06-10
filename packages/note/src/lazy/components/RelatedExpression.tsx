@@ -60,6 +60,16 @@ export default function RelatedExpression() {
     return $card.query.relatedExpression?.some((n) => n.noteId === note.noteId);
   };
 
+  createEffect(
+    on(
+      () => $relatedExpression(),
+      (notes) => {
+        notes.forEach((note) => preloadImages(note.fields.Picture.value));
+      },
+      { defer: true },
+    ),
+  );
+
   const played = new Set<string>();
   createEffect(
     on(
@@ -162,8 +172,6 @@ export default function RelatedExpression() {
                 $setCard("side", "back");
               }}
               on:touchend={(e) => e.stopPropagation()}
-              on:mouseenter={() => preloadImages(note.fields.Picture.value)}
-              on:focus={() => preloadImages(note.fields.Picture.value)}
             >
               {$initialSide() === "front"
                 ? note.fields.ExpressionReading.value
