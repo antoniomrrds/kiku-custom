@@ -17,12 +17,23 @@ import { preloadImages } from "#/src/lib/dom";
 
 const sortNote = (a: AnkiNote, b: AnkiNote) => b.noteId - a.noteId;
 
+const dedupeByCardId = (notes: AnkiNote[]) => {
+  const seen = new Set<string>();
+  return notes.filter((note) => {
+    const cardId = note.cards[0]?.toString() ?? "";
+    if (seen.has(cardId)) return false;
+    seen.add(cardId);
+    return true;
+  });
+};
+
 export default function RelatedExpression() {
   const { logger } = useGeneralContext();
   const { $card, $setCard, $initialSide } = useCardContext();
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields, $isInitialAnkiFields } =
     useAnkiFieldContext();
   const [$ref, $setRef] = createSignal<HTMLDivElement>();
+
   const $relatedExpression = createMemo(() => {
     if ($initialSide() === "front") {
       return [...($card.query.sameExpression ?? [])]
@@ -46,14 +57,18 @@ export default function RelatedExpression() {
       ...($card.query.referenced ?? []),
     ].sort(sortNote);
 
-    if ($card.query.relatedExpression?.length) {
-      if ($card.query.relatedExpression.length < 2) {
-        return [...$card.query.relatedExpression, ...fallbackPriority2].slice(0, 2);
-      }
-      return $card.query.relatedExpression;
+    let result: AnkiNote[];
+    const relatedExpression = $card.query.relatedExpression;
+
+    if (relatedExpression?.length && relatedExpression.length < 2) {
+      result = [...relatedExpression, ...fallbackPriority2, ...fallbackPriority1].slice(0, 2);
+    } else if (relatedExpression?.length && relatedExpression.length >= 2) {
+      result = relatedExpression;
+    } else {
+      result = [...fallbackPriority2, ...fallbackPriority1].slice(0, 2);
     }
 
-    return [...fallbackPriority2, ...fallbackPriority1].slice(0, 2);
+    return dedupeByCardId(result);
   });
 
   const isExplicitRelatedExpression = (note: AnkiNote) => {
