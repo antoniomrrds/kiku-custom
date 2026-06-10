@@ -48,3 +48,12 @@ export function nodesToString(nodes: Node[]) {
     })
     .join("");
 }
+
+export function preloadImages(pictureHtml: string) {
+  if (typeof DOMParser === "undefined" || !pictureHtml) return;
+  const doc = new DOMParser().parseFromString(pictureHtml, "text/html");
+  doc.querySelectorAll("img").forEach((img) => {
+    const src = img.getAttribute("src");
+    if (src) new Image().src = src;
+  });
+}

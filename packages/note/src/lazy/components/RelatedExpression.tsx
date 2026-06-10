@@ -13,11 +13,12 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { MoveDown } from "./Icons";
+import { preloadImages } from "#/src/lib/dom";
 
 const sortNote = (a: AnkiNote, b: AnkiNote) => b.noteId - a.noteId;
 
 export default function RelatedExpression() {
-  const { $general, logger } = useGeneralContext();
+  const { logger } = useGeneralContext();
   const { $card, $setCard, $initialSide } = useCardContext();
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields, $isInitialAnkiFields } =
     useAnkiFieldContext();
@@ -159,6 +160,8 @@ export default function RelatedExpression() {
                 $setCard("side", "back");
               }}
               on:touchend={(e) => e.stopPropagation()}
+              on:mouseenter={() => preloadImages(note.fields.Picture.value)}
+              on:focus={() => preloadImages(note.fields.Picture.value)}
             >
               {$initialSide() === "front"
                 ? note.fields.ExpressionReading.value
