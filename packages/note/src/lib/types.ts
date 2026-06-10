@@ -242,6 +242,7 @@ declare global {
         unload?: () => void;
         ankiDroidAPI?: AnkiDroidAPI;
         logger?: Logger;
+        kikuCssHeadObserver?: MutationObserver;
       } & CacheStore)
     | undefined;
 

@@ -272,6 +272,24 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       kikuCss.rel = "stylesheet";
       kikuCss.href = "./_kiku.css";
       shadow.prepend(kikuCss);
+      if (!isAnkiWeb && !document.head.querySelector("#kiku-css-head")) {
+        logger.debug("[initAnki] appending #kiku-css-head");
+        const kikuCssHead = kikuCss.cloneNode(true) as HTMLLinkElement;
+        kikuCssHead.id = "kiku-css-head";
+        document.head.appendChild(kikuCssHead);
+      }
+      if (!isAnkiWeb && qa && !globalThis.KIKU.kikuCssHeadObserver) {
+        const observer = new MutationObserver(() => {
+          queueMicrotask(() => {
+            if (!document.querySelector("#kiku-host")) {
+              logger.debug("[initAnki] removing #kiku-css-head");
+              document.getElementById("kiku-css-head")?.remove();
+            }
+          });
+        });
+        observer.observe(qa, { childList: true });
+        globalThis.KIKU.kikuCssHeadObserver = observer;
+      }
     }
 
     const kikuPluginCss = document.createElement("link");

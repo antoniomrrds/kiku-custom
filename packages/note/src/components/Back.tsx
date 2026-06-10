@@ -5,7 +5,7 @@ import type { DatasetProp } from "#/src/lib/config";
 import { isNsfw } from "#/src/lib/util";
 import { useQueryNotes } from "#/src/hooks/query";
 import { useLoadPlugin } from "#/src/hooks/plugin";
-import { useNavigationTransition, usePictureModalTransition } from "#/src/hooks/transition";
+import { useNavigationTransition } from "#/src/hooks/transition";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { AnkiFieldContextProvider, useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
@@ -39,7 +39,7 @@ export function Back(props: { onExitNested?: () => void }) {
   const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
   const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
-  const { $general, logger } = useGeneralContext();
+  const { logger } = useGeneralContext();
   useQueryNotes();
   usePitch();
 
