@@ -135,11 +135,11 @@ export default function RelatedExpression() {
             <button
               class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
               classList={{
-                "text-base-content-soft underline underline-offset-4":
+                "text-base-content-soft underline underline-offset-5 decoration-1":
                   $ankiFields.CardID !== cardId && isExplicitRelatedExpression(note),
                 "text-base-content-soft":
                   $ankiFields.CardID !== cardId && !isExplicitRelatedExpression(note),
-                "text-base-content underline underline-offset-4":
+                "text-base-content underline underline-offset-5 decoration-1":
                   $ankiFields.CardID === cardId && isExplicitRelatedExpression(note),
                 "text-base-content":
                   $ankiFields.CardID === cardId && !isExplicitRelatedExpression(note),
