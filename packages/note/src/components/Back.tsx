@@ -1,4 +1,14 @@
-import { createMemo, lazy, Match, onMount, Show, Suspense, Switch } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  lazy,
+  Match,
+  on,
+  onMount,
+  Show,
+  Suspense,
+  Switch,
+} from "solid-js";
 import { isServer } from "solid-js/web";
 import { CardStoreContextProvider, useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
@@ -9,7 +19,6 @@ import { useNavigationTransition } from "#/src/hooks/transition";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
 import { AnkiFieldContextProvider, useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
-import { useCacheContext } from "#/src/contexts/CacheContext";
 import { CtxContextProvider } from "#/src/contexts/CtxContext";
 import { FieldGroupContextProvider } from "#/src/contexts/FieldGroupContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
@@ -37,7 +46,6 @@ export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
   const { $card, $setCard } = useCardContext();
   const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
-  const cacheStore = useCacheContext();
   const loadPlugin = useLoadPlugin();
   const { logger } = useGeneralContext();
   useQueryNotes();
@@ -46,11 +54,18 @@ export function Back(props: { onExitNested?: () => void }) {
   onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
-      cacheStore.relax = true;
       logger.info("[Back] ready, expression:", $ankiFields.Expression);
       loadPlugin();
     }, 0);
   });
+
+  createEffect(
+    on(
+      () => $card.page,
+      () => $setCard("fadeInTopSection", true),
+      { defer: true },
+    ),
+  );
 
   const $pitchFieldDataset = createMemo<DatasetProp>(() => ({
     "data-has-pitch": isServer
@@ -108,7 +123,9 @@ export function Back(props: { onExitNested?: () => void }) {
             </div>
             <div
               class="flex rounded-lg gap-2 sm:gap-4 flex-col sm:flex-row relative z-10"
-              classList={{ "animate-fade-in": !!cacheStore.relax }}
+              classList={{
+                "animate-fade-in": $card.fadeInTopSection,
+              }}
             >
               <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
                 <ExpressionSection />

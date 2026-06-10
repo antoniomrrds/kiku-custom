@@ -253,7 +253,6 @@ declare global {
 
 export type CacheStore = {
   workerApi?: WorkerApi;
-  relax?: boolean;
   lookupKanji?: Map<string, KanjiInfo | undefined>;
   queryShared?: Map<string, QuerySharedResult>;
 };

@@ -49,6 +49,7 @@ type CardStore = {
   nestedNoteId: number | undefined;
   nestedIsMergePreview: boolean;
   isMergePreview: boolean;
+  fadeInTopSection: boolean;
 };
 
 type CardContextValue = {
@@ -103,6 +104,7 @@ export function CardStoreContextProvider(props: {
     nestedNoteId: undefined,
     nestedIsMergePreview: false,
     isMergePreview: props.isMergePreview ?? false,
+    fadeInTopSection: false,
   });
 
   const $initialSide = createMemo(() => props.initialSide);

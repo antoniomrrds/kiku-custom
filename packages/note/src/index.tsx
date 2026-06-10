@@ -154,7 +154,6 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
 
   globalThis.KIKU ??= {};
   globalThis.KIKU.aborter = aborter;
-  globalThis.KIKU.relax = false;
   globalThis.KIKU.logger = logger;
 
   if (!globalThis.KIKU.unload && !import.meta.env.DEV) {

@@ -120,6 +120,7 @@ export default function RelatedExpression() {
               "text-base-content": $isInitialAnkiFields(),
             }}
             on:click={() => {
+              $setCard("fadeInTopSection", false);
               resetAnkiFields();
               $setCard("side", $initialSide());
             }}
@@ -146,6 +147,7 @@ export default function RelatedExpression() {
                   $ankiFields.CardID === cardId && !isExplicitRelatedExpression(note),
               }}
               on:click={() => {
+                $setCard("fadeInTopSection", false);
                 $setAnkiFields({
                   ...ankiFieldsSkeleton,
                   ...Object.fromEntries(
