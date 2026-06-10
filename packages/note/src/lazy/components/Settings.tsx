@@ -375,7 +375,7 @@ function DefinitionSettings() {
                 return "Shows Selection, Main Definition, and Glossary as separate pages.";
               if ($config.definitionStyle === "single-page")
                 return "Appends all definitions into a single scrollable page.";
-              return "Splits the glossary into individual pages for each dictionary.";
+              return "Splits the glossary into individual pages for each dictionary. Only works with Yomitan format";
             })()}
           </div>
         </fieldset>

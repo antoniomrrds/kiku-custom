@@ -297,16 +297,8 @@ export class WorkerThreadApi {
       const file = manifest.files[this.constants.tar["kiku_db_kanji_compact.json.gz"]];
       const buf = await this.main.fetchArrayBuffer(
         `${this.assetsPath}/${this.constants.assets["_kiku_db_main.tar"]}`,
-        {
-          headers: { Range: `bytes=${file.start}-${file.end}` },
-        },
-        {
-          range: {
-            start: file.start,
-            end: file.end,
-            size: file.size,
-          },
-        },
+        { headers: { Range: `bytes=${file.start}-${file.end}` } },
+        { range: { start: file.start, end: file.end, size: file.size } },
       );
 
       const text = await gunzipArrayBuffer(buf).text();
@@ -338,16 +330,8 @@ export class WorkerThreadApi {
       const file = manifest.files[this.constants.tar["kiku_db_terms_compact.json.gz"]];
       const buf = await this.main.fetchArrayBuffer(
         `${this.assetsPath}/${this.constants.assets["_kiku_db_main.tar"]}`,
-        {
-          headers: { Range: `bytes=${file.start}-${file.end}` },
-        },
-        {
-          range: {
-            start: file.start,
-            end: file.end,
-            size: file.size,
-          },
-        },
+        { headers: { Range: `bytes=${file.start}-${file.end}` } },
+        { range: { start: file.start, end: file.end, size: file.size } },
       );
 
       const text = await gunzipArrayBuffer(buf).text();
