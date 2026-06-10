@@ -13,7 +13,7 @@ export function FieldGroupPaginationSection() {
     <div
       class="flex justify-between text-base-content-soft items-center gap-2 animate-fade-in h-5 sm:h-8"
       classList={{
-        hidden: $group.ids.length <= 1,
+        hidden: $group().ids.length <= 1,
       }}
     >
       <Lazy.FieldGroupPagination />

@@ -38,7 +38,7 @@ export default function AudioElements() {
 
   createEffect(
     on(
-      () => $group.sentenceAudioField,
+      () => $group().sentenceAudioField,
       () => {
         const anchors = $card.sentenceAudioRef?.querySelectorAll("a");
         const audios = $card.sentenceAudioRef?.querySelectorAll("audio");
@@ -62,7 +62,7 @@ export default function AudioElements() {
   let autoPlay = true;
   createEffect(
     on(
-      () => $group.sentenceAudioField,
+      () => $group().sentenceAudioField,
       () => {
         if ($card.nested && autoPlay) {
           autoPlay = false;
@@ -110,9 +110,9 @@ export default function AudioElements() {
       <div
         style={hiddenStyle}
         ref={(ref) => $setCard("sentenceAudioRef", ref)}
-        innerHTML={$isRootAnkiFields() ? $group.sentenceAudioField : undefined}
+        innerHTML={$isRootAnkiFields() ? $group().sentenceAudioField : undefined}
       >
-        {!$isRootAnkiFields() && <AudioTag text={$group.sentenceAudioField} />}
+        {!$isRootAnkiFields() && <AudioTag text={$group().sentenceAudioField} />}
       </div>
     </>
   );

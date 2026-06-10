@@ -15,14 +15,14 @@ export default function BackFooter() {
   function DefaultFooter() {
     return (
       <>
-        {$group.miscInfoField && (
+        {$group().miscInfoField && (
           <div
             class={`flex gap-2 items-center justify-center bg-base-200 p-2 rounded-lg animate-fade-in misc-info`}
           >
             <div class="min-w-4">
               <InfoIcon class="size-4 text-base-content-calm" />
             </div>
-            <div class="text-base-content-calm" innerHTML={$group.miscInfoField}></div>
+            <div class="text-base-content-calm" innerHTML={$group().miscInfoField}></div>
           </div>
         )}
         <Show when={$tags().length}>

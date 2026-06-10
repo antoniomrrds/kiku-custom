@@ -249,14 +249,13 @@ export class WorkerThreadApi {
     const batchedExpressionList = [...new Set(requests.flatMap((r) => r.expressionList))];
     const needsNewNotes = requests.some((r) => r.withNewNotes);
 
-    const { kanjiListResult, readingListResult, expressionListResult, newNotes, isNotesCache } = await this.query(
-      {
+    const { kanjiListResult, readingListResult, expressionListResult, newNotes, isNotesCache } =
+      await this.query({
         kanjiList: batchedKanjiList,
         readingList: batchedReadingList,
         expressionList: batchedExpressionList,
         withNewNotes: needsNewNotes,
-      },
-    );
+      });
 
     for (const req of requests) {
       const { kanjiList, readingList, expressionList, ankiFields } = req;

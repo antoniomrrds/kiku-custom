@@ -26,7 +26,7 @@ export default function Sentence() {
     return (
       <div class="flex flex-col justify-center gap-2 items-center text-center">
         <Switch>
-          <Match when={$card.side === "back" && $group.sentenceTranslationField}>
+          <Match when={$card.side === "back" && $group().sentenceTranslationField}>
             <SentenceFieldWithTranslation />
           </Match>
           <Match when={true}>
@@ -92,7 +92,7 @@ function SentenceFieldWithTranslation() {
       </div>
       <div
         class="collapse-content text-lg text-base-content-calm"
-        innerHTML={$group.sentenceTranslationField}
+        innerHTML={$group().sentenceTranslationField}
       ></div>
     </div>
   );
@@ -105,7 +105,7 @@ function SentenceField() {
   const { $ankiFields } = useAnkiFieldContext();
 
   const $sentence = createMemo(() => {
-    const doc = parseHtml($group.sentenceField);
+    const doc = parseHtml($group().sentenceField);
     const ruby = doc.querySelectorAll("ruby");
     ruby.forEach((el) => {
       el.classList.add(..."[&_rt]:invisible hover:[&_rt]:visible".split(" "));

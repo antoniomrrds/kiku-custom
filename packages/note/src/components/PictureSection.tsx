@@ -18,7 +18,7 @@ export function PictureSection() {
 
   const $pictures = createMemo(() => {
     if (isServer) return [];
-    const doc = parseHtml($group.pictureField);
+    const doc = parseHtml($group().pictureField);
     return Array.from(doc.querySelectorAll("img")).map((img) => img.outerHTML);
   });
 
@@ -48,7 +48,7 @@ export function PictureSection() {
 
   createEffect(
     on(
-      () => $group.pictureField,
+      () => $group().pictureField,
       () => $setSubIndex(0),
     ),
   );

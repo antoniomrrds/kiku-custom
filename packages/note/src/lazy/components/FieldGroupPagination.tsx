@@ -5,7 +5,7 @@ import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { ArrowLeftIcon } from "./Icons";
 
 export default function FieldGroupPagination() {
-  const { $group, $next, $prev } = useFieldGroupContext();
+  const { $group, $index, $next, $prev } = useFieldGroupContext();
   const { $card } = useCardContext();
   const { $config } = useConfigContext();
 
@@ -38,7 +38,7 @@ export default function FieldGroupPagination() {
     }
   };
 
-  const groupId = () => $group.ids[$group.index];
+  const groupId = () => $group().ids[$index()];
 
   const date = () => {
     const ms = Number(groupId());
@@ -49,7 +49,7 @@ export default function FieldGroupPagination() {
   };
 
   return (
-    $group.ids.length > 1 && (
+    $group().ids.length > 1 && (
       <>
         <button
           type="button"
@@ -61,7 +61,7 @@ export default function FieldGroupPagination() {
         </button>
         <div class="flex flex-col items-center leading-none">
           <div class="text-xs text-base-content-faint">{date()}</div>
-          <div>{`${$group.index + 1} / ${$group.ids.length}`}</div>
+          <div>{`${$index() + 1} / ${$group().ids.length}`}</div>
         </div>
         <button
           type="button"
