@@ -1,165 +1,156 @@
 import { createEffect, createMemo } from "solid-js";
 import { unwrap } from "solid-js/store";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
-import { useCacheContext } from "#/src/contexts/CacheContext";
 import { useCardContext } from "#/src/contexts/CardContext";
-import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
-import { constants } from "#/src/lib/contants";
 import { extractKanji } from "#/src/lib/kana";
-import { type AnkiNote, type Source } from "#/src/lib/types";
+import { type AnkiNote, type Source, type TermInfo } from "#/src/lib/types";
 import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
-import { createWorkerApi } from "#/src/worker/client";
+import { useWorker } from "./worker";
 
 export function useQueryNotes() {
-  const { $config } = useConfigContext();
   const { $card, $setCard, $initialSide } = useCardContext();
-  const { initialAnkiFields, $isRootAnkiFields } = useAnkiFieldContext();
-  const {
-    $setGeneral,
-    logger,
-    assetsPath,
-    isAnkiDesktop,
-    workerPath,
-    workerApi: workerApiContainer,
-    aborter,
-  } = useGeneralContext();
-  const cacheStore = useCacheContext();
+  const { initialAnkiFields: ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
+  const { $setGeneral, logger, aborter } = useGeneralContext();
+  const { getWorker } = useWorker();
 
-  let fetched = false;
+  const $isFront = createMemo(() => $initialSide() === "front");
+  const $kanjiList = createMemo(() => {
+    if ($isFront()) return [];
+    return extractKanji(
+      ankiFields.ExpressionFurigana
+        ? $isRootAnkiFields()
+          ? ankiFields["furigana:ExpressionFurigana"]
+          : ankiFields.Expression
+        : ankiFields.Expression,
+    );
+  });
+  const $readingList = createMemo(() => {
+    if ($isFront()) return [];
+    return ankiFields.ExpressionReading ? [ankiFields.ExpressionReading] : [];
+  });
+  const $relatedExpressions = createMemo(() => {
+    if ($isFront()) return [];
+    return parseRelatedExpression(ankiFields.RelatedExpression);
+  });
+  const $expressionList = createMemo(() => {
+    return [...(ankiFields.Expression ? [ankiFields.Expression] : []), ...$relatedExpressions()];
+  });
+
   async function query() {
-    fetched = true;
-    try {
-      const ankiFields = initialAnkiFields;
-      const isFront = $initialSide() === "front";
-      logger.info("[Kanji] setKanji start:", {
-        expression: ankiFields.Expression,
-        side: isFront ? "front" : "back",
-      });
-      const kanjiList = isFront
-        ? []
-        : extractKanji(
-            ankiFields.ExpressionFurigana
-              ? $isRootAnkiFields()
-                ? ankiFields["furigana:ExpressionFurigana"]
-                : ankiFields.Expression
-              : ankiFields.Expression,
-          );
-      const readingList = isFront
-        ? []
-        : ankiFields.ExpressionReading
-          ? [ankiFields.ExpressionReading]
-          : [];
-      const relatedExpressions = isFront
-        ? []
-        : parseRelatedExpression(ankiFields.RelatedExpression);
-      const expressionList = [
-        ...(ankiFields.Expression ? [ankiFields.Expression] : []),
-        ...relatedExpressions,
-      ];
+    const isFront = $isFront();
+    const kanjiList = $kanjiList();
+    const readingList = $readingList();
+    const relatedExpressions = $relatedExpressions();
+    let expressionList = $expressionList();
 
-      const opts = {
-        constants,
-        config: unwrap($config),
-        assetsPath: import.meta.env.DEV ? "" : assetsPath,
-        preferAnkiConnect: $config.preferAnkiConnect && isAnkiDesktop,
-        workerPath,
-      };
-      const workerApi = await createWorkerApi(opts, logger, cacheStore?.workerApi);
-      workerApiContainer.resolve(workerApi);
-      if (cacheStore && !cacheStore.workerApi) {
-        cacheStore.workerApi = workerApi;
-      }
+    logger.info("[Kanji] setKanji start:", {
+      expression: ankiFields.Expression,
+      side: isFront ? "front" : "back",
+    });
+    const workerApi = await getWorker();
+    if (aborter.signal.aborted) return;
 
-      let termInfo: Awaited<ReturnType<typeof workerApi.lookupTerm>> | undefined;
-      if (!isFront && ankiFields.Expression) {
-        termInfo = await workerApi.lookupTerm(ankiFields.Expression);
-        //oxfmt-ignore
-        if (termInfo) {
-          const seen = new Set(expressionList);
-          for (const f of termInfo.forms) if (!seen.has(f)) { seen.add(f); expressionList.push(f); }
-          for (const a of termInfo.antonym) if (!seen.has(a)) { seen.add(a); expressionList.push(a); }
-          for (const r of termInfo.referenced) if (!seen.has(r)) { seen.add(r); expressionList.push(r); }
-        }
-      }
-
-      const { kanjiResult, readingResult, expressionResult, newNotes, isNotesCache } =
-        await workerApi.queryShared({
-          kanjiList,
-          readingList,
-          ankiFields: unwrap(ankiFields),
-          expressionList,
-          withNewNotes: !isFront,
-        });
-
+    let termInfo: TermInfo | undefined;
+    if (!isFront && ankiFields.Expression) {
+      termInfo = await workerApi.lookupTerm(ankiFields.Expression);
       if (aborter.signal.aborted) return;
+      if (termInfo) {
+        expressionList = [
+          ...new Set([
+            ...expressionList,
+            ...termInfo.forms,
+            ...termInfo.antonym,
+            ...termInfo.referenced,
+          ]),
+        ];
+      }
+    }
 
-      const currentExpressionResults = expressionResult[ankiFields.Expression] ?? [];
-      const sameExpression = currentExpressionResults.filter(
-        (n) => n.fields.Expression.value === ankiFields.Expression,
+    const { kanjiResult, readingResult, expressionResult, newNotes, isNotesCache } =
+      await workerApi.queryShared({
+        kanjiList,
+        readingList,
+        ankiFields: unwrap(ankiFields),
+        expressionList,
+        withNewNotes: !isFront,
+      });
+    if (aborter.signal.aborted) return;
+
+    const thisExpressionResults = expressionResult[ankiFields.Expression] ?? [];
+    const sameExpression = thisExpressionResults.filter(
+      (n) => n.fields.Expression.value === ankiFields.Expression,
+    );
+
+    if (isFront) {
+      $setCard("query", {
+        status: "success",
+        noteList: [],
+        sameReading: [],
+        sameExpression,
+        relatedExpression: [],
+        forms: [],
+        antonym: [],
+        referenced: [],
+        newNotes,
+        isNotesCache,
+      });
+    } else {
+      const incomingRelated = thisExpressionResults.filter(
+        (n) => n.fields.Expression.value !== ankiFields.Expression,
       );
+      const outgoingRelated = relatedExpressions.flatMap((e) => expressionResult[e] ?? []);
+      const combinedRelated = [...incomingRelated, ...outgoingRelated];
+      const uniqueRelated = Array.from(new Map(combinedRelated.map((n) => [n.noteId, n])).values());
 
       let formsResult: AnkiNote[] = [];
       let antonymResult: AnkiNote[] = [];
       let referencedResult: AnkiNote[] = [];
+      const termInfoFlatMapCb = (expression: string) => {
+        const result = expressionResult[expression] ?? [];
+        return result.filter((n) => n.fields.Expression.value === expression);
+      };
       if (termInfo) {
-        formsResult = termInfo.forms.flatMap((f) => expressionResult[f] ?? []);
-        antonymResult = termInfo.antonym.flatMap((a) => expressionResult[a] ?? []);
-        referencedResult = termInfo.referenced.flatMap((r) => expressionResult[r] ?? []);
+        formsResult = termInfo.forms.flatMap(termInfoFlatMapCb);
+        antonymResult = termInfo.antonym.flatMap(termInfoFlatMapCb);
+        referencedResult = termInfo.referenced.flatMap(termInfoFlatMapCb);
       }
 
-      if (isFront) {
-        $setCard("query", {
-          status: "success",
-          noteList: [],
-          sameReading: [],
-          sameExpression,
-          relatedExpression: [],
-          forms: [],
-          antonym: [],
-          referenced: [],
-          newNotes,
-          isNotesCache,
-        });
-      } else {
-        const incomingRelated = currentExpressionResults.filter(
-          (n) => n.fields.Expression.value !== ankiFields.Expression,
-        );
-        const outgoingRelated = relatedExpressions.flatMap((e) => expressionResult[e] ?? []);
-
-        const combinedRelated = [...incomingRelated, ...outgoingRelated];
-        const uniqueRelated = Array.from(
-          new Map(combinedRelated.map((n) => [n.noteId, n])).values(),
-        );
-
-        $setCard("query", {
-          status: "success",
-          noteList: Object.entries(kanjiResult),
-          sameReading: readingResult[ankiFields.ExpressionReading],
-          sameExpression,
-          relatedExpression: uniqueRelated,
-          forms: formsResult,
-          antonym: antonymResult,
-          referenced: referencedResult,
-          newNotes,
-          isNotesCache,
-        });
-      }
-
-      logger.info("[Kanji] setKanji done:", {
-        kanji: Object.keys(kanjiResult).length,
-        reading: Object.keys(readingResult).length,
-        expression: Object.keys(expressionResult).length,
-        sameExpression: sameExpression.length,
-        newNotes: newNotes.length,
+      $setCard("query", {
+        status: "success",
+        noteList: Object.entries(kanjiResult),
+        sameReading: readingResult[ankiFields.ExpressionReading],
+        sameExpression,
+        relatedExpression: uniqueRelated,
+        forms: formsResult,
+        antonym: antonymResult,
+        referenced: referencedResult,
+        newNotes,
+        isNotesCache,
       });
+    }
 
-      workerApi
-        .notesManifest()
-        .then((manifest) => $setGeneral("notesManifest", manifest))
-        .catch(() => {
-          logger.warn("Failed to load manifest");
-        });
+    logger.info("[Kanji] setKanji done:", {
+      kanji: Object.keys(kanjiResult).length,
+      reading: Object.keys(readingResult).length,
+      expression: Object.keys(expressionResult).length,
+      sameExpression: sameExpression.length,
+      newNotes: newNotes.length,
+    });
+
+    workerApi
+      .notesManifest()
+      .then((manifest) => $setGeneral("notesManifest", manifest))
+      .catch(() => {
+        logger.warn("Failed to load manifest");
+      });
+  }
+
+  let fetched = false;
+  function startQuery() {
+    fetched = true;
+    try {
+      query();
     } catch (e) {
       $setCard("query", { status: "error" });
       logger.error("Failed to load kanji information:", e instanceof Error ? e.message : "");
@@ -167,7 +158,7 @@ export function useQueryNotes() {
   }
 
   createEffect(() => {
-    if (!fetched && $card.ready) query();
+    if (!fetched && $card.ready) startQuery();
   });
 }
 

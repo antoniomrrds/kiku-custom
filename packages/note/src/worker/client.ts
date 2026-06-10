@@ -19,7 +19,7 @@ export async function createWorkerApi(
   existingWorkerApi?: WorkerApi,
 ) {
   if (existingWorkerApi) {
-    existingWorkerApi.init(opts);
+    await existingWorkerApi.init(opts);
     return existingWorkerApi;
   }
 
