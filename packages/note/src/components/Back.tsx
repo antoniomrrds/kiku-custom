@@ -102,7 +102,7 @@ export function Back(props: { onExitNested?: () => void }) {
               >
                 <Lazy.RelatedExpression />
               </div>
-              <div class="mt-1">
+              <div class="mt-1 min-w-20 flex justify-end">
                 <Lazy.Frequency />
               </div>
             </div>
