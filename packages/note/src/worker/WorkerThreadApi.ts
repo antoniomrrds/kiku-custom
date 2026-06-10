@@ -137,6 +137,7 @@ export class WorkerThreadApi {
       expressionListResult: Record<string, AnkiNote[]>;
       newNotes: number[];
     };
+    let isNotesCache: boolean;
 
     if (this.preferAnkiConnect) {
       try {
@@ -146,14 +147,17 @@ export class WorkerThreadApi {
           readingList,
           expressionList,
         });
+        isNotesCache = false;
       } catch {
         this.log.warn("Failed to query with AnkiConnect, falling back to notes cache");
         result = await queryWithNotesCache();
+        isNotesCache = true;
       }
     } else {
       try {
         this.log.info("Querying with notes cache");
         result = await queryWithNotesCache();
+        isNotesCache = true;
       } catch {
         this.log.warn("Failed to query with notes cache, falling back to AnkiConnect");
         result = await this.ankiConnect.queryFieldContains({
@@ -161,6 +165,7 @@ export class WorkerThreadApi {
           readingList,
           expressionList,
         });
+        isNotesCache = false;
       }
     }
 
@@ -174,7 +179,7 @@ export class WorkerThreadApi {
     sort(result.readingListResult);
     sort(result.expressionListResult);
 
-    return result;
+    return { ...result, isNotesCache };
   }
   debounceTimer: ReturnType<typeof setTimeout> | null = null;
   debounceMs = 200;
@@ -194,6 +199,7 @@ export class WorkerThreadApi {
       readingResult: Record<string, AnkiNote[]>;
       expressionResult: Record<string, AnkiNote[]>;
       newNotes: number[];
+      isNotesCache: boolean;
     }>((resolve, reject) => {
       this.pendingQueryShared.push({
         kanjiList,
@@ -222,6 +228,7 @@ export class WorkerThreadApi {
       readingResult: Record<string, AnkiNote[]>;
       expressionResult: Record<string, AnkiNote[]>;
       newNotes: number[];
+      isNotesCache: boolean;
     }) => void;
   }[] = [];
 
@@ -233,7 +240,7 @@ export class WorkerThreadApi {
     const batchedReadingList = [...new Set(requests.flatMap((r) => r.readingList))];
     const batchedExpressionList = [...new Set(requests.flatMap((r) => r.expressionList))];
 
-    const { kanjiListResult, readingListResult, expressionListResult, newNotes } = await this.query(
+    const { kanjiListResult, readingListResult, expressionListResult, newNotes, isNotesCache } = await this.query(
       {
         kanjiList: batchedKanjiList,
         readingList: batchedReadingList,
@@ -278,6 +285,7 @@ export class WorkerThreadApi {
         readingResult,
         expressionResult,
         newNotes,
+        isNotesCache,
       });
     }
   }

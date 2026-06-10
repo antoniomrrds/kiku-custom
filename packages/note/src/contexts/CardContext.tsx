@@ -23,6 +23,7 @@ type Query = {
   referenced: AnkiNote[] | undefined;
   noteList: [string, AnkiNote[]][];
   newNotes: number[];
+  isNotesCache: boolean;
 };
 
 type CardStore = {
@@ -89,6 +90,7 @@ export function CardStoreContextProvider(props: {
       referenced: undefined,
       noteList: [],
       newNotes: [],
+      isNotesCache: false,
     },
     initialFocus: {
       kanji: undefined,

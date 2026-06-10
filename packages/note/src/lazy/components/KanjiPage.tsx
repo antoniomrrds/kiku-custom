@@ -39,7 +39,7 @@ export default function KanjiPage() {
 }
 
 function Page() {
-  const { onKanjiPageMount } = useCardContext();
+  const { $card, onKanjiPageMount } = useCardContext();
   const { $general } = useGeneralContext();
   const { initialAnkiFields } = useAnkiFieldContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
@@ -222,9 +222,13 @@ function Page() {
           </div>
         </div>
         <div class="flex justify-center items-center">
-          <Show when={$general.notesManifest}>
+          <Show when={!$card.query.isNotesCache}>
+            <div class="text-base-content-faint text-sm">[AnkiConnect]</div>
+          </Show>
+          <Show when={$general.notesManifest && $card.query.isNotesCache}>
             <div class="text-base-content-faint text-sm">
-              Updated at {new Date($general.notesManifest?.generatedAt ?? 0).toLocaleString()}
+              [Notes Cache] Updated at{" "}
+              {new Date($general.notesManifest?.generatedAt ?? 0).toLocaleString()}
             </div>
           </Show>
         </div>

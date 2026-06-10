@@ -84,7 +84,7 @@ export function useQueryNotes() {
       }
 
       //TODO: no newNotes if front
-      const { kanjiResult, readingResult, expressionResult, newNotes } =
+      const { kanjiResult, readingResult, expressionResult, newNotes, isNotesCache } =
         await workerApi.queryShared({
           kanjiList,
           readingList,
@@ -119,6 +119,7 @@ export function useQueryNotes() {
           antonym: [],
           referenced: [],
           newNotes,
+          isNotesCache,
         });
       } else {
         const incomingRelated = currentExpressionResults.filter(
@@ -141,6 +142,7 @@ export function useQueryNotes() {
           antonym: antonymResult,
           referenced: referencedResult,
           newNotes,
+          isNotesCache,
         });
       }
 
