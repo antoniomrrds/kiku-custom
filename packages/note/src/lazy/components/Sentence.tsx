@@ -50,42 +50,43 @@ export default function Sentence() {
 }
 
 function SentenceFieldWithTranslation() {
-  const [$inputRef, $setInputRef] = createSignal<HTMLInputElement>();
+  const [$containerRef, $setContainerRef] = createSignal<HTMLDivElement>();
   const { $group } = useFieldGroupContext();
   onMount(() => {
-    const inputRef = $inputRef();
-    if (!inputRef) return;
-    const handleActive = (e: MouseEvent | FocusEvent | TouchEvent) => {
-      if (e.target instanceof HTMLInputElement) {
-        e.target.checked = true;
-      }
+    const containerRef = $containerRef();
+    if (!containerRef) return;
+    const checkbox = containerRef.querySelector<HTMLInputElement>("input[type=checkbox]");
+    if (!checkbox) return;
+    const handleActive = () => {
+      checkbox.checked = true;
     };
-    const handleInactive = (e: MouseEvent | FocusEvent | TouchEvent) => {
-      if (e.target instanceof HTMLInputElement) {
-        e.target.checked = false;
-      }
+    const handleInactive = () => {
+      checkbox.checked = false;
     };
 
-    inputRef.addEventListener("mouseenter", handleActive);
-    inputRef.addEventListener("mouseleave", handleInactive);
-    inputRef.addEventListener("focus", handleActive);
-    inputRef.addEventListener("blur", handleInactive);
-    inputRef.addEventListener("touchstart", handleActive);
-    inputRef.addEventListener("touchend", handleInactive);
+    containerRef.addEventListener("mouseenter", handleActive);
+    containerRef.addEventListener("mouseleave", handleInactive);
+    containerRef.addEventListener("focusin", handleActive);
+    containerRef.addEventListener("focusout", handleInactive);
+    containerRef.addEventListener("touchstart", handleActive);
+    containerRef.addEventListener("touchend", handleInactive);
 
     onCleanup(() => {
-      inputRef.removeEventListener("mouseenter", handleActive);
-      inputRef.removeEventListener("mouseleave", handleInactive);
-      inputRef.removeEventListener("focus", handleActive);
-      inputRef.removeEventListener("blur", handleInactive);
-      inputRef.removeEventListener("touchstart", handleActive);
-      inputRef.removeEventListener("touchend", handleInactive);
+      containerRef.removeEventListener("mouseenter", handleActive);
+      containerRef.removeEventListener("mouseleave", handleInactive);
+      containerRef.removeEventListener("focusin", handleActive);
+      containerRef.removeEventListener("focusout", handleInactive);
+      containerRef.removeEventListener("touchstart", handleActive);
+      containerRef.removeEventListener("touchend", handleInactive);
     });
   });
 
   return (
-    <div class="collapse animate-fade-in border-b-2 rounded-b-none border-base-300">
-      <input class="p-0" type="checkbox" ref={$setInputRef} />
+    <div
+      class="collapse animate-fade-in border-b-2 rounded-b-none border-base-300"
+      ref={$setContainerRef}
+    >
+      <input class="p-0" type="checkbox" />
       <div class="collapse-title after:start-5 after:end-auto">
         <SentenceField />
       </div>
