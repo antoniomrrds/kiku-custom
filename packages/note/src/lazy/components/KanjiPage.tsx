@@ -431,68 +431,71 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string; source
   };
 
   return (
-    <>
-      <li class="p-4 pb-0 tracking-wide flex gap-2 items-start justify-between">
-        <div class="flex gap-2 items-end">
-          <div class="font-secondary text-2xl sm:text-4xl">
-            <Switch>
-              <Match when={$isRuby()}>
-                <ExpressionNoFurigana />
-              </Match>
-              <Match when={true}>
-                <ExpressionFurigana />
-              </Match>
-            </Switch>
-          </div>
-          <div class="text-base-content-calm text-xs sm:text-sm">
-            {new Date($data().noteId).toLocaleDateString()}
-          </div>
-          <Show when={props.sources && props.sources.length > 0}>
-            <div class="flex gap-1 flex-wrap">
-              <For each={props.sources}>
-                {(s) => (
-                  <span
-                    class="badge badge-sm"
-                    classList={{
-                      "badge-primary": s === "related",
-                      "badge-success": s === "forms",
-                      "badge-error": s === "antonym",
-                      "badge-warning": s === "referenced",
-                    }}
-                  >
-                    {capitalize(s)}
-                  </span>
-                )}
-              </For>
+    <li class="list-row flex gap-2 relative items-end">
+      <div class="flex flex-col gap-2 flex-1">
+        <div class="tracking-wide flex gap-2 items-start justify-between">
+          <div class="flex gap-2 items-end">
+            <div class="font-secondary text-2xl sm:text-4xl">
+              <Switch>
+                <Match when={$isRuby()}>
+                  <ExpressionNoFurigana />
+                </Match>
+                <Match when={true}>
+                  <ExpressionFurigana />
+                </Match>
+              </Switch>
             </div>
-          </Show>
-        </div>
-        <Show when={$isNew() || $leech()}>
-          <div class="flex items-center gap-1">
-            {$leech() && <div class="status status-warning"></div>}
-            {$isNew() && <div class="status status-info"></div>}
+            <div>
+              <Show when={props.sources && props.sources.length > 0}>
+                <div class="flex gap-1 flex-wrap">
+                  <For each={props.sources}>
+                    {(s) => (
+                      <span
+                        class="badge badge-xs sm:badge-sm"
+                        classList={{
+                          "badge-primary": s === "related",
+                          "badge-success": s === "forms",
+                          "badge-error": s === "antonym",
+                          "badge-warning": s === "referenced",
+                        }}
+                      >
+                        {capitalize(s)}
+                      </span>
+                    )}
+                  </For>
+                </div>
+              </Show>
+              <div class="text-base-content-calm text-xs sm:text-sm">
+                {new Date($data().noteId).toLocaleDateString()}
+              </div>
+            </div>
           </div>
-        </Show>
-      </li>
+        </div>
 
-      <li class="list-row">
-        <div></div>
         <div
           class="text-base sm:text-xl text-base-content-calm font-secondary"
           innerHTML={$sentenceInnerHtmlColorized()}
         ></div>
-        <div class="flex justify-center items-center">
-          <button
-            on:click={() => {
-              onNextClick();
-            }}
-            on:touchend={(e) => e.stopPropagation()}
-          >
-            <ArrowLeftIcon class="size-5 sm:size-8 text-base-content-soft rotate-180 cursor-pointer"></ArrowLeftIcon>
-          </button>
+      </div>
+
+      <div class="flex justify-center items-center">
+        <button
+          on:click={() => {
+            onNextClick();
+          }}
+          on:touchend={(e) => e.stopPropagation()}
+        >
+          <ArrowLeftIcon class="size-5 sm:size-8 text-base-content-soft rotate-180 cursor-pointer"></ArrowLeftIcon>
+        </button>
+      </div>
+
+      <Show when={$isNew() || $leech()}>
+        <div class="flex items-center gap-1 absolute top-4 right-4">
+          {$leech() && <div class="status status-warning"></div>}
+          {$isNew() && <div class="status status-info"></div>}
         </div>
-      </li>
-    </>
+      </Show>
+    </li>
   );
 }
 
