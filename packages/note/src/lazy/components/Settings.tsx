@@ -525,8 +525,8 @@ function ThemeSettings() {
     <div class="flex flex-col gap-4 animate-fade-in">
       <div class="flex gap-4 items-center">
         <div class="text-2xl font-bold">Theme</div>
-        <div class="flex items-center gap-2 flex-wrap">
-          <div role="tablist" class="tabs tabs-box self-start">
+        <div class="flex items-center gap-2">
+          <div role="tablist" class="tabs tabs-box self-start flex-nowrap">
             <button
               role="tab"
               class="tab"
