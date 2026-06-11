@@ -135,8 +135,8 @@ function CharSpan(props: { char: string }) {
           class="tappable"
           on:mouseenter={(e) => onActive(e, $kanji())}
           on:mouseleave={onInactive}
-          on:focus={(e) => onActive(e, $kanji())}
-          on:blur={onInactive}
+          on:focusin={(e) => onActive(e, $kanji())}
+          on:focusout={onInactive}
           on:touchstart={(e) => onActive(e, $kanji())}
           on:touchend={(e) => e.stopPropagation()}
         >

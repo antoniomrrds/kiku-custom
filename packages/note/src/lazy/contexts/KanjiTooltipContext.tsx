@@ -164,8 +164,8 @@ function KanjiTooltip() {
         tabindex={0}
         on:mouseenter={onActiveTooltip}
         on:mouseleave={onInactiveTooltip}
-        on:focus={onActiveTooltip}
-        on:blur={onInactiveTooltip}
+        on:focusin={onActiveTooltip}
+        on:focusout={onInactiveTooltip}
         on:touchstart={onActiveTooltip}
         style={{
           display: $kanjiTooltip.show ? "block" : "none",
