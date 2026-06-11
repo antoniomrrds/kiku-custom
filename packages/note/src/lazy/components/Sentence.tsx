@@ -99,7 +99,7 @@ function SentenceFieldWithTranslation() {
 }
 
 function SentenceField() {
-  const { $card, $initialSide } = useCardContext();
+  const { $card, $initialSide, $isInitialSide } = useCardContext();
   const { $pitchType } = usePitch();
   const { $group } = useFieldGroupContext();
   const { $ankiFields } = useAnkiFieldContext();
@@ -136,9 +136,12 @@ function SentenceField() {
     return true;
   });
 
-  const expressionPitchDataset = () => ({
-    "data-pitch-type": $pitchType(),
-  });
+  const expressionPitchDataset = () => {
+    if ($initialSide() === "front" && $isInitialSide()) return {};
+    return {
+      "data-pitch-type": $pitchType(),
+    };
+  };
 
   return (
     <div

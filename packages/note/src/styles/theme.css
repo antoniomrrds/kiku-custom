@@ -58,6 +58,15 @@
 }
 
 @layer theme {
+  /* prettier-ignore */
+  #kiku-container #kiku-root, #kiku-host::part(root), #kiku-root, [data-theme-preview] {
+    --color-pitch-heiban: var(--color-info);
+    --color-pitch-atamadaka: var(--color-error);
+    --color-pitch-nakadaka: var(--color-warning);
+    --color-pitch-odaka: var(--color-success);
+    --color-pitch-kifuku: var(--color-accent);
+  }
+
   [data-pitch-type^="heiban"] {
     --pitch-color: var(--color-pitch-heiban);
     --pitch-content-color: var(--color-info-content);
