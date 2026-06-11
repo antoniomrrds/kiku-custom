@@ -1,14 +1,4 @@
-import {
-  createEffect,
-  createMemo,
-  lazy,
-  Match,
-  on,
-  onMount,
-  Show,
-  Suspense,
-  Switch,
-} from "solid-js";
+import { createEffect, createMemo, lazy, Match, on, onMount, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
 import { CardStoreContextProvider, useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
@@ -23,6 +13,7 @@ import { CtxContextProvider } from "#/src/contexts/CtxContext";
 import { FieldGroupContextProvider } from "#/src/contexts/FieldGroupContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { usePitch } from "#/src/hooks/pitch";
+import { ExpressionSection } from "./ExpressionSection";
 
 // oxfmt-ignore
 const Lazy = {
@@ -158,56 +149,6 @@ export function Back(props: { onExitNested?: () => void }) {
       </Switch>
       {$card.ready && <Lazy.PictureModal />}
       {$card.ready && <Lazy.AudioElements />}
-    </>
-  );
-}
-
-function ExpressionSection() {
-  const { $card } = useCardContext();
-  const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
-  const { $pitchType } = usePitch();
-
-  const $expressionInnerHtml = createMemo(() => {
-    if (isServer) return undefined;
-    if ($isRootAnkiFields() && $ankiFields.ExpressionFurigana) {
-      return $ankiFields["furigana:ExpressionFurigana"];
-    }
-    return $ankiFields.Expression;
-  });
-
-  const $pitchFieldDataset = createMemo<DatasetProp>(() => {
-    return {
-      "data-pitch-type": isServer ? "{{PitchCategories}}" : $card.ready ? ($pitchType() ?? "") : "",
-    };
-  });
-
-  return (
-    <>
-      <Show when={!$card.nested}>
-        <div
-          class="expression font-secondary text-center vertical-rl transition-colors"
-          style={{
-            color: "var(--pitch-color)",
-            display: $card.expressionReady ? "none" : "block",
-          }}
-          innerHTML={$expressionInnerHtml()}
-          {...$pitchFieldDataset()}
-        >
-          {isServer
-            ? "{{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}{{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}"
-            : undefined}
-        </div>
-      </Show>
-      <div
-        class="expression font-secondary text-center vertical-rl transition-colors"
-        style={{
-          color: "var(--pitch-color)",
-          display: $card.expressionReady || $card.nested ? "block" : "none",
-        }}
-        {...$pitchFieldDataset()}
-      >
-        {$card.ready && <Lazy.Expression />}
-      </div>
     </>
   );
 }

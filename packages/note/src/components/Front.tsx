@@ -9,7 +9,7 @@ import { PictureSection } from "./PictureSection";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
-import { usePitch } from "#/src/hooks/pitch";
+import { ExpressionSection } from "./ExpressionSection";
 
 // oxfmt-ignore
 const Lazy = {
@@ -117,7 +117,7 @@ export function Front() {
             class="flex flex-col gap-4 items-center text-center justify-center"
             classList={{
               "transition-opacity duration-[1000ms] opacity-0":
-                $hideExpression() && !$isInitialSide(),
+                $hideExpression() && $isInitialSide(),
             }}
           >
             {$card.ready && !$hidden() && <Lazy.Sentence />}
@@ -142,57 +142,5 @@ export function Front() {
       </Switch>
       {$card.ready && <Lazy.AudioElements />}
     </>
-  );
-}
-
-function ExpressionSection(props: { hideExpression: boolean }) {
-  const { $card, $isInitialSide } = useCardContext();
-  const { $ankiFields } = useAnkiFieldContext();
-  const { $pitchType } = usePitch();
-  const $hideExpression = createMemo(() => props.hideExpression);
-
-  const $expressionInnerHtml = createMemo(() => {
-    if (isServer) return undefined;
-    if (!$ankiFields.IsSentenceCard || !$ankiFields.IsAudioCard) {
-      return $ankiFields.Expression;
-    }
-    return "?";
-  });
-
-  const $pitchFieldDataset = createMemo<DatasetProp>(() => {
-    if (!$isInitialSide()) return {};
-    return {
-      "data-pitch-type": isServer ? "{{PitchCategories}}" : $card.ready ? ($pitchType() ?? "") : "",
-    };
-  });
-
-  return (
-    <Switch>
-      <Match when={$isInitialSide()}>
-        <div
-          class="expression font-secondary text-center vertical-rl transition-colors"
-          classList={{
-            "border-b-2 border-dotted border-base-content-soft":
-              !!$ankiFields.IsClickCard && !$isInitialSide(),
-            "transition-opacity duration-[1000ms] opacity-0":
-              $hideExpression() && !$isInitialSide(),
-          }}
-          innerHTML={$expressionInnerHtml()}
-        >
-          {isServer
-            ? `{{#IsSentenceCard}} <span>?</span> {{/IsSentenceCard}} {{#IsAudioCard}} <span>?</span> {{/IsAudioCard}} {{^IsSentenceCard}} {{^IsAudioCard}} {{Expression}} {{/IsAudioCard}} {{/IsSentenceCard}}`
-            : undefined}
-        </div>
-      </Match>
-      <Match when={!$isInitialSide()}>
-        <div
-          class="expression font-secondary text-center vertical-rl transition-colors"
-          style={{ color: "var(--pitch-color)" }}
-          {...$pitchFieldDataset()}
-        >
-          {$card.ready && <Lazy.Expression />}
-        </div>
-      </Match>
-    </Switch>
   );
 }
