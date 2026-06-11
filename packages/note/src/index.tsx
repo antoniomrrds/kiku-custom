@@ -267,14 +267,22 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       styleTags.push(shadowStyle);
       styleTags.push(style);
     } else {
-      const kikuCss = document.createElement("link");
-      kikuCss.rel = "stylesheet";
-      kikuCss.href = "./_kiku.css";
+      const kikuCssHead = document.head.querySelector("#kiku-css-head");
+      let kikuCss: HTMLStyleElement;
+      if (kikuCssHead) {
+        kikuCss = kikuCssHead.cloneNode(true) as HTMLStyleElement;
+      } else {
+        const res = await fetch("./_kiku.css", { signal: aborter.signal });
+        const cssText = await res.text();
+        kikuCss = document.createElement("style");
+        kikuCss.textContent = cssText;
+      }
       shadow.prepend(kikuCss);
-      if (!isAnkiWeb && !document.head.querySelector("#kiku-css-head")) {
+      if (!isAnkiWeb && !kikuCssHead) {
         logger.debug("[initAnki] appending #kiku-css-head");
-        const kikuCssHead = kikuCss.cloneNode(true) as HTMLLinkElement;
+        const kikuCssHead = document.createElement("style");
         kikuCssHead.id = "kiku-css-head";
+        kikuCssHead.textContent = kikuCss.textContent;
         document.head.appendChild(kikuCssHead);
       }
       if (!isAnkiWeb && qa && !globalThis.KIKU.kikuCssHeadObserver) {
