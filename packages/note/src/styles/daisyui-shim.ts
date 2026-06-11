@@ -31,12 +31,16 @@ function adjustThemeSelectors(rules: CssInJs): CssInJs {
     let newSelector: string = selector;
     for (const themeName of getThemeNames(selector)) {
       newSelector = [
-        `#kiku-host[data-theme="${themeName}"] #kiku-root`,
-        `.nightMode #kiku-host[data-theme-dark="${themeName}"] #kiku-root`,
-        `:host([data-theme="${themeName}"])`,
-        `:host([data-dark-mode][data-theme-dark="${themeName}"])`,
-        `#kiku-host[data-theme="${themeName}"]::part(root)`,
-        `.nightMode #kiku-host[data-theme-dark="${themeName}"]::part(root)`,
+        //with #kiku-root
+        `#kiku-root[data-theme="${themeName}"]`,
+        `#kiku-root[data-dark-mode][data-theme-dark="${themeName}"]`,
+        //with #kiku-container #kiku-root
+        `#kiku-container[data-theme="${themeName}"] #kiku-root`,
+        `.nightMode #kiku-container[data-theme-dark="${themeName}"] #kiku-root`,
+        //with #kiku-container #kiku-host::part(root)
+        `#kiku-container[data-theme="${themeName}"] #kiku-host::part(root)`,
+        `.nightMode #kiku-container[data-theme-dark="${themeName}"] #kiku-host::part(root)`,
+        //preview
         `[data-theme-preview="${themeName}"]`,
       ].join(", ");
     }

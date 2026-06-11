@@ -11,7 +11,7 @@ import type { WorkerApi } from "#/src/worker/client";
 type GeneralStore = {
   plugin: KikuPlugin | undefined;
   root: HTMLElement | undefined;
-  host: HTMLElement | undefined;
+  container: HTMLElement | undefined;
   isAnkiConnectAvailable: boolean;
   notesManifest: KikuNotesManifest | undefined;
   layoutRef: HTMLDivElement | undefined;
@@ -60,7 +60,7 @@ export function GeneralContextProvider(props: {
   aborter: AbortController;
   logger: Logger;
   root: HTMLElement | undefined;
-  host: HTMLElement | undefined;
+  container: HTMLElement | undefined;
   styleTags: HTMLStyleElement[];
   initialDarkMode: boolean;
   isAnkiDroidOldStudyScreen: boolean;
@@ -88,7 +88,7 @@ export function GeneralContextProvider(props: {
   const [$general, $setGeneral] = createStore<GeneralStore>({
     plugin: undefined,
     root: props.root,
-    host: props.host,
+    container: props.container,
     isAnkiConnectAvailable: false,
     notesManifest: undefined,
     layoutRef: undefined,

@@ -495,7 +495,7 @@ function ModSettings() {
 
 function ThemeSettings() {
   const { $config, $setConfig } = useConfigContext();
-  const { $general, initialDarkMode } = useGeneralContext();
+  const { initialDarkMode } = useGeneralContext();
   const { $changeTheme } = useThemeTransition();
   const [$darkMode, $setDarkMode] = createSignal(initialDarkMode);
   const [$hasModified, $setHasModified] = createSignal(false);
@@ -834,7 +834,7 @@ function ClipboardCopyButton(props: { text: string | (() => string) }) {
 
 function AnkiDroidSettings() {
   const { $config, $setConfig } = useConfigContext();
-  const { $general, isAnkiDroidNewStudyScreen } = useGeneralContext();
+  const { isAnkiDroidNewStudyScreen } = useGeneralContext();
 
   return (
     <div class="flex flex-col gap-2 animate-fade-in">
@@ -1003,7 +1003,7 @@ function DebugSettings() {
       pictureOnFront: dataset.pictureOnFront ?? "",
       modVertical: dataset.modVertical ?? "",
     });
-    return `<div id="kiku-host" data-theme="${dataset.theme ?? ""}" data-theme-dark="${dataset.themeDark ?? ""}">
+    return `<div id="kiku-container" data-theme="${dataset.theme ?? ""}" data-theme-dark="${dataset.themeDark ?? ""}">
   <div
     id="kiku-root"
     part="root"

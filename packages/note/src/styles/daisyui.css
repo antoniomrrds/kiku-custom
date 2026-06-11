@@ -28,7 +28,7 @@
 
 /* prettier-ignore */
 @layer theme {
-  #kiku-host #kiku-root, :host, #kiku-host::part(root), [data-theme-preview] {
+  #kiku-container #kiku-root, #kiku-host::part(root), #kiku-root, [data-theme-preview] {
     --color-base-content-subtle-100: color-mix( in srgb, var(--color-base-content) 10%, var(--color-base-100));
     --color-base-content-subtle-200: color-mix( in srgb, var(--color-base-content) 20%, var(--color-base-100));
     --color-base-content-subtle-300: color-mix( in srgb, var(--color-base-content) 30%, var(--color-base-100));

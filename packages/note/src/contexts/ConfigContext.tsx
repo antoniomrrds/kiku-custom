@@ -35,10 +35,10 @@ export function ConfigContextProvider(props: {
     const config = unwrap({ ...$config });
     logger.debug("Updating config:", config);
     if (!$general.root) throw new Error("Missing root");
-    if (!$general.host) throw new Error("Missing host");
+    if (!$general.container) throw new Error("Missing container");
     updateConfigState({
-      host: $general.host,
       root: $general.root,
+      container: $general.container,
       config,
       styleTags,
       updateDocument: !isAnkiWeb,

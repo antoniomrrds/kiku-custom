@@ -42,7 +42,7 @@ import "./styles/main.css";
 
 export async function init({
   root,
-  host,
+  container,
   side,
   ankiFields,
   ssr,
@@ -63,7 +63,7 @@ export async function init({
   isAnkiDroid = false,
 }: {
   root: HTMLElement;
-  host: HTMLElement;
+  container: HTMLElement;
   side: "front" | "back";
   ankiFields: AnkiFields;
   ssr?: boolean;
@@ -95,7 +95,7 @@ export async function init({
   });
 
   config = typeof config === "function" ? config(defaultConfig) : config;
-  updateConfigState({ host, root, config, styleTags, updateDocument: !isAnkiWeb });
+  updateConfigState({ root, container, config, styleTags, updateDocument: !isAnkiWeb });
   const [$config, $setConfig] = createStore(config);
 
   const App = () => (
@@ -112,7 +112,7 @@ export async function init({
           assetsPath={assetsPath}
           logger={logger}
           root={root}
-          host={host}
+          container={container}
           styleTags={styleTags}
           initialDarkMode={initialDarkMode}
           isAnkiDroidOldStudyScreen={isAnkiDroidOldStudyScreen ?? false}
@@ -198,21 +198,19 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
   try {
     const qa = document.querySelector("#qa");
     if (!qa) throw new Error("#qa not found");
-    const host = document.querySelector<HTMLElement>("#kiku-host");
-    if (!host) throw new Error("#kiku-host not found");
+    const container = document.querySelector<HTMLElement>("#kiku-container");
+    if (!container) throw new Error("#kiku-container not found");
+    let host = document.querySelector<HTMLElement>("#kiku-host");
 
     let root = document.getElementById("kiku-root");
     if (!root) {
+      if (!host) throw new Error("#kiku-host not found");
       const existingRoot = host.shadowRoot?.querySelector("#kiku-root") as
         | HTMLElement
         | undefined
         | null;
-      if (existingRoot && existingRoot.innerHTML.trim() === "") {
-        root = existingRoot;
-      } else {
-        logger.debug("[initAnki] no #kiku-root with content, skipping");
-        return;
-      }
+      if (!existingRoot) throw new Error("#kiku-root not found in #kiku-host");
+      root = existingRoot;
     }
     const rootDataset = {
       theme: root.dataset.theme,
@@ -223,7 +221,9 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     } satisfies RootDataset;
     logger.debug("[initAnki] rootDataset:", rootDataset);
 
-    const shadow = host.shadowRoot ?? host.attachShadow({ mode: "open" });
+    host = host ?? document.createElement("div");
+    host.id = "kiku-host";
+    const shadow = host.attachShadow({ mode: "open" });
 
     const style = qa.querySelector<HTMLStyleElement>("style");
     const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;
@@ -288,7 +288,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       if (!isAnkiWeb && qa && !globalThis.KIKU.kikuCssHeadObserver) {
         const observer = new MutationObserver(() => {
           queueMicrotask(() => {
-            if (!document.querySelector("#kiku-host")) {
+            if (!document.querySelector("#kiku-container")) {
               logger.debug("[initAnki] removing #kiku-css-head");
               document.getElementById("kiku-css-head")?.remove();
             }
@@ -303,6 +303,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     kikuPluginCss.rel = "stylesheet";
     kikuPluginCss.href = "./_kiku_plugin.css";
     shadow.prepend(kikuPluginCss);
+    container.appendChild(host);
     shadow.appendChild(root);
 
     const ankiFieldsTemplate = document.querySelector("#anki-fields");
@@ -338,7 +339,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
 
     const res = await init({
       root,
-      host,
+      container,
       side,
       ankiFields,
       ssr,
