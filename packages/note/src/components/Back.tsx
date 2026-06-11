@@ -61,8 +61,10 @@ export function Back(props: { onExitNested?: () => void }) {
   const $pitchFieldDataset = createMemo<DatasetProp>(() => ({
     "data-has-pitch": isServer
       ? "{{#PitchPosition}}true{{/PitchPosition}}"
-      : $ankiFields.PitchPosition
-        ? "true"
+      : $card.ready
+        ? $ankiFields.PitchPosition
+          ? "true"
+          : ""
         : "",
   }));
 
@@ -121,7 +123,7 @@ export function Back(props: { onExitNested?: () => void }) {
               <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-38 sm:min-h-56">
                 <ExpressionSection />
                 <div
-                  class="mt-4 sm:mt-6 flex gap-4 pitch pitch-field min-h-lh"
+                  class="mt-2 sm:mt-4 gap-4 pitch pitch-field min-h-lh"
                   {...$pitchFieldDataset()}
                 >
                   {$ankiFields.PitchPosition && $card.ready && <Lazy.Pitches />}
