@@ -28,7 +28,8 @@
     "generate-template": "vite-node ./script/generate-template.ts",
     "apply": "tsc -b && COMMIT_SHA=${VERCEL_GIT_COMMIT_SHA:-$(git rev-parse HEAD)} vite build && vite-node ./script/generate-template.ts && vite-node ./script/copy-anki-build.ts && vite-node ./script/update-note-type.ts",
     "apply:fast": "FAST_BUILD=true vite build && vite-node ./script/generate-template.ts && vite-node ./script/copy-anki-build.ts && vite-node ./script/update-note-type.ts",
-    "package": "vite-node ./script/package.ts"
+    "package": "vite-node ./script/package.ts",
+    "update-tailwind-property": "node ./script/update-tailwind-property.ts"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
