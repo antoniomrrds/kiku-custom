@@ -53,10 +53,10 @@ export default function DefinitionPictureSection(props: { currentHtml?: string }
         <div innerHTML={currentDefPic()}></div>
 
         <Show when={$definitionPictures().length > 1}>
-          <div class="absolute inset-y-0 left-2 right-2 flex justify-between pointer-events-none">
+          <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
             <button
               type="button"
-              class="h-full w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-l-sm"
+              class="h-full w-4 sm:w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-l-sm"
               on:click={(e) => {
                 e.stopPropagation();
                 $setDefPicIndex(
@@ -68,7 +68,7 @@ export default function DefinitionPictureSection(props: { currentHtml?: string }
             />
             <button
               type="button"
-              class="h-full w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-r-sm"
+              class="h-full w-4 sm:w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-r-sm"
               on:click={(e) => {
                 e.stopPropagation();
                 $setDefPicIndex((prev) => (prev + 1) % $definitionPictures().length);

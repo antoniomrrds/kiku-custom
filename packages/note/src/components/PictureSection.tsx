@@ -103,13 +103,13 @@ export function PictureSection() {
         <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
           <button
             type="button"
-            class="h-full w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
+            class="h-full w-4 sm:w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
             on:click={prev}
             on:touchend={(e) => e.stopPropagation()}
           />
           <button
             type="button"
-            class="h-full w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
+            class="h-full w-4 sm:w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
             on:click={next}
             on:touchend={(e) => e.stopPropagation()}
           />

@@ -11,7 +11,7 @@ export function FieldGroupPaginationSection() {
 
   return (
     <div
-      class="flex justify-between text-base-content-soft items-center gap-2 animate-fade-in h-5 sm:h-8"
+      class="flex justify-between text-base-content-soft items-center gap-2 animate-fade-in h-7 sm:h-8 mt-2 sm:mt-4"
       classList={{
         hidden: $group().ids.length <= 1,
       }}

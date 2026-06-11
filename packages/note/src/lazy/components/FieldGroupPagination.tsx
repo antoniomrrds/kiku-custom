@@ -59,9 +59,9 @@ export default function FieldGroupPagination() {
         >
           <ArrowLeftIcon class="size-6 hover:text-base-content-calm transition-colors" />
         </button>
-        <div class="flex flex-col items-center leading-none">
-          <div class="text-xs text-base-content-faint">{date()}</div>
-          <div>{`${$index() + 1} / ${$group().ids.length}`}</div>
+        <div class="flex flex-col items-center">
+          <div class="text-xs text-base-content-faint leading-none">{date()}</div>
+          <div class="text-sm sm:text-base leading-none">{`${$index() + 1} / ${$group().ids.length}`}</div>
         </div>
         <button
           type="button"

@@ -134,7 +134,7 @@ export default function Definition() {
             </div>
           )}
           <div
-            class="relative bg-base-200 p-4 border-s-4 text-base sm:text-xl rounded-lg definition-field"
+            class="relative bg-base-200 p-2 sm:p-4 border-s-4 text-base sm:text-xl rounded-lg definition-field"
             style={{
               "border-color": "var(--dictionary-color, var(--color-primary)",
             }}
@@ -148,20 +148,20 @@ export default function Definition() {
               <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
                 <button
                   type="button"
-                  class="h-full w-6 hover:bg-base-content/10 cursor-pointer pointer-events-auto transition-colors rounded-l-lg"
+                  class="h-full w-4 sm:w-6 hover:bg-base-content/10 cursor-pointer pointer-events-auto transition-colors rounded-l-lg"
                   on:click={() => changePage(-1)}
                   on:touchend={(e) => e.stopPropagation()}
                 />
                 <button
                   type="button"
-                  class="h-full w-6 hover:bg-base-content/10 cursor-pointer pointer-events-auto transition-colors rounded-r-lg"
+                  class="h-full w-4 sm:w-6 hover:bg-base-content/10 cursor-pointer pointer-events-auto transition-colors rounded-r-lg"
                   on:click={() => changePage(1)}
                   on:touchend={(e) => e.stopPropagation()}
                 />
               </div>
             )}
           </div>
-          <div class="flex justify-end py-2 gap-2">
+          <div class="flex justify-end mt-2 gap-2">
             <ExternalLinks />
           </div>
         </div>
