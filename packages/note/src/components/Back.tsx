@@ -127,18 +127,13 @@ export function Back(props: { onExitNested?: () => void }) {
                 "animate-fade-in": $card.fadeInTopSection,
               }}
             >
-              <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
+              <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-38 sm:min-h-56">
                 <ExpressionSection />
-                <div class={`mt-6 flex gap-4 pitch pitch-field`} {...$pitchFieldDataset()}>
-                  {$ankiFields.PitchPosition && $card.ready ? (
-                    <Suspense fallback={<span>&nbsp;</span>}>
-                      <Lazy.Pitches />
-                    </Suspense>
-                  ) : isServer ? (
-                    "{{#PitchPosition}}<span>&nbsp;</span>{{/PitchPosition}}"
-                  ) : (
-                    $ankiFields.PitchPosition && <span>&nbsp;</span>
-                  )}
+                <div
+                  class="mt-4 sm:mt-6 flex gap-4 pitch pitch-field min-h-lh"
+                  {...$pitchFieldDataset()}
+                >
+                  {$ankiFields.PitchPosition && $card.ready && <Lazy.Pitches />}
                 </div>
                 <div class="hidden sm:block sm:h-8 sm:mt-2">
                   {$card.ready && (

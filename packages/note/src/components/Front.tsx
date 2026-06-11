@@ -1,4 +1,4 @@
-import { createMemo, createSignal, lazy, Match, onMount, Switch } from "solid-js";
+import { createMemo, createSignal, lazy, Match, onMount, Show, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
 import { useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
@@ -97,15 +97,17 @@ export function Front() {
               }}
               on:touchend={(e) => e.stopPropagation()}
             >
-              <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
+              <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-38 sm:min-h-56">
                 <ExpressionSection hideExpression={$hideExpression()} />
-                <div class="hidden sm:block sm:h-8 sm:mt-2">
-                  {$card.ready && (
-                    <div class="animate-fade-in-sm flex gap-2">
-                      <Lazy.AudioButtons position={1} />
-                    </div>
-                  )}
-                </div>
+                <Show when={!$isInitialSide()}>
+                  <div class="hidden sm:block sm:h-8 sm:mt-2">
+                    {$card.ready && (
+                      <div class="animate-fade-in-sm flex gap-2">
+                        <Lazy.AudioButtons position={1} />
+                      </div>
+                    )}
+                  </div>
+                </Show>
               </div>
               <PictureSection />
             </div>
@@ -185,9 +187,7 @@ function ExpressionSection(props: { hideExpression: boolean }) {
       <Match when={!$isInitialSide()}>
         <div
           class="expression font-secondary text-center vertical-rl transition-colors"
-          style={{
-            color: "var(--pitch-color)",
-          }}
+          style={{ color: "var(--pitch-color)" }}
           {...$pitchFieldDataset()}
         >
           {$card.ready && <Lazy.Expression />}
