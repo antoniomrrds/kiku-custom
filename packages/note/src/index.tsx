@@ -267,35 +267,42 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       styleTags.push(shadowStyle);
       styleTags.push(style);
     } else {
-      const kikuCssHead = document.head.querySelector("#kiku-css-head");
-      let kikuCss: HTMLStyleElement;
-      if (kikuCssHead) {
-        kikuCss = kikuCssHead.cloneNode(true) as HTMLStyleElement;
-      } else {
-        const res = await fetch("./_kiku.css", { signal: aborter.signal });
-        const cssText = await res.text();
-        kikuCss = document.createElement("style");
-        kikuCss.textContent = cssText;
-      }
-      shadow.prepend(kikuCss);
-      if (!isAnkiWeb && !kikuCssHead) {
-        logger.debug("[initAnki] appending #kiku-css-head");
-        const kikuCssHead = document.createElement("style");
-        kikuCssHead.id = "kiku-css-head";
-        kikuCssHead.textContent = kikuCss.textContent;
-        document.head.appendChild(kikuCssHead);
-      }
-      if (!isAnkiWeb && qa && !globalThis.KIKU.kikuCssHeadObserver) {
-        const observer = new MutationObserver(() => {
-          queueMicrotask(() => {
-            if (!document.querySelector("#kiku-container")) {
-              logger.debug("[initAnki] removing #kiku-css-head");
-              document.getElementById("kiku-css-head")?.remove();
-            }
+      if (!isAnkiWeb) {
+        const kikuCssHead = document.head.querySelector("#kiku-css-head");
+        let kikuCss: HTMLStyleElement;
+        if (kikuCssHead) {
+          kikuCss = kikuCssHead.cloneNode(true) as HTMLStyleElement;
+        } else {
+          const res = await fetch("./_kiku.css", { signal: aborter.signal });
+          const cssText = await res.text();
+          kikuCss = document.createElement("style");
+          kikuCss.textContent = cssText;
+        }
+        shadow.prepend(kikuCss);
+        if (!kikuCssHead) {
+          logger.debug("[initAnki] appending #kiku-css-head");
+          const kikuCssHead = document.createElement("style");
+          kikuCssHead.id = "kiku-css-head";
+          kikuCssHead.textContent = kikuCss.textContent;
+          document.head.appendChild(kikuCssHead);
+        }
+        if (qa && !globalThis.KIKU.kikuCssHeadObserver) {
+          const observer = new MutationObserver(() => {
+            queueMicrotask(() => {
+              if (!document.querySelector("#kiku-container")) {
+                logger.debug("[initAnki] removing #kiku-css-head");
+                document.getElementById("kiku-css-head")?.remove();
+              }
+            });
           });
-        });
-        observer.observe(qa, { childList: true });
-        globalThis.KIKU.kikuCssHeadObserver = observer;
+          observer.observe(qa, { childList: true });
+          globalThis.KIKU.kikuCssHeadObserver = observer;
+        }
+      } else {
+        const kikuCss = document.createElement("link");
+        kikuCss.rel = "stylesheet";
+        kikuCss.href = "./_kiku.css";
+        shadow.prepend(kikuCss);
       }
     }
 
