@@ -163,6 +163,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     window.addEventListener("unload", globalThis.KIKU.unload);
   }
 
+  const isAnkiWeb = window.location.origin.includes("ankiuser.net");
   const isAnkiDroidOldStudyScreen =
     typeof AnkiDroidJS !== "undefined" &&
     document.documentElement.classList.contains("android") &&
@@ -187,12 +188,13 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
   }
 
   let assetsPath = window.location.origin;
-  const isAnkiWeb = window.location.origin.includes("ankiuser.net");
   if (isAnkiWeb) {
     assetsPath = `${window.location.origin}/study/media`;
+    logger.info("[initAnki] AnkiWeb mode, assetsPath:", assetsPath);
+  }
+  if (isAnkiWeb) {
     const kikuCss = document.getElementById("kiku-css");
     kikuCss?.remove();
-    logger.info("[initAnki] AnkiWeb mode, assetsPath:", assetsPath);
   }
 
   try {
@@ -228,7 +230,6 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
     const style = qa.querySelector<HTMLStyleElement>("style");
     const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;
     if (shadowStyle) shadow.appendChild(shadowStyle);
-    if (isAnkiWeb) style?.remove();
     const styleTags = [style, shadowStyle].filter(Boolean) as HTMLStyleElement[];
 
     let config: KikuConfig | undefined;
