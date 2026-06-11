@@ -57,18 +57,19 @@ export default function RelatedExpression() {
       ...($card.query.referenced ?? []),
     ].sort(sortNote);
 
-    let result: AnkiNote[];
     const relatedExpression = $card.query.relatedExpression;
 
     if (relatedExpression?.length && relatedExpression.length < 2) {
-      result = [...relatedExpression, ...fallbackPriority2, ...fallbackPriority1].slice(0, 2);
+      return dedupeByCardId([
+        ...relatedExpression,
+        ...fallbackPriority2,
+        ...fallbackPriority1,
+      ]).slice(0, 2);
     } else if (relatedExpression?.length && relatedExpression.length >= 2) {
-      result = relatedExpression;
+      return dedupeByCardId(relatedExpression);
     } else {
-      result = [...fallbackPriority2, ...fallbackPriority1].slice(0, 2);
+      return dedupeByCardId([...fallbackPriority2, ...fallbackPriority1]).slice(0, 2);
     }
-
-    return dedupeByCardId(result);
   });
 
   const isExplicitRelatedExpression = (note: AnkiNote) => {
