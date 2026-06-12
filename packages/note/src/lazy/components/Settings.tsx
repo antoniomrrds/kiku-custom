@@ -211,12 +211,20 @@ function KikuVersion() {
 
 function GeneralSettings() {
   const { $config, $setConfig, $isConfigOutOfSync } = useConfigContext();
+  const [$showOutOfSync, $setShowOutOfSync] = createSignal(false);
+
+  createEffect(() => {
+    const isOutOfSync = $isConfigOutOfSync();
+    setTimeout(() => {
+      $setShowOutOfSync(isOutOfSync);
+    }, 1000);
+  });
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in relative">
       <KikuVersion />
 
-      <Show when={$isConfigOutOfSync()}>
+      <Show when={$showOutOfSync()}>
         <div role="alert" class="alert alert-warning">
           <span>
             The card template is out of sync with your current theme or display settings. Until you
