@@ -93,7 +93,7 @@ function Page() {
       <Match when={!$kanjiPage.nested}>
         <HeaderKanjiPage />
         <div class="flex flex-col gap-2 sm:gap-4">
-          <div role="tablist" class="tabs tabs-box">
+          <div role="tablist" class="tabs tabs-box animate-fade-in">
             <TabItem
               active={$kanjiPage.tab === "kanji"}
               neverDisabled={true}
@@ -131,7 +131,7 @@ function Page() {
               関
             </TabItem>
           </div>
-          <div class="flex flex-col items-center gap-2">
+          <div class="flex flex-col items-center gap-2 animate-fade-in">
             <div class="font-secondary text-5xl sm:text-6xl">
               <Switch>
                 <Match when={$kanjiPage.contextLabel}>{$kanjiPage.contextLabel?.text}</Match>
