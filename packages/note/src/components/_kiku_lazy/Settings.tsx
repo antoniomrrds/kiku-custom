@@ -290,6 +290,92 @@ function GeneralSettings() {
         </fieldset>
         <fieldset class="fieldset py-0">
           <legend class="fieldset-legend">
+            {!$config.pictureOnFront
+              ? 'Enable "Picture on Front" first.'
+              : "Display pictures immediately without clicking."}
+            <div
+              class="tooltip"
+              data-tip="Display the picture automatically on the front side instead of requiring a click."
+            >
+              <InfoIcon class="size-4 text-base-content-calm" />
+            </div>
+          </legend>
+
+          <label class="label">
+            <input
+              type="checkbox"
+              checked={$config.showPictureDirectlyOnFront}
+              disabled={!$config.pictureOnFront}
+              class="toggle"
+              on:change={(e) => {
+                $setConfig("showPictureDirectlyOnFront", e.target.checked);
+              }}
+            />
+          </label>
+        </fieldset>
+        <fieldset class="fieldset py-0">
+          <legend class="fieldset-legend">
+            Frequency Indicator
+            <div
+              class="tooltip"
+              data-tip="Choose where the frequency indicator is displayed."
+            >
+              <InfoIcon class="size-4 text-base-content-calm" />
+            </div>
+          </legend>
+
+          <div class="join mt-2">
+            <button
+              type="button"
+              class={`join-item btn btn-sm ${
+                $config.frequencyIndicatorPosition === "none"
+                  ? "btn-primary"
+                  : "btn-outline"
+              }`}
+              onClick={() => $setConfig("frequencyIndicatorPosition", "none")}
+            >
+              Off
+            </button>
+
+            <button
+              type="button"
+              class={`join-item btn btn-sm ${
+                $config.frequencyIndicatorPosition === "front"
+                  ? "btn-primary"
+                  : "btn-outline"
+              }`}
+              onClick={() => $setConfig("frequencyIndicatorPosition", "front")}
+            >
+              Front
+            </button>
+
+            <button
+              type="button"
+              class={`join-item btn btn-sm ${
+                $config.frequencyIndicatorPosition === "back"
+                  ? "btn-primary"
+                  : "btn-outline"
+              }`}
+              onClick={() => $setConfig("frequencyIndicatorPosition", "back")}
+            >
+              Back
+            </button>
+
+            <button
+              type="button"
+              class={`join-item btn btn-sm ${
+                $config.frequencyIndicatorPosition === "both"
+                  ? "btn-primary"
+                  : "btn-outline"
+              }`}
+              onClick={() => $setConfig("frequencyIndicatorPosition", "both")}
+            >
+              Both
+            </button>
+          </div>
+        </fieldset>
+        <fieldset class="fieldset py-0">
+          <legend class="fieldset-legend">
             Mute NSFW
             <div
               class="tooltip"

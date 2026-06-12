@@ -3,6 +3,8 @@ import type { KikuConfig } from "./config";
 // biome-ignore format: this looks nicer
 export const defaultConfig: KikuConfig = {
   theme: "light",
+  showPictureDirectlyOnFront: false,
+  frequencyIndicatorPosition: "none",
   webFontPrimary: "Klee One",
   systemFontPrimary: "'Inter', 'SF Pro Display', 'Liberation Sans', 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans CJK JP', 'Noto Sans JP', 'Meiryo', HanaMinA, HanaMinB, sans-serif",
   useSystemFontPrimary: true,

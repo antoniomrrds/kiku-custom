@@ -1,0 +1,4 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": ["/apps/docs/public/*", "/packages/note/preview/*", "/packages/note/.db/*"]
+}

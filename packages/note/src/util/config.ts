@@ -14,6 +14,8 @@ export type KikuConfig = {
   blurNsfw: boolean;
   muteNsfw: boolean;
   pictureOnFront: boolean;
+  showPictureDirectlyOnFront: boolean;
+  frequencyIndicatorPosition: "none" | "front" | "back" | "both";
   showTheme: boolean;
   showStartupTime: boolean;
   ankiConnectAddress: string;
@@ -106,6 +108,13 @@ export function validateConfig(config: KikuConfig): KikuConfig {
       blurNsfw: typeof config.blurNsfw === "boolean" ? config.blurNsfw : defaultConfig.blurNsfw,
       muteNsfw: typeof config.muteNsfw === "boolean" ? config.muteNsfw : defaultConfig.muteNsfw,
       pictureOnFront: typeof config.pictureOnFront === "boolean" ? config.pictureOnFront : defaultConfig.pictureOnFront,
+      showPictureDirectlyOnFront: typeof config.showPictureDirectlyOnFront === "boolean" ? config.showPictureDirectlyOnFront : defaultConfig.showPictureDirectlyOnFront,
+frequencyIndicatorPosition:
+  ["none", "front", "back", "both"].includes(
+    config.frequencyIndicatorPosition as string,
+  )
+    ? config.frequencyIndicatorPosition
+    : defaultConfig.frequencyIndicatorPosition,
       showTheme: typeof config.showTheme === "boolean" ? config.showTheme : defaultConfig.showTheme,
       showStartupTime: typeof config.showStartupTime === "boolean" ? config.showStartupTime : defaultConfig.showStartupTime,
       ankiConnectAddress: typeof config.ankiConnectAddress === "string" ? config.ankiConnectAddress : defaultConfig.ankiConnectAddress,

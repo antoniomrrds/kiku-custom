@@ -4,15 +4,16 @@ import type { DatasetProp } from "#/util/config";
 import { parseHtml } from "#/util/general";
 import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
 import { useCardContext } from "./shared/CardContext";
+import { useConfigContext } from "./shared/ConfigContext";
 import { useFieldGroupContext } from "./shared/FieldGroupContext";
-
 export function PictureSection() {
   const [$card, $setCard] = useCardContext();
   const { $group } = useFieldGroupContext();
   const { ankiFields } = useAnkiFieldContext();
   const [clicked, setClicked] = createSignal(false);
   const [subIndex, setSubIndex] = createSignal(0);
-
+  const [$config] = useConfigContext();
+  const isVisible = () => clicked() || $config.showPictureDirectlyOnFront;
   const pictures = createMemo(() => {
     if (isServer) return [];
     const doc = parseHtml($group.pictureField);
@@ -54,7 +55,9 @@ export function PictureSection() {
     <div
       class="sm:max-w-1/2 bg-base-200 flex sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic tappable"
       on:click={() => {
-        setClicked((prev) => !prev);
+        if (!$config.showPictureDirectlyOnFront) {
+          setClicked((prev) => !prev);
+        }
       }}
       on:touchend={(e) => e.stopPropagation()}
       {...dataSet1()}
@@ -62,7 +65,7 @@ export function PictureSection() {
       <div
         class="picture-field-background"
         style={{
-          opacity: clicked() ? 1 : undefined,
+          opacity: isVisible() ? 1 : undefined,
         }}
         innerHTML={isServer ? undefined : currentPicture()}
       >
@@ -71,7 +74,7 @@ export function PictureSection() {
       <div
         class="picture-field tappable"
         style={{
-          opacity: clicked() ? 1 : undefined,
+          opacity: isVisible() ? 1 : undefined,
         }}
         on:click={() => {
           $setCard("pictureModal", currentPicture());

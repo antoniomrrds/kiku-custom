@@ -1,9 +1,11 @@
 import { createEffect, ErrorBoundary, Show } from "solid-js";
 import { useCardContext } from "#/components/shared/CardContext";
 import { useAnkiFieldContext } from "../shared/AnkiFieldsContext";
+import { useConfigContext } from "../shared/ConfigContext";
 import { useCtxContext } from "../shared/CtxContext";
 import { useFieldGroupContext } from "../shared/FieldGroupContext";
 import { useGeneralContext } from "../shared/GeneralContext";
+import FrequencyIndicator from "./FrequencyIndicator";
 
 export default function Sentence() {
   const [$card, $setCard] = useCardContext();
@@ -11,7 +13,7 @@ export default function Sentence() {
   const [$general] = useGeneralContext();
   const { ankiFields } = useAnkiFieldContext<"back">();
   const ctx = useCtxContext();
-
+  const [$config] = useConfigContext();
   createEffect(() => {
     if ($card.sentenceFieldRef && $group.sentenceField) {
       const ruby = $card.sentenceFieldRef.querySelectorAll("ruby");
@@ -54,13 +56,34 @@ export default function Sentence() {
   }
 
   return (
-    <ErrorBoundary fallback={<DefaultSentence />}>
-      <Show when={$general.plugin?.Sentence} fallback={<DefaultSentence />}>
-        {(get) => {
-          const Sentence = get();
-          return <Sentence ctx={ctx} DefaultSentence={DefaultSentence} />;
-        }}
+    <>
+      <ErrorBoundary fallback={<DefaultSentence />}>
+        <Show when={$general.plugin?.Sentence} fallback={<DefaultSentence />}>
+          {(get) => {
+            const Sentence = get();
+            return <Sentence ctx={ctx} DefaultSentence={DefaultSentence} />;
+          }}
+        </Show>
+      </ErrorBoundary>
+      <Show
+        when={
+          $card.side === "front" &&
+          ($config.frequencyIndicatorPosition === "front" ||
+            $config.frequencyIndicatorPosition === "both")
+        }
+      >
+        <FrequencyIndicator />
       </Show>
-    </ErrorBoundary>
+
+      <Show
+        when={
+          $card.side === "back" &&
+          ($config.frequencyIndicatorPosition === "back" ||
+            $config.frequencyIndicatorPosition === "both")
+        }
+      >
+        <FrequencyIndicator />
+      </Show>
+    </>
   );
 }
