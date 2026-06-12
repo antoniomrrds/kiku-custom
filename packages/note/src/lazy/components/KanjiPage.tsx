@@ -260,12 +260,12 @@ function TabItem(props: {
 
 function KanjiCollapsible(props: { data: AnkiNote[] }) {
   const { $kanjiPage } = useKanjiPageContext();
-  const { $kanji } = useKanjiContext();
+  const { $kanjiState } = useKanjiContext();
   const data = () => props.data;
-  const [$checked, $setChecked] = createSignal($kanjiPage.focus.kanji === $kanji.kanji);
+  const [$checked, $setChecked] = createSignal($kanjiPage.focus.kanji === $kanjiState.kanji);
 
   const loading = () => {
-    return Object.values($kanji.loading).some((v) => v);
+    return Object.values($kanjiState.loading).some((v) => v);
   };
 
   return (
@@ -300,7 +300,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
         <ul class="list bg-base-100 rounded-box shadow-md">
           <For each={data()}>
             {(data) => {
-              return <AnkiNoteItem data={data} highlightedKanji={$kanji.kanji} />;
+              return <AnkiNoteItem data={data} highlightedKanji={$kanjiState.kanji} />;
             }}
           </For>
         </ul>
@@ -493,13 +493,13 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string; source
 }
 
 function KanjiText() {
-  const { $kanji } = useKanjiContext();
+  const { $kanjiState } = useKanjiContext();
   const { $kanjiPage } = useKanjiPageContext();
   const [$ref, $setRef] = createSignal<HTMLDivElement>();
 
   onMount(() => {
     const ref = $ref();
-    if (ref && $kanjiPage.focus.kanji === $kanji.kanji && !$kanjiPage.focus.noteId) {
+    if (ref && $kanjiPage.focus.kanji === $kanjiState.kanji && !$kanjiPage.focus.noteId) {
       ref.scrollIntoView({ block: "center" });
     }
   });
@@ -507,7 +507,7 @@ function KanjiText() {
   return (
     <div class="flex gap-2 sm:gap-4 me-2">
       <div class="font-secondary text-5xl sm:text-6xl" ref={$setRef}>
-        {$kanji.kanji}
+        {$kanjiState.kanji}
       </div>
       <KanjiInfo />
     </div>

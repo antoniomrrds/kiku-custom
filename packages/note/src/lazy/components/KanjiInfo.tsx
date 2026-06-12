@@ -10,38 +10,38 @@ import { KanjiContextProvider, useKanjiContext } from "#/src/lazy/contexts/Kanji
 import { type ContextLabel, useKanjiPageContext } from "#/src/lazy/contexts/KanjiPageContext";
 
 export function KanjiInfo() {
-  const { $kanji } = useKanjiContext();
+  const { $kanjiState } = useKanjiContext();
 
   return (
     <div class="flex flex-col text-xs sm:text-sm text-base-content-calm items-start z-10 relative">
       <div
         classList={{
-          hidden: !$kanji.kanjiInfo?.keyword,
+          hidden: !$kanjiState.kanjiInfo?.keyword,
         }}
       >
         <span class="inline-flex flex-wrap gap-x-1 sm:gap-x-2">
           <span>Keyword: </span>
-          <span>{capitalizeSentence($kanji.kanjiInfo?.keyword)}</span>
+          <span>{capitalizeSentence($kanjiState.kanjiInfo?.keyword)}</span>
         </span>
       </div>
       <div
         classList={{
-          hidden: !$kanji.kanjiInfo?.frequency,
+          hidden: !$kanjiState.kanjiInfo?.frequency,
         }}
       >
         <span class="inline-flex flex-wrap gap-x-1 sm:gap-x-2">
           <span>Frequency: </span>
-          <span>{$kanji.kanjiInfo?.frequency}</span>
+          <span>{$kanjiState.kanjiInfo?.frequency}</span>
         </span>
       </div>
       <div
         classList={{
-          hidden: !$kanji.kanjiInfo?.readings.length,
+          hidden: !$kanjiState.kanjiInfo?.readings.length,
         }}
       >
         <span class="inline-flex flex-wrap gap-x-1 sm:gap-x-2 gap-y-0.5">
           <span>Reading: </span>
-          <For each={$kanji.kanjiInfo?.readings}>
+          <For each={$kanjiState.kanjiInfo?.readings}>
             {(reading) => {
               return (
                 <Show when={reading.percentage}>
@@ -62,7 +62,7 @@ export function KanjiInfo() {
 }
 
 export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
-  const { $kanji, fetchNotes } = useKanjiContext();
+  const { $kanjiState, fetchNotes } = useKanjiContext();
   const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 
@@ -97,7 +97,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 
   function VisuallySimilar() {
     return (
-      <Show when={$kanji.kanjiInfo?.visuallySimilar.length}>
+      <Show when={$kanjiState.kanjiInfo?.visuallySimilar.length}>
         <div class="collapse collapse-arrow rounded-none">
           <input
             type="checkbox"
@@ -113,19 +113,19 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.visuallySimilar}>
+              <For each={$kanjiState.kanjiInfo?.visuallySimilar}>
                 {(kanji) => {
                   return (
                     <KanjiContextProvider kanji={kanji}>
                       <KanjiKeywordComponent
-                        parentKanji={$kanji.kanji}
-                        noteList={$kanji.visuallySimilar}
+                        parentKanji={$kanjiState.kanji}
+                        noteList={$kanjiState.visuallySimilar}
                         nestedFocus={{
                           kanji: kanji,
                           noteId: undefined,
                         }}
                         contextLabel={{
-                          text: $kanji.kanji,
+                          text: $kanjiState.kanji,
                           type: "similar",
                         }}
                       />
@@ -142,7 +142,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 
   function ComposedOf() {
     return (
-      <Show when={$kanji.kanjiInfo?.composedOf.length}>
+      <Show when={$kanjiState.kanjiInfo?.composedOf.length}>
         <div class="collapse collapse-arrow rounded-none">
           <input
             type="checkbox"
@@ -158,19 +158,19 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.composedOf}>
+              <For each={$kanjiState.kanjiInfo?.composedOf}>
                 {(kanji) => {
                   return (
                     <KanjiContextProvider kanji={kanji}>
                       <KanjiKeywordComponent
-                        parentKanji={$kanji.kanji}
-                        noteList={$kanji.composedOf}
+                        parentKanji={$kanjiState.kanji}
+                        noteList={$kanjiState.composedOf}
                         nestedFocus={{
                           kanji: kanji,
                           noteId: undefined,
                         }}
                         contextLabel={{
-                          text: $kanji.kanji,
+                          text: $kanjiState.kanji,
                           type: "composedOf",
                         }}
                       />
@@ -187,7 +187,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 
   function UsedIn() {
     return (
-      <Show when={$kanji.kanjiInfo?.usedIn.length}>
+      <Show when={$kanjiState.kanjiInfo?.usedIn.length}>
         <div class="collapse collapse-arrow rounded-none">
           <input
             type="checkbox"
@@ -203,19 +203,19 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.usedIn}>
+              <For each={$kanjiState.kanjiInfo?.usedIn}>
                 {(kanji) => {
                   return (
                     <KanjiContextProvider kanji={kanji}>
                       <KanjiKeywordComponent
-                        parentKanji={$kanji.kanji}
-                        noteList={$kanji.usedIn}
+                        parentKanji={$kanjiState.kanji}
+                        noteList={$kanjiState.usedIn}
                         nestedFocus={{
                           kanji: kanji,
                           noteId: undefined,
                         }}
                         contextLabel={{
-                          text: $kanji.kanji,
+                          text: $kanjiState.kanji,
                           type: "usedIn",
                         }}
                       />
@@ -232,7 +232,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 
   function Meanings() {
     return (
-      <Show when={$kanji.kanjiInfo?.meanings.length}>
+      <Show when={$kanjiState.kanjiInfo?.meanings.length}>
         <div class="collapse collapse-arrow rounded-none">
           <input
             type="checkbox"
@@ -248,7 +248,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.meanings}>
+              <For each={$kanjiState.kanjiInfo?.meanings}>
                 {(meaning) => {
                   return (
                     <div class="border border-base-300 inline-flex px-1 bg-base-300">{meaning}</div>
@@ -264,7 +264,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 
   function Related() {
     return (
-      <Show when={$kanji.kanjiInfo?.related.length}>
+      <Show when={$kanjiState.kanjiInfo?.related.length}>
         <div class="collapse collapse-arrow rounded-none">
           <input
             type="checkbox"
@@ -280,19 +280,19 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanji.kanjiInfo?.related}>
+              <For each={$kanjiState.kanjiInfo?.related}>
                 {(kanji) => {
                   return (
                     <KanjiContextProvider kanji={kanji}>
                       <KanjiKeywordComponent
-                        parentKanji={$kanji.kanji}
-                        noteList={$kanji.related}
+                        parentKanji={$kanjiState.kanji}
+                        noteList={$kanjiState.related}
                         nestedFocus={{
                           kanji: kanji,
                           noteId: undefined,
                         }}
                         contextLabel={{
-                          text: $kanji.kanji,
+                          text: $kanjiState.kanji,
                           type: "related",
                         }}
                       />
@@ -363,10 +363,10 @@ function KanjiKeyword(props: {
   onClick?: () => void;
   parentKanji: string;
 }) {
-  const { $kanji } = useKanjiContext();
+  const { $kanjiState } = useKanjiContext();
 
   const keyword = () =>
-    $kanji.kanjiInfo?.wkMeaning ? $kanji.kanjiInfo?.wkMeaning : $kanji.kanjiInfo?.keyword;
+    $kanjiState.kanjiInfo?.wkMeaning ? $kanjiState.kanjiInfo?.wkMeaning : $kanjiState.kanjiInfo?.keyword;
   const ready = () => !!props.noteList;
 
   return (
@@ -381,7 +381,7 @@ function KanjiKeyword(props: {
       on:click={props.onClick}
       on:touchend={(e) => e.stopPropagation()}
     >
-      <span class=" px-1 text-lg sm:text-xl">{$kanji.kanji}</span>
+      <span class=" px-1 text-lg sm:text-xl">{$kanjiState.kanji}</span>
       <Show when={keyword()}>
         <span class="bg-base-300 border-s border-base-300 px-1 text-base-content-soft flex items-center">
           {capitalizeSentence(keyword())}
