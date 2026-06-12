@@ -108,10 +108,10 @@ export function Back(props: { onExitNested?: () => void }) {
                   "h-auto": !$isInitialAnkiFields(),
                 }}
               >
-                <Lazy.RelatedExpression />
+                {$card.ready && <Lazy.RelatedExpression />}
               </div>
               <div class="mt-1 min-w-20 flex justify-end">
-                <Lazy.Frequency />
+                {$card.ready && <Lazy.Frequency />}
               </div>
             </div>
             <div

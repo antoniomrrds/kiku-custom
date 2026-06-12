@@ -85,7 +85,7 @@ export function Front() {
                   "h-auto": !$isInitialAnkiFields(),
                 }}
               >
-                <Lazy.RelatedExpression />
+                {$card.ready && <Lazy.RelatedExpression />}
               </div>
             </div>
             <div
