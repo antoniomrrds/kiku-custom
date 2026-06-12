@@ -12,7 +12,7 @@ import MergeContextModal from "./MergeContextModal";
 export default function HeaderMain(props: { onExitNested?: () => void }) {
   const { $card, $initialSide } = useCardContext();
   const { $config, $isConfigOutOfSync } = useConfigContext();
-  const { $general, initialDarkMode, $startupTime } = useGeneralContext();
+  const { initialDarkMode, $startupTime } = useGeneralContext();
   const { navigate } = useNavigationTransition();
   const { $changeThemeNext } = useThemeTransition();
 

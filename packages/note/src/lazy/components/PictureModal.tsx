@@ -8,7 +8,7 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 
 export default function PictureModal() {
-  const { $card } = useCardContext();
+  const { $card, $setCard } = useCardContext();
   const { $general, isAnkiWeb } = useGeneralContext();
   const { $ankiFields } = useAnkiFieldContext();
   const { $setPictureModal } = usePictureModalTransition();
@@ -61,7 +61,7 @@ export default function PictureModal() {
             }}
             on:touchend={(e) => e.stopPropagation()}
           >
-            {$showAll() ? "Show current" : "Show all"}
+            {$showAll() ? "Back to image" : "All images"}
           </button>
         </div>
 
@@ -74,14 +74,14 @@ export default function PictureModal() {
               ></div>
             </Match>
             <Match when={$showAll()}>
-              <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,320px))] gap-4 w-full justify-center">
+              <div class="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-2 sm:gap-4 w-full max-w-7xl mx-auto justify-center">
                 <For each={$allPictures()}>
                   {(pic) => (
                     <div
-                      class="aspect-square relative rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:scale-105 transition-transform group tappable"
+                      class="aspect-square relative rounded-lg overflow-hidden flex items-center justify-center cursor-pointer sm:hover:scale-105 transition-transform group tappable"
                       on:click={(e) => {
                         e.stopPropagation();
-                        $setPictureModal(pic.html);
+                        $setCard("pictureModal", pic.html);
                         $setShowAll(false);
                       }}
                       on:touchend={(e) => e.stopPropagation()}
