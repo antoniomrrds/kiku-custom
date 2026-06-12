@@ -57,7 +57,7 @@ export function ExpressionSection(props: { hideExpression?: boolean }) {
       {...$pitchFieldDataset()}
     >
       <Switch>
-        <Match when={!$card.ready || isServer}>
+        <Match when={isServer}>
           <div
             class="contents"
             innerHTML={
@@ -65,6 +65,13 @@ export function ExpressionSection(props: { hideExpression?: boolean }) {
                 ? `{{#IsSentenceCard}} <span class="horizontal-tb">?</span> {{/IsSentenceCard}} {{#IsAudioCard}} <span class="horizontal-tb">?</span> {{/IsAudioCard}} {{^IsSentenceCard}} {{^IsAudioCard}} {{Expression}} {{/IsAudioCard}} {{/IsSentenceCard}}`
                 : "{{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}{{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}"
             }
+          ></div>
+        </Match>
+        <Match when={!$card.ready}>
+          <div
+            class="contents"
+            classList={{ invisible: $card.nested }}
+            innerHTML={$expressionInnerHtml()}
           ></div>
         </Match>
         <Match

@@ -110,9 +110,7 @@ export function Back(props: { onExitNested?: () => void }) {
               >
                 {$card.ready && <Lazy.RelatedExpression />}
               </div>
-              <div class="mt-1 min-w-20 flex justify-end">
-                {$card.ready && <Lazy.Frequency />}
-              </div>
+              <div class="mt-1 min-w-20 flex justify-end">{$card.ready && <Lazy.Frequency />}</div>
             </div>
             <div
               class="flex rounded-lg gap-2 sm:gap-4 flex-col sm:flex-row relative z-10"
