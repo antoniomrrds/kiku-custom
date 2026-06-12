@@ -17,6 +17,7 @@
     "apply": "turbo run apply --force"
   },
   "devDependencies": {
+    "@tailwindcss/language-server": "^0.14.29",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.67.0",
     "turbo": "^2.9.14",

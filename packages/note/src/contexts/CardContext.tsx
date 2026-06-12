@@ -9,24 +9,12 @@ import {
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { createCompatPair } from "#/src/lib/context-compat";
-import { type AnkiFields, type AnkiNote, ankiFieldsSkeleton } from "#/src/lib/types";
+import { type AnkiFields, ankiFieldsSkeleton } from "#/src/lib/types";
 import type { KanjiPageContextStore } from "#/src/lazy/contexts/KanjiPageContext";
 import { useGeneralContext } from "./GeneralContext";
+import { useCardQuery, type $$Card } from "#/src/hooks/query";
 
-type Query = {
-  status: "loading" | "success" | "error";
-  sameReading: AnkiNote[] | undefined;
-  sameExpression: AnkiNote[] | undefined;
-  relatedExpression: AnkiNote[] | undefined;
-  forms: AnkiNote[] | undefined;
-  antonym: AnkiNote[] | undefined;
-  referenced: AnkiNote[] | undefined;
-  noteList: [string, AnkiNote[]][];
-  newNotes: number[];
-  isNotesCache: boolean;
-};
-
-type CardStore = {
+export type CardStore = {
   side: "front" | "back";
   page: "main" | "settings" | "kanji" | "nested";
   ready: boolean;
@@ -37,7 +25,6 @@ type CardStore = {
   sentenceAudioRef?: HTMLDivElement;
   sentenceAudios?: HTMLAnchorElement[] | HTMLAudioElement[];
   pictureModal?: string;
-  query: Query;
   initialFocus: {
     kanji: string | undefined;
     noteId: number | undefined;
@@ -57,6 +44,7 @@ type CardContextValue = {
   $setCard: SetStoreFunction<CardStore>;
   $initialSide: Accessor<CardStore["side"]>;
   $isInitialSide: Accessor<boolean>;
+  $$card: $$Card;
   onKanjiPageMount: Set<(ctx: { $setKanjiPage: SetStoreFunction<KanjiPageContextStore> }) => void>;
 };
 
@@ -70,6 +58,7 @@ export function CardStoreContextProvider(props: {
   initialNsfw: boolean;
 }) {
   const { $general } = useGeneralContext();
+
   const [$card, $setCard] = createStore<CardStore>({
     side: props.initialSide,
     page: "main",
@@ -81,18 +70,6 @@ export function CardStoreContextProvider(props: {
     sentenceAudioRef: undefined,
     sentenceAudios: undefined,
     pictureModal: undefined,
-    query: {
-      status: "loading",
-      sameReading: undefined,
-      sameExpression: undefined,
-      relatedExpression: undefined,
-      forms: undefined,
-      antonym: undefined,
-      referenced: undefined,
-      noteList: [],
-      newNotes: [],
-      isNotesCache: false,
-    },
     initialFocus: {
       kanji: undefined,
       noteId: undefined,
@@ -110,6 +87,7 @@ export function CardStoreContextProvider(props: {
   const $initialSide = createMemo(() => props.initialSide);
   const $isInitialSide = createMemo(() => $initialSide() === $card.side);
   const onKanjiPageMount: CardContextValue["onKanjiPageMount"] = new Set();
+  const { $$card } = useCardQuery({ $card, $initialSide });
 
   createEffect(() => {
     const root = $general.root;
@@ -120,7 +98,14 @@ export function CardStoreContextProvider(props: {
 
   return (
     <CardStoreContext.Provider
-      value={{ $card, $setCard, onKanjiPageMount, $initialSide, $isInitialSide }}
+      value={{
+        $card,
+        $setCard,
+        onKanjiPageMount,
+        $initialSide,
+        $isInitialSide,
+        $$card,
+      }}
     >
       {props.children}
     </CardStoreContext.Provider>

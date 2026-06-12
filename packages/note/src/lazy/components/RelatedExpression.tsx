@@ -2,11 +2,13 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  ErrorBoundary,
   For,
   on,
   onCleanup,
   onMount,
   Show,
+  Suspense,
 } from "solid-js";
 import { ankiFieldsSkeleton, type AnkiNote } from "#/src/lib/types";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
@@ -27,16 +29,19 @@ const dedupeByCardId = (notes: AnkiNote[]) => {
   });
 };
 
-export default function RelatedExpression() {
+function $RelatedExpression() {
   const { logger } = useGeneralContext();
-  const { $card, $setCard, $initialSide } = useCardContext();
+  const { $card, $setCard, $initialSide, $$card } = useCardContext();
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields, $isInitialAnkiFields } =
     useAnkiFieldContext();
   const [$ref, $setRef] = createSignal<HTMLDivElement>();
 
   const $relatedExpression = createMemo(() => {
+    const query = $$card();
+    if (!query) return [];
+
     if ($initialSide() === "front") {
-      return [...($card.query.sameExpression ?? [])]
+      return [...(query.sameExpression ?? [])]
         .filter((v) => {
           return v.fields["ExpressionReading"].value !== initialAnkiFields.ExpressionReading;
         })
@@ -44,20 +49,20 @@ export default function RelatedExpression() {
     }
 
     const fallbackPriority1 = [
-      ...($card.query.sameExpression ?? []),
-      ...($card.query.sameReading ?? []),
-      ...$card.query.noteList.flatMap((n) => {
+      ...(query.sameExpression ?? []),
+      ...(query.sameReading ?? []),
+      ...query.noteList.flatMap((n) => {
         return n[1];
       }),
     ].sort(sortNote);
 
     const fallbackPriority2 = [
-      ...($card.query.forms ?? []),
-      ...($card.query.antonym ?? []),
-      ...($card.query.referenced ?? []),
+      ...(query.forms ?? []),
+      ...(query.antonym ?? []),
+      ...(query.referenced ?? []),
     ].sort(sortNote);
 
-    const relatedExpression = $card.query.relatedExpression;
+    const relatedExpression = query.relatedExpression;
 
     if (relatedExpression?.length && relatedExpression.length < 2) {
       return dedupeByCardId([
@@ -73,7 +78,7 @@ export default function RelatedExpression() {
   });
 
   const isExplicitRelatedExpression = (note: AnkiNote) => {
-    return $card.query.relatedExpression?.some((n) => n.noteId === note.noteId);
+    return $$card()?.relatedExpression?.some((n) => n.noteId === note.noteId) ?? false;
   };
 
   createEffect(
@@ -197,5 +202,15 @@ export default function RelatedExpression() {
         }}
       </For>
     </div>
+  );
+}
+
+export default function RelatedExpression() {
+  return (
+    <ErrorBoundary fallback={null}>
+      <Suspense fallback={null}>
+        <$RelatedExpression />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

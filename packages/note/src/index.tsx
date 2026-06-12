@@ -225,7 +225,7 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
 
     host = host ?? document.createElement("div");
     host.id = "kiku-host";
-    const shadow = host.attachShadow({ mode: "open" });
+    const shadow = host.shadowRoot ?? host.attachShadow({ mode: "open" });
 
     const style = qa.querySelector<HTMLStyleElement>("style");
     const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;

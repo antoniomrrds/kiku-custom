@@ -1,4 +1,12 @@
-import { createEffect, createUniqueId, ErrorBoundary, For, Show } from "solid-js";
+import {
+  type Resource,
+  createEffect,
+  createMemo,
+  createUniqueId,
+  ErrorBoundary,
+  For,
+  Show,
+} from "solid-js";
 import { createStore } from "solid-js/store";
 import { useNavigationTransition } from "#/src/hooks/transition";
 import { capitalizeSentence } from "#/src/lib/text";
@@ -9,39 +17,39 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { KanjiContextProvider, useKanjiContext } from "#/src/lazy/contexts/KanjiContext";
 import { type ContextLabel, useKanjiPageContext } from "#/src/lazy/contexts/KanjiPageContext";
 
-export function KanjiInfo() {
-  const { $kanjiState } = useKanjiContext();
+export function $KanjiInfo() {
+  const { $$kanjiInfo: $$info } = useKanjiContext();
 
   return (
-    <div class="flex flex-col text-xs sm:text-sm text-base-content-calm items-start z-10 relative">
+    <div class="flex flex-col text-xs sm:text-sm text-base-content-calm items-start z-10 relative animate-fade-in">
       <div
         classList={{
-          hidden: !$kanjiState.kanjiInfo?.keyword,
+          hidden: !$$info()?.keyword,
         }}
       >
         <span class="inline-flex flex-wrap gap-x-1 sm:gap-x-2">
           <span>Keyword: </span>
-          <span>{capitalizeSentence($kanjiState.kanjiInfo?.keyword)}</span>
+          <span>{capitalizeSentence($$info()?.keyword)}</span>
         </span>
       </div>
       <div
         classList={{
-          hidden: !$kanjiState.kanjiInfo?.frequency,
+          hidden: !$$info()?.frequency,
         }}
       >
         <span class="inline-flex flex-wrap gap-x-1 sm:gap-x-2">
           <span>Frequency: </span>
-          <span>{$kanjiState.kanjiInfo?.frequency}</span>
+          <span>{$$info()?.frequency}</span>
         </span>
       </div>
       <div
         classList={{
-          hidden: !$kanjiState.kanjiInfo?.readings.length,
+          hidden: !$$info()?.readings.length,
         }}
       >
         <span class="inline-flex flex-wrap gap-x-1 sm:gap-x-2 gap-y-0.5">
           <span>Reading: </span>
-          <For each={$kanjiState.kanjiInfo?.readings}>
+          <For each={$$info()?.readings}>
             {(reading) => {
               return (
                 <Show when={reading.percentage}>
@@ -61,19 +69,21 @@ export function KanjiInfo() {
   );
 }
 
-export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
-  const { $kanjiState, fetchNotes } = useKanjiContext();
+export function $KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
+  const {
+    $kanjiState,
+    $$kanjiInfo: $$info,
+    $setFetchFlags,
+    $$visuallySimilar,
+    $$composedOf,
+    $$usedIn,
+    $$related,
+  } = useKanjiContext();
   const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 
   const KanjiKeywordComponent = props.inKanjiPage ? KanjiKeywordKanjiPage : KanjiKeywordTooltip;
-  const [$checkbox, $setCheckbox] = createStore({
-    visuallySimilar: false,
-    composedOf: false,
-    usedIn: false,
-    meanings: false,
-    related: false,
-  });
+
   const [$checkboxRef, $setCheckboxRef] = createStore<{
     visuallySimilar: undefined | HTMLInputElement;
     composedOf: undefined | HTMLInputElement;
@@ -87,18 +97,25 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
     meanings: undefined,
     related: undefined,
   });
-
-  createEffect(() => {
-    if ($checkbox.visuallySimilar) fetchNotes("visuallySimilar");
-    if ($checkbox.composedOf) fetchNotes("composedOf");
-    if ($checkbox.usedIn) fetchNotes("usedIn");
-    if ($checkbox.related) fetchNotes("related");
+  const [$checkbox, $setCheckbox] = createStore({
+    visuallySimilar: false,
+    composedOf: false,
+    usedIn: false,
+    meanings: false,
+    related: false,
   });
 
-  function VisuallySimilar() {
+  createEffect(() => {
+    if ($checkbox.visuallySimilar) $setFetchFlags("visuallySimilar", true);
+    if ($checkbox.composedOf) $setFetchFlags("composedOf", true);
+    if ($checkbox.usedIn) $setFetchFlags("usedIn", true);
+    if ($checkbox.related) $setFetchFlags("related", true);
+  });
+
+  function $VisuallySimilar() {
     return (
-      <Show when={$kanjiState.kanjiInfo?.visuallySimilar.length}>
-        <div class="collapse collapse-arrow rounded-none">
+      <Show when={$$info()?.visuallySimilar.length}>
+        <div class="collapse collapse-arrow rounded-none animate-fade-in">
           <input
             type="checkbox"
             class="p-0"
@@ -113,13 +130,13 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanjiState.kanjiInfo?.visuallySimilar}>
+              <For each={$$info()?.visuallySimilar}>
                 {(kanji) => {
                   return (
                     <KanjiContextProvider kanji={kanji}>
                       <KanjiKeywordComponent
                         parentKanji={$kanjiState.kanji}
-                        noteList={$kanjiState.visuallySimilar}
+                        $$noteList={$$visuallySimilar}
                         nestedFocus={{
                           kanji: kanji,
                           noteId: undefined,
@@ -140,10 +157,10 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
     );
   }
 
-  function ComposedOf() {
+  function $ComposedOf() {
     return (
-      <Show when={$kanjiState.kanjiInfo?.composedOf.length}>
-        <div class="collapse collapse-arrow rounded-none">
+      <Show when={$$info()?.composedOf.length}>
+        <div class="collapse collapse-arrow rounded-none animate-fade-in">
           <input
             type="checkbox"
             class="p-0"
@@ -158,13 +175,13 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanjiState.kanjiInfo?.composedOf}>
+              <For each={$$info()?.composedOf}>
                 {(kanji) => {
                   return (
                     <KanjiContextProvider kanji={kanji}>
                       <KanjiKeywordComponent
                         parentKanji={$kanjiState.kanji}
-                        noteList={$kanjiState.composedOf}
+                        $$noteList={$$composedOf}
                         nestedFocus={{
                           kanji: kanji,
                           noteId: undefined,
@@ -185,10 +202,10 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
     );
   }
 
-  function UsedIn() {
+  function $UsedIn() {
     return (
-      <Show when={$kanjiState.kanjiInfo?.usedIn.length}>
-        <div class="collapse collapse-arrow rounded-none">
+      <Show when={$$info()?.usedIn.length}>
+        <div class="collapse collapse-arrow rounded-none animate-fade-in">
           <input
             type="checkbox"
             class="p-0"
@@ -203,13 +220,13 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanjiState.kanjiInfo?.usedIn}>
+              <For each={$$info()?.usedIn}>
                 {(kanji) => {
                   return (
                     <KanjiContextProvider kanji={kanji}>
                       <KanjiKeywordComponent
                         parentKanji={$kanjiState.kanji}
-                        noteList={$kanjiState.usedIn}
+                        $$noteList={$$usedIn}
                         nestedFocus={{
                           kanji: kanji,
                           noteId: undefined,
@@ -230,10 +247,10 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
     );
   }
 
-  function Meanings() {
+  function $Meanings() {
     return (
-      <Show when={$kanjiState.kanjiInfo?.meanings.length}>
-        <div class="collapse collapse-arrow rounded-none">
+      <Show when={$$info()?.meanings.length}>
+        <div class="collapse collapse-arrow rounded-none animate-fade-in">
           <input
             type="checkbox"
             class="p-0"
@@ -248,7 +265,7 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanjiState.kanjiInfo?.meanings}>
+              <For each={$$info()?.meanings}>
                 {(meaning) => {
                   return (
                     <div class="border border-base-300 inline-flex px-1 bg-base-300">{meaning}</div>
@@ -262,10 +279,10 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
     );
   }
 
-  function Related() {
+  function $Related() {
     return (
-      <Show when={$kanjiState.kanjiInfo?.related.length}>
-        <div class="collapse collapse-arrow rounded-none">
+      <Show when={$$info()?.related.length}>
+        <div class="collapse collapse-arrow rounded-none animate-fade-in">
           <input
             type="checkbox"
             class="p-0"
@@ -280,13 +297,13 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
           </div>
           <div class="collapse-content p-0">
             <div class="flex gap-1 sm:gap-2 flex-wrap text-base-content-calm">
-              <For each={$kanjiState.kanjiInfo?.related}>
+              <For each={$$info()?.related}>
                 {(kanji) => {
                   return (
                     <KanjiContextProvider kanji={kanji}>
                       <KanjiKeywordComponent
                         parentKanji={$kanjiState.kanji}
-                        noteList={$kanjiState.related}
+                        $$noteList={$$related}
                         nestedFocus={{
                           kanji: kanji,
                           noteId: undefined,
@@ -315,21 +332,21 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
 
     return (
       <>
-        <VisuallySimilar />
-        <ComposedOf />
-        <UsedIn />
-        <Meanings />
-        <Related />
+        <$VisuallySimilar />
+        <$ComposedOf />
+        <$UsedIn />
+        <$Meanings />
+        <$Related />
       </>
     );
   }
 
   const sections = {
-    VisuallySimilar,
-    ComposedOf,
-    UsedIn,
-    Meanings,
-    Related,
+    VisuallySimilar: $VisuallySimilar,
+    ComposedOf: $ComposedOf,
+    UsedIn: $UsedIn,
+    Meanings: $Meanings,
+    Related: $Related,
   };
 
   return (
@@ -353,8 +370,9 @@ export function KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
   );
 }
 
-function KanjiKeyword(props: {
-  noteList?: [string, AnkiNote[]][];
+//TODO: single KanjiKeyword component
+function $KanjiKeyword(props: {
+  $$noteList: Resource<[string, AnkiNote[]][] | undefined>;
   nestedFocus: {
     kanji: string | undefined;
     noteId: number | undefined;
@@ -363,28 +381,33 @@ function KanjiKeyword(props: {
   onClick?: () => void;
   parentKanji: string;
 }) {
-  const { $kanjiState } = useKanjiContext();
+  const { $kanjiState, $$kanjiInfo } = useKanjiContext();
 
-  const keyword = () =>
-    $kanjiState.kanjiInfo?.wkMeaning ? $kanjiState.kanjiInfo?.wkMeaning : $kanjiState.kanjiInfo?.keyword;
-  const ready = () => !!props.noteList;
+  const $$keyword = createMemo(() => {
+    const wkMeaning = $$kanjiInfo()?.wkMeaning;
+    const keyword = $$kanjiInfo()?.keyword;
+    return wkMeaning ? wkMeaning : keyword;
+  });
+  const $ready = createMemo(
+    () => props.$$noteList.state === "ready" || props.$$noteList.state === "refreshing",
+  );
 
   return (
     <button
       class="inline-flex border border-base-content-subtle-100 transition-colors hover:border-base-content-subtle-200"
       classList={{
-        "cursor-pointer": ready(),
-        "cursor-not-allowed": !ready(),
-        "text-base-content-calm": ready(),
-        "text-base-content-soft": !ready(),
+        "cursor-pointer": $ready(),
+        "cursor-not-allowed": !$ready(),
+        "text-base-content-calm": $ready(),
+        "text-base-content-soft": !$ready(),
       }}
       on:click={props.onClick}
       on:touchend={(e) => e.stopPropagation()}
     >
       <span class=" px-1 text-lg sm:text-xl">{$kanjiState.kanji}</span>
-      <Show when={keyword()}>
+      <Show when={$$keyword()}>
         <span class="bg-base-300 border-s border-base-300 px-1 text-base-content-soft flex items-center">
-          {capitalizeSentence(keyword())}
+          {capitalizeSentence($$keyword())}
         </span>
       </Show>
     </button>
@@ -392,7 +415,7 @@ function KanjiKeyword(props: {
 }
 
 function KanjiKeywordTooltip(props: {
-  noteList?: [string, AnkiNote[]][];
+  $$noteList: Resource<[string, AnkiNote[]][] | undefined>;
   nestedFocus: {
     kanji: string | undefined;
     noteId: number | undefined;
@@ -404,7 +427,7 @@ function KanjiKeywordTooltip(props: {
   const { navigate } = useNavigationTransition();
 
   const onClick = () => {
-    const noteList = props.noteList;
+    const noteList = props.$$noteList();
     if (!noteList) return;
 
     $setCard("initialTab", "kanji");
@@ -426,11 +449,11 @@ function KanjiKeywordTooltip(props: {
     navigate("kanji", "forward", () => navigate("main", "back"));
   };
 
-  return <KanjiKeyword {...props} onClick={onClick} />;
+  return <$KanjiKeyword {...props} onClick={onClick} />;
 }
 
 function KanjiKeywordKanjiPage(props: {
-  noteList?: [string, AnkiNote[]][];
+  $$noteList: Resource<[string, AnkiNote[]][] | undefined>;
   nestedFocus: {
     kanji: string | undefined;
     noteId: number | undefined;
@@ -442,7 +465,7 @@ function KanjiKeywordKanjiPage(props: {
   const { navigate } = useNavigationTransition();
 
   const onClick = () => {
-    const noteList = props.noteList;
+    const noteList = props.$$noteList();
     if (!noteList) return;
     navigate(
       () =>
@@ -457,7 +480,7 @@ function KanjiKeywordKanjiPage(props: {
     );
   };
 
-  return <KanjiKeyword {...props} onClick={onClick} />;
+  return <$KanjiKeyword {...props} onClick={onClick} />;
 }
 
 function applyNestedKanjiPageState(

@@ -1,4 +1,4 @@
-import { createUniqueId, Match, Show, Switch } from "solid-js";
+import { createMemo, createUniqueId, ErrorBoundary, Match, Show, Suspense, Switch } from "solid-js";
 import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
 import { capitalize } from "#/src/lib/text";
 import { useCardContext } from "#/src/contexts/CardContext";
@@ -10,7 +10,7 @@ import { ArrowLeftIcon, BoltIcon, PaintbrushIcon } from "./Icons";
 import MergeContextModal from "./MergeContextModal";
 
 export default function HeaderMain(props: { onExitNested?: () => void }) {
-  const { $card, $initialSide } = useCardContext();
+  const { $card, $initialSide, $$card } = useCardContext();
   const { $config, $isConfigOutOfSync } = useConfigContext();
   const { initialDarkMode, $startupTime } = useGeneralContext();
   const { navigate } = useNavigationTransition();
@@ -24,7 +24,9 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
             <button on:click={props.onExitNested} on:touchend={(e) => e.stopPropagation()}>
               <ArrowLeftIcon class="size-5 cursor-pointer text-base-content-soft" />
             </button>
-            <MergeContextModal />
+            <Show when={!$card.isMergePreview}>
+              <MergeContextModal />
+            </Show>
           </Match>
           <Match when={!$card.nested}>
             <div class="relative">
@@ -67,13 +69,13 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
       <div class="flex gap-1 sm:gap-2 items-center">
         <Show when={!$card.isMergePreview}>
           <Switch>
-            <Match when={$card.query.status === "loading"}>
+            <Match when={$$card.state === "pending" || $$card.state === "unresolved"}>
               <span class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"></span>
             </Match>
-            <Match when={$card.query.status === "error"}>
+            <Match when={$$card.state === "errored"}>
               <div class="status status-error animate-ping"></div>
             </Match>
-            <Match when={$card.query.status === "success" && $initialSide() === "back"}>
+            <Match when={$$card.state === "ready" && $initialSide() === "back"}>
               <div class="text-base-content-soft cursor-pointer animate-fade-in-sm">
                 <KanjiPageIndicator />
               </div>
@@ -86,16 +88,28 @@ export default function HeaderMain(props: { onExitNested?: () => void }) {
 }
 
 function KanjiPageIndicator() {
-  const { $card, $setCard } = useCardContext();
+  return (
+    <ErrorBoundary fallback={null}>
+      <Suspense fallback={null}>
+        <$KanjiPageIndicator />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+function $KanjiPageIndicator() {
+  const { $card, $setCard, $$card } = useCardContext();
   const { navigate } = useNavigationTransition();
 
-  const $relatedItems = useRelatedItems();
+  const { $$relatedItems } = useRelatedItems();
 
-  const length = () =>
-    $card.query.noteList.length +
-    ($card.query.sameReading?.length ? 1 : 0) +
-    ($card.query.sameExpression?.length ? 1 : 0) +
-    ($relatedItems().length ? 1 : 0);
+  const $$length = createMemo(
+    () =>
+      ($$card()?.noteList.length ?? 0) +
+      (($$card()?.sameReading.length ?? 0) ? 1 : 0) +
+      (($$card()?.sameExpression.length ?? 0) ? 1 : 0) +
+      ($$relatedItems().length ? 1 : 0),
+  );
 
   const onClick = ({
     initialTab,
@@ -104,10 +118,10 @@ function KanjiPageIndicator() {
     initialTab: (typeof $card)["initialTab"];
     kanji?: string;
   }) => {
-    const isKanjiResult = $card.query.noteList.length > 0;
-    const isSameReadingResult = ($card.query.sameReading?.length ?? 0) > 0;
-    const isSameExpressionResult = ($card.query.sameExpression?.length ?? 0) > 0;
-    const isRelatedResult = $relatedItems().length > 0;
+    const isKanjiResult = ($$card()?.noteList.length ?? 0) > 0;
+    const isSameReadingResult = ($$card()?.sameReading.length ?? 0) > 0;
+    const isSameExpressionResult = ($$card()?.sameExpression.length ?? 0) > 0;
+    const isRelatedResult = $$relatedItems().length > 0;
     const canOpen =
       (initialTab === "kanji" && isKanjiResult) ||
       (initialTab === "reading" && isSameReadingResult) ||
@@ -122,8 +136,8 @@ function KanjiPageIndicator() {
     navigate("kanji", "forward", () => navigate("main", "back"));
   };
 
-  function KanjiIndicator() {
-    return $card.query.noteList.map(([kanji, data]) => {
+  function $KanjiIndicator() {
+    return ($$card()?.noteList ?? []).map(([kanji, data]) => {
       return (
         <button
           class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
@@ -136,8 +150,8 @@ function KanjiPageIndicator() {
           <span
             class="bg-base-content/5 leading-none text-xs sm:text-sm rounded-xs"
             classList={{
-              "p-px": length() <= 4,
-              "p-0": length() > 4,
+              "p-px": $$length() <= 4,
+              "p-0": $$length() > 4,
             }}
           >
             {data.length}
@@ -147,7 +161,7 @@ function KanjiPageIndicator() {
     });
   }
 
-  function SameReadingIndicator() {
+  function $SameReadingIndicator() {
     return (
       <button
         class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
@@ -160,17 +174,17 @@ function KanjiPageIndicator() {
         <span
           class="bg-base-content/5 leading-none text-xs sm:text-sm rounded-xs"
           classList={{
-            "p-px": length() <= 4,
-            "p-0": length() > 4,
+            "p-px": $$length() <= 4,
+            "p-0": $$length() > 4,
           }}
         >
-          {$card.query.sameReading?.length ?? 0}
+          {$$card()?.sameReading.length ?? 0}
         </span>
       </button>
     );
   }
 
-  function SameExpressionIndicator() {
+  function $SameExpressionIndicator() {
     return (
       <button
         class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
@@ -183,17 +197,17 @@ function KanjiPageIndicator() {
         <span
           class="bg-base-content/5 leading-none text-xs sm:text-sm rounded-xs"
           classList={{
-            "p-px": length() <= 4,
-            "p-0": length() > 4,
+            "p-px": $$length() <= 4,
+            "p-0": $$length() > 4,
           }}
         >
-          {$card.query.sameExpression?.length ?? 0}
+          {$$card()?.sameExpression.length ?? 0}
         </span>
       </button>
     );
   }
 
-  function RelatedExpressionIndicator() {
+  function $RelatedExpressionIndicator() {
     return (
       <button
         class="flex gap-px sm:gap-0.5 items-start hover:text-base-content transition-colors cursor-pointer"
@@ -206,11 +220,11 @@ function KanjiPageIndicator() {
         <span
           class="bg-base-content/5 leading-none text-xs sm:text-sm rounded-xs"
           classList={{
-            "p-px": length() <= 4,
-            "p-0": length() > 4,
+            "p-px": $$length() <= 4,
+            "p-0": $$length() > 4,
           }}
         >
-          {$relatedItems().length}
+          {$$relatedItems().length}
         </span>
       </button>
     );
@@ -220,29 +234,29 @@ function KanjiPageIndicator() {
     <div
       class="flex sm:gap-2 items-center flex-wrap"
       classList={{
-        "gap-1": length() <= 4,
-        "gap-0": length() > 4,
+        "gap-1": $$length() <= 4,
+        "gap-0": $$length() > 4,
       }}
     >
-      <KanjiIndicator />
+      <$KanjiIndicator />
 
       <Show
         when={
-          $card.query.sameReading?.length ||
-          $card.query.sameExpression?.length ||
-          $relatedItems().length
+          ($$card()?.sameReading.length ?? 0) ||
+          ($$card()?.sameExpression.length ?? 0) ||
+          $$relatedItems().length
         }
       >
         <span>•</span>
       </Show>
-      <Show when={$card.query.sameReading?.length}>
-        <SameReadingIndicator />
+      <Show when={($$card()?.sameReading.length ?? 0) > 0}>
+        <$SameReadingIndicator />
       </Show>
-      <Show when={$card.query.sameExpression?.length}>
-        <SameExpressionIndicator />
+      <Show when={($$card()?.sameExpression.length ?? 0) > 0}>
+        <$SameExpressionIndicator />
       </Show>
-      <Show when={$relatedItems().length}>
-        <RelatedExpressionIndicator />
+      <Show when={$$relatedItems().length}>
+        <$RelatedExpressionIndicator />
       </Show>
     </div>
   );

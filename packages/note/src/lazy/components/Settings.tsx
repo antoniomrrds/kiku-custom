@@ -1,12 +1,15 @@
 import {
   createEffect,
   createMemo,
+  createResource,
   createSignal,
+  ErrorBoundary,
   For,
   on,
   onCleanup,
   onMount,
   Show,
+  Suspense,
 } from "solid-js";
 import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/src/lib/anki-connect";
@@ -37,7 +40,6 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderSettings from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
 import { useCardContext } from "#/src/contexts/CardContext";
-import { useCheckAnkiConnect } from "#/src/hooks/connection";
 
 function toDashed(str: string) {
   return str.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
@@ -58,9 +60,10 @@ function toDatasetString(obj: Record<string, string | number | boolean>) {
 
 export default function Settings() {
   const { $config } = useConfigContext();
-  const { $general, logger, isAnkiDesktop, isAnkiWeb } = useGeneralContext();
+  const { $general, logger, isAnkiDesktop, isAnkiWeb, $checkAnkiConnect, $$ankiConnect } =
+    useGeneralContext();
   const { navigateBack } = useNavigationTransition();
-  const { $checkAnkiConnect } = useCheckAnkiConnect();
+  const $ready = createMemo(() => $$ankiConnect.state === "ready");
 
   const saveConfig = async () => {
     try {
@@ -126,11 +129,10 @@ export default function Settings() {
                 <button
                   class="btn"
                   classList={{
-                    "btn-primary": $general.isAnkiConnectAvailable,
-                    "btn-disabled bg-base-300 text-base-content-faint":
-                      !$general.isAnkiConnectAvailable,
+                    "btn-primary": $ready(),
+                    "btn-disabled bg-base-300 text-base-content-faint": !$ready(),
                   }}
-                  disabled={!$general.isAnkiConnectAvailable}
+                  disabled={!$ready()}
                   on:click={saveConfig}
                   on:touchend={(e) => e.stopPropagation()}
                 >
@@ -145,67 +147,67 @@ export default function Settings() {
   );
 }
 
-function KikuVersion() {
-  const [$latestVersion, $setLatestVersion] = createSignal<string | null>(
-    (() => {
-      const cached = sessionStorage.getItem(constants.key["kiku-latest-version"]);
-      return cached && cached !== constants.VERSION ? cached : null;
-    })(),
-  );
+function KikuIcon() {
+  const [$$latestVersion] = createResource(async () => {
+    const cached = sessionStorage.getItem(constants.key["kiku-latest-version"]);
+    if (cached) return cached;
 
-  onMount(async () => {
-    try {
-      if (sessionStorage.getItem(constants.key["kiku-latest-version-checked"])) {
-        return;
-      }
+    const checked = sessionStorage.getItem(constants.key["kiku-latest-version-checked"]);
+    if (checked) return null;
+    sessionStorage.setItem(constants.key["kiku-latest-version-checked"], "true");
 
-      const res = await fetch("https://api.github.com/repos/youyoumu/kiku/releases/latest");
-      if (!res.ok) return;
-      const data = await res.json();
-      sessionStorage.setItem(constants.key["kiku-latest-version-checked"], "true");
-      if (data?.tag_name) {
-        const v = data.tag_name.replace(/^v/, "");
-        sessionStorage.setItem(constants.key["kiku-latest-version"], v);
-        if (v !== constants.VERSION) {
-          $setLatestVersion(v);
-        }
-      }
-    } catch (e) {
-      // Ignore
-    }
+    const res = await fetch("https://api.github.com/repos/youyoumu/kiku/releases/latest");
+    if (!res.ok) return null;
+    const data = await res.json();
+    const tag_name = data?.tag_name;
+    const version = tag_name?.replace(/^v/, "");
+    if (!version) return null;
+    sessionStorage.setItem(constants.key["kiku-latest-version"], version);
+    return version;
   });
 
   return (
     <div class="flex flex-col items-center text-base-content-faint justify-center">
       <div class="text-base-content-subtle-200 text-6xl">菊</div>
       <div class="flex items-center gap-1.5">
-        <div
-          classList={{ tooltip: !!$latestVersion() }}
-          class="tooltip-bottom tooltip-info flex gap-2 items-center"
-          data-tip={$latestVersion() ? `Update Available: v${$latestVersion()}` : undefined}
-        >
-          <a
-            href="https://github.com/youyoumu/kiku/releases/latest"
-            target="_blank"
-            rel="noreferrer"
-            class="text-sm"
-          >
-            Kiku Note v{constants.VERSION}
-          </a>
-          <a
-            href={`https://github.com/youyoumu/kiku/commit/${constants.COMMIT_SHA}`}
-            target="_blank"
-            rel="noreferrer"
-            class="text-xs"
-          >
-            ({constants.COMMIT_SHA.slice(0, 7)})
-          </a>
-        </div>
-        <Show when={$latestVersion()}>
-          <span class="status status-info"></span>
-        </Show>
+        <KikuVersion latestVersion={$$latestVersion.state === "ready" ? $$latestVersion() : null} />
       </div>
     </div>
+  );
+}
+
+function KikuVersion(props: { latestVersion?: string | null }) {
+  const $version = createMemo(() =>
+    props.latestVersion && props.latestVersion !== constants.VERSION ? props.latestVersion : null,
+  );
+  return (
+    <>
+      <div
+        classList={{ tooltip: !!$version() }}
+        class="tooltip-bottom tooltip-info flex gap-2 items-center"
+        data-tip={$version() ? `Update Available: v${$version()}` : undefined}
+      >
+        <a
+          href="https://github.com/youyoumu/kiku/releases/latest"
+          target="_blank"
+          rel="noreferrer"
+          class="text-sm"
+        >
+          Kiku Note v{constants.VERSION}
+        </a>
+        <a
+          href={`https://github.com/youyoumu/kiku/commit/${constants.COMMIT_SHA}`}
+          target="_blank"
+          rel="noreferrer"
+          class="text-xs"
+        >
+          ({constants.COMMIT_SHA.slice(0, 7)})
+        </a>
+      </div>
+      <Show when={$version()}>
+        <span class="status status-info"></span>
+      </Show>
+    </>
   );
 }
 
@@ -222,7 +224,7 @@ function GeneralSettings() {
 
   return (
     <div class="flex flex-col gap-4 animate-fade-in relative">
-      <KikuVersion />
+      <KikuIcon />
 
       <Show when={$showOutOfSync()}>
         <div role="alert" class="alert alert-warning">
@@ -959,21 +961,8 @@ function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
 function DebugSettings() {
   const { $config, $setConfig } = useConfigContext();
   const { initialAnkiFields } = useAnkiFieldContext();
-  const [$kikuFiles, $setKikuFiles] = createSignal<string>();
-  const [$missingFiles, $setMissingFiles] = createSignal<string>();
-  const { $general, logger } = useGeneralContext();
+  const { logger } = useGeneralContext();
   const { $initialSide } = useCardContext();
-
-  createEffect(async () => {
-    if ($general.isAnkiConnectAvailable) {
-      const files = await AnkiConnect.getKikuFiles();
-      $setKikuFiles(JSON.stringify(files, null, 2));
-      const missing = constants.IMPORTANT_FILES.filter((file) => {
-        return !files.includes(file);
-      });
-      $setMissingFiles(missing.join(", "));
-    }
-  });
 
   const [$logs, $setLogs] = createSignal<string>();
   onMount(() => {
@@ -1113,25 +1102,7 @@ function DebugSettings() {
               {JSON.stringify(initialAnkiFields, null, 2)}
             </pre>
           </div>
-          <Show when={$kikuFiles()}>
-            <div class="flex flex-col gap-2">
-              <div class="flex gap-2 items-center">
-                <div class="text-lg">Kiku Files</div>
-                <ClipboardCopyButton text={() => $kikuFiles() ?? ""} />
-              </div>
-
-              <Show when={$missingFiles()}>
-                <div role="alert" class="alert alert-warning">
-                  <span>
-                    Some files are missing, things may not work as expected.
-                    <br />
-                    <span class="text-xs ">{$missingFiles()}</span>
-                  </span>
-                </div>
-              </Show>
-              <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">{$kikuFiles()}</pre>
-            </div>
-          </Show>
+          <KikuFiles />
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
               <div class="text-lg">Logs</div>
@@ -1153,5 +1124,60 @@ function DebugSettings() {
         </div>
       </div>
     </div>
+  );
+}
+
+function KikuFiles() {
+  return (
+    <ErrorBoundary fallback={null}>
+      <Suspense fallback={null}>
+        <$KikuFiles />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+function $KikuFiles() {
+  const { $$ankiConnect } = useGeneralContext();
+  const $ready = createMemo(() => $$ankiConnect.state === "ready");
+
+  const [$$kikuResource] = createResource(
+    () => $ready(),
+    async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+      const files = await AnkiConnect.getKikuFiles();
+      const missing = constants.IMPORTANT_FILES.filter((file) => !files.includes(file));
+      return {
+        files: JSON.stringify(files, null, 2),
+        missing: missing.join(", "),
+      };
+    },
+  );
+
+  return (
+    <Show when={$$kikuResource()}>
+      {(value) => {
+        const { files, missing } = value();
+        return (
+          <div class="flex flex-col gap-2">
+            <div class="flex gap-2 items-center">
+              <div class="text-lg">Kiku Files</div>
+              <ClipboardCopyButton text={() => files ?? ""} />
+            </div>
+
+            <Show when={missing}>
+              <div role="alert" class="alert alert-warning">
+                <span>
+                  Some files are missing, things may not work as expected.
+                  <br />
+                  <span class="text-xs ">{missing}</span>
+                </span>
+              </div>
+            </Show>
+            <pre class="text-xs bg-base-200 p-4 rounded-lg overflow-auto">{files}</pre>
+          </div>
+        );
+      }}
+    </Show>
   );
 }

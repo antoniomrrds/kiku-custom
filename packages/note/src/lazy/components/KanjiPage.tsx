@@ -1,4 +1,15 @@
-import { createMemo, createSignal, For, type JSX, Match, onMount, Show, Switch } from "solid-js";
+import {
+  createMemo,
+  createSignal,
+  ErrorBoundary,
+  For,
+  type JSX,
+  Match,
+  onMount,
+  Show,
+  Suspense,
+  Switch,
+} from "solid-js";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { parseHtml } from "#/src/lib/dom";
 import { useNavigationTransition } from "#/src/hooks/transition";
@@ -11,7 +22,7 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import HeaderKanjiPage from "./HeaderKanjiPage";
 import { ArrowLeftIcon } from "./Icons";
 import { KanjiContextProvider, useKanjiContext } from "#/src/lazy/contexts/KanjiContext";
-import { KanjiInfo, KanjiInfoExtra } from "./KanjiInfo";
+import { $KanjiInfo, $KanjiInfoExtra } from "./KanjiInfo";
 import {
   KanjiPageContextProvider,
   useKanjiPageContext,
@@ -19,13 +30,22 @@ import {
 import { capitalize } from "#/src/lib/text";
 
 export default function KanjiPage() {
-  const { $card } = useCardContext();
+  return (
+    <ErrorBoundary fallback={null}>
+      <Suspense fallback={null}>
+        <$KanjiPage />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+function $KanjiPage() {
+  const { $card, $$card } = useCardContext();
   return (
     <KanjiPageContextProvider
-      noteList={$card.query.noteList}
-      sameReading={$card.query.sameReading}
-      sameExpression={$card.query.sameExpression}
-      relatedExpression={$card.query.relatedExpression}
+      noteList={$$card()?.noteList ?? []}
+      sameReading={$$card()?.sameReading}
+      sameExpression={$$card()?.sameExpression}
+      relatedExpression={$$card()?.relatedExpression}
       initialFocus={{
         kanji: $card.initialFocus.kanji,
         noteId: $card.initialFocus.noteId,
@@ -39,11 +59,10 @@ export default function KanjiPage() {
 }
 
 function Page() {
-  const { $card, onKanjiPageMount } = useCardContext();
-  const { $general } = useGeneralContext();
+  const { onKanjiPageMount } = useCardContext();
   const { initialAnkiFields } = useAnkiFieldContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
-  const $relatedItems = useRelatedItems();
+  const { $$relatedItems } = useRelatedItems();
 
   const $title = createMemo(() => {
     if ($kanjiPage.tab === "kanji") {
@@ -123,7 +142,7 @@ function Page() {
             </TabItem>
             <TabItem
               active={$kanjiPage.tab === "related"}
-              count={$relatedItems().length}
+              count={$$relatedItems().length}
               onClick={() => {
                 $setKanjiPage("tab", "related");
               }}
@@ -205,24 +224,42 @@ function Page() {
                 <NoteList list={$kanjiPage.sameExpression ?? []} />
               </Match>
               <Match when={$kanjiPage.tab === "related"}>
-                <NoteList items={$relatedItems()} />
+                <NoteList items={$$relatedItems()} />
               </Match>
             </Switch>
           </div>
         </div>
-        <div class="flex justify-center items-center">
-          <Show when={!$card.query.isNotesCache}>
-            <div class="text-base-content-faint text-sm">[AnkiConnect]</div>
-          </Show>
-          <Show when={$general.notesManifest && $card.query.isNotesCache}>
-            <div class="text-base-content-faint text-sm">
-              [Notes Cache] Updated at{" "}
-              {new Date($general.notesManifest?.generatedAt ?? 0).toLocaleString()}
-            </div>
-          </Show>
-        </div>
+        <QueryInfo />
       </Match>
     </Switch>
+  );
+}
+
+function QueryInfo() {
+  return (
+    <ErrorBoundary fallback={null}>
+      <Suspense fallback={null}>
+        <$QueryInfo />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+function $QueryInfo() {
+  const { $$notesManifest } = useGeneralContext();
+  const { $$card } = useCardContext();
+
+  return (
+    <div class="flex justify-center items-center">
+      <Show when={!$$card()?.isNotesCache}>
+        <div class="text-base-content-faint text-sm">[AnkiConnect]</div>
+      </Show>
+      <Show when={$$notesManifest() && $$card()?.isNotesCache}>
+        <div class="text-base-content-faint text-sm">
+          [Notes Cache] Updated at {new Date($$notesManifest()?.generatedAt ?? 0).toLocaleString()}
+        </div>
+      </Show>
+    </div>
   );
 }
 
@@ -260,13 +297,19 @@ function TabItem(props: {
 
 function KanjiCollapsible(props: { data: AnkiNote[] }) {
   const { $kanjiPage } = useKanjiPageContext();
-  const { $kanjiState } = useKanjiContext();
-  const data = () => props.data;
+  const { $kanjiState, $$kanjiInfo, $$visuallySimilar, $$composedOf, $$usedIn, $$related } =
+    useKanjiContext();
+  const $data = createMemo(() => props.data);
   const [$checked, $setChecked] = createSignal($kanjiPage.focus.kanji === $kanjiState.kanji);
 
-  const loading = () => {
-    return Object.values($kanjiState.loading).some((v) => v);
-  };
+  const $loading = createMemo(
+    () =>
+      $$kanjiInfo.loading ||
+      $$visuallySimilar.loading ||
+      $$composedOf.loading ||
+      $$usedIn.loading ||
+      $$related.loading,
+  );
 
   return (
     <div class="collapse bg-base-200 border border-base-300 animate-fade-in">
@@ -286,24 +329,36 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
       >
         <KanjiText />
         <div class="flex gap-1 sm:gap-2 absolute top-2 right-2 sm:top-4 sm:right-4">
-          <Show when={loading()}>
+          <Show when={$loading()}>
             <div class="loading loading-sm text-base-content-soft animate-fade-in-sm"></div>
           </Show>
           <div class="text-base-content-soft bg-base-300 px-1 rounded-xs animate-fade-in-sm text-sm sm:text-base">
-            {data().length}
+            {$data().length}
           </div>
         </div>
       </div>
 
       <div class="collapse-content text-sm px-2 sm:px-4 pb-2 sm:pb-4 flex flex-col gap-1 sm:gap-2">
-        <KanjiInfoExtra inKanjiPage />
-        <ul class="list bg-base-100 rounded-box shadow-md">
-          <For each={data()}>
-            {(data) => {
-              return <AnkiNoteItem data={data} highlightedKanji={$kanjiState.kanji} />;
-            }}
-          </For>
-        </ul>
+        <Suspense
+          fallback={
+            <div class="flex flex-col gap-2 sm:gap-4 animate-pulse py-1">
+              <div class="h-20 sm:h-24 bg-base-300 rounded w-full" />
+              <div class="h-20 sm:h-24 bg-base-300 rounded w-full" />
+              <div class="h-20 sm:h-24 bg-base-300 rounded w-full" />
+            </div>
+          }
+        >
+          <ErrorBoundary fallback={null}>
+            <$KanjiInfoExtra inKanjiPage />
+          </ErrorBoundary>
+          <ul class="list bg-base-100 rounded-box shadow-md animate-fade-in">
+            <For each={$data()}>
+              {(data) => {
+                return <AnkiNoteItem data={data} highlightedKanji={$kanjiState.kanji} />;
+              }}
+            </For>
+          </ul>
+        </Suspense>
       </div>
     </div>
   );
@@ -326,14 +381,14 @@ function NoteList(props: { list?: AnkiNote[]; items?: { note: AnkiNote; sources:
 
 function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string; sources?: Source[] }) {
   const { navigate } = useNavigationTransition();
-  const { $card, $setCard } = useCardContext();
+  const { $setCard, $$card } = useCardContext();
   const { $setKanjiPage } = useKanjiPageContext();
   const $data = createMemo(() => props.data);
   const $expression = createMemo(() => $data().fields.Expression.value);
   const $expressionFurigana = createMemo(() => $data().fields.ExpressionFurigana.value);
   const $expressionReading = createMemo(() => $data().fields.ExpressionReading.value);
   const $leech = createMemo(() => $data().tags.includes("leech"));
-  const $isNew = createMemo(() => $card.query.newNotes.includes($data().noteId));
+  const $$isNew = createMemo(() => $$card()?.newNotes.includes($data().noteId) ?? false);
   const $doc = createMemo(() => parseHtml($expressionFurigana()));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));
   const $furiganaData = createMemo(() => parseFurigana($isRuby() ? "" : $expressionFurigana()));
@@ -482,10 +537,10 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string; source
         </button>
       </div>
 
-      <Show when={$isNew() || $leech()}>
+      <Show when={$$isNew() || $leech()}>
         <div class="flex items-center gap-1 absolute top-4 right-4">
           {$leech() && <div class="status status-warning"></div>}
-          {$isNew() && <div class="status status-info"></div>}
+          {$$isNew() && <div class="status status-info"></div>}
         </div>
       </Show>
     </li>
@@ -505,11 +560,24 @@ function KanjiText() {
   });
 
   return (
-    <div class="flex gap-2 sm:gap-4 me-2">
-      <div class="font-secondary text-5xl sm:text-6xl" ref={$setRef}>
+    <div class="flex gap-2 sm:gap-4 me-2 w-full">
+      <div class="font-secondary text-5xl sm:text-6xl mb-1" ref={$setRef}>
         {$kanjiState.kanji}
       </div>
-      <KanjiInfo />
+
+      <ErrorBoundary fallback={null}>
+        <Suspense
+          fallback={
+            <div class="flex flex-col gap-1 animate-pulse flex-1">
+              <div class="h-3 sm:h-4 bg-base-300 rounded w-1/2" />
+              <div class="h-3 sm:h-4 bg-base-300 rounded w-3/4" />
+              <div class="h-3 sm:h-4 bg-base-300 rounded w-4/5" />
+            </div>
+          }
+        >
+          <$KanjiInfo />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }

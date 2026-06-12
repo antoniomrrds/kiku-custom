@@ -2,6 +2,7 @@ import { createContext, createUniqueId, type JSX, onMount, useContext } from "so
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { createCompatPair } from "#/src/lib/context-compat";
 import type { AnkiNote } from "#/src/lib/types";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
 export type ContextLabel = {
   text: string;
@@ -29,14 +30,12 @@ export type KanjiPageContextStore = {
   nestedContextLabel?: ContextLabel;
 };
 
-type KanjiPageContextValue = {
+export type KanjiPageContextValue = {
   $kanjiPage: Store<KanjiPageContextStore>;
   $setKanjiPage: SetStoreFunction<KanjiPageContextStore>;
 };
 
 const KanjiPageContext = createContext<KanjiPageContextValue>();
-
-const cache = new Map<string, KanjiPageContextValue>();
 
 export function KanjiPageContextProvider(props: {
   children: JSX.Element;
@@ -53,6 +52,7 @@ export function KanjiPageContextProvider(props: {
   nested?: boolean;
   id: string;
 }) {
+  const { kanjiPageCache: cache } = useGeneralContext();
   const saved = cache.get(props.id);
 
   let $kanjiPage: Store<KanjiPageContextStore>;

@@ -3,7 +3,6 @@ import { isServer } from "solid-js/web";
 import { CardStoreContextProvider, useCardContext } from "#/src/contexts/CardContext";
 import type { DatasetProp } from "#/src/lib/config";
 import { isNsfw } from "#/src/lib/util";
-import { useQueryNotes } from "#/src/hooks/query";
 import { useLoadPlugin } from "#/src/hooks/plugin";
 import { useNavigationTransition } from "#/src/hooks/transition";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
@@ -39,7 +38,6 @@ export function Back(props: { onExitNested?: () => void }) {
   const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
   const loadPlugin = useLoadPlugin();
   const { logger } = useGeneralContext();
-  useQueryNotes();
   usePitch();
 
   onMount(() => {

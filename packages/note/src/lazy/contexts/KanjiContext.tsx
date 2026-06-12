@@ -1,26 +1,23 @@
-import { batch, createContext, createEffect, createMemo, type JSX, useContext } from "solid-js";
+import {
+  createContext,
+  createEffect,
+  createMemo,
+  createResource,
+  type JSX,
+  type Resource,
+  useContext,
+} from "solid-js";
 import { createStore, type SetStoreFunction, type Store, unwrap } from "solid-js/store";
 import { createCompatPair } from "#/src/lib/context-compat";
-import type { AnkiFields, AnkiNote, KanjiInfo, QuerySharedResult } from "#/src/lib/types";
+import type { AnkiNote, KanjiInfo } from "#/src/lib/types";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCacheContext } from "#/src/contexts/CacheContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
-type FetchType = "composedOf" | "usedIn" | "visuallySimilar" | "related";
+type FetchType = "visuallySimilar" | "composedOf" | "usedIn" | "related";
 
 type KanjiStore = {
   kanji: string;
-  kanjiInfo: KanjiInfo | undefined;
-  composedOf?: [string, AnkiNote[]][];
-  usedIn?: [string, AnkiNote[]][];
-  visuallySimilar?: [string, AnkiNote[]][];
-  related?: [string, AnkiNote[]][];
-  loading: {
-    composedOf: boolean;
-    usedIn: boolean;
-    visuallySimilar: boolean;
-    related: boolean;
-  };
 };
 
 type KanjiContextValue = {
@@ -28,120 +25,84 @@ type KanjiContextValue = {
   $setKanjiState: SetStoreFunction<KanjiStore>;
   $kanji: Store<KanjiStore>;
   $setKanji: SetStoreFunction<KanjiStore>;
-  fetchNotes: (type: FetchType) => Promise<void>;
+  $$kanjiInfo: Resource<KanjiInfo | undefined>;
+  $fetchFlags: Store<Record<FetchType, boolean>>;
+  $setFetchFlags: SetStoreFunction<Record<FetchType, boolean>>;
+  $$visuallySimilar: Resource<[string, AnkiNote[]][] | undefined>;
+  $$composedOf: Resource<[string, AnkiNote[]][] | undefined>;
+  $$usedIn: Resource<[string, AnkiNote[]][] | undefined>;
+  $$related: Resource<[string, AnkiNote[]][] | undefined>;
 };
 
 const KanjiContext = createContext<KanjiContextValue>();
 
-function getQuerySharedCacheKey(ankiFields: AnkiFields, kanjiList: readonly string[]) {
-  if (ankiFields.CardID) {
-    return `${ankiFields.CardID}-${ankiFields.Expression}-${Array.from(new Set(kanjiList))
-      .sort()
-      .join("-")}`;
-  }
-
-  return JSON.stringify({
-    ankiFields: Object.entries(ankiFields).sort(([left], [right]) => left.localeCompare(right)),
-    kanjiList: Array.from(new Set(kanjiList)).sort(),
-  });
-}
-
 export function KanjiContextProvider(props: { kanji: string; children: JSX.Element }) {
-  const { workerApi: workerApiContainer } = useGeneralContext();
+  const { workerApi: workerApiContainer, kanjiInfoNotesCache } = useGeneralContext();
   const cacheStore = useCacheContext();
-  const { $ankiFields } = useAnkiFieldContext();
+  const { initialAnkiFields } = useAnkiFieldContext();
 
   const $kanji = createMemo(() => props.kanji);
   const [$kanjiState, $setKanjiState] = createStore<KanjiStore>({
     kanji: $kanji(),
-    kanjiInfo: undefined,
-    loading: {
+  });
+
+  const kanjiInfoCache = cacheStore.kanjiInfo ?? new Map<string, KanjiInfo | undefined>();
+  if (!cacheStore.kanjiInfo) cacheStore.kanjiInfo = kanjiInfoCache;
+
+  const [$$kanjiInfo] = createResource($kanji, async (kanji) => {
+    if (!kanji) return undefined;
+    const cached = kanjiInfoCache.get(kanji);
+    if (cached) return cached;
+    const workerApi = await workerApiContainer.promise;
+    const info = await workerApi.lookupKanji(kanji);
+    kanjiInfoCache.set(kanji, info);
+    return info;
+  });
+
+  const [$fetchFlags, $setFetchFlags] = createStore<Record<FetchType, boolean>>({
+    visuallySimilar: false,
+    composedOf: false,
+    usedIn: false,
+    related: false,
+  });
+
+  function createTypeResource(type: FetchType) {
+    const [$resource] = createResource(
+      () => ($fetchFlags[type] ? $$kanjiInfo() : undefined),
+      async (kanjiInfo) => {
+        if (!kanjiInfo) return;
+        const list = kanjiInfo[type];
+        if (!list || list.length === 0) return [];
+        const cacheKey = `${initialAnkiFields.CardID}-${list.slice().sort().join("-")}`;
+        const cached = kanjiInfoNotesCache.get(cacheKey);
+        if (cached) return cached;
+        const workerApi = await workerApiContainer.promise;
+        const result = await workerApi.queryShared({
+          ankiFields: unwrap(initialAnkiFields),
+          kanjiList: list,
+        });
+        const entries = Object.entries(result.kanjiResult) as [string, AnkiNote[]][];
+        kanjiInfoNotesCache.set(cacheKey, entries);
+        return entries;
+      },
+    );
+    return $resource;
+  }
+
+  const $$visuallySimilar = createTypeResource("visuallySimilar");
+  const $$composedOf = createTypeResource("composedOf");
+  const $$usedIn = createTypeResource("usedIn");
+  const $$related = createTypeResource("related");
+
+  createEffect(() => {
+    const kanji = $kanji();
+    $setKanjiState("kanji", kanji);
+    $setFetchFlags({
       visuallySimilar: false,
       composedOf: false,
       usedIn: false,
       related: false,
-    },
-  });
-  const fetched = new Set<FetchType>();
-
-  const lookupKanjiCache = cacheStore.lookupKanji ?? new Map<string, KanjiInfo | undefined>();
-  if (!cacheStore.lookupKanji) cacheStore.lookupKanji = lookupKanjiCache;
-  const querySharedCache = cacheStore.queryShared ?? new Map<string, QuerySharedResult>();
-  if (!cacheStore.queryShared) cacheStore.queryShared = querySharedCache;
-
-  async function fetchNotes(type: FetchType) {
-    const kanji = $kanjiState.kanji;
-    if (!kanji) return;
-    const workerApi = await workerApiContainer.promise;
-    const kanjiInfo = unwrap($kanjiState.kanjiInfo) ?? (await workerApi.lookupKanji(kanji));
-    if (kanji !== $kanjiState.kanji) return;
-    if (!kanjiInfo) return;
-    if (fetched.has(type)) return;
-    fetched.add(type);
-
-    const list = kanjiInfo[type] ?? [];
-    if (list.length === 0) {
-      $setKanjiState(type, []);
-      return;
-    }
-
-    $setKanjiState("loading", type, true);
-    try {
-      const ankiFields = unwrap($ankiFields);
-      const cacheKey = getQuerySharedCacheKey(ankiFields, list);
-      const cachedResult = querySharedCache.get(cacheKey);
-      if (cachedResult) {
-        $setKanjiState(type, Object.entries(cachedResult.kanjiResult));
-        return;
-      }
-
-      const result = await workerApi.queryShared({ ankiFields, kanjiList: list });
-      if (kanji !== $kanjiState.kanji) return;
-      querySharedCache.set(cacheKey, result);
-      $setKanjiState(type, Object.entries(result.kanjiResult));
-    } finally {
-      $setKanjiState("loading", type, false);
-    }
-  }
-
-  createEffect(() => {
-    const kanji = $kanji();
-    batch(() => {
-      fetched.clear();
-      $setKanjiState({
-        kanji,
-        kanjiInfo: undefined,
-        composedOf: undefined,
-        usedIn: undefined,
-        visuallySimilar: undefined,
-        related: undefined,
-        loading: {
-          visuallySimilar: false,
-          composedOf: false,
-          usedIn: false,
-          related: false,
-        },
-      });
     });
-
-    if (kanji) {
-      let kanjiInfo = lookupKanjiCache.get(kanji);
-      if (!kanjiInfo) {
-        workerApiContainer.promise.then(async (workerApi) => {
-          if (workerApi) {
-            kanjiInfo = await workerApi.lookupKanji(kanji);
-            lookupKanjiCache.set(kanji, kanjiInfo);
-            if ($kanjiState.kanji === kanji) {
-              $setKanjiState("kanjiInfo", kanjiInfo);
-            }
-          }
-        });
-      } else {
-        if ($kanjiState.kanji === kanji) {
-          $setKanjiState("kanjiInfo", kanjiInfo);
-        }
-      }
-    }
   });
 
   return (
@@ -151,7 +112,13 @@ export function KanjiContextProvider(props: { kanji: string; children: JSX.Eleme
         $setKanjiState,
         $kanji: $kanjiState,
         $setKanji: $setKanjiState,
-        fetchNotes,
+        $$kanjiInfo,
+        $fetchFlags,
+        $setFetchFlags,
+        $$visuallySimilar,
+        $$composedOf,
+        $$usedIn,
+        $$related,
       }}
     >
       {props.children}

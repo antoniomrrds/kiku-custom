@@ -1,4 +1,4 @@
-import { createContext, onCleanup, Show, useContext } from "solid-js";
+import { createContext, ErrorBoundary, onCleanup, Show, Suspense, useContext } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import { computePosition, offset, flip, shift, arrow } from "@floating-ui/dom";
@@ -9,7 +9,7 @@ import { useBreakpointContext } from "#/src/contexts/BreakpointContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { XIcon } from "#/src/lazy/components/Icons";
 import { KanjiContextProvider } from "./KanjiContext";
-import { KanjiInfo, KanjiInfoExtra } from "#/src/lazy/components/KanjiInfo";
+import { $KanjiInfo, $KanjiInfoExtra } from "#/src/lazy/components/KanjiInfo";
 
 type KanjiTooltipStore = {
   kanji: string;
@@ -122,10 +122,11 @@ function KanjiTooltip() {
   const bp = useBreakpointContext();
 
   createEffect(() => {
+    const anchor = $kanjiTooltip.anchor;
     const tooltip = $tooltipRef();
     const arrowEl = $arrowRef();
-    if ($kanjiTooltip.show && $kanjiTooltip.anchor && tooltip && arrowEl) {
-      computePosition($kanjiTooltip.anchor, tooltip, {
+    if ($kanjiTooltip.show && anchor && tooltip && arrowEl) {
+      computePosition(anchor, tooltip, {
         placement: bp.isAtLeast("sm") ? "bottom-start" : "bottom",
         middleware: [
           offset({ mainAxis: -5, crossAxis: 0 }),
@@ -158,55 +159,63 @@ function KanjiTooltip() {
 
   return (
     <Portal mount={$general.layoutRef}>
-      <div
-        ref={$setTooltipRef}
-        class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable shadow-lg"
-        tabindex={0}
-        on:mouseenter={onActiveTooltip}
-        on:mouseleave={onInactiveTooltip}
-        on:focusin={onActiveTooltip}
-        on:focusout={onInactiveTooltip}
-        on:touchstart={onActiveTooltip}
-        style={{
-          display: $kanjiTooltip.show ? "block" : "none",
-          left: `${$position.x}px`,
-          top: `${$position.y}px`,
-        }}
-      >
+      <ErrorBoundary fallback={null}>
         <div
-          ref={$setArrowRef}
-          class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
+          ref={$setTooltipRef}
+          class="absolute z-10 overflow-hidden rounded-lg horizontal-tb text-start tooltip tappable shadow-lg"
+          tabindex={0}
+          on:mouseenter={onActiveTooltip}
+          on:mouseleave={onInactiveTooltip}
+          on:focusin={onActiveTooltip}
+          on:focusout={onInactiveTooltip}
+          on:touchstart={onActiveTooltip}
           style={{
-            left: `${$position.arrowX}px`,
-            top: `${$position.arrowY}px`,
-            right: "",
-            bottom: "",
-            ...($position.staticSide ? { [$position.staticSide]: "-4px" } : {}),
+            display: $kanjiTooltip.show ? "block" : "none",
+            left: `${$position.x}px`,
+            top: `${$position.y}px`,
           }}
-        ></div>
+        >
+          <div
+            ref={$setArrowRef}
+            class="absolute bg-base-content-faint size-8 rotate-45 z-20 -translate-y-6"
+            style={{
+              left: `${$position.arrowX}px`,
+              top: `${$position.arrowY}px`,
+              right: "",
+              bottom: "",
+              ...($position.staticSide ? { [$position.staticSide]: "-4px" } : {}),
+            }}
+          ></div>
 
-        <button
-          data-anki-mobile-only="block"
-          class="absolute z-20 top-2 right-2"
-          on:click={onActiveTooltip}
-          on:touchend={(e) => e.stopPropagation()}
-        >
-          <XIcon class="size-5 cursor-pointer text-base-content-soft" />
-        </button>
-        <div
-          class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
-          style={{ color: "initial" }}
-        >
-          <Show when={$kanjiTooltip.kanji}>
-            <KanjiContextProvider kanji={$kanjiTooltip.kanji}>
-              <KanjiInfo />
-              <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
-                <KanjiInfoExtra />
-              </div>
-            </KanjiContextProvider>
-          </Show>
+          <button
+            data-anki-mobile-only="block"
+            class="absolute z-20 top-2 right-2"
+            on:click={onActiveTooltip}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            <XIcon class="size-5 cursor-pointer text-base-content-soft" />
+          </button>
+          <div
+            class="relative text-base bg-base-200/97 z-10 p-2 sm:p-4 border border-base-300 rounded-lg font-primary w-xs sm:w-md lg:w-lg shadow-lg max-h-[75vh] overflow-auto"
+            style={{ color: "initial" }}
+          >
+            <Show when={$kanjiTooltip.kanji}>
+              <KanjiContextProvider kanji={$kanjiTooltip.kanji}>
+                <Suspense
+                  fallback={
+                    <div class="animate-pulse text-base-content-soft text-sm">Loading...</div>
+                  }
+                >
+                  <$KanjiInfo />
+                  <div class="text-sm mt-2 sm:mt-4 flex flex-col gap-1 sm:gap-2">
+                    <$KanjiInfoExtra />
+                  </div>
+                </Suspense>
+              </KanjiContextProvider>
+            </Show>
+          </div>
         </div>
-      </div>
+      </ErrorBoundary>
     </Portal>
   );
 }

@@ -253,8 +253,5 @@ declare global {
 
 export type CacheStore = {
   workerApi?: WorkerApi;
-  lookupKanji?: Map<string, KanjiInfo | undefined>;
-  queryShared?: Map<string, QuerySharedResult>;
+  kanjiInfo?: Map<string, KanjiInfo | undefined>;
 };
-
-export type QuerySharedResult = Awaited<ReturnType<WorkerApi["queryShared"]>>;

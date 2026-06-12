@@ -61,11 +61,11 @@ export function useThemeTransition() {
   const { isAnkiDesktop, initialDarkMode } = useGeneralContext();
   const { $config, $setConfig } = useConfigContext();
   const startViewTransition = useViewTransition();
-  const { $card } = useCardContext();
+  const { $$card } = useCardContext();
 
   function $changeTheme(theme: DaisyUITheme, mode: "light" | "dark") {
     const key = mode === "dark" ? "themeDark" : "theme";
-    if ($card.query.status === "loading" || isAnkiDesktop) {
+    if ($$card.loading || isAnkiDesktop) {
       $setConfig(key, theme);
     } else {
       startViewTransition(() => $setConfig(key, theme), {

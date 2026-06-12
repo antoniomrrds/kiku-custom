@@ -1,19 +1,27 @@
-import { createContext, useContext, type Accessor } from "solid-js";
+import {
+  createContext,
+  createEffect,
+  createResource,
+  createSignal,
+  useContext,
+  type Accessor,
+  type Resource,
+} from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
 import type { RootDataset } from "#/src/lib/config";
 import { createCompatPair } from "#/src/lib/context-compat";
 import type { Logger } from "#/src/lib/logger";
-import type { AnkiDroidAPI, KikuNotesManifest } from "#/src/lib/types";
+import type { AnkiDroidAPI, AnkiNote, KikuNotesManifest } from "#/src/lib/types";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 import type { WorkerApi } from "#/src/worker/client";
+import type { KanjiPageContextValue } from "#/src/lazy/contexts/KanjiPageContext";
+import { useAnkiConnectConnection } from "#/src/hooks/connection";
 
 type GeneralStore = {
   plugin: KikuPlugin | undefined;
   root: HTMLElement | undefined;
   container: HTMLElement | undefined;
-  isAnkiConnectAvailable: boolean;
-  notesManifest: KikuNotesManifest | undefined;
   layoutRef: HTMLDivElement | undefined;
   contentRef: HTMLDivElement | undefined;
   toast: Toast;
@@ -39,6 +47,11 @@ type GeneralContextValue = {
   isAnkiDroidOldStudyScreen: boolean;
   isAnkiDroidNewStudyScreen: boolean;
   initialDarkMode: boolean;
+  kanjiPageCache: Map<string, KanjiPageContextValue>;
+  kanjiInfoNotesCache: Map<string, [string, AnkiNote[]][]>;
+  $$ankiConnect: Resource<boolean>;
+  $checkAnkiConnect: (opt?: { onFail?: () => void }) => Promise<void>;
+  $$notesManifest: Resource<KikuNotesManifest | undefined>;
   workerApi: PromiseWithResolvers<WorkerApi>;
   styleTags: HTMLStyleElement[];
   ankiDroidAPI: AnkiDroidAPI | undefined;
@@ -83,18 +96,41 @@ export function GeneralContextProvider(props: {
     }, 3000);
   };
 
-  const workerApi = Promise.withResolvers<WorkerApi>();
-
   const [$general, $setGeneral] = createStore<GeneralStore>({
     plugin: undefined,
     root: props.root,
     container: props.container,
-    isAnkiConnectAvailable: false,
-    notesManifest: undefined,
     layoutRef: undefined,
     contentRef: undefined,
     toast: { success, error, message: undefined, type: "success" },
   });
+
+  const workerApi = Promise.withResolvers<WorkerApi>();
+  const kanjiPageCache = new Map<string, KanjiPageContextValue>();
+  const kanjiInfoNotesCache = new Map<string, [string, AnkiNote[]][]>();
+  const [$$notesManifest] = createResource(
+    () => workerApi,
+    async (workerApiContainer) => {
+      const worker = await workerApiContainer.promise;
+      return worker.notesManifest();
+    },
+  );
+
+  const [$enableAnkiConnectConnection, $setEnableAnkiConnectConnection] = createSignal(false);
+  const ankiConnectOnFail = new Set<() => void>();
+
+  const { $$ankiConnect, refetch } = useAnkiConnectConnection({
+    $enable: $enableAnkiConnectConnection,
+    logger: props.logger,
+    onFail: ankiConnectOnFail,
+  });
+
+  const $checkAnkiConnect = async ({ onFail }: { onFail?: () => void } = {}) => {
+    if ($$ankiConnect.state === "ready") return;
+    if (onFail) ankiConnectOnFail.add(onFail);
+    $setEnableAnkiConnectConnection(true);
+    await refetch();
+  };
 
   return (
     <GeneralContext.Provider
@@ -111,6 +147,11 @@ export function GeneralContextProvider(props: {
         isAnkiDroidOldStudyScreen: props.isAnkiDroidOldStudyScreen,
         isAnkiDroidNewStudyScreen: props.isAnkiDroidNewStudyScreen,
         initialDarkMode: props.initialDarkMode,
+        kanjiPageCache,
+        kanjiInfoNotesCache,
+        $$ankiConnect,
+        $checkAnkiConnect,
+        $$notesManifest,
         workerApi,
         styleTags: props.styleTags,
         ankiDroidAPI: props.ankiDroidAPI,
