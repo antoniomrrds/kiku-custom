@@ -15,7 +15,6 @@ import {
 } from "solid-js";
 import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/src/lib/anki-connect";
-import { nodesToString, parseHtml } from "#/src/lib/dom";
 import { unique } from "#/src/lib/es";
 import { useNavigationTransition } from "#/src/hooks/transition";
 import { type AnkiNote, ankiFieldsSkeleton } from "#/src/lib/types";
@@ -24,6 +23,13 @@ import { useCardContext } from "#/src/contexts/CardContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
+import {
+  filterTags,
+  mergeContext,
+  parseMergedIntoReadable,
+  removeAnkiInternalFields,
+  toContextField,
+} from "#/src/lazy/lib/merge-context";
 
 export function MergeContextModal() {
   const [$dialogRef, $setDialogRef] = createSignal<HTMLDialogElement>();
@@ -152,15 +158,6 @@ function $Dialog(props: {
   const $$currentNote = createMemo(() => $$notesResource()?.currentNote);
 
   const $$merged = createMemo(() => {
-    const toContextField = (note: AnkiNote | undefined) => ({
-      noteId: note?.noteId,
-      Sentence: note?.fields.Sentence.value ?? "",
-      SentenceTranslation: note?.fields.SentenceTranslation.value ?? "",
-      SentenceFurigana: note?.fields.SentenceFurigana.value ?? "",
-      SentenceAudio: note?.fields.SentenceAudio.value ?? "",
-      MiscInfo: note?.fields.MiscInfo.value ?? "",
-      Picture: note?.fields.Picture.value ?? "",
-    });
     const root = toContextField($$rootNote());
     const current = toContextField($$currentNote());
     if ($mergeDirection() === "toRoot") {
@@ -187,10 +184,8 @@ function $Dialog(props: {
     // ---- tags ----
     const rootTags = $$rootNote()?.tags ?? [];
     const currentTags = $$currentNote()?.tags ?? [];
-    let tags = unique([...rootTags, ...currentTags]);
     const targetTags = direction === "toRoot" ? rootTags : currentTags;
-    const unwantedTags = ["leech", "marked", "potential_leech"];
-    tags = tags.filter((tag) => targetTags.includes(tag) || !unwantedTags.includes(tag));
+    const tags = filterTags(unique([...rootTags, ...currentTags]), targetTags);
 
     return {
       ...ankiFieldsSkeleton,
@@ -212,22 +207,12 @@ function $Dialog(props: {
     if (!targetId$) return;
     const fields = { ...$$mergedAnkiFields() };
     const tags = fields.Tags.split(" ");
-    for (const key in fields) {
-      if (
-        key.startsWith("furigana:") ||
-        key.startsWith("kana:") ||
-        key.startsWith("kanji:") ||
-        key === "Tags" ||
-        key === "CardID"
-      ) {
-        delete fields[key as keyof typeof fields];
-      }
-    }
+    const cleanFields = removeAnkiInternalFields(fields);
 
     return {
       note: {
         id: targetId$,
-        fields: fields,
+        fields: cleanFields,
         tags: tags,
       },
     };
@@ -445,247 +430,4 @@ function FieldPreview(props: { title: string; content: string }) {
       </pre>
     </div>
   );
-}
-
-type ContextField = {
-  noteId: number | undefined;
-  Sentence: string;
-  SentenceTranslation: string;
-  SentenceFurigana: string;
-  SentenceAudio: string;
-  MiscInfo: string;
-  Picture: string;
-};
-
-function mergeContext(base: ContextField, extra: ContextField) {
-  const normalizedBase = normalizeFields(base);
-  const normalizedExtra = normalizeFields(extra);
-
-  // if one of them is empty, delete both
-  const getSentenceFurigana = () => {
-    if (!normalizedBase.SentenceFurigana || !normalizedExtra.SentenceFurigana) {
-      return "";
-    }
-    return normalizedBase.SentenceFurigana + normalizedExtra.SentenceFurigana;
-  };
-
-  const merged = {
-    Sentence: normalizedBase.Sentence + normalizedExtra.Sentence,
-    SentenceTranslation: normalizedBase.SentenceTranslation + normalizedExtra.SentenceTranslation,
-    SentenceFurigana: getSentenceFurigana(),
-    SentenceAudio: normalizedBase.SentenceAudio + normalizedExtra.SentenceAudio,
-    MiscInfo: normalizedBase.MiscInfo + normalizedExtra.MiscInfo,
-    Picture: normalizedBase.Picture + normalizedExtra.Picture,
-  };
-
-  function sortGroup(nodes: NodeListOf<Element>) {
-    return Array.from(nodes).sort((a, b) => {
-      const aId = Number((a as HTMLSpanElement).dataset.groupId);
-      const bId = Number((b as HTMLSpanElement).dataset.groupId);
-      return bId - aId;
-    });
-  }
-
-  const sentenceDoc = parseHtml(merged.Sentence);
-  const sentenceWithGroup = sentenceDoc.querySelectorAll("[data-group-id]");
-  const Sentence = sortGroup(sentenceWithGroup);
-  merged.Sentence = nodesToString(Sentence);
-
-  const sentenceTranslationDoc = parseHtml(merged.SentenceTranslation);
-  const sentenceTranslationWithGroup = sentenceTranslationDoc.querySelectorAll("[data-group-id]");
-  const SentenceTranslation = sortGroup(sentenceTranslationWithGroup);
-  merged.SentenceTranslation = nodesToString(SentenceTranslation);
-
-  const sentenceFuriganaDoc = parseHtml(merged.SentenceFurigana);
-  const sentenceFuriganaWithGroup = sentenceFuriganaDoc.querySelectorAll("[data-group-id]");
-  const SentenceFurigana = sortGroup(sentenceFuriganaWithGroup);
-  merged.SentenceFurigana = nodesToString(SentenceFurigana);
-
-  const sentenceAudioDoc = parseHtml(merged.SentenceAudio);
-  const sentenceAudioWithGroup = sentenceAudioDoc.querySelectorAll("[data-group-id]");
-  const SentenceAudio = sortGroup(sentenceAudioWithGroup);
-  merged.SentenceAudio = nodesToString(SentenceAudio);
-
-  const miscInfoDoc = parseHtml(merged.MiscInfo);
-  const miscInfoWithGroup = miscInfoDoc.querySelectorAll("[data-group-id]");
-  const MiscInfo = sortGroup(miscInfoWithGroup);
-  merged.MiscInfo = nodesToString(MiscInfo);
-
-  const pictureDoc = parseHtml(merged.Picture);
-  const pictureWithGroup = pictureDoc.querySelectorAll("img[data-group-id]");
-  const Picture = sortGroup(pictureWithGroup);
-  merged.Picture = nodesToString(Picture);
-
-  return merged;
-}
-
-const randomNumber = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
-
-function normalizeFields(fields: ContextField) {
-  const newId = fields.noteId ?? Date.now() + randomNumber(0, 1000);
-
-  const sentenceDoc = parseHtml(fields.Sentence);
-  const sentenceWithGroup = sentenceDoc.querySelectorAll("[data-group-id]");
-  const sentenceWithoutGroup = Array.from(sentenceDoc.body.childNodes).filter(
-    (el) => !(el as HTMLSpanElement).dataset?.groupId,
-  );
-
-  const sentenceTranslationDoc = parseHtml(fields.SentenceTranslation);
-  const sentenceTranslationWithGroup = sentenceTranslationDoc.querySelectorAll("[data-group-id]");
-  const sentenceTranslationWithoutGroup = Array.from(sentenceTranslationDoc.body.childNodes).filter(
-    (el) => !(el as HTMLSpanElement).dataset?.groupId,
-  );
-
-  const sentenceFuriganaDoc = parseHtml(fields.SentenceFurigana);
-  const sentenceFuriganaWithGroup = sentenceFuriganaDoc.querySelectorAll("[data-group-id]");
-  const sentenceFuriganaWithoutGroup = Array.from(sentenceFuriganaDoc.body.childNodes).filter(
-    (el) => !(el as HTMLSpanElement).dataset?.groupId,
-  );
-
-  const sentenceAudioDoc = parseHtml(fields.SentenceAudio);
-  const sentenceAudioWithGroup = sentenceAudioDoc.querySelectorAll("[data-group-id]");
-  const sentenceAudioWithoutGroup = Array.from(sentenceAudioDoc.body.childNodes).filter(
-    (el) => !(el as HTMLSpanElement).dataset?.groupId,
-  );
-
-  const miscInfoDoc = parseHtml(fields.MiscInfo);
-  const miscInfoWithGroup = miscInfoDoc.querySelectorAll("[data-group-id]");
-  const miscInfoWithoutGroup = Array.from(miscInfoDoc.body.childNodes).filter(
-    (el) => !(el as HTMLSpanElement).dataset?.groupId,
-  );
-
-  const pictureDoc = parseHtml(fields.Picture);
-  const pictureWithGroup = pictureDoc.querySelectorAll("img[data-group-id]");
-  const pictureWithoutGroup = pictureDoc.querySelectorAll("img:not([data-group-id])");
-  pictureWithoutGroup.forEach((img) => {
-    img.setAttribute("data-group-id", newId.toString());
-  });
-
-  function wrapInSpan(html: string) {
-    if (!html) return "";
-    const span = document.createElement("span");
-    span.innerHTML = html;
-    span.dataset.groupId = newId.toString();
-    return span.outerHTML;
-  }
-
-  const Sentence =
-    nodesToString(Array.from(sentenceWithGroup)).trim() +
-    wrapInSpan(nodesToString(sentenceWithoutGroup).trim());
-
-  const SentenceTranslation =
-    nodesToString(Array.from(sentenceTranslationWithGroup)).trim() +
-    wrapInSpan(nodesToString(sentenceTranslationWithoutGroup).trim());
-
-  const SentenceFurigana =
-    nodesToString(Array.from(sentenceFuriganaWithGroup)).trim() +
-    wrapInSpan(nodesToString(sentenceFuriganaWithoutGroup).trim());
-
-  const SentenceAudio =
-    nodesToString(Array.from(sentenceAudioWithGroup)).trim() +
-    wrapInSpan(nodesToString(sentenceAudioWithoutGroup).trim());
-
-  const MiscInfo =
-    nodesToString(Array.from(miscInfoWithGroup)).trim() +
-    wrapInSpan(nodesToString(miscInfoWithoutGroup).trim());
-
-  const Picture =
-    nodesToString(Array.from(pictureWithGroup)).trim() +
-    nodesToString(Array.from(pictureWithoutGroup)).trim();
-
-  return {
-    Sentence,
-    SentenceTranslation,
-    SentenceFurigana,
-    SentenceAudio,
-    MiscInfo,
-    Picture,
-  };
-}
-
-function parseMergedIntoReadable(fields: {
-  Sentence: string;
-  SentenceTranslation: string;
-  SentenceFurigana: string;
-  SentenceAudio: string;
-  MiscInfo: string;
-  Picture: string;
-}) {
-  function extractGroupedText(doc: Document, selector: string, value: (node: Element) => string) {
-    const seen = new Set<string>();
-    const duplicates = new Set<string>();
-
-    const lines = Array.from(doc.querySelectorAll(selector))
-      .map((node) => {
-        const groupId = node.getAttribute("data-group-id");
-        if (!groupId) return null;
-        if (seen.has(groupId)) {
-          duplicates.add(groupId);
-        } else {
-          seen.add(groupId);
-        }
-        return `${groupId}: ${value(node)}`;
-      })
-      .filter(Boolean) as string[];
-
-    return {
-      text: lines.join("\n"),
-      duplicates: Array.from(duplicates),
-    };
-  }
-
-  const sentence = extractGroupedText(
-    parseHtml(fields.Sentence),
-    "[data-group-id]",
-    (n) => n.textContent ?? "",
-  );
-
-  const sentenceTranslation = extractGroupedText(
-    parseHtml(fields.SentenceTranslation),
-    "[data-group-id]",
-    (n) => n.textContent ?? "",
-  );
-
-  const sentenceFurigana = extractGroupedText(
-    parseHtml(fields.SentenceFurigana),
-    "[data-group-id]",
-    (n) => n.textContent ?? "",
-  );
-
-  const sentenceAudio = extractGroupedText(
-    parseHtml(fields.SentenceAudio),
-    "[data-group-id]",
-    (n) => n.textContent ?? "",
-  );
-
-  const miscInfo = extractGroupedText(
-    parseHtml(fields.MiscInfo),
-    "[data-group-id]",
-    (n) => n.textContent ?? "",
-  );
-
-  const picture = extractGroupedText(
-    parseHtml(fields.Picture),
-    "img[data-group-id]",
-    (n) => n.getAttribute("src") ?? "",
-  );
-
-  return {
-    Sentence: sentence.text,
-    SentenceTranslation: sentenceTranslation.text,
-    SentenceFurigana: sentenceFurigana.text,
-    SentenceAudio: sentenceAudio.text,
-    MiscInfo: miscInfo.text,
-    Picture: picture.text,
-
-    duplicates: {
-      Sentence: sentence.duplicates,
-      SentenceTranslation: sentenceTranslation.duplicates,
-      SentenceFurigana: sentenceFurigana.duplicates,
-      SentenceAudio: sentenceAudio.duplicates,
-      MiscInfo: miscInfo.duplicates,
-      Picture: picture.duplicates,
-    },
-  };
 }

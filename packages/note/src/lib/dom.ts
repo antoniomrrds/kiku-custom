@@ -46,7 +46,8 @@ export function nodesToString(nodes: Node[]) {
       }
       return node.textContent ?? "";
     })
-    .join("");
+    .join("")
+    .trim();
 }
 
 export function preloadImages(pictureHtml: string) {
