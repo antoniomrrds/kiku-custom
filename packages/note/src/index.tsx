@@ -333,18 +333,6 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
         )
       : ankiFieldsSkeleton;
 
-    //NOTE: AnkiMobile kanji tooltip hack https://github.com/youyoumu/kiku/issues/12#issuecomment-4216160200
-    const kanjiToolTipSyle = document.createElement("style");
-    kanjiToolTipSyle.innerHTML = `[data-kanji-tooltip] { display: none !important; }`;
-    shadow.appendChild(kanjiToolTipSyle);
-    const resetKanjiTooltip = () => {
-      const kanjiTooltips = root?.querySelectorAll<HTMLSpanElement>("[data-kanji-tooltip]");
-      Array.from(kanjiTooltips ?? []).forEach((el) => {
-        el.style.display = "none";
-      });
-      kanjiToolTipSyle.remove();
-    };
-
     const res = await init({
       root,
       container,
@@ -364,7 +352,6 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       isAnkiDroidNewStudyScreen,
       isAnkiDroid,
     });
-    setTimeout(resetKanjiTooltip, 50);
 
     Object.assign(globalThis.KIKU, res);
     if (import.meta.env.DEV) root.dataset.side = side;

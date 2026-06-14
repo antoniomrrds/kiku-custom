@@ -77,9 +77,6 @@ body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar-thumb:hover {
   --anki-mobile-display-none: none;
   --anki-mobile-display-block: block;
 }
-[data-side="front"] [data-anki-mobile-hide="front"] {
-  display: var(--anki-mobile-display-none);
-}
 [data-anki-mobile-only="block"] {
   display: var(--anki-mobile-display-block, none);
 }
