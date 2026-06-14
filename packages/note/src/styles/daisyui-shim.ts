@@ -60,7 +60,9 @@ function daisyuiShim(options: Record<string, unknown> = {}) {
     handler: (api: PluginAPI) => {
       return handler({
         ...api,
-        addBase: (rules) => api.addBase(adjustThemeSelectors(rules)),
+        addBase: (rules) => {
+          api.addBase(adjustThemeSelectors(rules));
+        },
       });
     },
     config,
