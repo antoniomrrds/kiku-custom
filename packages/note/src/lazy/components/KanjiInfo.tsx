@@ -370,8 +370,7 @@ export function $KanjiInfoExtra(props: { inKanjiPage?: boolean }) {
   );
 }
 
-//TODO: single KanjiKeyword component
-function $KanjiKeyword(props: {
+type KanjiKeywordProps = {
   $$noteList: Resource<[string, AnkiNote[]][] | undefined>;
   nestedFocus: {
     kanji: string | undefined;
@@ -380,7 +379,8 @@ function $KanjiKeyword(props: {
   contextLabel?: ContextLabel;
   onClick?: () => void;
   parentKanji: string;
-}) {
+};
+function $KanjiKeyword(props: KanjiKeywordProps) {
   const { $kanjiState, $$kanjiInfo } = useKanjiContext();
 
   const $$keyword = createMemo(() => {
@@ -414,34 +414,19 @@ function $KanjiKeyword(props: {
   );
 }
 
-function KanjiKeywordTooltip(props: {
-  $$noteList: Resource<[string, AnkiNote[]][] | undefined>;
-  nestedFocus: {
-    kanji: string | undefined;
-    noteId: number | undefined;
-  };
-  contextLabel?: ContextLabel;
-  parentKanji: string;
-}) {
+function KanjiKeywordTooltip(props: KanjiKeywordProps) {
   const { $setCard, onKanjiPageMount } = useCardContext();
   const { navigate } = useNavigationTransition();
 
   const onClick = () => {
-    const noteList = props.$$noteList();
-    if (!noteList) return;
+    if (!props.$$noteList()) return;
 
     $setCard("initialTab", "kanji");
     $setCard("initialFocus", { kanji: props.parentKanji, noteId: undefined });
     $setCard("uniqueId", createUniqueId());
     onKanjiPageMount.add(({ $setKanjiPage }) => {
       navigate(
-        () =>
-          applyNestedKanjiPageState($setKanjiPage, {
-            contextLabel: props.contextLabel,
-            nestedFocus: props.nestedFocus,
-            parentKanji: props.parentKanji,
-            noteList,
-          }),
+        () => applyNestedKanjiPageState($setKanjiPage, props),
         "forward",
         () => navigate(() => $setKanjiPage("nested", false), "back"),
       );
@@ -452,29 +437,14 @@ function KanjiKeywordTooltip(props: {
   return <$KanjiKeyword {...props} onClick={onClick} />;
 }
 
-function KanjiKeywordKanjiPage(props: {
-  $$noteList: Resource<[string, AnkiNote[]][] | undefined>;
-  nestedFocus: {
-    kanji: string | undefined;
-    noteId: number | undefined;
-  };
-  contextLabel?: ContextLabel;
-  parentKanji: string;
-}) {
+function KanjiKeywordKanjiPage(props: KanjiKeywordProps) {
   const { $setKanjiPage } = useKanjiPageContext();
   const { navigate } = useNavigationTransition();
 
   const onClick = () => {
-    const noteList = props.$$noteList();
-    if (!noteList) return;
+    if (!props.$$noteList()) return;
     navigate(
-      () =>
-        applyNestedKanjiPageState($setKanjiPage, {
-          contextLabel: props.contextLabel,
-          nestedFocus: props.nestedFocus,
-          parentKanji: props.parentKanji,
-          noteList,
-        }),
+      () => applyNestedKanjiPageState($setKanjiPage, props),
       "forward",
       () => navigate(() => $setKanjiPage("nested", false), "back"),
     );
@@ -485,15 +455,7 @@ function KanjiKeywordKanjiPage(props: {
 
 function applyNestedKanjiPageState(
   $setKanjiPage: ReturnType<typeof useKanjiPageContext>["$setKanjiPage"],
-  props: {
-    contextLabel?: ContextLabel;
-    nestedFocus: {
-      kanji: string | undefined;
-      noteId: number | undefined;
-    };
-    parentKanji: string;
-    noteList: [string, AnkiNote[]][];
-  },
+  props: KanjiKeywordProps,
 ) {
   $setKanjiPage("nestedContextLabel", props.contextLabel);
   $setKanjiPage("nestedId", createUniqueId());
@@ -505,6 +467,6 @@ function applyNestedKanjiPageState(
     kanji: props.parentKanji,
     noteId: undefined,
   });
-  $setKanjiPage("nestedNoteList", props.noteList);
+  $setKanjiPage("nestedNoteList", props.$$noteList() ?? []);
   $setKanjiPage("nested", true);
 }
