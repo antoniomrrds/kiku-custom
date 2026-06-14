@@ -1,35 +1,16 @@
-import AnkiMobileDebug from "./components/AnkiMobileDebug";
-import AudioButtons from "./components/AudioButtons";
-import AudioElements from "./components/AudioElements";
-import BackBody from "./components/BackBody";
-import BackFooter from "./components/BackFooter";
-import Expression from "./components/Expression";
-import FieldGroupPagination from "./components/FieldGroupPagination";
-import Frequency from "./components/Frequency";
-import HeaderMain from "./components/HeaderMain";
-import KanjiPage from "./components/KanjiPage";
-import PictureModal from "./components/PictureModal";
-import Pitches from "./components/Pitches";
-import RelatedExpression from "./components/RelatedExpression";
-import Sentence from "./components/Sentence";
-import Settings from "./components/Settings";
-import UseAnkiDroid from "./components/UseAnkiDroid";
-
-export {
-  HeaderMain,
-  BackFooter,
-  AudioButtons,
-  AudioElements,
-  Settings,
-  PictureModal,
-  BackBody,
-  Pitches,
-  FieldGroupPagination,
-  KanjiPage,
-  UseAnkiDroid,
-  Sentence,
-  Expression,
-  AnkiMobileDebug,
-  RelatedExpression,
-  Frequency,
-};
+export { AnkiMobileDebug } from "./components/AnkiMobileDebug";
+export { AudioButtons } from "./components/AudioButtons";
+export { AudioElements } from "./components/AudioElements";
+export { BackBody } from "./components/BackBody";
+export { BackFooter } from "./components/BackFooter";
+export { Expression } from "./components/Expression";
+export { FieldGroupPagination } from "./components/FieldGroupPagination";
+export { Frequency } from "./components/Frequency";
+export { HeaderMain } from "./components/HeaderMain";
+export { KanjiPage } from "./components/KanjiPage";
+export { PictureModal } from "./components/PictureModal";
+export { Pitches } from "./components/Pitches";
+export { RelatedExpression } from "./components/RelatedExpression";
+export { Sentence } from "./components/Sentence";
+export { Settings } from "./components/Settings";
+export { UseAnkiDroid } from "./components/UseAnkiDroid";

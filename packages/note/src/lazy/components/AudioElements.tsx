@@ -23,7 +23,7 @@ function AudioTag(props: { text: string }) {
   );
 }
 
-export default function AudioElements() {
+export function AudioElements() {
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $card, $setCard } = useCardContext();
   const { $group } = useFieldGroupContext();

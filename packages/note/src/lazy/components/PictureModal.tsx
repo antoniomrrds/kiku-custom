@@ -7,7 +7,7 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 
-export default function PictureModal() {
+export function PictureModal() {
   const { $card, $setCard } = useCardContext();
   const { $general, isAnkiWeb } = useGeneralContext();
   const { $ankiFields } = useAnkiFieldContext();

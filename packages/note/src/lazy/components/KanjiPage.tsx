@@ -19,7 +19,7 @@ import { parseFurigana } from "#/src/lib/parse-furigana";
 import { type AnkiFields, type AnkiNote, type Source, ankiFieldsSkeleton } from "#/src/lib/types";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
-import HeaderKanjiPage from "./HeaderKanjiPage";
+import { HeaderKanjiPage } from "./HeaderKanjiPage";
 import { ArrowLeftIcon } from "./Icons";
 import { KanjiContextProvider, useKanjiContext } from "#/src/lazy/contexts/KanjiContext";
 import { $KanjiInfo, $KanjiInfoExtra } from "./KanjiInfo";
@@ -29,7 +29,7 @@ import {
 } from "#/src/lazy/contexts/KanjiPageContext";
 import { capitalize } from "#/src/lib/text";
 
-export default function KanjiPage() {
+export function KanjiPage() {
   return (
     <ErrorBoundary fallback={null}>
       <Suspense fallback={null}>

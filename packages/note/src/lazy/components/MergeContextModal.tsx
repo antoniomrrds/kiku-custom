@@ -25,7 +25,7 @@ import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { ArrowLeftIcon, GitPullRequestArrow, RefreshCwIcon } from "./Icons";
 
-export default function MergeContextModal() {
+export function MergeContextModal() {
   const [$dialogRef, $setDialogRef] = createSignal<HTMLDialogElement>();
   const { $general, logger, $$ankiConnect, $checkAnkiConnect, isAnkiDesktop } = useGeneralContext();
   const { $card } = useCardContext();

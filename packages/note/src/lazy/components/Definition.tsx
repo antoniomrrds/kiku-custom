@@ -3,10 +3,10 @@ import type { DatasetProp } from "#/src/lib/config";
 import { isHtmlEffectivelyEmpty, parseHtml, removeBrInsideStyleTag } from "#/src/lib/dom";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
-import DefinitionPictureSection from "./DefinitionPictureSection";
-import ExternalLinks from "./ExternalLinks";
+import { DefinitionPictureSection } from "./DefinitionPictureSection";
+import { ExternalLinks } from "./ExternalLinks";
 
-export default function Definition() {
+export function Definition() {
   const [$modalRef, $setModalRef] = createSignal<HTMLDialogElement>();
   const { $ankiFields } = useAnkiFieldContext();
   const { $config } = useConfigContext();

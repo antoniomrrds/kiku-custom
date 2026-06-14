@@ -5,7 +5,7 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { InfoIcon } from "./Icons";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 
-export default function BackFooter() {
+export function BackFooter() {
   const { $ankiFields } = useAnkiFieldContext();
   const { $general } = useGeneralContext();
   const { $group } = useFieldGroupContext();

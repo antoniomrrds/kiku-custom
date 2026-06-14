@@ -5,11 +5,11 @@ import { useCardContext } from "#/src/contexts/CardContext";
 import { useRelatedItems } from "#/src/hooks/query";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
-import HeaderLayout from "./HeaderLayout";
+import { HeaderLayout } from "./HeaderLayout";
 import { ArrowLeftIcon, BoltIcon, PaintbrushIcon } from "./Icons";
-import MergeContextModal from "./MergeContextModal";
+import { MergeContextModal } from "./MergeContextModal";
 
-export default function HeaderMain(props: { onExitNested?: () => void }) {
+export function HeaderMain(props: { onExitNested?: () => void }) {
   const { $card, $initialSide, $$card } = useCardContext();
   const { $config, $isConfigOutOfSync } = useConfigContext();
   const { initialDarkMode, $startupTime } = useGeneralContext();

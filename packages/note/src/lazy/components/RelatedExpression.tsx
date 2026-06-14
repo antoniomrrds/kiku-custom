@@ -205,7 +205,7 @@ function $RelatedExpression() {
   );
 }
 
-export default function RelatedExpression() {
+export function RelatedExpression() {
   return (
     <ErrorBoundary fallback={null}>
       <Suspense fallback={null}>

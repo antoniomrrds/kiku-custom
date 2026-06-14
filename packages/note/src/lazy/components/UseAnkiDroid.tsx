@@ -16,7 +16,7 @@ function snapTo4(n: number) {
   return (n >> 2) << 2;
 }
 
-export default function UseAnkiDroid() {
+export function UseAnkiDroid() {
   if (isServer) return;
   if (window.innerWidth > 768) return;
   const { $config } = useConfigContext();

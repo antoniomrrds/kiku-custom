@@ -16,7 +16,7 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { parseHtml } from "#/src/lib/dom";
 import { usePitch } from "#/src/hooks/pitch";
 
-export default function Sentence() {
+export function Sentence() {
   const { $card } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $general } = useGeneralContext();

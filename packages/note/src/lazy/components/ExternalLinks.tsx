@@ -3,7 +3,7 @@ import { useCtxContext } from "#/src/contexts/CtxContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { ErrorBoundary, Show } from "solid-js";
 
-export default function ExternalLinks() {
+export function ExternalLinks() {
   const { $general } = useGeneralContext();
   const ctx = useCtxContext();
 

@@ -6,7 +6,7 @@ import { useCtxContext } from "#/src/contexts/CtxContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { usePitch } from "#/src/hooks/pitch";
 
-export default function Pitches() {
+export function Pitches() {
   const { $pitchInfos } = usePitch();
 
   return (

@@ -2,7 +2,7 @@ import { createMemo } from "solid-js";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { CircleChevronDownIcon } from "./Icons";
 
-export default function Frequency() {
+export function Frequency() {
   const { $ankiFields } = useAnkiFieldContext();
   const $freqSort = createMemo(() => $ankiFields.FreqSort);
   const $frequency = createMemo(() => $ankiFields.Frequency);

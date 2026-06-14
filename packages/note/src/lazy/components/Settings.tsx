@@ -37,7 +37,7 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useCtxContext } from "#/src/contexts/CtxContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
-import HeaderSettings from "./HeaderSettings";
+import { HeaderSettings } from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
 import { useCardContext } from "#/src/contexts/CardContext";
 
@@ -58,7 +58,7 @@ function toDatasetString(obj: Record<string, string | number | boolean>) {
     .join("\n");
 }
 
-export default function Settings() {
+export function Settings() {
   const { $config } = useConfigContext();
   const { $general, logger, isAnkiDesktop, isAnkiWeb, $checkAnkiConnect, $$ankiConnect } =
     useGeneralContext();

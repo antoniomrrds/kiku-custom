@@ -1,8 +1,8 @@
 import { useConfigContext } from "#/src/contexts/ConfigContext";
-import Sentence from "./Sentence";
-import Definition from "./Definition";
+import { Sentence } from "./Sentence";
+import { Definition } from "./Definition";
 
-export default function BackBody() {
+export function BackBody() {
   const { $config } = useConfigContext();
 
   return (

@@ -1,10 +1,10 @@
 import { useNavigationTransition } from "#/src/hooks/transition";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
-import HeaderLayout from "./HeaderLayout";
+import { HeaderLayout } from "./HeaderLayout";
 import { ArrowLeftIcon, RefreshCwIcon } from "./Icons";
 import { Match, Switch } from "solid-js";
 
-export default function HeaderSettings() {
+export function HeaderSettings() {
   const { $general, $checkAnkiConnect, $$ankiConnect } = useGeneralContext();
   const { navigateBack } = useNavigationTransition();
 

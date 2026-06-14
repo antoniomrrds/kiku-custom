@@ -67,7 +67,7 @@ function NotePlayIcons() {
   );
 }
 
-export default function AudioButtons(props: { position: 1 | 2 }) {
+export function AudioButtons(props: { position: 1 | 2 }) {
   const { $general, isAnkiWeb } = useGeneralContext();
 
   return (

@@ -1,8 +1,8 @@
 import { useNavigationTransition } from "#/src/hooks/transition";
-import HeaderLayout from "./HeaderLayout";
+import { HeaderLayout } from "./HeaderLayout";
 import { ArrowLeftIcon } from "./Icons";
 
-export default function HeaderKanjiPage() {
+export function HeaderKanjiPage() {
   const { navigateBack } = useNavigationTransition();
 
   return (

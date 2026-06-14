@@ -6,7 +6,7 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { usePictureModalTransition } from "#/src/hooks/transition";
 
-export default function DefinitionPictureSection(props: { currentHtml?: string }) {
+export function DefinitionPictureSection(props: { currentHtml?: string }) {
   const { $setPictureModal } = usePictureModalTransition();
   const { $ankiFields } = useAnkiFieldContext();
   const { $config } = useConfigContext();

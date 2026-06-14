@@ -9,7 +9,7 @@ import {
   useKanjiTooltipContext,
 } from "#/src/lazy/contexts/KanjiTooltipContext";
 
-export default function Expression() {
+export function Expression() {
   const { $setCard } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext();
 

@@ -1,6 +1,6 @@
 import { createSignal, For } from "solid-js";
 
-export default function AnkiMobileDebug() {
+export function AnkiMobileDebug() {
   // @ts-expect-error: global variable
   if (typeof KIKU_DEBUG === "boolean" && !KIKU_DEBUG) return null;
 

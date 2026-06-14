@@ -2,7 +2,7 @@ import type { JSX } from "solid-js/jsx-runtime";
 import { Portal } from "solid-js/web";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
-export default function HeaderLayout(props: { children: JSX.Element }) {
+export function HeaderLayout(props: { children: JSX.Element }) {
   const { $general, isAnkiWeb } = useGeneralContext();
 
   return (

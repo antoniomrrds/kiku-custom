@@ -4,7 +4,7 @@ import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { ArrowLeftIcon } from "./Icons";
 
-export default function FieldGroupPagination() {
+export function FieldGroupPagination() {
   const { $group, $index, $next, $prev } = useFieldGroupContext();
   const { $card } = useCardContext();
   const { $config } = useConfigContext();
