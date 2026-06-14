@@ -12,7 +12,7 @@ import { MergeContextModal } from "./MergeContextModal";
 export function HeaderMain(props: { onExitNested?: () => void }) {
   const { $card, $initialSide, $$card } = useCardContext();
   const { $config, $isConfigOutOfSync } = useConfigContext();
-  const { initialDarkMode, $startupTime } = useGeneralContext();
+  const { initialDarkMode, $startupTime, isAnkiDroidNewStudyScreen } = useGeneralContext();
   const { navigate } = useNavigationTransition();
   const { $changeThemeNext } = useThemeTransition();
 
@@ -70,7 +70,12 @@ export function HeaderMain(props: { onExitNested?: () => void }) {
         <Show when={!$card.isMergePreview}>
           <Switch>
             <Match when={$$card.state === "pending" || $$card.state === "unresolved"}>
-              <span class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"></span>
+              <span
+                class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"
+                classList={{
+                  "me-4": $initialSide() === "front" && isAnkiDroidNewStudyScreen,
+                }}
+              ></span>
             </Match>
             <Match when={$$card.state === "errored"}>
               <div class="status status-error animate-ping"></div>
