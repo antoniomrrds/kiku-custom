@@ -1,7 +1,7 @@
 import { createMemo, createResource, type Accessor } from "solid-js";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
-import { useCardContext, type CardStore } from "#/src/contexts/CardContext";
-import { type AnkiNote, type Source } from "#/src/lib/types";
+import { type CardStore } from "#/src/contexts/CardContext";
+import { type AnkiNote } from "#/src/lib/types";
 import { type Store, unwrap } from "solid-js/store";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { extractKanji } from "#/src/lib/kana";
@@ -161,49 +161,3 @@ export function useCardQuery({
 }
 
 export type $$Card = ReturnType<typeof useCardQuery>["$$card"];
-
-export function useRelatedItems() {
-  const { $$card } = useCardContext();
-  const { initialAnkiFields } = useAnkiFieldContext();
-
-  const $$relatedItems = createMemo(() => {
-    const currentExpression = initialAnkiFields.Expression;
-    const noteMap = new Map<number, { note: AnkiNote; sources: Source[] }>();
-    const query = $$card();
-
-    if (!query) return [];
-
-    for (const note of query.relatedExpression) {
-      if (!noteMap.has(note.noteId)) noteMap.set(note.noteId, { note, sources: ["related"] });
-    }
-    for (const note of query.forms) {
-      if (note.fields.Expression.value === currentExpression) continue;
-      const existing = noteMap.get(note.noteId);
-      if (existing) {
-        existing.sources = [...new Set<Source>([...existing.sources, "forms"])];
-      } else {
-        noteMap.set(note.noteId, { note, sources: ["forms"] });
-      }
-    }
-    for (const note of query.antonym) {
-      const existing = noteMap.get(note.noteId);
-      if (existing) {
-        existing.sources = [...new Set<Source>([...existing.sources, "antonym"])];
-      } else {
-        noteMap.set(note.noteId, { note, sources: ["antonym"] });
-      }
-    }
-    for (const note of query.referenced) {
-      const existing = noteMap.get(note.noteId);
-      if (existing) {
-        existing.sources = [...new Set<Source>([...existing.sources, "referenced"])];
-      } else {
-        noteMap.set(note.noteId, { note, sources: ["referenced"] });
-      }
-    }
-
-    return [...noteMap.values()];
-  });
-
-  return { $$relatedItems };
-}

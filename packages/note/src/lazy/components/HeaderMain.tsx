@@ -2,12 +2,12 @@ import { createMemo, createUniqueId, ErrorBoundary, Match, Show, Suspense, Switc
 import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
 import { capitalize } from "#/src/lib/text";
 import { useCardContext } from "#/src/contexts/CardContext";
-import { useRelatedItems } from "#/src/hooks/query";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { HeaderLayout } from "./HeaderLayout";
 import { ArrowLeftIcon, BoltIcon, PaintbrushIcon } from "./Icons";
 import { MergeContextModal } from "./MergeContextModal";
+import { useRelatedNotes } from "#/src/hooks/notes";
 
 export function HeaderMain(props: { onExitNested?: () => void }) {
   const { $card, $initialSide, $$card } = useCardContext();
@@ -106,14 +106,14 @@ function $KanjiPageIndicator() {
   const { $card, $setCard, $$card } = useCardContext();
   const { navigate } = useNavigationTransition();
 
-  const { $$relatedItems } = useRelatedItems();
+  const { $$relatedNotes } = useRelatedNotes();
 
   const $$length = createMemo(
     () =>
       ($$card()?.noteList.length ?? 0) +
       (($$card()?.sameReading.length ?? 0) ? 1 : 0) +
       (($$card()?.sameExpression.length ?? 0) ? 1 : 0) +
-      ($$relatedItems().length ? 1 : 0),
+      ($$relatedNotes().length ? 1 : 0),
   );
 
   const onClick = ({
@@ -126,7 +126,7 @@ function $KanjiPageIndicator() {
     const isKanjiResult = ($$card()?.noteList.length ?? 0) > 0;
     const isSameReadingResult = ($$card()?.sameReading.length ?? 0) > 0;
     const isSameExpressionResult = ($$card()?.sameExpression.length ?? 0) > 0;
-    const isRelatedResult = $$relatedItems().length > 0;
+    const isRelatedResult = $$relatedNotes().length > 0;
     const canOpen =
       (initialTab === "kanji" && isKanjiResult) ||
       (initialTab === "reading" && isSameReadingResult) ||
@@ -229,7 +229,7 @@ function $KanjiPageIndicator() {
             "p-0": $$length() > 4,
           }}
         >
-          {$$relatedItems().length}
+          {$$relatedNotes().length}
         </span>
       </button>
     );
@@ -249,7 +249,7 @@ function $KanjiPageIndicator() {
         when={
           ($$card()?.sameReading.length ?? 0) ||
           ($$card()?.sameExpression.length ?? 0) ||
-          $$relatedItems().length
+          $$relatedNotes().length
         }
       >
         <span>•</span>
@@ -260,7 +260,7 @@ function $KanjiPageIndicator() {
       <Show when={($$card()?.sameExpression.length ?? 0) > 0}>
         <$SameExpressionIndicator />
       </Show>
-      <Show when={$$relatedItems().length}>
+      <Show when={$$relatedNotes().length}>
         <$RelatedExpressionIndicator />
       </Show>
     </div>

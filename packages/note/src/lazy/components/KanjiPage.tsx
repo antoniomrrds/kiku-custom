@@ -13,7 +13,7 @@ import {
 import { useCardContext } from "#/src/contexts/CardContext";
 import { parseHtml } from "#/src/lib/dom";
 import { useNavigationTransition } from "#/src/hooks/transition";
-import { useRelatedItems } from "#/src/hooks/query";
+import { useRelatedNotes } from "#/src/hooks/notes";
 import { extractKanji } from "#/src/lib/kana";
 import { parseFurigana } from "#/src/lib/parse-furigana";
 import { type AnkiFields, type AnkiNote, type Source, ankiFieldsSkeleton } from "#/src/lib/types";
@@ -62,7 +62,7 @@ function Page() {
   const { onKanjiPageMount } = useCardContext();
   const { initialAnkiFields } = useAnkiFieldContext();
   const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
-  const { $$relatedItems } = useRelatedItems();
+  const { $$relatedNotes } = useRelatedNotes();
 
   const $title = createMemo(() => {
     if ($kanjiPage.tab === "kanji") {
@@ -142,7 +142,7 @@ function Page() {
             </TabItem>
             <TabItem
               active={$kanjiPage.tab === "related"}
-              count={$$relatedItems().length}
+              count={$$relatedNotes().length}
               onClick={() => {
                 $setKanjiPage("tab", "related");
               }}
@@ -224,7 +224,7 @@ function Page() {
                 <NoteList list={$kanjiPage.sameExpression ?? []} />
               </Match>
               <Match when={$kanjiPage.tab === "related"}>
-                <NoteList items={$$relatedItems()} />
+                <NoteList items={$$relatedNotes()} />
               </Match>
             </Switch>
           </div>
