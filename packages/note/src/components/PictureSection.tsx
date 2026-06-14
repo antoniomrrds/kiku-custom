@@ -7,6 +7,7 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { usePictureModalTransition } from "#/src/hooks/transition";
+import { ArrowLeftIcon } from "../lazy/components/Icons";
 
 export function PictureSection() {
   const { $card, $isInitialSide } = useCardContext();
@@ -72,7 +73,7 @@ export function PictureSection() {
 
   return (
     <div
-      class="sm:max-w-1/2 bg-base-200 sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic tappable"
+      class="sm:max-w-1/2 bg-base-200 sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container tappable"
       on:click={() => $setClicked((prev) => !prev)}
       on:touchend={(e) => e.stopPropagation()}
       {...$dataSet1()}
@@ -103,21 +104,25 @@ export function PictureSection() {
         <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
           <button
             type="button"
-            class="h-full w-4 sm:w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
+            class="h-full w-4 sm:w-6 cursor-pointer opacity-0 hover:opacity-100 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all flex items-center justify-center"
             on:click={prev}
             on:touchend={(e) => e.stopPropagation()}
-          />
+          >
+            <ArrowLeftIcon class="size-3 sm:size-4 text-base-100"></ArrowLeftIcon>
+          </button>
           <button
             type="button"
-            class="h-full w-4 sm:w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
+            class="h-full w-4 sm:w-6 cursor-pointer opacity-0 hover:opacity-100 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all flex items-center justify-center"
             on:click={next}
             on:touchend={(e) => e.stopPropagation()}
-          />
+          >
+            <ArrowLeftIcon class="size-3 sm:size-4 text-base-100 rotate-180"></ArrowLeftIcon>
+          </button>
         </div>
-        <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none opacity-0 group-hover/pic:opacity-100 transition-opacity">
+        <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none">
           {$pictures().map((_, i) => (
             <div
-              class="w-1.5 h-1.5 rounded-full bg-base-100/50"
+              class="w-1.5 h-1.5 rounded-full bg-base-100/50 ring-1 ring-base-content/50"
               classList={{ "bg-primary": i === $subIndex() }}
             />
           ))}

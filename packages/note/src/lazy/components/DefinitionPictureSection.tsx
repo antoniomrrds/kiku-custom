@@ -5,6 +5,7 @@ import { useCollectGlossaryImgs } from "#/src/hooks/glossary";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { usePictureModalTransition } from "#/src/hooks/transition";
+import { ArrowLeftIcon } from "./Icons";
 
 export function DefinitionPictureSection(props: { currentHtml?: string }) {
   const { $setPictureModal } = usePictureModalTransition();
@@ -43,7 +44,7 @@ export function DefinitionPictureSection(props: { currentHtml?: string }) {
   return (
     <Show when={$definitionPictures().length > 0}>
       <div
-        class="max-w-1/3 float-right [&_img]:rounded-sm ms-2 cursor-pointer relative group/defpic tappable"
+        class="max-w-1/3 float-right [&_img]:rounded-sm ms-2 cursor-pointer relative tappable"
         on:click={() => {
           const picture = currentDefPic();
           if (picture) $setPictureModal(picture);
@@ -56,7 +57,7 @@ export function DefinitionPictureSection(props: { currentHtml?: string }) {
           <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
             <button
               type="button"
-              class="h-full w-4 sm:w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-l-sm"
+              class="h-full w-4 sm:w-6 opacity-0 hover:opacity-100 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-l-sm flex items-center justify-center"
               on:click={(e) => {
                 e.stopPropagation();
                 $setDefPicIndex(
@@ -65,22 +66,26 @@ export function DefinitionPictureSection(props: { currentHtml?: string }) {
                 );
               }}
               on:touchend={(e) => e.stopPropagation()}
-            />
+            >
+              <ArrowLeftIcon class="size-3 sm:size-4 text-base-100"></ArrowLeftIcon>
+            </button>
             <button
               type="button"
-              class="h-full w-4 sm:w-6 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-r-sm"
+              class="h-full w-4 sm:w-6 opacity-0 hover:opacity-100  hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto cursor-pointer transition-all rounded-r-sm flex items-center justify-center"
               on:click={(e) => {
                 e.stopPropagation();
                 $setDefPicIndex((prev) => (prev + 1) % $definitionPictures().length);
               }}
               on:touchend={(e) => e.stopPropagation()}
-            />
+            >
+              <ArrowLeftIcon class="size-3 sm:size-4 text-base-100 rotate-180"></ArrowLeftIcon>
+            </button>
           </div>
-          <div class="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5 pointer-events-none opacity-0 group-hover/defpic:opacity-100 transition-opacity">
+          <div class="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none">
             <For each={$definitionPictures()}>
               {(_, i) => (
                 <div
-                  class="w-1 h-1 rounded-full bg-base-100/50"
+                  class="w-1.5 h-1.5 rounded-full bg-base-100/50 ring-1 ring-base-content/50"
                   classList={{ "bg-primary": i() === $defPicIndex() }}
                 />
               )}
