@@ -1,4 +1,4 @@
-import { createMemo, For, Match, onMount, Show, Switch } from "solid-js";
+import { createEffect, createMemo, For, Match, onMount, Show, Switch } from "solid-js";
 import { parseHtml } from "#/src/lib/dom";
 import { extractKanji } from "#/src/lib/kana";
 import { parseFurigana } from "#/src/lib/parse-furigana";
@@ -10,14 +10,7 @@ import {
 } from "#/src/lazy/contexts/KanjiTooltipContext";
 
 export function Expression() {
-  const { $setCard } = useCardContext();
   const { $ankiFields } = useAnkiFieldContext();
-
-  onMount(() => {
-    setTimeout(() => {
-      $setCard("expressionReady", true);
-    }, 100);
-  });
 
   const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));

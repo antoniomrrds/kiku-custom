@@ -18,7 +18,6 @@ export type CardStore = {
   side: "front" | "back";
   page: "main" | "settings" | "kanji" | "nested";
   ready: boolean;
-  expressionReady: boolean;
   isNsfw: boolean;
   uniqueId: string;
   expressionAudioRef?: HTMLDivElement;
@@ -63,7 +62,6 @@ export function CardStoreContextProvider(props: {
     side: props.initialSide,
     page: "main",
     ready: false,
-    expressionReady: false,
     isNsfw: props.initialNsfw,
     uniqueId: createUniqueId(),
     expressionAudioRef: undefined,

@@ -68,7 +68,8 @@ export function KanjiContextProvider(props: { kanji: string; children: JSX.Eleme
 
   function createTypeResource(type: FetchType) {
     const [$resource] = createResource(
-      () => ($fetchFlags[type] ? $$kanjiInfo() : undefined),
+      () =>
+        $fetchFlags[type] ? ($$kanjiInfo.state === "ready" ? $$kanjiInfo() : undefined) : undefined,
       async (kanjiInfo) => {
         if (!kanjiInfo) return;
         const list = kanjiInfo[type];
