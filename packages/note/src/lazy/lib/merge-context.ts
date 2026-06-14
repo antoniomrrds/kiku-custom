@@ -2,7 +2,7 @@ import { parseHtml, nodesToString } from "#/src/lib/dom";
 import { random } from "#/src/lib/es";
 import type { AnkiNote } from "#/src/lib/types";
 
-type ContextField = {
+export type ContextField = {
   noteId?: number;
   Sentence: string;
   SentenceTranslation: string;
@@ -200,12 +200,12 @@ export function parseMergedIntoReadable(fields: ContextField) {
 export function toContextField(note: AnkiNote | undefined): ContextField {
   return {
     noteId: note?.noteId,
-    Sentence: note?.fields.Sentence.value ?? "",
-    SentenceTranslation: note?.fields.SentenceTranslation.value ?? "",
-    SentenceFurigana: note?.fields.SentenceFurigana.value ?? "",
-    SentenceAudio: note?.fields.SentenceAudio.value ?? "",
-    MiscInfo: note?.fields.MiscInfo.value ?? "",
-    Picture: note?.fields.Picture.value ?? "",
+    Sentence: note?.fields.Sentence?.value ?? "",
+    SentenceTranslation: note?.fields.SentenceTranslation?.value ?? "",
+    SentenceFurigana: note?.fields.SentenceFurigana?.value ?? "",
+    SentenceAudio: note?.fields.SentenceAudio?.value ?? "",
+    MiscInfo: note?.fields.MiscInfo?.value ?? "",
+    Picture: note?.fields.Picture?.value ?? "",
   };
 }
 
