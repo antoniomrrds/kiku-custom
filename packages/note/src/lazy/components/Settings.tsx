@@ -4,22 +4,19 @@ import {
   createResource,
   createSignal,
   ErrorBoundary,
-  For,
   on,
   onCleanup,
   onMount,
   Show,
   Suspense,
+  type JSX,
 } from "solid-js";
 import { Portal } from "solid-js/web";
 import { AnkiConnect } from "#/src/lib/anki-connect";
 import {
-  type DefinitionStyle,
   getCssVar,
-  type KikuConfig,
   type RootDatasetKey,
   rootDatasetConfigWhitelist,
-  type TailwindContainerSize,
   type TailwindSize,
   tailwindContainerSize,
   tailwindFontSizeVar,
@@ -29,7 +26,6 @@ import {
   generateCssVarsDark,
 } from "#/src/lib/config";
 import { constants } from "#/src/lib/contants";
-import { defaultConfig } from "#/src/lib/default-config";
 import { useNavigationTransition, useThemeTransition } from "#/src/hooks/transition";
 import { capitalize } from "#/src/lib/text";
 import { daisyUIThemes, type DaisyUITheme } from "#/src/lib/theme";
@@ -40,6 +36,14 @@ import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { HeaderSettings } from "./HeaderSettings";
 import { ClipboardCopyIcon, InfoIcon, RefreshCwIcon, UndoIcon } from "./Icons";
 import { useCardContext } from "#/src/contexts/CardContext";
+import {
+  ToggleSetting,
+  TextSetting,
+  RangeSetting,
+  SelectSetting,
+  KeybindInput,
+  type NumStrConfigKey,
+} from "./SettingsForm";
 
 function toDashed(str: string) {
   return str.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
@@ -89,7 +93,7 @@ export function Settings() {
   return (
     <>
       <HeaderSettings />
-      <div>
+      <div class="pb-16">
         <GeneralSettings />
         <div class="divider"></div>
         <DefinitionSettings />
@@ -108,26 +112,25 @@ export function Settings() {
         <div class="divider"></div>
         <DebugSettings />
         <div class="divider"></div>
-        <div class="pb-16"></div>
         <Portal mount={$general.layoutRef}>
           <div
-            class="bottom-0 w-full"
+            class="bottom-0 w-full pointer-events-none"
             classList={{
               fixed: !isAnkiWeb,
               absolute: isAnkiWeb,
             }}
           >
             <div class="mx-auto w-full relative layout-max-width">
-              <div class="flex flex-row gap-2 justify-end animate-fade-in mb-4 px-2 sm:px-4">
+              <div class="flex flex-row gap-2 justify-end animate-fade-in pb-4 px-2 sm:px-4">
                 <button
-                  class="btn"
+                  class="btn pointer-events-auto"
                   on:click={() => navigateBack()}
                   on:touchend={(e) => e.stopPropagation()}
                 >
                   Back
                 </button>
                 <button
-                  class="btn"
+                  class="btn pointer-events-auto"
                   classList={{
                     "btn-primary": $ready(),
                     "btn-disabled bg-base-300 text-base-content-faint": !$ready(),
@@ -211,8 +214,16 @@ function KikuVersion(props: { latestVersion?: string | null }) {
   );
 }
 
+function Section(props: { children: JSX.Element }) {
+  return <div class="flex flex-col gap-4 animate-fade-in relative">{props.children}</div>;
+}
+
+function SectionTitle(props: { children: JSX.Element }) {
+  return <div class="text-2xl font-bold">{props.children}</div>;
+}
+
 function GeneralSettings() {
-  const { $config, $setConfig, $isConfigOutOfSync } = useConfigContext();
+  const { $isConfigOutOfSync } = useConfigContext();
   const [$showOutOfSync, $setShowOutOfSync] = createSignal(false);
 
   createEffect(() => {
@@ -223,7 +234,7 @@ function GeneralSettings() {
   });
 
   return (
-    <div class="flex flex-col gap-4 animate-fade-in relative">
+    <Section>
       <KikuIcon />
 
       <Show when={$showOutOfSync()}>
@@ -234,196 +245,76 @@ function GeneralSettings() {
           </span>
         </div>
       </Show>
-      <div class="flex gap-2 items-center justify-between">
-        <div class="text-2xl font-bold">General</div>
-      </div>
+      <SectionTitle>General</SectionTitle>
       <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
-        <fieldset class="fieldset py-0">
-          <legend class="fieldset-legend">Blur NSFW</legend>
-          <label class="label">
-            <input
-              type="checkbox"
-              checked={$config.blurNsfw}
-              class="toggle"
-              on:change={(e) => {
-                $setConfig("blurNsfw", e.target.checked);
-              }}
-            />
-          </label>
-        </fieldset>
-        <fieldset class="fieldset py-0">
-          <legend class="fieldset-legend">Picture on Front</legend>
-          <label class="label">
-            <input
-              type="checkbox"
-              checked={$config.pictureOnFront}
-              class="toggle"
-              on:change={(e) => {
-                $setConfig("pictureOnFront", e.target.checked);
-              }}
-            />
-          </label>
-        </fieldset>
-        <fieldset class="fieldset py-0">
-          <legend class="fieldset-legend">
-            Mute NSFW
-            <div
-              class="tooltip"
-              data-tip="Prevent SentenceAudio from playing on NSFW cards. Does not work with AnkiDroid old study screen"
-            >
-              <InfoIcon class="size-4 text-base-content-calm" />
-            </div>
-          </legend>
-          <label class="label">
-            <input
-              type="checkbox"
-              checked={$config.muteNsfw}
-              class="toggle"
-              on:change={(e) => {
-                $setConfig("muteNsfw", e.target.checked);
-              }}
-            />
-          </label>
-        </fieldset>
-        <fieldset class="fieldset py-0">
-          <legend class="fieldset-legend">
-            Mobile Layout Alt
-            <div class="tooltip" data-tip="Swap Sentence and Definition position on mobile">
-              <InfoIcon class="size-4 text-base-content-calm" />
-            </div>
-          </legend>
-          <label class="label">
-            <input
-              type="checkbox"
-              checked={$config.swapSentenceAndDefinitionOnMobile}
-              class="toggle"
-              on:change={(e) => {
-                $setConfig("swapSentenceAndDefinitionOnMobile", e.target.checked);
-              }}
-            />
-          </label>
-        </fieldset>
-        <fieldset class="fieldset py-0">
-          <legend class="fieldset-legend">
-            Prefer AnkiConnect
-            <div
-              class="tooltip"
-              data-tip="Query notes via AnkiConnect instead of the notes cache (Desktop only). May be slower and cause Anki to lag under heavy queries"
-            >
-              <InfoIcon class="size-4 text-base-content-calm" />
-            </div>
-          </legend>
-          <label class="label">
-            <input
-              type="checkbox"
-              checked={$config.preferAnkiConnect}
-              class="toggle"
-              on:change={(e) => {
-                $setConfig("preferAnkiConnect", e.target.checked);
-              }}
-            />
-          </label>
-        </fieldset>
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Layout Max Width</legend>
-          <input
-            on:change={(e) => {
-              const target = e.target as HTMLInputElement;
-              const value = tailwindContainerSize[Number(target.value)] as TailwindContainerSize;
-              $setConfig("layoutMaxWidth", value);
-            }}
-            type="range"
-            min="0"
-            max={(tailwindContainerSize.length - 1).toString()}
-            value={tailwindContainerSize.indexOf($config.layoutMaxWidth).toString()}
-            class="range w-full range-sm"
-            step="1"
-          />
-          <div class="flex justify-between px-2.5 text-xs">
-            <For each={tailwindContainerSize}>{(_) => <span>|</span>}</For>
-          </div>
-          <div class="flex justify-between px-2.5 text-xs">
-            <For each={tailwindContainerSize}>{(label) => <span>{label}</span>}</For>
-          </div>
-        </fieldset>
+        <ToggleSetting configKey="blurNsfw" label="Blur NSFW" />
+        <ToggleSetting configKey="pictureOnFront" label="Picture on Front" />
+        <ToggleSetting
+          configKey="muteNsfw"
+          label="Mute NSFW"
+          tooltip="Prevent SentenceAudio from playing on NSFW cards. Does not work with AnkiDroid old study screen"
+        />
+        <ToggleSetting
+          configKey="swapSentenceAndDefinitionOnMobile"
+          label="Mobile Layout Alt"
+          tooltip="Swap Sentence and Definition position on mobile"
+        />
+        <ToggleSetting
+          configKey="preferAnkiConnect"
+          label="Prefer AnkiConnect"
+          tooltip="Query notes via AnkiConnect instead of the notes cache (Desktop only). May be slower and cause Anki to lag under heavy queries"
+        />
+        <RangeSetting
+          configKey="layoutMaxWidth"
+          label="Layout Max Width"
+          values={tailwindContainerSize}
+        />
       </div>
-    </div>
+    </Section>
   );
 }
 
 function DefinitionSettings() {
-  const { $config, $setConfig } = useConfigContext();
-
   return (
-    <div class="flex flex-col gap-4 animate-fade-in relative">
-      <div class="flex gap-2 items-center justify-between">
-        <div class="text-2xl font-bold">Definition</div>
-      </div>
+    <Section>
+      <SectionTitle>Definition</SectionTitle>
       <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Style</legend>
-          <select
-            class="select w-full"
-            on:change={(e) => {
-              const target = e.target as HTMLSelectElement;
-              $setConfig("definitionStyle", target.value as DefinitionStyle);
-            }}
-          >
-            <option value="normal" selected={$config.definitionStyle === "normal"}>
-              Normal (3 Pages)
-            </option>
-            <option value="single-page" selected={$config.definitionStyle === "single-page"}>
-              Single Page (Appended)
-            </option>
-            <option value="glossary-split" selected={$config.definitionStyle === "glossary-split"}>
-              Glossary Split (Per Dictionary)
-            </option>
-          </select>
-          <div class="fieldset-label text-xs opacity-70">
-            {(() => {
-              if ($config.definitionStyle === "normal")
-                return "Shows Selection, Main Definition, and Glossary as separate pages.";
-              if ($config.definitionStyle === "single-page")
-                return "Appends all definitions into a single scrollable page.";
-              return "Splits the glossary into individual pages for each dictionary. Only works with Yomitan format";
-            })()}
-          </div>
-        </fieldset>
-        <fieldset class="fieldset py-0">
-          <legend class="fieldset-legend">
-            Collect Glossary Images
-            <div
-              class="tooltip"
-              data-tip="Show images extracted from the glossary in the definition picture section."
-            >
-              <InfoIcon class="size-4 text-base-content-calm" />
-            </div>
-          </legend>
-          <label class="label">
-            <input
-              type="checkbox"
-              checked={$config.definitionPictureFromGlossary}
-              class="toggle"
-              on:change={(e) => {
-                $setConfig("definitionPictureFromGlossary", e.target.checked);
-              }}
-            />
-          </label>
-        </fieldset>
+        <SelectSetting
+          configKey="definitionStyle"
+          label="Style"
+          options={[
+            {
+              value: "normal",
+              label: "Normal (3 Pages)",
+              description: "Shows Selection, Main Definition, and Glossary as separate pages.",
+            },
+            {
+              value: "single-page",
+              label: "Single Page (Appended)",
+              description: "Appends all definitions into a single scrollable page.",
+            },
+            {
+              value: "glossary-split",
+              label: "Glossary Split (Per Dictionary)",
+              description:
+                "Splits the glossary into individual pages for each dictionary. Only works with Yomitan format",
+            },
+          ]}
+        />
+        <ToggleSetting
+          configKey="definitionPictureFromGlossary"
+          label="Collect Glossary Images"
+          tooltip="Show images extracted from the glossary in the definition picture section."
+        />
       </div>
-    </div>
+    </Section>
   );
 }
 
 function ModSettings() {
-  const { $config, $setConfig } = useConfigContext();
-
   return (
-    <div class="flex flex-col gap-4 animate-fade-in relative">
-      <div class="flex gap-2 items-center justify-between">
-        <div class="text-2xl font-bold">Mod</div>
-      </div>
-
+    <Section>
+      <SectionTitle>Mod</SectionTitle>
       <div>
         <div class="text-lg font-bold flex gap-2 items-center">
           Hidden
@@ -432,48 +323,13 @@ function ModSettings() {
           </div>
         </div>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
-          <fieldset class="fieldset py-0">
-            <legend class="fieldset-legend">Enable</legend>
-            <label class="label">
-              <input
-                type="checkbox"
-                checked={$config.modHidden}
-                class="toggle"
-                on:change={(e) => {
-                  $setConfig("modHidden", e.target.checked);
-                }}
-              />
-            </label>
-          </fieldset>
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Timeout</legend>
-            <input
-              on:change={(e) => {
-                const value = e.target.value;
-                $setConfig("modHiddenDuration", Number(value));
-              }}
-              type="range"
-              min="1000"
-              max={"5000"}
-              value={$config.modHiddenDuration.toString()}
-              class="range w-full range-sm"
-              step="1000"
-            />
-            <div class="flex justify-between px-2.5 text-xs">
-              <span>|</span>
-              <span>|</span>
-              <span>|</span>
-              <span>|</span>
-              <span>|</span>
-            </div>
-            <div class="flex justify-between px-2.5 text-xs">
-              <span>1s</span>
-              <span>2s</span>
-              <span>3s</span>
-              <span>4s</span>
-              <span>5s</span>
-            </div>
-          </fieldset>
+          <ToggleSetting configKey="modHidden" label="Enable" />
+          <RangeSetting
+            configKey="modHiddenDuration"
+            label="Timeout"
+            values={[1000, 2000, 3000, 4000, 5000]}
+            labels={["1s", "2s", "3s", "4s", "5s"]}
+          />
         </div>
       </div>
       <div>
@@ -484,27 +340,15 @@ function ModSettings() {
           </div>
         </div>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
-          <fieldset class="fieldset py-0">
-            <legend class="fieldset-legend">Enable</legend>
-            <label class="label">
-              <input
-                type="checkbox"
-                checked={$config.modVertical}
-                class="toggle"
-                on:change={(e) => {
-                  $setConfig("modVertical", e.target.checked);
-                }}
-              />
-            </label>
-          </fieldset>
+          <ToggleSetting configKey="modVertical" label="Enable" />
         </div>
       </div>
-    </div>
+    </Section>
   );
 }
 
 function ThemeSettings() {
-  const { $config, $setConfig } = useConfigContext();
+  const { $config } = useConfigContext();
   const { initialDarkMode } = useGeneralContext();
   const { $changeTheme } = useThemeTransition();
   const [$darkMode, $setDarkMode] = createSignal(initialDarkMode);
@@ -532,9 +376,9 @@ function ThemeSettings() {
   });
 
   return (
-    <div class="flex flex-col gap-4 animate-fade-in">
+    <Section>
       <div class="flex gap-4 items-center">
-        <div class="text-2xl font-bold">Theme</div>
+        <SectionTitle>Theme</SectionTitle>
         <div class="flex items-center gap-2">
           <div role="tablist" class="tabs tabs-box self-start flex-nowrap">
             <button
@@ -571,19 +415,7 @@ function ThemeSettings() {
       </div>
 
       <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
-        <fieldset class="fieldset py-0">
-          <legend class="fieldset-legend">Show Theme</legend>
-          <label class="label">
-            <input
-              type="checkbox"
-              checked={$config.showTheme}
-              class="toggle"
-              on:change={(e) => {
-                $setConfig("showTheme", e.target.checked);
-              }}
-            />
-          </label>
-        </fieldset>
+        <ToggleSetting configKey="showTheme" label="Show Theme" />
       </div>
 
       <ThemeGrid
@@ -592,7 +424,7 @@ function ThemeSettings() {
           $changeTheme(theme, $darkMode() ? "dark" : "light");
         }}
       />
-    </div>
+    </Section>
   );
 }
 
@@ -644,171 +476,82 @@ function ThemeGrid(props: { selected: DaisyUITheme; onSelect: (theme: DaisyUIThe
 }
 
 function FontSettings() {
-  const { $config, $setConfig } = useConfigContext();
-
   return (
-    <div class="flex flex-col gap-4 animate-fade-in">
-      <div class="text-2xl font-bold">Font</div>
+    <Section>
+      <SectionTitle>Font</SectionTitle>
       <div>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] rounded-box gap-4">
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">
-              Primary
-              <button
-                on:click={() => {
-                  $setConfig("systemFontPrimary", defaultConfig.systemFontPrimary);
-                }}
-                on:touchend={(e) => e.stopPropagation()}
-              >
-                <UndoIcon
-                  class="size-4 cursor-pointer"
-                  classList={{
-                    hidden: $config.systemFontPrimary === defaultConfig.systemFontPrimary,
-                  }}
-                />
-              </button>
-            </legend>
-            <input
-              type="text"
-              class="input w-full"
-              placeholder={defaultConfig.systemFontPrimary}
-              value={$config.systemFontPrimary}
-              on:input={(e) => {
-                $setConfig("systemFontPrimary", (e.target as HTMLInputElement).value);
-              }}
-            />
-          </fieldset>
+          <TextSetting configKey="systemFontPrimary" label="Primary" />
         </div>
       </div>
 
       <div>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] rounded-box gap-4">
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">
-              Secondary
-              <button
-                on:click={() => {
-                  $setConfig("systemFontSecondary", defaultConfig.systemFontSecondary);
-                }}
-                on:touchend={(e) => e.stopPropagation()}
-              >
-                <UndoIcon
-                  class="size-4 cursor-pointer"
-                  classList={{
-                    hidden: $config.systemFontSecondary === defaultConfig.systemFontSecondary,
-                  }}
-                />
-              </button>
-            </legend>
-            <input
-              type="text"
-              class="input w-full"
-              placeholder={defaultConfig.systemFontSecondary}
-              value={$config.systemFontSecondary}
-              on:input={(e) => {
-                $setConfig("systemFontSecondary", (e.target as HTMLInputElement).value);
-              }}
-            />
-          </fieldset>
+          <TextSetting configKey="systemFontSecondary" label="Secondary" />
         </div>
       </div>
-    </div>
+    </Section>
   );
 }
 
 function FontSizeSettings() {
   return (
-    <div class="flex flex-col gap-4 animate-fade-in">
+    <Section>
       <div class="collapse gap-4 collapse-arrow">
         <input type="checkbox" />
         <div class="collapse-title p-0">
-          <div class="text-2xl font-bold">Font Size</div>
+          <SectionTitle>Font Size</SectionTitle>
         </div>
         <div class="collapse-content p-0 flex flex-col gap-4">
           <div>
             <div class="text-lg font-bold">Mobile</div>
             <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-x-4 gap-y-4 sm:gap-y-2">
-              <FontSizeSettingsFieldset configKey="fontSizeBaseExpression" label="Expression" />
-              <FontSizeSettingsFieldset configKey="fontSizeBasePitch" label="Pitch" />
-              <FontSizeSettingsFieldset configKey="fontSizeBaseSentence" label="Sentence" />
-              <FontSizeSettingsFieldset configKey="fontSizeBaseMiscInfo" label="Misc Info" />
-              <FontSizeSettingsFieldset configKey="fontSizeBaseHint" label="Hint" />
+              <FontSizeRangeSetting configKey="fontSizeBaseExpression" label="Expression" />
+              <FontSizeRangeSetting configKey="fontSizeBasePitch" label="Pitch" />
+              <FontSizeRangeSetting configKey="fontSizeBaseSentence" label="Sentence" />
+              <FontSizeRangeSetting configKey="fontSizeBaseMiscInfo" label="Misc Info" />
+              <FontSizeRangeSetting configKey="fontSizeBaseHint" label="Hint" />
             </div>
           </div>
           <div>
             <div class="text-lg font-bold">Desktop</div>
             <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-x-4 gap-y-4 sm:gap-y-2">
-              <FontSizeSettingsFieldset configKey="fontSizeSmExpression" label="Expression" />
-              <FontSizeSettingsFieldset configKey="fontSizeSmPitch" label="Pitch" />
-              <FontSizeSettingsFieldset configKey="fontSizeSmSentence" label="Sentence" />
-              <FontSizeSettingsFieldset configKey="fontSizeSmMiscInfo" label="Misc Info" />
-              <FontSizeSettingsFieldset configKey="fontSizeSmHint" label="Hint" />
+              <FontSizeRangeSetting configKey="fontSizeSmExpression" label="Expression" />
+              <FontSizeRangeSetting configKey="fontSizeSmPitch" label="Pitch" />
+              <FontSizeRangeSetting configKey="fontSizeSmSentence" label="Sentence" />
+              <FontSizeRangeSetting configKey="fontSizeSmMiscInfo" label="Misc Info" />
+              <FontSizeRangeSetting configKey="fontSizeSmHint" label="Hint" />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Section>
   );
 }
 
-function FontSizeSettingsFieldset(props: { configKey: keyof KikuConfig; label: string }) {
-  const { $config, $setConfig } = useConfigContext();
-  const configValue = () => $config[props.configKey] as TailwindSize;
-
+function FontSizeRangeSetting(props: { configKey: NumStrConfigKey; label: string }) {
   return (
-    <div class="w-full">
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">
-          {props.label}{" "}
-          <button
-            on:click={() => {
-              $setConfig(props.configKey, defaultConfig[props.configKey]);
+    <RangeSetting
+      configKey={props.configKey}
+      label={props.label}
+      values={tailwindSize}
+      showUndo
+      rangeSize="xs"
+      Preview={(props) => {
+        const v = props.value as TailwindSize;
+        return (
+          <div
+            class="font-secondary"
+            style={{
+              "font-size": tailwindFontSizeVar[v].fontSize,
+              "line-height": tailwindFontSizeVar[v].lineHeight,
             }}
-            on:touchend={(e) => e.stopPropagation()}
           >
-            <UndoIcon
-              class="size-4 cursor-pointer"
-              classList={{
-                hidden: $config[props.configKey] === defaultConfig[props.configKey],
-              }}
-            />
-          </button>
-        </legend>
-
-        <div class="tooltip">
-          <div class="tooltip-content">
-            <div
-              class={`font-secondary`}
-              style={{
-                "font-size": tailwindFontSizeVar[configValue()].fontSize,
-                "line-height": tailwindFontSizeVar[configValue()].lineHeight,
-              }}
-            >
-              あ
-            </div>
+            あ
           </div>
-          <input
-            on:change={(e) => {
-              const target = e.target as HTMLInputElement;
-              const value = tailwindSize[Number(target.value)] as TailwindSize;
-              $setConfig(props.configKey, value);
-            }}
-            type="range"
-            min="0"
-            max={(tailwindSize.length - 1).toString()}
-            value={tailwindSize.indexOf(configValue()).toString()}
-            class="range range-xs w-full "
-            step="1"
-          />
-        </div>
-        <div class="flex justify-between px-2 mt-1 text-xs">
-          <For each={tailwindSize}>{(_) => <span>|</span>}</For>
-        </div>
-        <div class="flex justify-between px-2 mt-1 text-xs">
-          <For each={tailwindSize}>{(label) => <span>{label}</span>}</For>
-        </div>
-      </fieldset>
-    </div>
+        );
+      }}
+    />
   );
 }
 
@@ -843,13 +586,11 @@ function ClipboardCopyButton(props: { text: string | (() => string) }) {
 }
 
 function AnkiDroidSettings() {
-  const { $config, $setConfig } = useConfigContext();
   const { isAnkiDroidNewStudyScreen } = useGeneralContext();
 
   return (
-    <div class="flex flex-col gap-2 animate-fade-in">
-      <div class="text-2xl font-bold">AnkiDroid</div>
-
+    <Section>
+      <SectionTitle>AnkiDroid</SectionTitle>
       <Show when={isAnkiDroidNewStudyScreen}>
         <div role="alert" class="alert alert-warning">
           AnkiDroid integration is not available on AnkiDroid new study screen yet.
@@ -857,44 +598,21 @@ function AnkiDroidSettings() {
       </Show>
       <div>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] rounded-box gap-x-4 gap-y-2">
-          <fieldset class="fieldset bg-base-100 border-base-300 rounded-box">
-            <legend class="fieldset-legend">Enable Integration</legend>
-            <label class="label">
-              <input
-                type="checkbox"
-                checked={$config.ankiDroidEnableIntegration}
-                class="toggle"
-                on:change={(e) => {
-                  $setConfig("ankiDroidEnableIntegration", e.target.checked);
-                }}
-              />
-            </label>
-          </fieldset>
-
-          <fieldset class="fieldset bg-base-100 border-base-300 rounded-box">
-            <legend class="fieldset-legend">Reverse Swipe Direction</legend>
-            <label class="label">
-              <input
-                type="checkbox"
-                checked={$config.ankiDroidReverseSwipeDirection}
-                class="toggle"
-                on:change={(e) => {
-                  $setConfig("ankiDroidReverseSwipeDirection", e.target.checked);
-                }}
-              />
-            </label>
-          </fieldset>
+          <ToggleSetting configKey="ankiDroidEnableIntegration" label="Enable Integration" />
+          <ToggleSetting
+            configKey="ankiDroidReverseSwipeDirection"
+            label="Reverse Swipe Direction"
+          />
         </div>
       </div>
-    </div>
+    </Section>
   );
 }
 
 function KeybindSettings() {
   return (
-    <div class="flex flex-col gap-4 animate-fade-in relative">
-      <div class="text-2xl font-bold">Keybind</div>
-
+    <Section>
+      <SectionTitle>Keybind</SectionTitle>
       <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
         <div>
           <div class="text-lg font-bold">Definition Page</div>
@@ -911,55 +629,12 @@ function KeybindSettings() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function KeybindInput(props: { label: string; configKey: keyof KikuConfig }) {
-  const { $config, $setConfig } = useConfigContext();
-  const [$isRecording, $setIsRecording] = createSignal(false);
-
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (!$isRecording()) return;
-    e.preventDefault();
-    $setConfig(props.configKey, e.key);
-    $setIsRecording(false);
-  };
-
-  return (
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">
-        {props.label}{" "}
-        <button
-          on:click={() => {
-            $setConfig(props.configKey, defaultConfig[props.configKey]);
-          }}
-          on:touchend={(e) => e.stopPropagation()}
-        >
-          <UndoIcon
-            class="size-4 cursor-pointer"
-            classList={{
-              hidden: $config[props.configKey] === defaultConfig[props.configKey],
-            }}
-          />
-        </button>
-      </legend>
-      <button
-        type="button"
-        class="btn btn-sm w-full font-mono"
-        classList={{ "btn-primary": $isRecording() }}
-        on:click={() => $setIsRecording(!$isRecording())}
-        on:touchend={(e) => e.stopPropagation()}
-        on:keydown={onKeyDown}
-      >
-        {$isRecording() ? "Press any key..." : ($config[props.configKey] as string)}
-      </button>
-    </fieldset>
+    </Section>
   );
 }
 
 function DebugSettings() {
-  const { $config, $setConfig } = useConfigContext();
+  const { $config } = useConfigContext();
   const { initialAnkiFields } = useAnkiFieldContext();
   const { logger } = useGeneralContext();
   const { $initialSide } = useCardContext();
@@ -1013,51 +688,14 @@ function DebugSettings() {
   return (
     <div class="collapse collapse-arrow">
       <input type="checkbox" />
-      <div class="collapse-title text-2xl font-bold p-0">Debug</div>
+      <div class="collapse-title p-0">
+        <SectionTitle>Debug</SectionTitle>
+      </div>
       <div class="collapse-content p-0">
         <div class="flex flex-col gap-4 animate-fade-in ">
           <div class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] rounded-box gap-x-4 gap-y-2">
-            <fieldset class="fieldset">
-              <legend class="fieldset-legend">
-                AnkiConnect Address
-                <button
-                  on:click={() => {
-                    $setConfig("ankiConnectAddress", defaultConfig.ankiConnectAddress);
-                  }}
-                  on:touchend={(e) => e.stopPropagation()}
-                >
-                  <UndoIcon
-                    class="size-4 cursor-pointer"
-                    classList={{
-                      hidden: $config.ankiConnectAddress === defaultConfig.ankiConnectAddress,
-                    }}
-                  />
-                </button>
-              </legend>
-              <input
-                type="text"
-                class="input w-full"
-                placeholder={defaultConfig.ankiConnectAddress}
-                value={$config.ankiConnectAddress}
-                on:input={(e) => {
-                  const value = (e.target as HTMLInputElement).value;
-                  $setConfig("ankiConnectAddress", value);
-                }}
-              />
-            </fieldset>
-            <fieldset class="fieldset bg-base-100 border-base-300 rounded-box w-64 py-4">
-              <legend class="fieldset-legend">Show Startup Time</legend>
-              <label class="label">
-                <input
-                  type="checkbox"
-                  checked={$config.showStartupTime}
-                  class="toggle"
-                  on:change={(e) => {
-                    $setConfig("showStartupTime", e.target.checked);
-                  }}
-                />
-              </label>
-            </fieldset>
+            <TextSetting configKey="ankiConnectAddress" label="AnkiConnect Address" />
+            <ToggleSetting configKey="showStartupTime" label="Show Startup Time" />
           </div>
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
