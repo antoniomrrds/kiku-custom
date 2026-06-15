@@ -135,7 +135,11 @@ export function Front() {
               </div>
             </div>
           )}
-          {$card.ready && <Lazy.AudioButtons position={2} />}
+          {$card.ready && (
+            <Show when={!$isInitialSide()}>
+              <Lazy.AudioButtons position={2} />
+            </Show>
+          )}
         </Match>
       </Switch>
       {$card.ready && <Lazy.AudioElements />}
