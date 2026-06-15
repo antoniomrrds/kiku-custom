@@ -112,44 +112,46 @@ function Page() {
       <Match when={!$kanjiPage.nested}>
         <HeaderKanjiPage />
         <div class="flex flex-col gap-2 sm:gap-4">
-          <div role="tablist" class="tabs tabs-box animate-fade-in">
-            <TabItem
-              active={$kanjiPage.tab === "kanji"}
-              neverDisabled={true}
-              onClick={() => {
-                $setKanjiPage("tab", "kanji");
-              }}
-            >
-              漢字
-            </TabItem>
-            <TabItem
-              active={$kanjiPage.tab === "reading"}
-              count={$kanjiPage.sameReading?.length ?? 0}
-              onClick={() => {
-                $setKanjiPage("tab", "reading");
-              }}
-            >
-              読
-            </TabItem>
-            <TabItem
-              active={$kanjiPage.tab === "same"}
-              count={$kanjiPage.sameExpression?.length ?? 0}
-              onClick={() => {
-                $setKanjiPage("tab", "same");
-              }}
-            >
-              同
-            </TabItem>
-            <TabItem
-              active={$kanjiPage.tab === "related"}
-              count={$$relatedNotes().length}
-              onClick={() => {
-                $setKanjiPage("tab", "related");
-              }}
-            >
-              関
-            </TabItem>
-          </div>
+          <Show when={!$kanjiPage.contextLabel}>
+            <div role="tablist" class="tabs tabs-box animate-fade-in">
+              <TabItem
+                active={$kanjiPage.tab === "kanji"}
+                neverDisabled={true}
+                onClick={() => {
+                  $setKanjiPage("tab", "kanji");
+                }}
+              >
+                漢字
+              </TabItem>
+              <TabItem
+                active={$kanjiPage.tab === "reading"}
+                count={$kanjiPage.sameReading?.length ?? 0}
+                onClick={() => {
+                  $setKanjiPage("tab", "reading");
+                }}
+              >
+                読
+              </TabItem>
+              <TabItem
+                active={$kanjiPage.tab === "same"}
+                count={$kanjiPage.sameExpression?.length ?? 0}
+                onClick={() => {
+                  $setKanjiPage("tab", "same");
+                }}
+              >
+                同
+              </TabItem>
+              <TabItem
+                active={$kanjiPage.tab === "related"}
+                count={$$relatedNotes().length}
+                onClick={() => {
+                  $setKanjiPage("tab", "related");
+                }}
+              >
+                関
+              </TabItem>
+            </div>
+          </Show>
           <div class="flex flex-col items-center gap-2 animate-fade-in">
             <div class="font-secondary text-5xl sm:text-6xl">
               <Switch>
