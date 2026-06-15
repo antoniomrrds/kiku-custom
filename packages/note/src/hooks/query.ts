@@ -1,7 +1,7 @@
 import { createMemo, createResource, type Accessor } from "solid-js";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
-import { type CardStore } from "#/src/contexts/CardContext";
-import { type AnkiNote } from "#/src/lib/types";
+import type { CardStore } from "#/src/contexts/CardContext";
+import type { AnkiNote } from "#/src/lib/types";
 import { type Store, unwrap } from "solid-js/store";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 import { extractKanji } from "#/src/lib/kana";
