@@ -425,11 +425,11 @@ function KanjiKeywordTooltip(props: KanjiKeywordProps) {
     $setCard("initialFocus", { kanji: props.parentKanji, noteId: undefined });
     $setCard("uniqueId", createUniqueId());
     onKanjiPageMount.add(({ $setKanjiPage }) => {
-      navigate(
-        () => applyNestedKanjiPageState($setKanjiPage, props),
-        "forward",
+      applyNestedKanjiPageState($setKanjiPage, props);
+      $setCard("navigateBack", (old) => [
+        ...old,
         () => navigate(() => $setKanjiPage("nested", false), "back"),
-      );
+      ]);
     });
     navigate("kanji", "forward", () => navigate("main", "back"));
   };
