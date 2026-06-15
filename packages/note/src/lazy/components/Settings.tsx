@@ -93,7 +93,7 @@ export function Settings() {
   return (
     <>
       <HeaderSettings />
-      <div class="pb-16">
+      <div class="sm:pb-14">
         <GeneralSettings />
         <div class="divider"></div>
         <DefinitionSettings />
@@ -111,7 +111,6 @@ export function Settings() {
         <KeybindSettings />
         <div class="divider"></div>
         <DebugSettings />
-        <div class="divider"></div>
         <Portal mount={$general.layoutRef}>
           <div
             class="bottom-0 w-full pointer-events-none"
@@ -215,7 +214,7 @@ function KikuVersion(props: { latestVersion?: string | null }) {
 }
 
 function Section(props: { children: JSX.Element }) {
-  return <div class="flex flex-col gap-4 animate-fade-in relative">{props.children}</div>;
+  return <div class="flex flex-col gap-2 sm:gap-4 animate-fade-in relative">{props.children}</div>;
 }
 
 function SectionTitle(props: { children: JSX.Element }) {
@@ -246,7 +245,7 @@ function GeneralSettings() {
         </div>
       </Show>
       <SectionTitle>General</SectionTitle>
-      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-2 sm:gap-4">
         <ToggleSetting configKey="blurNsfw" label="Blur NSFW" />
         <ToggleSetting configKey="pictureOnFront" label="Picture on Front" />
         <ToggleSetting
@@ -278,7 +277,7 @@ function DefinitionSettings() {
   return (
     <Section>
       <SectionTitle>Definition</SectionTitle>
-      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-2 sm:gap-4">
         <SelectSetting
           configKey="definitionStyle"
           label="Style"
@@ -322,7 +321,7 @@ function ModSettings() {
             <InfoIcon class="size-4 text-base-content-calm" />
           </div>
         </div>
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-2 sm:gap-4">
           <ToggleSetting configKey="modHidden" label="Enable" />
           <RangeSetting
             configKey="modHiddenDuration"
@@ -339,7 +338,7 @@ function ModSettings() {
             <InfoIcon class="size-4 text-base-content-calm" />
           </div>
         </div>
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-2 sm:gap-4">
           <ToggleSetting configKey="modVertical" label="Enable" />
         </div>
       </div>
@@ -377,44 +376,43 @@ function ThemeSettings() {
 
   return (
     <Section>
-      <div class="flex gap-4 items-center">
+      <div class="flex gap-x-4 sm:gap-x-2 gap-y-1 items-center flex-wrap">
         <SectionTitle>Theme</SectionTitle>
-        <div class="flex items-center gap-2">
-          <div role="tablist" class="tabs tabs-box self-start flex-nowrap">
+        <div role="tablist" class="tabs tabs-sm sm:tabs-md tabs-box self-start flex-nowrap">
+          <button
+            role="tab"
+            class="tab"
+            classList={{ "tab-active": !$darkMode() }}
+            on:click={() => $setDarkMode(false)}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            Light
+          </button>
+          <button
+            role="tab"
+            class="tab"
+            classList={{ "tab-active": $darkMode() }}
+            on:click={() => $setDarkMode(true)}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            Dark
+          </button>
+        </div>
+        <Show when={$hasModified() && $darkMode() !== initialDarkMode}>
+          <div class="text-xs text-base-content-faint flex items-center gap-2">
+            <span>{$darkMode() ? "Dark" : "Light"} theme has been emulated</span>
             <button
-              role="tab"
-              class="tab"
-              classList={{ "tab-active": !$darkMode() }}
-              on:click={() => $setDarkMode(false)}
+              class="text-base-content-soft"
+              on:click={() => $setDarkMode(initialDarkMode)}
               on:touchend={(e) => e.stopPropagation()}
             >
-              Light
-            </button>
-            <button
-              role="tab"
-              class="tab"
-              classList={{ "tab-active": $darkMode() }}
-              on:click={() => $setDarkMode(true)}
-              on:touchend={(e) => e.stopPropagation()}
-            >
-              Dark
+              <UndoIcon class="size-4 cursor-pointer" />
             </button>
           </div>
-          <Show when={$hasModified() && $darkMode() !== initialDarkMode}>
-            <div class="text-xs text-base-content-faint flex items-center gap-2">
-              <span>{$darkMode() ? "Dark" : "Light"} theme has been emulated</span>
-              <button
-                on:click={() => $setDarkMode(initialDarkMode)}
-                on:touchend={(e) => e.stopPropagation()}
-              >
-                <UndoIcon class="size-4 cursor-pointer" />
-              </button>
-            </div>
-          </Show>
-        </div>
+        </Show>
       </div>
 
-      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-2 sm:gap-4 pb-2 sm:pb-0">
         <ToggleSetting configKey="showTheme" label="Show Theme" />
       </div>
 
@@ -430,7 +428,7 @@ function ThemeSettings() {
 
 function ThemeGrid(props: { selected: DaisyUITheme; onSelect: (theme: DaisyUITheme) => void }) {
   return (
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] rounded-box gap-4">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] rounded-box gap-2 sm:gap-4">
       {daisyUIThemes.map((theme, i) => {
         const even = i % 2 === 0;
         return (
@@ -479,16 +477,12 @@ function FontSettings() {
   return (
     <Section>
       <SectionTitle>Font</SectionTitle>
-      <div>
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] rounded-box gap-4">
-          <TextSetting configKey="systemFontPrimary" label="Primary" />
-        </div>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] rounded-box gap-4">
+        <TextSetting configKey="systemFontPrimary" label="Primary" />
       </div>
 
-      <div>
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] rounded-box gap-4">
-          <TextSetting configKey="systemFontSecondary" label="Secondary" />
-        </div>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] rounded-box gap-4">
+        <TextSetting configKey="systemFontSecondary" label="Secondary" />
       </div>
     </Section>
   );
@@ -613,17 +607,17 @@ function KeybindSettings() {
   return (
     <Section>
       <SectionTitle>Keybind</SectionTitle>
-      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-4">
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-2 sm:gap-4">
         <div>
           <div class="text-lg font-bold">Definition Page</div>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2 gap-2 sm:gap-4">
             <KeybindInput label="Previous" configKey="keybindDefinitionPrev" />
             <KeybindInput label="Next" configKey="keybindDefinitionNext" />
           </div>
         </div>
         <div>
           <div class="text-lg font-bold">Field Group</div>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2 gap-2 sm:gap-4">
             <KeybindInput label="Previous" configKey="keybindFieldGroupPrev" />
             <KeybindInput label="Next" configKey="keybindFieldGroupNext" />
           </div>

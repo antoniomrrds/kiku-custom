@@ -62,7 +62,7 @@ export function ToggleSetting(props: {
       <legend class="fieldset-legend">
         {props.label}
         <Show when={props.tooltip}>
-          <div class="tooltip" data-tip={props.tooltip}>
+          <div class="tooltip before:max-w-32 sm:before:max-w-64" data-tip={props.tooltip}>
             <InfoIcon class="size-4 text-base-content-calm" />
           </div>
         </Show>
