@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, lazy, on, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import type { DatasetProp } from "#/src/lib/config";
 import { parseHtml } from "#/src/lib/dom";
@@ -7,7 +7,10 @@ import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 import { usePictureModalTransition } from "#/src/hooks/transition";
-import { ArrowLeftIcon } from "../lazy/components/Icons";
+
+const Lazy = {
+  ArrowLeftIcon: lazy(async () => ({ default: (await import("#/src/lazy")).ArrowLeftIcon })),
+};
 
 export function PictureSection() {
   const { $card, $isInitialSide } = useCardContext();
@@ -108,7 +111,7 @@ export function PictureSection() {
             on:click={prev}
             on:touchend={(e) => e.stopPropagation()}
           >
-            <ArrowLeftIcon class="size-3 sm:size-4 text-base-100"></ArrowLeftIcon>
+            <Lazy.ArrowLeftIcon class="size-3 sm:size-4 text-base-100"></Lazy.ArrowLeftIcon>
           </button>
           <button
             type="button"
@@ -116,7 +119,7 @@ export function PictureSection() {
             on:click={next}
             on:touchend={(e) => e.stopPropagation()}
           >
-            <ArrowLeftIcon class="size-3 sm:size-4 text-base-100 rotate-180"></ArrowLeftIcon>
+            <Lazy.ArrowLeftIcon class="size-3 sm:size-4 text-base-100 rotate-180"></Lazy.ArrowLeftIcon>
           </button>
         </div>
         <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none">

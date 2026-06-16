@@ -14,3 +14,4 @@ export { RelatedExpression } from "./components/RelatedExpression";
 export { Sentence } from "./components/Sentence";
 export { Settings } from "./components/Settings";
 export { UseAnkiDroid } from "./components/UseAnkiDroid";
+export { ArrowLeftIcon } from "./components/Icons";

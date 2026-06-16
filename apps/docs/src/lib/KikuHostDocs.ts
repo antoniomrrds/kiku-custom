@@ -130,8 +130,7 @@ export class KikuHostDocs extends KikuHost {
       const kikuCSS = await import("@repo/note/_kiku.css?inline");
       kikuCSSStyleSheet.replaceSync(kikuCSS.default);
     } else {
-      const kikuCssUrl = new URL("/_kiku.css", import.meta.url);
-      const kikuCssRes = await fetch(kikuCssUrl.toString());
+      const kikuCssRes = await fetch("/_kiku.css");
       const kikuCss = await kikuCssRes.text();
       kikuCSSStyleSheet.replaceSync(kikuCss);
     }
