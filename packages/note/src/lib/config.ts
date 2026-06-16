@@ -240,26 +240,25 @@ export function getCssVarDark(config: KikuConfig) {
 }
 
 export const LIGHT_VARS_REGEX =
-  /\.card:has\(> #qa\), #kiku-container #kiku-root, #kiku-container #kiku-host::part\(root\), #kiku-root \{[^]*?\}/;
+  /\.card:has\(> #qa\), #kiku-host::part\(root\), #kiku-root \{[^]*?\}/;
 export const DARK_VARS_REGEX =
-  /\.card:has\(> #qa\)\.nightMode, \.nightMode #kiku-container #kiku-root, \.nightMode #kiku-container #kiku-host::part\(root\), #kiku-root\[data-dark-mode\] \{[^]*?\}/;
+  /\.card:has\(> #qa\)\.nightMode, \.nightMode #kiku-host::part\(root\), \.nightMode #kiku-root \{[^]*?\}/;
 
 export function updateConfigState({
   root,
-  container,
+  host,
   config,
   styleTags = [],
 }: {
   root: HTMLElement;
-  container: HTMLElement;
+  host: HTMLElement;
   config: KikuConfig;
   styleTags?: HTMLStyleElement[];
-  updateDocument: boolean;
 }) {
   const dataset = getRootDatasetConfig(config);
 
-  container.dataset.theme = dataset.theme;
-  container.dataset.themeDark = dataset.themeDark;
+  host.dataset.theme = dataset.theme;
+  host.dataset.themeDark = dataset.themeDark;
 
   root.dataset.theme = dataset.theme;
   root.dataset.themeDark = dataset.themeDark;
@@ -284,7 +283,7 @@ export function generateCssVars(vars: Record<string, string>): string {
     .map(([key, value]) => `  ${key}: ${value};`)
     .join("\n");
 
-  return `.card:has(> #qa), #kiku-container #kiku-root, #kiku-container #kiku-host::part(root), #kiku-root {\n${lines}\n}`;
+  return `.card:has(> #qa), #kiku-host::part(root), #kiku-root {\n${lines}\n}`;
 }
 
 export function generateCssVarsDark(vars: Record<string, string>): string {
@@ -292,5 +291,5 @@ export function generateCssVarsDark(vars: Record<string, string>): string {
     .map(([key, value]) => `  ${key}: ${value};`)
     .join("\n");
 
-  return `.card:has(> #qa).nightMode, .nightMode #kiku-container #kiku-root, .nightMode #kiku-container #kiku-host::part(root), #kiku-root[data-dark-mode] {\n${lines}\n}`;
+  return `.card:has(> #qa).nightMode, .nightMode #kiku-host::part(root), .nightMode #kiku-root {\n${lines}\n}`;
 }

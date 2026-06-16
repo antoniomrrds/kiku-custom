@@ -40,197 +40,134 @@ import {
 } from "./lib/types.ts";
 import "./styles/main.css";
 
-export async function init({
-  root,
-  container,
-  side,
-  ankiFields,
-  ssr,
-  config = defaultConfig,
-  aborter = new AbortController(),
-  ankiDroidAPI,
-  logger = new Logger(),
-  cacheStore = {},
-  assetsPath = window.location.origin,
-  isAnkiWeb = false,
-  isAnkiDesktop = typeof pycmd !== "undefined",
-  workerPath,
-  rootDataset,
-  styleTags = [],
-  initialDarkMode = document.body?.classList.contains("nightMode"),
-  isAnkiDroidOldStudyScreen = false,
-  isAnkiDroidNewStudyScreen = false,
-  isAnkiDroid = false,
-}: {
-  root: HTMLElement;
-  container: HTMLElement;
+export class KikuHost extends HTMLElement {
   side: "front" | "back";
-  ankiFields: AnkiFields;
-  ssr?: boolean;
-  config?: KikuConfig | ((defaultConfig: KikuConfig) => KikuConfig);
-  aborter?: AbortController;
-  ankiDroidAPI?: AnkiDroidAPI;
-  logger?: Logger;
-  cacheStore?: CacheStore;
-  assetsPath?: string;
-  isAnkiWeb?: boolean;
-  isAnkiDesktop?: boolean;
-  workerPath?: string;
-  rootDataset?: RootDataset;
-  styleTags?: HTMLStyleElement[];
-  initialDarkMode?: boolean;
-  isAnkiDroidOldStudyScreen?: boolean;
-  isAnkiDroidNewStudyScreen?: boolean;
-  isAnkiDroid?: boolean;
-}) {
-  const [$startupTime, $setStartupTime] = createSignal(0);
-  const now = performance.now();
+  ssr: boolean;
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    const side = this.getAttribute("side");
+    this.side = side === "front" ? "front" : "back";
+    this.ssr = this.hasAttribute("ssr");
+  }
 
-  logger.info("[init] start", {
-    side,
-    expression: ankiFields.Expression,
-    ssr: !!ssr,
-    isAnkiWeb,
-    isAnkiDesktop,
-  });
+  init({
+    root,
+    ankiFields,
+    config = defaultConfig,
+    aborter = new AbortController(),
+    ankiDroidAPI,
+    logger = new Logger(),
+    cacheStore = {},
+    assetsPath = window.location.origin,
+    workerPath,
+    rootDataset,
+    styleTags = [],
+    initialDarkMode = document.body?.classList.contains("nightMode"),
+    isAnkiWeb = false,
+    isAnkiDesktop = typeof pycmd !== "undefined",
+    isAnkiDroidOldStudyScreen = false,
+    isAnkiDroidNewStudyScreen = false,
+    isAnkiDroid = false,
+  }: {
+    root: HTMLElement;
+    ankiFields: AnkiFields;
+    config?: KikuConfig | ((defaultConfig: KikuConfig) => KikuConfig);
+    aborter?: AbortController;
+    ankiDroidAPI?: AnkiDroidAPI;
+    logger?: Logger;
+    cacheStore?: CacheStore;
+    assetsPath?: string;
+    workerPath?: string;
+    rootDataset?: RootDataset;
+    styleTags?: HTMLStyleElement[];
+    initialDarkMode?: boolean;
+    isAnkiWeb?: boolean;
+    isAnkiDesktop?: boolean;
+    isAnkiDroidOldStudyScreen?: boolean;
+    isAnkiDroidNewStudyScreen?: boolean;
+    isAnkiDroid?: boolean;
+  }) {
+    const [$startupTime, $setStartupTime] = createSignal(0);
+    const now = performance.now();
 
-  config = typeof config === "function" ? config(defaultConfig) : config;
-  updateConfigState({ root, container, config, styleTags, updateDocument: !isAnkiWeb });
-  const [$config, $setConfig] = createStore(config);
+    logger.info("[init] start", {
+      side: this.side,
+      expression: ankiFields.Expression,
+      ssr: this.ssr,
+      isAnkiWeb,
+      isAnkiDesktop,
+    });
 
-  const App = () => (
-    <BreakpointContextProvider>
-      <CacheContextProvider cacheStore={cacheStore}>
-        <GeneralContextProvider
-          aborter={aborter}
-          isAnkiWeb={isAnkiWeb}
-          isAnkiDesktop={isAnkiDesktop}
-          workerPath={workerPath}
-          templateDataset={rootDataset ?? {}}
-          ankiDroidAPI={ankiDroidAPI}
-          $startupTime={$startupTime}
-          assetsPath={assetsPath}
-          logger={logger}
-          root={root}
-          container={container}
-          styleTags={styleTags}
-          initialDarkMode={initialDarkMode}
-          isAnkiDroidOldStudyScreen={isAnkiDroidOldStudyScreen ?? false}
-          isAnkiDroidNewStudyScreen={isAnkiDroidNewStudyScreen ?? false}
-          isAnkiDroid={isAnkiDroid ?? false}
-        >
-          <ConfigContextProvider value={{ $config, $setConfig }}>
-            <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
-              <RootAnkiFieldsContextProvider>
-                <CardStoreContextProvider initialSide={side} initialNsfw={isNsfw(ankiFields.Tags)}>
-                  <FieldGroupContextProvider>
-                    <CtxContextProvider>
-                      <Layout>{side === "front" ? <Front /> : <Back />}</Layout>
-                    </CtxContextProvider>
-                  </FieldGroupContextProvider>
-                </CardStoreContextProvider>
-              </RootAnkiFieldsContextProvider>
-            </AnkiFieldContextProvider>
-          </ConfigContextProvider>
-        </GeneralContextProvider>
-      </CacheContextProvider>
-    </BreakpointContextProvider>
-  );
+    config = typeof config === "function" ? config(defaultConfig) : config;
+    updateConfigState({ root, host: this, config, styleTags });
+    const [$config, $setConfig] = createStore(config);
 
-  const dispose = ssr ? hydrate(App, root) : render(App, root);
-  $setStartupTime(performance.now() - now);
-  logger.info("[init] done, startup:", `${$startupTime().toFixed(1)}ms`);
-  return { dispose, logger };
+    const App = () => (
+      <BreakpointContextProvider>
+        <CacheContextProvider cacheStore={cacheStore}>
+          <GeneralContextProvider
+            aborter={aborter}
+            isAnkiWeb={isAnkiWeb}
+            isAnkiDesktop={isAnkiDesktop}
+            workerPath={workerPath}
+            templateDataset={rootDataset ?? {}}
+            ankiDroidAPI={ankiDroidAPI}
+            $startupTime={$startupTime}
+            assetsPath={assetsPath}
+            logger={logger}
+            root={root}
+            host={this}
+            styleTags={styleTags}
+            initialDarkMode={initialDarkMode}
+            isAnkiDroidOldStudyScreen={isAnkiDroidOldStudyScreen ?? false}
+            isAnkiDroidNewStudyScreen={isAnkiDroidNewStudyScreen ?? false}
+            isAnkiDroid={isAnkiDroid ?? false}
+          >
+            <ConfigContextProvider value={{ $config, $setConfig }}>
+              <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
+                <RootAnkiFieldsContextProvider>
+                  <CardStoreContextProvider
+                    initialSide={this.side}
+                    initialNsfw={isNsfw(ankiFields.Tags)}
+                  >
+                    <FieldGroupContextProvider>
+                      <CtxContextProvider>
+                        <Layout>{this.side === "front" ? <Front /> : <Back />}</Layout>
+                      </CtxContextProvider>
+                    </FieldGroupContextProvider>
+                  </CardStoreContextProvider>
+                </RootAnkiFieldsContextProvider>
+              </AnkiFieldContextProvider>
+            </ConfigContextProvider>
+          </GeneralContextProvider>
+        </CacheContextProvider>
+      </BreakpointContextProvider>
+    );
+
+    const dispose = this.ssr ? hydrate(App, root) : render(App, root);
+    $setStartupTime(performance.now() - now);
+    logger.info("[init] done, startup:", `${$startupTime().toFixed(1)}ms`);
+    return { dispose, logger };
+  }
 }
 
-export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: boolean }) {
-  const logger = globalThis.KIKU?.logger ?? new Logger();
-  logger.info("[initAnki] start, side:", side, "ssr:", !!ssr);
-
-  if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
-  if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
-
-  const aborter = new AbortController();
-
-  globalThis.KIKU ??= {};
-  globalThis.KIKU.aborter = aborter;
-  globalThis.KIKU.logger = logger;
-
-  if (!globalThis.KIKU.unload && !import.meta.env.DEV) {
-    globalThis.KIKU.unload = () => {
-      if (typeof pycmd !== "undefined") sessionStorage.clear();
-    };
-    window.addEventListener("unload", globalThis.KIKU.unload);
+export class KikuHostAnki extends KikuHost {
+  constructor() {
+    super();
   }
 
-  const isAnkiWeb = window.location.origin.includes("ankiuser.net");
-  const isAnkiDroidOldStudyScreen =
-    typeof AnkiDroidJS !== "undefined" &&
-    document.documentElement.classList.contains("android") &&
-    !!document.querySelector("body > div#content > #qa");
-  const isAnkiDroidNewStudyScreen =
-    typeof AnkiDroidJS !== "undefined" &&
-    document.documentElement.classList.contains("android") &&
-    !!document.querySelector("body > div#qa");
-  const isAnkiDroid = document.documentElement.classList.contains("android");
+  async connectedCallback() {
+    const logger = globalThis.KIKU?.logger ?? new Logger();
 
-  //TODO: enable when AnkiDroidAPI is ready on new study screen https://github.com/youyoumu/kiku/issues/30
-  if (
-    !globalThis.KIKU.ankiDroidAPI &&
-    typeof AnkiDroidJS !== "undefined" &&
-    isAnkiDroidOldStudyScreen
-  ) {
-    globalThis.KIKU.ankiDroidAPI = new AnkiDroidJS({
-      version: "0.0.3",
-      developer: "youyoumu",
-    });
-    logger.info("[initAnki] AnkiDroidAPI initialized");
-  }
+    if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
+    if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
 
-  let assetsPath = window.location.origin;
-  if (isAnkiWeb) {
-    assetsPath = `${window.location.origin}/study/media`;
-    logger.info("[initAnki] AnkiWeb mode, assetsPath:", assetsPath);
-  }
-  if (isAnkiWeb) {
-    const kikuCss = document.getElementById("kiku-css");
-    kikuCss?.remove();
-  }
+    const aborter = new AbortController();
 
-  try {
-    const qa = document.querySelector("#qa");
-    if (!qa) throw new Error("#qa not found");
-    const container = document.querySelector<HTMLElement>("#kiku-container");
-    if (!container) throw new Error("#kiku-container not found");
-    let host = document.querySelector<HTMLElement>("#kiku-host");
-
-    let root = document.getElementById("kiku-root");
-    if (!root) {
-      if (!host) throw new Error("#kiku-host not found");
-      const existingRoot = host.shadowRoot?.querySelector("#kiku-root") as
-        | HTMLElement
-        | undefined
-        | null;
-      if (!existingRoot) throw new Error("#kiku-root not found in #kiku-host");
-      root = existingRoot;
-    }
-    const rootDataset = {
-      theme: root.dataset.theme,
-      themeDark: root.dataset.themeDark,
-      blurNsfw: root.dataset.blurNsfw,
-      pictureOnFront: root.dataset.pictureOnFront,
-      modVertical: root.dataset.modVertical,
-    } satisfies RootDataset;
-    logger.debug("[initAnki] rootDataset:", rootDataset);
-
-    host = host ?? document.createElement("div");
-    host.id = "kiku-host";
-    const shadow = host.shadowRoot ?? host.attachShadow({ mode: "open" });
-
-    const style = qa.querySelector<HTMLStyleElement>("style");
-    const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;
-    if (shadowStyle) shadow.appendChild(shadowStyle);
-    const styleTags = [style, shadowStyle].filter(Boolean) as HTMLStyleElement[];
+    globalThis.KIKU ??= {};
+    globalThis.KIKU.aborter = aborter;
+    globalThis.KIKU.logger = logger;
 
     let config: KikuConfig | undefined;
     try {
@@ -239,12 +176,10 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
         config = validateConfig(JSON.parse(cache));
         logger.info("[initAnki] config loaded from sessionStorage");
       } else {
-        const res = await fetch(constants.assets["_kiku_config.json"], {
-          cache: "no-store",
-        });
+        const res = await fetch(constants.assets["_kiku_config.json"], { cache: "no-store" });
         const json = await res.json();
-        config = validateConfig(json);
         if (aborter.signal.aborted) return;
+        config = validateConfig(json);
         sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
         logger.info("[initAnki] config fetched and cached");
       }
@@ -252,111 +187,176 @@ export async function initAnki({ side, ssr }: { side: "front" | "back"; ssr?: bo
       logger.warn("[initAnki] config load failed:", e instanceof Error ? e.message : e);
     }
 
-    if (import.meta.env.DEV) {
-      const mainCss = document.querySelector(
-        'style[type="text/css"][data-vite-dev-id$="main.css"]',
-      );
-      if (!mainCss) throw new Error("main.css not found");
-      shadow.appendChild(mainCss.cloneNode(true));
-      const ankiCss = document.querySelector('link[href="/anki.css"]');
-      if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
-      const style = document.createElement("style");
-      style.innerHTML = `${generateCssVars(getCssVar(config ?? defaultConfig))}\n\n${generateCssVarsDark(getCssVarDark(config ?? defaultConfig))}`;
-      document.head.appendChild(style);
-      const shadowStyle = style?.cloneNode(true) as HTMLStyleElement;
-      shadow.appendChild(shadowStyle);
-      styleTags.push(shadowStyle);
-      styleTags.push(style);
-    } else {
-      if (!isAnkiWeb) {
-        const kikuCssHead = document.head.querySelector("#kiku-css-head");
-        let kikuCss: HTMLStyleElement;
-        if (kikuCssHead) {
-          kikuCss = kikuCssHead.cloneNode(true) as HTMLStyleElement;
-        } else {
-          const res = await fetch("./_kiku.css", { signal: aborter.signal });
-          const cssText = await res.text();
-          kikuCss = document.createElement("style");
-          kikuCss.textContent = cssText;
-        }
-        shadow.prepend(kikuCss);
-        if (!kikuCssHead) {
-          logger.debug("[initAnki] appending #kiku-css-head");
-          const kikuCssHead = document.createElement("style");
-          kikuCssHead.id = "kiku-css-head";
-          kikuCssHead.textContent = kikuCss.textContent;
-          document.head.appendChild(kikuCssHead);
-        }
-        if (qa && !globalThis.KIKU.kikuCssHeadObserver) {
-          const observer = new MutationObserver(() => {
-            queueMicrotask(() => {
-              if (!document.querySelector("#kiku-container")) {
-                logger.debug("[initAnki] removing #kiku-css-head");
-                document.getElementById("kiku-css-head")?.remove();
-              }
-            });
-          });
-          observer.observe(qa, { childList: true });
-          globalThis.KIKU.kikuCssHeadObserver = observer;
-        }
-      } else {
-        const kikuCss = document.createElement("link");
-        kikuCss.rel = "stylesheet";
-        kikuCss.href = "./_kiku.css";
-        shadow.prepend(kikuCss);
-      }
+    const isAnkiDesktop = typeof pycmd !== "undefined";
+    const isAnkiWeb = window.location.origin.includes("ankiuser.net");
+    const isAnkiDroidOldStudyScreen =
+      typeof AnkiDroidJS !== "undefined" &&
+      document.documentElement.classList.contains("android") &&
+      !!document.querySelector("body > div#content > #qa");
+    const isAnkiDroidNewStudyScreen =
+      typeof AnkiDroidJS !== "undefined" &&
+      document.documentElement.classList.contains("android") &&
+      !!document.querySelector("body > div#qa");
+    const isAnkiDroid = document.documentElement.classList.contains("android");
+
+    if (!globalThis.KIKU.unload && !import.meta.env.DEV) {
+      globalThis.KIKU.unload = () => {
+        if (isAnkiDesktop) sessionStorage.clear();
+      };
+      window.addEventListener("unload", globalThis.KIKU.unload);
     }
 
-    const kikuPluginCss = document.createElement("link");
-    kikuPluginCss.rel = "stylesheet";
-    kikuPluginCss.href = "./_kiku_plugin.css";
-    shadow.prepend(kikuPluginCss);
-    container.appendChild(host);
-    shadow.appendChild(root);
-
-    const ankiFieldsTemplate = document.querySelector("#anki-fields");
-    let templates: NodeListOf<HTMLTemplateElement> | HTMLTemplateElement[] | undefined =
-      ankiFieldsTemplate instanceof HTMLTemplateElement
-        ? ankiFieldsTemplate.content.querySelectorAll("template[data-field]")
-        : undefined;
-    if (import.meta.env.DEV) {
-      templates = Object.entries(exampleFields).map(([key, value]) => {
-        const fieldTemplate = document.createElement("template");
-        fieldTemplate.dataset.field = key;
-        fieldTemplate.innerHTML = value.toString();
-        return fieldTemplate;
+    //TODO: enable when AnkiDroidAPI is ready on new study screen https://github.com/youyoumu/kiku/issues/30
+    if (
+      !globalThis.KIKU.ankiDroidAPI &&
+      typeof AnkiDroidJS !== "undefined" &&
+      isAnkiDroidOldStudyScreen
+    ) {
+      globalThis.KIKU.ankiDroidAPI = new AnkiDroidJS({
+        version: "0.0.3",
+        developer: "youyoumu",
       });
+      logger.info("[initAnki] AnkiDroidAPI initialized");
     }
-    const ankiFields = templates
-      ? Object.fromEntries(
-          Array.from(templates).map((el) => [el.dataset.field, el.innerHTML.trim()]),
-        )
-      : ankiFieldsSkeleton;
 
-    const res = await init({
-      root,
-      container,
-      side,
-      ankiFields,
-      ssr,
-      config,
-      aborter,
-      ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
-      logger,
-      cacheStore: globalThis.KIKU,
-      assetsPath,
-      isAnkiWeb,
-      rootDataset,
-      styleTags,
-      isAnkiDroidOldStudyScreen,
-      isAnkiDroidNewStudyScreen,
-      isAnkiDroid,
-    });
+    let assetsPath = window.location.origin;
+    if (isAnkiWeb) {
+      assetsPath = `${window.location.origin}/study/media`;
+      logger.info("[initAnki] AnkiWeb mode, assetsPath:", assetsPath);
+    }
+    if (isAnkiWeb) {
+      const kikuCss = document.querySelector("#kiku-css");
+      kikuCss?.remove();
+    }
 
-    Object.assign(globalThis.KIKU, res);
-    if (import.meta.env.DEV) root.dataset.side = side;
-  } catch (e) {
-    sessionStorage.clear();
-    window.renderErrorFallback?.(e);
+    try {
+      const qa = document.querySelector("#qa");
+      if (!qa) throw new Error("#qa not found");
+      const root = document.querySelector("#kiku-root") as HTMLElement;
+      if (!root) throw new Error("#kiku-root not found");
+
+      const rootDataset: RootDataset = {
+        theme: root.dataset.theme,
+        themeDark: root.dataset.themeDark,
+        blurNsfw: root.dataset.blurNsfw,
+        pictureOnFront: root.dataset.pictureOnFront,
+        modVertical: root.dataset.modVertical,
+      };
+      logger.debug("[initAnki] rootDataset:", rootDataset);
+
+      const shadow = this.shadowRoot ?? this.attachShadow({ mode: "open" });
+
+      const style = qa.querySelector<HTMLStyleElement>("style");
+      const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;
+      if (shadowStyle) shadow.appendChild(shadowStyle);
+      const styleTags = [style, shadowStyle].filter(Boolean) as HTMLStyleElement[];
+
+      if (import.meta.env.DEV) {
+        const mainCss = document.querySelector(
+          'style[type="text/css"][data-vite-dev-id$="main.css"]',
+        );
+        if (!mainCss) throw new Error("main.css not found");
+        shadow.appendChild(mainCss.cloneNode(true));
+        const ankiCss = document.querySelector('link[href="/anki.css"]');
+        if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
+        //TODO: use CSSStyleSheet instead of style
+        const style = document.createElement("style");
+        style.innerHTML = `${generateCssVars(getCssVar(config ?? defaultConfig))}\n\n${generateCssVarsDark(getCssVarDark(config ?? defaultConfig))}`;
+        document.head.appendChild(style);
+        const shadowStyle = style?.cloneNode(true) as HTMLStyleElement;
+        shadow.appendChild(shadowStyle);
+        styleTags.push(shadowStyle);
+        styleTags.push(style);
+      } else {
+        if (!isAnkiWeb) {
+          const kikuCssHead = document.head.querySelector("#kiku-css-head");
+          let kikuCss: HTMLStyleElement;
+          if (kikuCssHead) {
+            kikuCss = kikuCssHead.cloneNode(true) as HTMLStyleElement;
+          } else {
+            const res = await fetch("./_kiku.css", { signal: aborter.signal });
+            const cssText = await res.text();
+            kikuCss = document.createElement("style");
+            kikuCss.textContent = cssText;
+          }
+
+          shadow.prepend(kikuCss);
+          if (!kikuCssHead) {
+            logger.debug("[initAnki] appending #kiku-css-head");
+            const kikuCssHead = document.createElement("style");
+            kikuCssHead.id = "kiku-css-head";
+            kikuCssHead.textContent = kikuCss.textContent;
+            document.head.appendChild(kikuCssHead);
+          }
+          if (qa && !globalThis.KIKU.kikuCssHeadObserver) {
+            const observer = new MutationObserver(() => {
+              queueMicrotask(() => {
+                if (!document.querySelector("#kiku-host")) {
+                  logger.debug("[initAnki] removing #kiku-css-head");
+                  document.querySelector("#kiku-css-head")?.remove();
+                }
+              });
+            });
+            observer.observe(qa, { childList: true });
+            globalThis.KIKU.kikuCssHeadObserver = observer;
+          }
+        } else {
+          const kikuCss = document.createElement("link");
+          kikuCss.rel = "stylesheet";
+          kikuCss.href = "./_kiku.css";
+          shadow.prepend(kikuCss);
+        }
+      }
+
+      const kikuPluginCss = document.createElement("link");
+      kikuPluginCss.rel = "stylesheet";
+      kikuPluginCss.href = "./_kiku_plugin.css";
+      shadow.prepend(kikuPluginCss);
+      shadow.appendChild(root);
+
+      const ankiFieldsTemplate = document.querySelector("#anki-fields");
+      let templates: NodeListOf<HTMLTemplateElement> | HTMLTemplateElement[] | undefined =
+        ankiFieldsTemplate instanceof HTMLTemplateElement
+          ? ankiFieldsTemplate.content.querySelectorAll("template[data-field]")
+          : undefined;
+      if (import.meta.env.DEV) {
+        templates = Object.entries(exampleFields).map(([key, value]) => {
+          const fieldTemplate = document.createElement("template");
+          fieldTemplate.dataset.field = key;
+          fieldTemplate.innerHTML = value.toString();
+          return fieldTemplate;
+        });
+      }
+      const ankiFields = templates
+        ? Object.fromEntries(
+            Array.from(templates).map((el) => [el.dataset.field, el.innerHTML.trim()]),
+          )
+        : ankiFieldsSkeleton;
+
+      const res = this.init({
+        root,
+        ankiFields,
+        config,
+        aborter,
+        ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
+        logger,
+        cacheStore: globalThis.KIKU,
+        assetsPath,
+        isAnkiWeb,
+        rootDataset,
+        styleTags,
+        isAnkiDroidOldStudyScreen,
+        isAnkiDroidNewStudyScreen,
+        isAnkiDroid,
+      });
+
+      Object.assign(globalThis.KIKU, res);
+      if (import.meta.env.DEV) root.dataset.side = this.side;
+    } catch (e) {
+      sessionStorage.clear();
+      window.renderErrorFallback?.(e);
+    }
   }
 }
+
+customElements.define("kiku-host-anki", KikuHostAnki);

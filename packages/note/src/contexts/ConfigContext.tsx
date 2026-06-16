@@ -20,29 +20,15 @@ export function ConfigContextProvider(props: {
   value: Omit<ConfigContextValue, "$isConfigOutOfSync">;
 }) {
   const { $config } = props.value;
-  const {
-    $general,
-    logger,
-    styleTags,
-    isAnkiWeb,
-    assetsPath,
-    isAnkiDesktop,
-    workerApi,
-    templateDataset,
-  } = useGeneralContext();
+  const { $general, logger, styleTags, assetsPath, isAnkiDesktop, workerApi, templateDataset } =
+    useGeneralContext();
 
   createEffect(() => {
     const config = unwrap({ ...$config });
+    const { root, host } = $general;
     logger.debug("Updating config:", config);
-    if (!$general.root) throw new Error("Missing root");
-    if (!$general.container) throw new Error("Missing container");
-    updateConfigState({
-      root: $general.root,
-      container: $general.container,
-      config,
-      styleTags,
-      updateDocument: !isAnkiWeb,
-    });
+    if (!root || !host) throw new Error("Missing root or host");
+    updateConfigState({ root, host, config, styleTags });
     AnkiConnect.changeAddress(config.ankiConnectAddress);
     sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
   });

@@ -33,13 +33,12 @@ function adjustThemeSelectors(rules: CssInJs): CssInJs {
       newSelector = [
         //with #kiku-root
         `#kiku-root[data-theme="${themeName}"]`,
-        `#kiku-root[data-dark-mode][data-theme-dark="${themeName}"]`,
-        //with #kiku-container #kiku-root
-        `#kiku-container[data-theme="${themeName}"] #kiku-root`,
-        `.nightMode #kiku-container[data-theme-dark="${themeName}"] #kiku-root`,
-        //with #kiku-container #kiku-host::part(root)
-        `#kiku-container[data-theme="${themeName}"] #kiku-host::part(root)`,
-        `.nightMode #kiku-container[data-theme-dark="${themeName}"] #kiku-host::part(root)`,
+        `.dark #kiku-root[data-theme-dark="${themeName}"]`,
+        `.nightMode #kiku-root[data-theme-dark="${themeName}"]`,
+        //with #kiku-host::part(root)
+        `#kiku-host[data-theme="${themeName}"]::part(root)`,
+        `.dark #kiku-host[data-theme-dark="${themeName}"]::part(root)`,
+        `.nightMode #kiku-host[data-theme-dark="${themeName}"]::part(root)`,
         //preview
         `[data-theme-preview="${themeName}"]`,
       ].join(", ");

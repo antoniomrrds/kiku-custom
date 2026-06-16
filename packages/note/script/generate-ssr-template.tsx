@@ -38,7 +38,7 @@ export function generateSsrTemplate() {
           assetsPath=""
           logger={logger}
           root={undefined}
-          container={undefined}
+          host={undefined}
           styleTags={[]}
           initialDarkMode={false}
           isAnkiDroidOldStudyScreen={false}
@@ -78,7 +78,7 @@ export function generateSsrTemplate() {
           assetsPath=""
           logger={logger}
           root={undefined}
-          container={undefined}
+          host={undefined}
           styleTags={[]}
           initialDarkMode={false}
           isAnkiDroidOldStudyScreen={false}

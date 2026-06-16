@@ -1,6 +1,5 @@
 import {
   createContext,
-  createEffect,
   createResource,
   createSignal,
   useContext,
@@ -21,7 +20,7 @@ import { useAnkiConnectConnection } from "#/src/hooks/connection";
 type GeneralStore = {
   plugin: KikuPlugin | undefined;
   root: HTMLElement | undefined;
-  container: HTMLElement | undefined;
+  host: HTMLElement | undefined;
   layoutRef: HTMLDivElement | undefined;
   contentRef: HTMLDivElement | undefined;
   toast: Toast;
@@ -73,7 +72,7 @@ export function GeneralContextProvider(props: {
   aborter: AbortController;
   logger: Logger;
   root: HTMLElement | undefined;
-  container: HTMLElement | undefined;
+  host: HTMLElement | undefined;
   styleTags: HTMLStyleElement[];
   initialDarkMode: boolean;
   isAnkiDroidOldStudyScreen: boolean;
@@ -99,7 +98,7 @@ export function GeneralContextProvider(props: {
   const [$general, $setGeneral] = createStore<GeneralStore>({
     plugin: undefined,
     root: props.root,
-    container: props.container,
+    host: props.host,
     layoutRef: undefined,
     contentRef: undefined,
     toast: { success, error, message: undefined, type: "success" },

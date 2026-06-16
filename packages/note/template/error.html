@@ -30,53 +30,51 @@
 </template>
 
 <script>
-  (() => {
-    if (!window.renderErrorFallback) {
-      window.renderErrorFallback = (error) => {
-        Object.assign(document.body.style, {
-          margin: 0,
-          padding: 0,
-          height: "100vh",
-          width: "100vw",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "oklch(21.15% .012 254.09)",
-          color: "oklch(71% .194 13.428)",
-          textAlign: "center",
-        });
+  if (!window.renderErrorFallback) {
+    window.renderErrorFallback = (error) => {
+      Object.assign(document.body.style, {
+        margin: 0,
+        padding: 0,
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "oklch(21.15% .012 254.09)",
+        color: "oklch(71% .194 13.428)",
+        textAlign: "center",
+      });
 
-        const errorTemplate = document.querySelector("#kiku-error");
-        if (!(errorTemplate instanceof HTMLTemplateElement)) return;
+      const errorTemplate = document.querySelector("#kiku-error");
+      if (!(errorTemplate instanceof HTMLTemplateElement)) return;
 
-        const fragment = errorTemplate.content.cloneNode(true);
-        if (error instanceof Error) {
-          const setText = (selector, value) => {
-            const el = fragment.querySelector(selector);
-            if (el) el.textContent = value;
-          };
+      const fragment = errorTemplate.content.cloneNode(true);
+      if (error instanceof Error) {
+        const setText = (selector, value) => {
+          const el = fragment.querySelector(selector);
+          if (el) el.textContent = value;
+        };
 
-          setText("[data-kiku-error-name]", error.name);
-          setText("[data-kiku-error-message]", error.message);
-          setText("[data-kiku-error-cause]", String(error.cause ?? "N/A"));
-          setText("[data-kiku-error-stack]", error.stack ?? "");
-        }
+        setText("[data-kiku-error-name]", error.name);
+        setText("[data-kiku-error-message]", error.message);
+        setText("[data-kiku-error-cause]", String(error.cause ?? "N/A"));
+        setText("[data-kiku-error-stack]", error.stack ?? "");
+      }
 
-        document.body.replaceChildren(fragment);
-      };
+      document.body.replaceChildren(fragment);
+    };
 
-      window.addEventListener(
-        "error",
-        (event) => {
-          if (!(event.target instanceof HTMLScriptElement)) return;
-          if (event.target.id !== "kiku-init-script") return;
-          window.renderErrorFallback?.(
-            new Error("Failed to load _kiku.js. Did you delete Kiku files without reinstalling?"),
-          );
-        },
-        true,
-      );
-    }
-  })();
+    window.addEventListener(
+      "error",
+      (event) => {
+        if (!(event.target instanceof HTMLScriptElement)) return;
+        if (event.target.id !== "kiku-script") return;
+        window.renderErrorFallback?.(
+          new Error("Failed to load _kiku.js. Did you delete Kiku files without reinstalling?"),
+        );
+      },
+      true,
+    );
+  }
 </script>

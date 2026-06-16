@@ -80,3 +80,8 @@ body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar-thumb:hover {
 [data-anki-mobile-only="block"] {
   display: var(--anki-mobile-display-block, none);
 }
+
+/*TODO: move to head*/
+#qa {
+  opacity: 1 !important;
+}
