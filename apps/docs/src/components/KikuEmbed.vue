@@ -14,7 +14,9 @@ type CardFieldName = (typeof cardFieldNames)[number];
 
 const selectedField = ref<CardFieldName | "">("");
 const side = ref<"front" | "back">("front");
-const darkMode = ref(document.documentElement.classList.contains("dark"));
+const darkMode = ref(
+  import.meta.env.SSR ? true : document.documentElement.classList.contains("dark"),
+);
 const toggleLabel = computed(() => (side.value === "front" ? "Show back" : "Show front"));
 
 function toggleSide(): void {
