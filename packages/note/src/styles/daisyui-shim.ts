@@ -17,11 +17,10 @@ function getThemeNames(selector: string): string[] {
 const createThemeSelector = (theme: DaisyUITheme) => {
   const selectorList = [
     `#kiku-root[data-theme="${theme}"]`,
-    `.dark #kiku-root[data-theme-dark="${theme}"]`,
+    `:host([data-dark-mode]) #kiku-root[data-theme-dark="${theme}"]`,
     `.nightMode #kiku-root[data-theme-dark="${theme}"]`,
     // with #kiku-host::part(root)
     `#kiku-host[data-theme="${theme}"]::part(root)`,
-    `.dark #kiku-host[data-theme-dark="${theme}"]::part(root)`,
     `.nightMode #kiku-host[data-theme-dark="${theme}"]::part(root)`,
     // preview
     `[data-theme-preview="${theme}"]`,

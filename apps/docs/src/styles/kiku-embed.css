@@ -27,6 +27,6 @@
 }
 
 /* prettier-ignore */
-.card:has(> #qa).nightMode, .nightMode #kiku-host::part(root), .nightMode #kiku-root {
+.card:has(> #qa).nightMode, .nightMode #kiku-host::part(root), .nightMode #kiku-root, :host([data-dark-mode]) #kiku-root {
   --color-base-100: oklch(25.33% .016 252.42);
 }

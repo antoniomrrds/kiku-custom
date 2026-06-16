@@ -12,12 +12,12 @@ const cardFieldNames = [
 
 type CardFieldName = (typeof cardFieldNames)[number];
 
-const selectedCardField = ref<CardFieldName | "">("");
-const currentSide = ref<"front" | "back">("front");
-const toggleLabel = computed(() => (currentSide.value === "front" ? "Show back" : "Show front"));
+const selectedField = ref<CardFieldName | "">("");
+const side = ref<"front" | "back">("front");
+const toggleLabel = computed(() => (side.value === "front" ? "Show back" : "Show front"));
 
 function toggleSide(): void {
-  currentSide.value = currentSide.value === "front" ? "back" : "front";
+  side.value = side.value === "front" ? "back" : "front";
 }
 </script>
 
@@ -28,7 +28,7 @@ function toggleSide(): void {
         {{ toggleLabel }}
       </VPButton>
       <label style="display: inline-flex; gap: 0.4rem; align-items: center; cursor: pointer">
-        <input v-model="selectedCardField" type="radio" value="" style="margin: 0" />
+        <input v-model="selectedField" type="radio" value="" style="margin: 0" />
         <span>Default</span>
       </label>
       <label
@@ -36,18 +36,19 @@ function toggleSide(): void {
         :key="fieldName"
         style="display: inline-flex; gap: 0.4rem; align-items: center; cursor: pointer"
       >
-        <input v-model="selectedCardField" type="radio" :value="fieldName" style="margin: 0" />
+        <input v-model="selectedField" type="radio" :value="fieldName" style="margin: 0" />
         <span>{{ fieldName }}</span>
       </label>
     </div>
-    <div style="max-height: 75vh; overflow: auto" v-bind:side="currentSide">
+    <div style="max-height: 75vh; overflow: auto" v-bind:side="side">
       <kiku-host-docs
         id="kiku-host"
+        data-dark-mode
         data-theme="light"
         data-theme-dark="dark"
         style="z-index: 10; position: relative"
-        :side.attr="currentSide"
-        :selected-field.attr="selectedCardField"
+        :side.attr="side"
+        :selected-field.attr="selectedField"
       />
     </div>
   </div>
