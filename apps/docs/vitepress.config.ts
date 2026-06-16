@@ -1,6 +1,5 @@
-import { cp } from "node:fs/promises";
-import { join } from "node:path";
 import { defineConfig, type HeadConfig } from "vitepress";
+import { vitePluginCopyKikuAssets } from "./tools/vite-plugin-copy-kiku-assets";
 
 const umamiScript: HeadConfig = [
   "script",
@@ -10,19 +9,6 @@ const umamiScript: HeadConfig = [
     "data-website-id": process.env.VITE_UMAMI_WEBSITE_ID ?? "",
   },
 ];
-
-const dirname = import.meta.dirname;
-
-function copyKikuCss() {
-  return {
-    name: "copy-kiku-css",
-    async writeBundle() {
-      const src = join(dirname, "../../packages/note/dist/_kiku.css");
-      const dest = join(dirname, "./.vitepress/dist/_kiku.css");
-      await cp(src, dest, { force: true });
-    },
-  };
-}
 
 export default defineConfig({
   vue: {
@@ -38,7 +24,7 @@ export default defineConfig({
   head: [["link", { rel: "icon", href: "/favicon.ico" }], umamiScript],
   vite: {
     publicDir: "../public",
-    plugins: [copyKikuCss()],
+    plugins: [vitePluginCopyKikuAssets()],
   },
   themeConfig: {
     lastUpdated: {},

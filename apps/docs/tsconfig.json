@@ -26,7 +26,8 @@
     ".vitepress/**/*",
     "vitepress.config.ts",
     "vitepress.theme.ts",
-    "src/**/*"
+    "src/**/*",
+    "tools/**/*"
   ],
   "exclude": [".vitepress/cache", ".vitepress/dist", "src/public"]
 }

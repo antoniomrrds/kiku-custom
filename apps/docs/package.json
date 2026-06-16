@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "vitepress dev --port 5174",
     "build": "vitepress build",
-    "preview": "vitepress preview",
-    "start": "vitepress build && vitepress preview",
+    "start": "vitepress preview",
     "typecheck": "vue-tsc -b"
   },
   "dependencies": {
