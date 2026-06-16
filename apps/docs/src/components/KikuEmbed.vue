@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 const props = defineProps<{}>();
 
@@ -14,11 +14,27 @@ type CardFieldName = (typeof cardFieldNames)[number];
 
 const selectedField = ref<CardFieldName | "">("");
 const side = ref<"front" | "back">("front");
+const darkMode = ref(document.documentElement.classList.contains("dark"));
 const toggleLabel = computed(() => (side.value === "front" ? "Show back" : "Show front"));
 
 function toggleSide(): void {
   side.value = side.value === "front" ? "back" : "front";
 }
+
+onMounted(() => {
+  const observer = new MutationObserver(() => {
+    queueMicrotask(() => {
+      const isDark = document.documentElement.classList.contains("dark");
+      darkMode.value = isDark;
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+  onBeforeUnmount(() => observer.disconnect());
+});
+
+watch(selectedField, () => {
+  side.value = "front";
+});
 </script>
 
 <template>
@@ -40,16 +56,24 @@ function toggleSide(): void {
         <span>{{ fieldName }}</span>
       </label>
     </div>
-    <div style="max-height: 75vh; overflow: auto" v-bind:side="side">
-      <kiku-host-docs
-        id="kiku-host"
-        data-dark-mode
-        data-theme="light"
-        data-theme-dark="dark"
-        style="z-index: 10; position: relative"
-        :side.attr="side"
-        :selected-field.attr="selectedField"
-      />
-    </div>
+
+    <kiku-host-docs
+      id="kiku-host"
+      data-theme="light"
+      data-theme-dark="dark"
+      style="
+        z-index: 10;
+        position: relative;
+        max-height: 75vh;
+        overflow: auto;
+        border-radius: 0.5rem;
+        box-shadow:
+          0 4px 6px -1px #0000001a,
+          0 2px 4px -2px #0000001a;
+      "
+      :data-dark-mode.attr="darkMode ? '' : null"
+      :side.attr="side"
+      :selected-field.attr="selectedField"
+    />
   </div>
 </template>

@@ -68,7 +68,7 @@ export class KikuHostDocs extends KikuHost {
   }
 
   static get observedAttributes() {
-    return ["side", "selected-field"];
+    return ["side", "selected-field", "data-dark-mode"];
   }
 
   attributeChangedCallback(name: string, _old: string | null, value: string | null) {
