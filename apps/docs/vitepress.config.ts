@@ -25,6 +25,13 @@ function copyKikuCss() {
 }
 
 export default defineConfig({
+  vue: {
+    template: {
+      compilerOptions: {
+        isCustomElement: (tag) => tag === "kiku-host-docs",
+      },
+    },
+  },
   srcDir: "mds",
   title: "Kiku",
   description: "Modern, fully interactive Anki note type designed for Japanese learners.",

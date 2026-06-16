@@ -1,4 +1,4 @@
-import type { Theme } from "vitepress";
+import { inBrowser, type Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";
 import KikuEmbed from "#/src/components/KikuEmbed.vue";
 import "#/src/styles/global.css";
@@ -9,5 +9,8 @@ export default {
   enhanceApp({ app }) {
     app.component("VPButton", VPButton);
     app.component("KikuEmbed", KikuEmbed);
+    if (inBrowser) {
+      import("#/src/lib/KikuHostDocs");
+    }
   },
 } satisfies Theme;
