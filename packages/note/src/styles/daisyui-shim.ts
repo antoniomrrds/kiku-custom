@@ -1,5 +1,6 @@
 import type { PluginAPI } from "tailwindcss/plugin";
 import daisyui from "daisyui";
+import { daisyUIThemes, type DaisyUITheme } from "#/src/lib/theme";
 type CssInJs = Parameters<PluginAPI["addBase"]>[0];
 
 const themeSelectorPattern = /\[data-theme=([^\]\s,]+)\]/g;
@@ -57,10 +58,64 @@ function daisyuiShim(options: Record<string, unknown> = {}) {
   const { handler, config } = daisyui(options);
   return {
     handler: (api: PluginAPI) => {
-      return handler({
+      handler({
         ...api,
         addBase: (rules) => {
           api.addBase(adjustThemeSelectors(rules));
+        },
+      });
+
+      const themeWithDarkerValue: DaisyUITheme[] = [
+        "dark",
+        "cupcake",
+        "bumblebee",
+        "emerald",
+        "synthwave",
+        "retro",
+        "cyberpunk",
+        "garden",
+        "pastel",
+        "wireframe",
+        "black",
+        "business",
+        "acid",
+      ];
+
+      const createSelector = (theme: DaisyUITheme) => {
+        const selectorList = [
+          `#kiku-root[data-theme="${theme}"]`,
+          `.dark #kiku-root[data-theme-dark="${theme}"]`,
+          `.nightMode #kiku-root[data-theme-dark="${theme}"]`,
+          // with #kiku-host::part(root)
+          `#kiku-host[data-theme="${theme}"]::part(root)`,
+          `.dark #kiku-host[data-theme-dark="${theme}"]::part(root)`,
+          `.nightMode #kiku-host[data-theme-dark="${theme}"]::part(root)`,
+          // preview
+          `[data-theme-preview="${theme}"]`,
+        ];
+        return selectorList;
+      };
+      const defaultValueSelectorList = [];
+      const darkerValueSelectorList = [];
+      for (const theme of daisyUIThemes) {
+        const selector = createSelector(theme);
+        if (themeWithDarkerValue.includes(theme)) {
+          darkerValueSelectorList.push(...selector);
+        } else {
+          defaultValueSelectorList.push(...selector);
+        }
+      }
+
+      const defaultValueSelector = defaultValueSelectorList.join(", ");
+      const darkerValueSelector = darkerValueSelectorList.join(", ");
+
+      api.addBase({
+        [defaultValueSelector]: {
+          "--color-base-content-primary": "var(--color-primary)",
+        },
+        [darkerValueSelector]: {
+          "--color-base-content-primary":
+            "color-mix(in srgb, var(--color-primary) 50%, var(--color-base-content))",
         },
       });
     },
