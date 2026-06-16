@@ -1,5 +1,6 @@
 import { defineConfig, type HeadConfig } from "vitepress";
 import { vitePluginCopyKikuAssets } from "./tools/vite-plugin-copy-kiku-assets";
+import { vitePluginServeKikuAssets } from "./tools/vite-plugin-serve-kiku-assets";
 
 const umamiScript: HeadConfig = [
   "script",
@@ -24,7 +25,11 @@ export default defineConfig({
   head: [["link", { rel: "icon", href: "/favicon.ico" }], umamiScript],
   vite: {
     publicDir: "../public",
-    plugins: [vitePluginCopyKikuAssets()],
+    plugins: [
+      vitePluginCopyKikuAssets(),
+      //@ts-expect-error
+      vitePluginServeKikuAssets(),
+    ],
   },
   themeConfig: {
     lastUpdated: {},

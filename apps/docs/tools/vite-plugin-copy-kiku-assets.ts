@@ -3,8 +3,8 @@ import { join } from "node:path";
 import type { PluginOption } from "vite";
 
 const dirname = import.meta.dirname;
-export function vitePluginCopyKikuAssets(): PluginOption {
-  return {
+export function vitePluginCopyKikuAssets() {
+  const plugin = {
     name: "vite-plugin-copy-kiku-assets",
     async writeBundle() {
       const assets = [
@@ -32,5 +32,6 @@ export function vitePluginCopyKikuAssets(): PluginOption {
         console.log("\x1b[33m%s\x1b[0m", `✔ Copied ${asset.file}`);
       }
     },
-  };
+  } satisfies PluginOption;
+  return plugin;
 }
