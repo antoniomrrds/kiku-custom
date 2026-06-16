@@ -14,6 +14,21 @@ function getThemeNames(selector: string): string[] {
   return names;
 }
 
+const createThemeSelector = (theme: DaisyUITheme) => {
+  const selectorList = [
+    `#kiku-root[data-theme="${theme}"]`,
+    `.dark #kiku-root[data-theme-dark="${theme}"]`,
+    `.nightMode #kiku-root[data-theme-dark="${theme}"]`,
+    // with #kiku-host::part(root)
+    `#kiku-host[data-theme="${theme}"]::part(root)`,
+    `.dark #kiku-host[data-theme-dark="${theme}"]::part(root)`,
+    `.nightMode #kiku-host[data-theme-dark="${theme}"]::part(root)`,
+    // preview
+    `[data-theme-preview="${theme}"]`,
+  ];
+  return selectorList;
+};
+
 function adjustThemeSelectors(rules: CssInJs): CssInJs {
   if (typeof rules !== "object" || rules === null || Array.isArray(rules)) return rules;
 
@@ -30,19 +45,9 @@ function adjustThemeSelectors(rules: CssInJs): CssInJs {
     if (!selector.includes("[data-theme=") || selector.includes("[data-theme-dark=")) continue;
 
     let newSelector: string = selector;
-    for (const themeName of getThemeNames(selector)) {
-      newSelector = [
-        //with #kiku-root
-        `#kiku-root[data-theme="${themeName}"]`,
-        `.dark #kiku-root[data-theme-dark="${themeName}"]`,
-        `.nightMode #kiku-root[data-theme-dark="${themeName}"]`,
-        //with #kiku-host::part(root)
-        `#kiku-host[data-theme="${themeName}"]::part(root)`,
-        `.dark #kiku-host[data-theme-dark="${themeName}"]::part(root)`,
-        `.nightMode #kiku-host[data-theme-dark="${themeName}"]::part(root)`,
-        //preview
-        `[data-theme-preview="${themeName}"]`,
-      ].join(", ");
+    for (const theme of getThemeNames(selector)) {
+      const selectorList = createThemeSelector(theme as DaisyUITheme);
+      newSelector = selectorList.join(", ");
     }
 
     if (newSelector !== selector) {
@@ -54,70 +59,51 @@ function adjustThemeSelectors(rules: CssInJs): CssInJs {
   return output;
 }
 
+function addColorBaseContentPrimary(addBase: PluginAPI["addBase"]) {
+  const themeWithDarkerValue: DaisyUITheme[] = [
+    "dark",
+    "cupcake",
+    "bumblebee",
+    "emerald",
+    "synthwave",
+    "retro",
+    "cyberpunk",
+    "garden",
+    "pastel",
+    "wireframe",
+    "black",
+    "business",
+    "acid",
+  ];
+
+  const darkerValueSelectorList = [];
+  for (const theme of daisyUIThemes) {
+    if (themeWithDarkerValue.includes(theme)) {
+      const selector = createThemeSelector(theme);
+      darkerValueSelectorList.push(...selector);
+    }
+  }
+
+  const darkerValueSelector = darkerValueSelectorList.join(", ");
+
+  addBase({
+    [darkerValueSelector]: {
+      "--color-base-content-primary":
+        "color-mix(in srgb, var(--color-primary) 50%, var(--color-base-content))",
+    },
+  });
+}
+
 function daisyuiShim(options: Record<string, unknown> = {}) {
   const { handler, config } = daisyui(options);
   return {
     handler: (api: PluginAPI) => {
-      handler({
-        ...api,
-        addBase: (rules) => {
-          api.addBase(adjustThemeSelectors(rules));
-        },
-      });
-
-      const themeWithDarkerValue: DaisyUITheme[] = [
-        "dark",
-        "cupcake",
-        "bumblebee",
-        "emerald",
-        "synthwave",
-        "retro",
-        "cyberpunk",
-        "garden",
-        "pastel",
-        "wireframe",
-        "black",
-        "business",
-        "acid",
-      ];
-
-      const createSelector = (theme: DaisyUITheme) => {
-        const selectorList = [
-          `#kiku-root[data-theme="${theme}"]`,
-          `.dark #kiku-root[data-theme-dark="${theme}"]`,
-          `.nightMode #kiku-root[data-theme-dark="${theme}"]`,
-          // with #kiku-host::part(root)
-          `#kiku-host[data-theme="${theme}"]::part(root)`,
-          `.dark #kiku-host[data-theme-dark="${theme}"]::part(root)`,
-          `.nightMode #kiku-host[data-theme-dark="${theme}"]::part(root)`,
-          // preview
-          `[data-theme-preview="${theme}"]`,
-        ];
-        return selectorList;
+      const shimmedAddBase = (rules: CssInJs) => {
+        const modifiedRules = adjustThemeSelectors(rules);
+        api.addBase(modifiedRules);
       };
-      const defaultValueSelectorList = [];
-      const darkerValueSelectorList = [];
-      for (const theme of daisyUIThemes) {
-        const selector = createSelector(theme);
-        if (themeWithDarkerValue.includes(theme)) {
-          darkerValueSelectorList.push(...selector);
-        } else {
-          defaultValueSelectorList.push(...selector);
-        }
-      }
-
-      const defaultValueSelector = defaultValueSelectorList.join(", ");
-      const darkerValueSelector = darkerValueSelectorList.join(", ");
-
-      api.addBase({
-        [defaultValueSelector]: {
-          "--color-base-content-primary": "var(--color-primary)",
-        },
-        [darkerValueSelector]: {
-          "--color-base-content-primary":
-            "color-mix(in srgb, var(--color-primary) 50%, var(--color-base-content))",
-        },
-      });
+      handler({ ...api, addBase: shimmedAddBase });
+      addColorBaseContentPrimary(api.addBase);
     },
     config,
   };
