@@ -32,6 +32,7 @@
 <script>
   if (!window.renderErrorFallback) {
     window.renderErrorFallback = (error) => {
+      sessionStorage.clear();
       Object.assign(document.body.style, {
         margin: 0,
         padding: 0,

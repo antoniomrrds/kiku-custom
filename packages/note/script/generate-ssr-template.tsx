@@ -1,4 +1,3 @@
-import { createStore } from "solid-js/store";
 import { generateHydrationScript, renderToString } from "solid-js/web";
 import { Front } from "#/src/components/Front";
 import { Layout } from "#/src/components/Layout";
@@ -17,8 +16,6 @@ import { ankiFieldsSkeleton } from "#/src/lib/types";
 import { Back } from "#/src/components/Back";
 import { BreakpointContextProvider } from "#/src/contexts/BreakpointContext";
 import { defaultConfig } from "#/src/lib/default-config";
-
-const [$config, $setConfig] = createStore(defaultConfig);
 
 const logger = new Logger();
 const aborter = new AbortController();
@@ -45,7 +42,7 @@ export function generateSsrTemplate() {
           isAnkiDroidNewStudyScreen={false}
           isAnkiDroid={false}
         >
-          <ConfigContextProvider value={{ $config, $setConfig }}>
+          <ConfigContextProvider config={defaultConfig}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
               <RootAnkiFieldsContextProvider>
                 <CardStoreContextProvider initialSide="front" initialNsfw={false}>
@@ -85,7 +82,7 @@ export function generateSsrTemplate() {
           isAnkiDroidNewStudyScreen={false}
           isAnkiDroid={false}
         >
-          <ConfigContextProvider value={{ $config: $config, $setConfig: $setConfig }}>
+          <ConfigContextProvider config={defaultConfig}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
               <RootAnkiFieldsContextProvider>
                 <CardStoreContextProvider initialSide="back" initialNsfw={false}>

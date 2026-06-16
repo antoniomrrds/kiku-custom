@@ -1,7 +1,6 @@
 /* @refresh reload */
 import "./lib/polyfill.ts";
 import { createSignal } from "solid-js";
-import { createStore } from "solid-js/store";
 import { hydrate, render } from "solid-js/web";
 import { Back } from "./components/Back.tsx";
 import { Front } from "./components/Front.tsx";
@@ -41,11 +40,12 @@ import {
 import "./styles/main.css";
 
 export class KikuHost extends HTMLElement {
+  shadow: ShadowRoot;
   side: "front" | "back";
   ssr: boolean;
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.shadow = this.attachShadow({ mode: "open" });
     const side = this.getAttribute("side");
     this.side = side === "front" ? "front" : "back";
     this.ssr = this.hasAttribute("ssr");
@@ -101,7 +101,6 @@ export class KikuHost extends HTMLElement {
 
     config = typeof config === "function" ? config(defaultConfig) : config;
     updateConfigState({ root, host: this, config, styleTags });
-    const [$config, $setConfig] = createStore(config);
 
     const App = () => (
       <BreakpointContextProvider>
@@ -124,7 +123,7 @@ export class KikuHost extends HTMLElement {
             isAnkiDroidNewStudyScreen={isAnkiDroidNewStudyScreen ?? false}
             isAnkiDroid={isAnkiDroid ?? false}
           >
-            <ConfigContextProvider value={{ $config, $setConfig }}>
+            <ConfigContextProvider config={config}>
               <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
                 <RootAnkiFieldsContextProvider>
                   <CardStoreContextProvider
@@ -153,40 +152,114 @@ export class KikuHost extends HTMLElement {
 }
 
 export class KikuHostAnki extends KikuHost {
+  logger: Logger;
+  aborter: AbortController;
   constructor() {
     super();
+    this.logger = globalThis.KIKU?.logger ?? new Logger();
+    if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
+    if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
+    this.aborter = new AbortController();
+
+    globalThis.KIKU ??= {};
+    globalThis.KIKU.aborter = this.aborter;
+    globalThis.KIKU.logger = this.logger;
   }
 
   async connectedCallback() {
-    const logger = globalThis.KIKU?.logger ?? new Logger();
+    try {
+      await this.$connectedCallback();
+    } catch (e) {
+      window.renderErrorFallback?.(e);
+    }
+  }
 
-    if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
-    if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
-
-    const aborter = new AbortController();
-
+  async $connectedCallback() {
     globalThis.KIKU ??= {};
-    globalThis.KIKU.aborter = aborter;
-    globalThis.KIKU.logger = logger;
+    const { logger, aborter, shadow } = this;
 
+    const config = await this.getConfig();
+    if (aborter.signal.aborted) return;
+
+    const {
+      isAnkiDesktop,
+      isAnkiWeb,
+      isAnkiDroidOldStudyScreen,
+      isAnkiDroidNewStudyScreen,
+      isAnkiDroid,
+    } = this.getEnv();
+
+    if (isAnkiDesktop) this.setupUnload();
+    //TODO: enable when AnkiDroidAPI is ready on new study screen https://github.com/youyoumu/kiku/issues/30
+    if (isAnkiDroidOldStudyScreen) this.setupAnkiDroidAPI();
+    if (isAnkiWeb) this.removeKikuCss();
+
+    const assetsPath = this.getAssetsPath(isAnkiWeb);
+
+    const qa = document.querySelector("#qa") as HTMLElement;
+    const root = document.querySelector("#kiku-root") as HTMLElement;
+    if (!qa || !root) throw new Error("#qa or #kiku-root not found");
+
+    const rootDataset = this.getRootDataSet(root);
+    const styleTags = this.setupStyleTags(qa);
+
+    if (import.meta.env.DEV) {
+      this.setupDevCss(styleTags, config);
+    } else {
+      const css = await this.getKikuCSSStyleSheet();
+      if (!isAnkiWeb) this.setupKikuCSSStyleSheet(qa, css);
+      shadow.adoptedStyleSheets = [css];
+    }
+
+    this.setupKikuPluginCss();
+    const ankiFields = this.getAnkiFields();
+
+    shadow.appendChild(root);
+    if (aborter.signal.aborted) return;
+
+    const res = this.init({
+      root,
+      ankiFields,
+      config,
+      aborter,
+      ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
+      logger,
+      cacheStore: globalThis.KIKU,
+      assetsPath,
+      isAnkiWeb,
+      rootDataset,
+      styleTags,
+      isAnkiDroidOldStudyScreen,
+      isAnkiDroidNewStudyScreen,
+      isAnkiDroid,
+    });
+
+    Object.assign(globalThis.KIKU, res);
+    if (import.meta.env.DEV) root.dataset.side = this.side;
+  }
+
+  async getConfig() {
+    const { logger } = this;
     let config: KikuConfig | undefined;
     try {
       const cache = sessionStorage.getItem(constants.key["kiku-config"]);
       if (cache) {
         config = validateConfig(JSON.parse(cache));
-        logger.info("[initAnki] config loaded from sessionStorage");
+        logger.info("[init] config loaded from sessionStorage");
       } else {
         const res = await fetch(constants.assets["_kiku_config.json"], { cache: "no-store" });
         const json = await res.json();
-        if (aborter.signal.aborted) return;
         config = validateConfig(json);
         sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
-        logger.info("[initAnki] config fetched and cached");
+        logger.info("[init] config fetched and cached");
       }
     } catch (e) {
-      logger.warn("[initAnki] config load failed:", e instanceof Error ? e.message : e);
+      logger.warn("[init] config load failed:", e instanceof Error ? e.message : e);
     }
+    return config;
+  }
 
+  getEnv() {
     const isAnkiDesktop = typeof pycmd !== "undefined";
     const isAnkiWeb = window.location.origin.includes("ankiuser.net");
     const isAnkiDroidOldStudyScreen =
@@ -198,164 +271,149 @@ export class KikuHostAnki extends KikuHost {
       document.documentElement.classList.contains("android") &&
       !!document.querySelector("body > div#qa");
     const isAnkiDroid = document.documentElement.classList.contains("android");
+    return {
+      isAnkiDesktop,
+      isAnkiWeb,
+      isAnkiDroidOldStudyScreen,
+      isAnkiDroidNewStudyScreen,
+      isAnkiDroid,
+    };
+  }
 
-    if (!globalThis.KIKU.unload && !import.meta.env.DEV) {
+  setupUnload() {
+    if (globalThis.KIKU && !globalThis.KIKU?.unload && !import.meta.env.DEV) {
       globalThis.KIKU.unload = () => {
-        if (isAnkiDesktop) sessionStorage.clear();
+        sessionStorage.clear();
       };
       window.addEventListener("unload", globalThis.KIKU.unload);
     }
+  }
 
-    //TODO: enable when AnkiDroidAPI is ready on new study screen https://github.com/youyoumu/kiku/issues/30
-    if (
-      !globalThis.KIKU.ankiDroidAPI &&
-      typeof AnkiDroidJS !== "undefined" &&
-      isAnkiDroidOldStudyScreen
-    ) {
+  setupAnkiDroidAPI() {
+    const { logger } = this;
+    if (globalThis.KIKU && !globalThis.KIKU.ankiDroidAPI && typeof AnkiDroidJS !== "undefined") {
       globalThis.KIKU.ankiDroidAPI = new AnkiDroidJS({
         version: "0.0.3",
         developer: "youyoumu",
       });
-      logger.info("[initAnki] AnkiDroidAPI initialized");
+      logger.info("[init] AnkiDroidAPI initialized");
     }
+  }
 
+  getAssetsPath(isAnkiWeb: boolean) {
+    const { logger } = this;
     let assetsPath = window.location.origin;
     if (isAnkiWeb) {
       assetsPath = `${window.location.origin}/study/media`;
-      logger.info("[initAnki] AnkiWeb mode, assetsPath:", assetsPath);
+      logger.info("[init] AnkiWeb mode, assetsPath:", assetsPath);
     }
-    if (isAnkiWeb) {
-      const kikuCss = document.querySelector("#kiku-css");
-      kikuCss?.remove();
-    }
+    return assetsPath;
+  }
 
-    try {
-      const qa = document.querySelector("#qa");
-      if (!qa) throw new Error("#qa not found");
-      const root = document.querySelector("#kiku-root") as HTMLElement;
-      if (!root) throw new Error("#kiku-root not found");
+  removeKikuCss() {
+    document.querySelector("#kiku-css")?.remove();
+  }
 
-      const rootDataset: RootDataset = {
-        theme: root.dataset.theme,
-        themeDark: root.dataset.themeDark,
-        blurNsfw: root.dataset.blurNsfw,
-        pictureOnFront: root.dataset.pictureOnFront,
-        modVertical: root.dataset.modVertical,
-      };
-      logger.debug("[initAnki] rootDataset:", rootDataset);
+  getRootDataSet(root: HTMLElement) {
+    const { logger } = this;
+    const rootDataset: RootDataset = {
+      theme: root.dataset.theme,
+      themeDark: root.dataset.themeDark,
+      blurNsfw: root.dataset.blurNsfw,
+      pictureOnFront: root.dataset.pictureOnFront,
+      modVertical: root.dataset.modVertical,
+    };
+    logger.debug("[init] rootDataset:", rootDataset);
+    return rootDataset;
+  }
 
-      const shadow = this.shadowRoot ?? this.attachShadow({ mode: "open" });
+  setupStyleTags(qa: HTMLElement) {
+    const { shadow } = this;
+    const style = qa.querySelector<HTMLStyleElement>("style");
+    const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;
+    if (shadowStyle) shadow.appendChild(shadowStyle);
+    const styleTags = [style, shadowStyle].filter(Boolean) as HTMLStyleElement[];
+    return styleTags;
+  }
 
-      const style = qa.querySelector<HTMLStyleElement>("style");
-      const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;
-      if (shadowStyle) shadow.appendChild(shadowStyle);
-      const styleTags = [style, shadowStyle].filter(Boolean) as HTMLStyleElement[];
+  async getKikuCSSStyleSheet() {
+    const { aborter } = this;
+    let css = globalThis.KIKU?.kikuCSSStyleSheet;
+    if (css) return css;
 
-      if (import.meta.env.DEV) {
-        const mainCss = document.querySelector(
-          'style[type="text/css"][data-vite-dev-id$="main.css"]',
-        );
-        if (!mainCss) throw new Error("main.css not found");
-        shadow.appendChild(mainCss.cloneNode(true));
-        const ankiCss = document.querySelector('link[href="/anki.css"]');
-        if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
-        //TODO: use CSSStyleSheet instead of style
-        const style = document.createElement("style");
-        style.innerHTML = `${generateCssVars(getCssVar(config ?? defaultConfig))}\n\n${generateCssVarsDark(getCssVarDark(config ?? defaultConfig))}`;
-        document.head.appendChild(style);
-        const shadowStyle = style?.cloneNode(true) as HTMLStyleElement;
-        shadow.appendChild(shadowStyle);
-        styleTags.push(shadowStyle);
-        styleTags.push(style);
-      } else {
-        if (!isAnkiWeb) {
-          const kikuCssHead = document.head.querySelector("#kiku-css-head");
-          let kikuCss: HTMLStyleElement;
-          if (kikuCssHead) {
-            kikuCss = kikuCssHead.cloneNode(true) as HTMLStyleElement;
-          } else {
-            const res = await fetch("./_kiku.css", { signal: aborter.signal });
-            const cssText = await res.text();
-            kikuCss = document.createElement("style");
-            kikuCss.textContent = cssText;
+    const res = await fetch("./_kiku.css", { signal: aborter.signal });
+    const text = await res.text();
+    css = new CSSStyleSheet();
+    css.replaceSync(text);
+    if (globalThis.KIKU) globalThis.KIKU.kikuCSSStyleSheet = css;
+
+    return css;
+  }
+
+  setupKikuCSSStyleSheet(qa: HTMLElement, css: CSSStyleSheet) {
+    const { logger } = this;
+    logger.debug("[init] adding kiku CSSStyleSheet");
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
+    if (qa && globalThis.KIKU && !globalThis.KIKU.kikuCSSStyleSheetObserver) {
+      const observer = new MutationObserver(() => {
+        queueMicrotask(() => {
+          if (!document.querySelector("#kiku-host")) {
+            logger.debug("[init] removing kiku CSSStyleSheet");
+            document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+              (sheet) => sheet !== css,
+            );
           }
-
-          shadow.prepend(kikuCss);
-          if (!kikuCssHead) {
-            logger.debug("[initAnki] appending #kiku-css-head");
-            const kikuCssHead = document.createElement("style");
-            kikuCssHead.id = "kiku-css-head";
-            kikuCssHead.textContent = kikuCss.textContent;
-            document.head.appendChild(kikuCssHead);
-          }
-          if (qa && !globalThis.KIKU.kikuCssHeadObserver) {
-            const observer = new MutationObserver(() => {
-              queueMicrotask(() => {
-                if (!document.querySelector("#kiku-host")) {
-                  logger.debug("[initAnki] removing #kiku-css-head");
-                  document.querySelector("#kiku-css-head")?.remove();
-                }
-              });
-            });
-            observer.observe(qa, { childList: true });
-            globalThis.KIKU.kikuCssHeadObserver = observer;
-          }
-        } else {
-          const kikuCss = document.createElement("link");
-          kikuCss.rel = "stylesheet";
-          kikuCss.href = "./_kiku.css";
-          shadow.prepend(kikuCss);
-        }
-      }
-
-      const kikuPluginCss = document.createElement("link");
-      kikuPluginCss.rel = "stylesheet";
-      kikuPluginCss.href = "./_kiku_plugin.css";
-      shadow.prepend(kikuPluginCss);
-      shadow.appendChild(root);
-
-      const ankiFieldsTemplate = document.querySelector("#anki-fields");
-      let templates: NodeListOf<HTMLTemplateElement> | HTMLTemplateElement[] | undefined =
-        ankiFieldsTemplate instanceof HTMLTemplateElement
-          ? ankiFieldsTemplate.content.querySelectorAll("template[data-field]")
-          : undefined;
-      if (import.meta.env.DEV) {
-        templates = Object.entries(exampleFields).map(([key, value]) => {
-          const fieldTemplate = document.createElement("template");
-          fieldTemplate.dataset.field = key;
-          fieldTemplate.innerHTML = value.toString();
-          return fieldTemplate;
         });
-      }
-      const ankiFields = templates
-        ? Object.fromEntries(
-            Array.from(templates).map((el) => [el.dataset.field, el.innerHTML.trim()]),
-          )
-        : ankiFieldsSkeleton;
-
-      const res = this.init({
-        root,
-        ankiFields,
-        config,
-        aborter,
-        ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
-        logger,
-        cacheStore: globalThis.KIKU,
-        assetsPath,
-        isAnkiWeb,
-        rootDataset,
-        styleTags,
-        isAnkiDroidOldStudyScreen,
-        isAnkiDroidNewStudyScreen,
-        isAnkiDroid,
       });
-
-      Object.assign(globalThis.KIKU, res);
-      if (import.meta.env.DEV) root.dataset.side = this.side;
-    } catch (e) {
-      sessionStorage.clear();
-      window.renderErrorFallback?.(e);
+      observer.observe(qa, { childList: true });
+      globalThis.KIKU.kikuCSSStyleSheetObserver = observer;
     }
+  }
+
+  getAnkiFields() {
+    const ankiFieldsTemplate = document.querySelector("#anki-fields");
+    let templates: NodeListOf<HTMLTemplateElement> | HTMLTemplateElement[] | undefined =
+      ankiFieldsTemplate instanceof HTMLTemplateElement
+        ? ankiFieldsTemplate.content.querySelectorAll("template[data-field]")
+        : undefined;
+    if (import.meta.env.DEV) {
+      templates = Object.entries(exampleFields).map(([key, value]) => {
+        const fieldTemplate = document.createElement("template");
+        fieldTemplate.dataset.field = key;
+        fieldTemplate.innerHTML = value.toString();
+        return fieldTemplate;
+      });
+    }
+    const ankiFields = templates
+      ? Object.fromEntries(
+          Array.from(templates).map((el) => [el.dataset.field, el.innerHTML.trim()]),
+        )
+      : ankiFieldsSkeleton;
+    return ankiFields;
+  }
+
+  setupDevCss(styleTags: HTMLStyleElement[], config: KikuConfig | undefined) {
+    const { shadow } = this;
+    const mainCss = document.querySelector('style[type="text/css"][data-vite-dev-id$="main.css"]');
+    if (!mainCss) throw new Error("main.css not found");
+    shadow.appendChild(mainCss.cloneNode(true));
+    const ankiCss = document.querySelector('link[href="/anki.css"]');
+    if (ankiCss) shadow.appendChild(ankiCss.cloneNode(true));
+    const style = document.createElement("style");
+    style.innerHTML = `${generateCssVars(getCssVar(config ?? defaultConfig))}\n\n${generateCssVarsDark(getCssVarDark(config ?? defaultConfig))}`;
+    document.head.appendChild(style);
+    const shadowStyle = style?.cloneNode(true) as HTMLStyleElement;
+    shadow.appendChild(shadowStyle);
+    styleTags.push(shadowStyle);
+    styleTags.push(style);
+  }
+
+  setupKikuPluginCss() {
+    const { shadow } = this;
+    const kikuPluginCss = document.createElement("link");
+    kikuPluginCss.rel = "stylesheet";
+    kikuPluginCss.href = "./_kiku_plugin.css";
+    shadow.prepend(kikuPluginCss);
   }
 }
 

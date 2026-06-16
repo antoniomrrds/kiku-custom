@@ -1,6 +1,6 @@
 import { createContext, createEffect, createMemo, on, useContext, type Accessor } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
-import { type SetStoreFunction, type Store, unwrap } from "solid-js/store";
+import { createStore, type SetStoreFunction, type Store, unwrap } from "solid-js/store";
 import { AnkiConnect } from "#/src/lib/anki-connect";
 import { getRootDatasetConfig, type KikuConfig, updateConfigState } from "#/src/lib/config";
 import { constants } from "#/src/lib/contants";
@@ -15,11 +15,8 @@ type ConfigContextValue = {
 
 const ConfigContext = createContext<ConfigContextValue>();
 
-export function ConfigContextProvider(props: {
-  children: JSX.Element;
-  value: Omit<ConfigContextValue, "$isConfigOutOfSync">;
-}) {
-  const { $config } = props.value;
+export function ConfigContextProvider(props: { children: JSX.Element; config: KikuConfig }) {
+  const [$config, $setConfig] = createStore(props.config);
   const { $general, logger, styleTags, assetsPath, isAnkiDesktop, workerApi, templateDataset } =
     useGeneralContext();
 
@@ -63,7 +60,7 @@ export function ConfigContextProvider(props: {
   });
 
   return (
-    <ConfigContext.Provider value={{ ...props.value, $isConfigOutOfSync }}>
+    <ConfigContext.Provider value={{ $config, $setConfig, $isConfigOutOfSync }}>
       {props.children}
     </ConfigContext.Provider>
   );
