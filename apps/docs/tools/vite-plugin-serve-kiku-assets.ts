@@ -1,8 +1,7 @@
 import { readFile } from "node:fs/promises";
-import { join, extname } from "node:path";
+import { extname } from "node:path";
 import type { PluginOption } from "vite";
-
-const dirname = import.meta.dirname;
+import { paths } from "./paths";
 
 const MIME: Record<string, string> = {
   ".js": "application/javascript",
@@ -13,14 +12,11 @@ const MIME: Record<string, string> = {
 };
 
 const URL_MAP: Record<string, string> = {
-  "/_kiku.css": join(dirname, "../../../packages/note/dist/_kiku.css"),
-  "/_kiku_db_main.tar": join(dirname, "../../../packages/note/.db/_kiku_db_main.tar"),
-  "/_kiku_db_main_manifest.json": join(
-    dirname,
-    "../../../packages/note/.db/_kiku_db_main_manifest.json",
-  ),
-  "/_kiku_plugin.js": join(dirname, "../../../packages/note/template/_kiku_plugin.js"),
-  "/_kiku_plugin.css": join(dirname, "../../../packages/note/template/_kiku_plugin.css"),
+  "/_kiku.css": paths["@note/dist/_kiku.css"],
+  "/_kiku_db_main.tar": paths["@note/.db/_kiku_db_main.tar"],
+  "/_kiku_db_main_manifest.json": paths["@note/.db/_kiku_db_main_manifest.json"],
+  "/_kiku_plugin.js": paths["@note/template/_kiku_plugin.js"],
+  "/_kiku_plugin.css": paths["@note/template/_kiku_plugin.css"],
 };
 
 export function vitePluginServeKikuAssets() {

@@ -1,6 +1,7 @@
 import { cp } from "node:fs/promises";
 import { join } from "node:path";
 import type { PluginOption } from "vite";
+import { paths } from "./paths";
 
 const dirname = import.meta.dirname;
 export function vitePluginCopyKikuAssets() {
@@ -9,19 +10,19 @@ export function vitePluginCopyKikuAssets() {
     async writeBundle() {
       const assets = [
         {
-          src: join(dirname, "../../../packages/note/dist/_kiku.css"),
+          src: paths["@note/dist/_kiku.css"],
           file: "_kiku.css",
         },
         {
-          src: join(dirname, "../../../packages/note/.db/_kiku_db_main.tar"),
+          src: paths["@note/.db/_kiku_db_main.tar"],
           file: "_kiku_db_main.tar",
         },
         {
-          src: join(dirname, "../../../packages/note/.db/_kiku_db_main_manifest.json"),
+          src: paths["@note/.db/_kiku_db_main_manifest.json"],
           file: "_kiku_db_main_manifest.json",
         },
         {
-          src: join(dirname, "../../../packages/note/template/_kiku_plugin.js"),
+          src: paths["@note/template/_kiku_plugin.js"],
           file: "_kiku_plugin.js",
         },
       ];
