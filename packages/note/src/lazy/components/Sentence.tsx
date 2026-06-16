@@ -83,7 +83,7 @@ function SentenceFieldWithTranslation() {
 
   return (
     <div
-      class="collapse animate-fade-in border-b-2 rounded-b-none border-base-300"
+      class="collapse animate-fade-in border-b-2 rounded-b-none border-base-200"
       ref={$setContainerRef}
     >
       <input class="p-0" type="checkbox" />
