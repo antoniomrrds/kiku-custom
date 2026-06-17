@@ -28,7 +28,7 @@
   .picture-field {
     @apply [&_*:not(img)]:contents;
     @apply [&_:not(:first-child)]:hidden;
-    @apply relative h-48 sm:h-56 cursor-pointer [&_img]:h-full [&_img]:object-contain [&_img]:hover:filter-none;
+    @apply relative h-44 sm:h-56 cursor-pointer [&_img]:h-full [&_img]:object-contain [&_img]:hover:filter-none;
     &[data-nsfw="true"],
     &[data-tags~="nsfw"],
     &[data-tags~="NSFW"],

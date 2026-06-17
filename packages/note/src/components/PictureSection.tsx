@@ -82,10 +82,12 @@ export function PictureSection() {
       {...$dataSet1()}
     >
       <div
-        class="picture-field-background"
+        class="picture-field-background tappable"
         style={{
           opacity: $opacity(),
         }}
+        on:click={() => $setPictureModal($currentPicture())}
+        on:touchend={(e) => e.stopPropagation()}
         innerHTML={isServer ? undefined : $currentPicture()}
       >
         {isServer ? "{{Picture}}" : undefined}
