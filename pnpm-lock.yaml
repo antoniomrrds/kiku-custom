@@ -64,6 +64,9 @@ importers:
         specifier: ^1.9.13
         version: 1.9.13
     devDependencies:
+      '@tailwindcss/language-server':
+        specifier: ^0.14.29
+        version: 0.14.29
       '@tailwindcss/vite':
         specifier: ^4.3.0
         version: 4.3.0(vite@8.0.16(@types/node@25.8.0)(esbuild@0.27.7)(jiti@2.7.0))

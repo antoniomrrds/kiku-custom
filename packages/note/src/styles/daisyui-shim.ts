@@ -1,6 +1,8 @@
 import type { PluginAPI } from "tailwindcss/plugin";
 import daisyui from "daisyui";
-import { daisyUIThemes, type DaisyUITheme } from "#/src/lib/theme";
+// https://github.com/tailwindlabs/tailwindcss-intellisense/issues/1596
+/* oxlint-disable  */
+import { daisyUIThemes, type DaisyUITheme } from "../../src/lib/theme";
 type CssInJs = Parameters<PluginAPI["addBase"]>[0];
 
 const themeSelectorPattern = /\[data-theme=([^\]\s,]+)\]/g;
