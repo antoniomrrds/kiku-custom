@@ -4,20 +4,15 @@ outline: deep
 
 # Features
 
-:::info
-Some of the videos are outdated.
-:::
-
 ## Some highlighted features
 
-### Kanji View
+### Kanji Web
 
-The Kanji page shows your other notes that use the same kanji. You can also see notes that use similar kanji and deep dive into the note itself.
-This feature requires a notes cache generated from the [Kiku Note Manager](https://ankiweb.net/shared/info/408592650?cb=1763445474367) addon.
-If the notes cache is not available, it will use [AnkiConnect](https://ankiweb.net/shared/info/2055492159) as a fallback.
+Explore your other notes that use the same kanji, same reading, same expression, or related to the expression itself.
+This feature requires [AnkiConnect](https://ankiweb.net/shared/info/2055492159) or a notes cache generated from the [Kiku Note Manager](https://ankiweb.net/shared/info/408592650?cb=1763445474367) addon.
 
 <video controls>
-  <source src="/media/feature-kanji.mp4" type="video/mp4" />
+  <source src="/media/feature-kanji-web.webm" type="video/mp4" />
 </video>
 
 ### Group Multiple Picture/Sentence/SentenceAudio Together
@@ -26,7 +21,7 @@ You can add multiple pictures, sentences, and sentence audios to a single note, 
 Learn about how to use this feature [here](./field-grouping).
 
 <video controls>
-  <source src="/media/feature-group-field.mp4" type="video/mp4" />
+  <source src="/media/feature-group-field.2.webm" type="video/mp4" />
 </video>
 
 ### Themes
@@ -34,38 +29,46 @@ Learn about how to use this feature [here](./field-grouping).
 35 built-in themes, powered by [daisyUI](https://daisyui.com/).
 
 <video controls>
-  <source src="/media/feature-theme.mp4" type="video/mp4" />
+  <source src="/media/feature-theme.2.webm" type="video/mp4" />
 </video>
 
 ### Settings
 
-Settings page where you can configure your preferences.
-Saving is only available when AnkiConnect is running.
-The settings are saved in the `_kiku_config.json` file under your Anki `collection.media` directory.
+Configure your preferences within the settings page.
 
 <video controls>
-  <source src="/media/feature-settings.mp4" type="video/mp4" />
+  <source src="/media/feature-settings.2.webm" type="video/mp4" />
 </video>
 
 ### AnkiDroid support
 
-Swipe to the right to answer with `Good`, swipe to the left to answer with `Again`. The gesture direction can be inverted in the settings.
+Fully tested on AnkiDroid.
 
 <video controls style="height: 720px;">
-  <source src="/media/feature-ankidroid.mp4" type="video/mp4"  />
+  <source src="/media/feature-ankidroid.2.webm" type="video/mp4"  />
 </video>
 
+:::info AnkiDroid
+I recommend to enable the [new study screen](https://forums.ankiweb.net/t/new-study-screen-official-thread/67394).
+The notes query is much faster here since the WebWorker and other cache is persistent between cards.
+To enable the new study screen, go to AnkiDroid settings > New study screen > Enable.
+:::
+
 :::info AnkiMobile
-AnkiMobile needs some adjustments to work properly. Unfortunately, I don't have any iOS device to test it.
-[Tracked issue](https://github.com/youyoumu/kiku/issues/12)
+AnkiMobile is supported with some known issues.
+See the [tracked issue](https://github.com/youyoumu/kiku/issues/12) for more details.
 :::
 
 ## Other features
 
-### Keybinds
-
-Press `ArrowLeft` and `ArrowRight` to switch between definitions. Press `h` and `l` to switch between grouped field.
-
 ### NSFW Blur
 
 Add `NSFW` tag to the note and Picture will be blurred automatically. If you have multiple `<img>` you can opt-out by adding `data-nsfw="false"` to the `<img>` tag.
+
+### AnkiDroid Integration
+
+:::info
+This feature is currently only available on AnkiDroid old study screen. [Tracked issue](https://github.com/youyoumu/kiku/issues/30)
+:::
+
+Swipe to the right to answer with `Good`, swipe to the left to answer with `Again`.

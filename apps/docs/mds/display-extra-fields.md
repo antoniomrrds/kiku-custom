@@ -22,7 +22,7 @@ This file is auto-generated. Any manual changes will be lost on save.
 Add **ExtraInfo** inside a template element:
 
 ```html
-<template id="ExtraInfo">{{ExtraInfo}}</div>
+<template id="ExtraInfo">{{ExtraInfo}}</template>
 
 <!-- Kiku Note v2.0.0
 This file is auto-generated. Any manual changes will be lost on save.
