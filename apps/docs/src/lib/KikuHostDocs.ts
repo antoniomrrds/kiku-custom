@@ -1,7 +1,6 @@
 import { KikuHost } from "@repo/note";
 import kikuWorkerUrl from "@repo/note/_kiku_worker.js?url";
 import kikuEmbedCSS from "#/src/styles/kiku-embed.css?raw";
-import { debounce } from "./es";
 
 const cardFieldNames = [
   "IsWordAndSentenceCard",
@@ -50,6 +49,7 @@ export class KikuHostDocs extends KikuHost {
   #dispose: (() => void) | undefined;
   #root: HTMLElement;
   #styleTags: HTMLStyleElement[] = [];
+  #isUpdateScheduled = false;
 
   constructor() {
     super();
@@ -76,10 +76,33 @@ export class KikuHostDocs extends KikuHost {
       this.side = value === "front" ? "front" : "back";
     }
     if (!this.#root) return;
-    this.#dRender();
+    this.requestUpdate();
   }
 
-  #dRender = debounce(this.#render.bind(this), 100);
+  requestUpdate() {
+    if (this.#isUpdateScheduled) {
+      return;
+    }
+    this.#isUpdateScheduled = true;
+    queueMicrotask(() => {
+      this.#render();
+      this.#isUpdateScheduled = false;
+    });
+  }
+
+  connectedCallback() {
+    const { shadow } = this;
+    shadow.append(this.#root);
+
+    const style = document.createElement("style");
+    style.innerHTML = kikuEmbedCSS;
+    this.#styleTags = [style];
+    this.requestUpdate();
+    shadow.append(style);
+
+    this.#loadStyles();
+    this.requestUpdate();
+  }
 
   #render() {
     this.#dispose?.();
@@ -117,15 +140,8 @@ export class KikuHostDocs extends KikuHost {
     this.#dispose = res.dispose;
   }
 
-  async connectedCallback() {
+  async #loadStyles() {
     const { shadow } = this;
-    shadow.append(this.#root);
-
-    const style = document.createElement("style");
-    style.innerHTML = kikuEmbedCSS;
-    this.#styleTags = [style];
-    shadow.append(style);
-
     const kikuCSSStyleSheet = new CSSStyleSheet();
     if (import.meta.env.DEV) {
       const kikuCSS = await import("@repo/note/_kiku.css?inline");
@@ -136,8 +152,6 @@ export class KikuHostDocs extends KikuHost {
       kikuCSSStyleSheet.replaceSync(kikuCss);
     }
     shadow.adoptedStyleSheets = [...shadow.adoptedStyleSheets, kikuCSSStyleSheet];
-
-    this.#dRender();
   }
 }
 
