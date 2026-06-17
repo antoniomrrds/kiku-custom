@@ -43,8 +43,10 @@ export class KikuHost extends HTMLElement {
   shadow: ShadowRoot;
   side: "front" | "back";
   ssr: boolean;
+  now: number;
   constructor() {
     super();
+    this.now = performance.now();
     this.shadow = this.attachShadow({ mode: "open" });
     const side = this.getAttribute("side");
     this.side = side === "front" ? "front" : "back";
@@ -88,6 +90,7 @@ export class KikuHost extends HTMLElement {
     isAnkiDroidNewStudyScreen?: boolean;
     isAnkiDroid?: boolean;
   }) {
+    const [$preStartupTime] = createSignal(performance.now() - this.now);
     const [$startupTime, $setStartupTime] = createSignal(0);
     const now = performance.now();
 
@@ -112,6 +115,7 @@ export class KikuHost extends HTMLElement {
             workerPath={workerPath}
             templateDataset={rootDataset ?? {}}
             ankiDroidAPI={ankiDroidAPI}
+            $preStartupTime={$preStartupTime}
             $startupTime={$startupTime}
             assetsPath={assetsPath}
             logger={logger}
@@ -146,7 +150,10 @@ export class KikuHost extends HTMLElement {
 
     const dispose = this.ssr ? hydrate(App, root) : render(App, root);
     $setStartupTime(performance.now() - now);
-    logger.info("[init] done, startup:", `${$startupTime().toFixed(1)}ms`);
+    logger.info(
+      "[init] done, startup:",
+      `${$preStartupTime().toFixed(1)}+${$startupTime().toFixed(1)}ms`,
+    );
     return { dispose, logger };
   }
 }

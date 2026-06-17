@@ -12,7 +12,8 @@ import { useRelatedNotes } from "#/src/hooks/notes";
 export function HeaderMain(props: { onExitNested?: () => void }) {
   const { $card, $initialSide, $$card } = useCardContext();
   const { $config, $isConfigOutOfSync } = useConfigContext();
-  const { initialDarkMode, $startupTime, isAnkiDroidNewStudyScreen } = useGeneralContext();
+  const { initialDarkMode, $preStartupTime, $startupTime, isAnkiDroidNewStudyScreen } =
+    useGeneralContext();
   const { navigate } = useNavigationTransition();
   const { $changeThemeNext } = useThemeTransition();
 
@@ -59,8 +60,8 @@ export function HeaderMain(props: { onExitNested?: () => void }) {
             </Show>
             <Show when={$config.showStartupTime}>
               <div class="text-base-content-soft bg-warning/10 rounded-sm px-px sm:px-1 text-xs sm:text-sm">
-                {Math.round($startupTime())}
-                {$startupTime() !== 0 && "ms"}
+                {Math.round($preStartupTime() + $startupTime())}
+                {$preStartupTime() + $startupTime() !== 0 && "ms"}
               </div>
             </Show>
           </Match>

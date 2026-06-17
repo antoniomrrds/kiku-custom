@@ -36,6 +36,7 @@ type Toast = {
 type GeneralContextValue = {
   $general: Store<GeneralStore>;
   $setGeneral: SetStoreFunction<GeneralStore>;
+  $preStartupTime: Accessor<number>;
   $startupTime: Accessor<number>;
   aborter: AbortController;
   workerPath: string | undefined;
@@ -67,6 +68,7 @@ export function GeneralContextProvider(props: {
   workerPath: string | undefined;
   templateDataset: RootDataset;
   ankiDroidAPI: AnkiDroidAPI | undefined;
+  $preStartupTime: Accessor<number>;
   $startupTime: Accessor<number>;
   assetsPath: string;
   aborter: AbortController;
@@ -136,6 +138,7 @@ export function GeneralContextProvider(props: {
       value={{
         $general,
         $setGeneral,
+        $preStartupTime: props.$preStartupTime,
         $startupTime: props.$startupTime,
         aborter: props.aborter,
         workerPath: props.workerPath,
