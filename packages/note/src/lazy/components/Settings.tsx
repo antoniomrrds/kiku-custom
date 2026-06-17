@@ -491,7 +491,7 @@ function FontSettings() {
 function FontSizeSettings() {
   return (
     <Section>
-      <div class="collapse gap-4 collapse-arrow">
+      <div class="collapse rounded-none gap-4 collapse-arrow">
         <input type="checkbox" />
         <div class="collapse-title p-0">
           <SectionTitle>Font Size</SectionTitle>
@@ -680,7 +680,7 @@ function DebugSettings() {
   });
 
   return (
-    <div class="collapse collapse-arrow">
+    <div class="collapse rounded-none collapse-arrow">
       <input type="checkbox" />
       <div class="collapse-title p-0">
         <SectionTitle>Debug</SectionTitle>
