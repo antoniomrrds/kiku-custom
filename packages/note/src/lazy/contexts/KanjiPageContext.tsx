@@ -10,16 +10,11 @@ export type ContextLabel = {
 };
 
 export type KanjiPageContextStore = {
-  noteList: [string, AnkiNote[]][];
-  sameReading?: AnkiNote[];
-  sameExpression?: AnkiNote[];
-  relatedExpression?: AnkiNote[];
   focus: {
     kanji: string | undefined;
     noteId: number | undefined;
   };
   tab: "kanji" | "reading" | "same" | "related";
-  contextLabel?: ContextLabel;
   nested: boolean;
   nestedId: string;
   nestedNoteList: [string, AnkiNote[]][];
@@ -33,6 +28,11 @@ export type KanjiPageContextStore = {
 export type KanjiPageContextValue = {
   $kanjiPage: Store<KanjiPageContextStore>;
   $setKanjiPage: SetStoreFunction<KanjiPageContextStore>;
+  noteList: [string, AnkiNote[]][];
+  sameReading?: AnkiNote[];
+  sameExpression?: AnkiNote[];
+  relatedExpression?: AnkiNote[];
+  contextLabel?: ContextLabel;
 };
 
 const KanjiPageContext = createContext<KanjiPageContextValue>();
@@ -62,11 +62,6 @@ export function KanjiPageContextProvider(props: {
     $setKanjiPage = saved.$setKanjiPage;
   } else {
     [$kanjiPage, $setKanjiPage] = createStore<KanjiPageContextStore>({
-      noteList: props.noteList,
-      contextLabel: props.contextLabel,
-      sameReading: props.sameReading,
-      sameExpression: props.sameExpression,
-      relatedExpression: props.relatedExpression,
       focus: {
         kanji: props.initialFocus?.kanji,
         noteId: props.initialFocus?.noteId,
@@ -83,24 +78,33 @@ export function KanjiPageContextProvider(props: {
     });
   }
 
+  const value = {
+    $kanjiPage,
+    $setKanjiPage,
+    noteList: props.noteList,
+    contextLabel: props.contextLabel,
+    sameReading: props.sameReading,
+    sameExpression: props.sameExpression,
+    relatedExpression: props.relatedExpression,
+  };
+
   onMount(() => {
-    cache.set(props.id, { $kanjiPage, $setKanjiPage });
+    cache.set(props.id, value);
   });
 
-  return (
-    <KanjiPageContext.Provider value={{ $kanjiPage, $setKanjiPage }}>
-      {props.children}
-    </KanjiPageContext.Provider>
-  );
+  return <KanjiPageContext.Provider value={value}>{props.children}</KanjiPageContext.Provider>;
 }
 
 export function useKanjiPageContext() {
   const kanjiPageStore = useContext(KanjiPageContext);
   if (!kanjiPageStore) throw new Error("Missing KanjiPageContext");
-  return createCompatPair(
-    "$kanjiPage",
-    "$setKanjiPage",
-    kanjiPageStore.$kanjiPage,
-    kanjiPageStore.$setKanjiPage,
+  return Object.assign(
+    createCompatPair(
+      "$kanjiPage",
+      "$setKanjiPage",
+      kanjiPageStore.$kanjiPage,
+      kanjiPageStore.$setKanjiPage,
+    ),
+    { ...kanjiPageStore },
   );
 }

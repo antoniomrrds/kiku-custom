@@ -15,8 +15,8 @@ type ConfigContextValue = {
 
 const ConfigContext = createContext<ConfigContextValue>();
 
-export function ConfigContextProvider(props: { children: JSX.Element; config: KikuConfig }) {
-  const [$config, $setConfig] = createStore(props.config);
+export function ConfigContextProvider(props: { children: JSX.Element; initialConfig: KikuConfig }) {
+  const [$config, $setConfig] = createStore({ ...props.initialConfig });
   const { $general, logger, styleTags, assetsPath, isAnkiDesktop, workerApi, templateDataset } =
     useGeneralContext();
 

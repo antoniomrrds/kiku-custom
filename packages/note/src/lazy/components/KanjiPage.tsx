@@ -61,15 +61,16 @@ function $KanjiPage() {
 function Page() {
   const { onKanjiPageMount } = useCardContext();
   const { initialAnkiFields } = useAnkiFieldContext();
-  const { $kanjiPage, $setKanjiPage } = useKanjiPageContext();
+  const { $kanjiPage, $setKanjiPage, noteList, contextLabel, sameReading, sameExpression } =
+    useKanjiPageContext();
   const { $$relatedNotes } = useRelatedNotes();
 
   const $title = createMemo(() => {
     if ($kanjiPage.tab === "kanji") {
-      if ($kanjiPage.contextLabel?.type === "similar") return "Similar";
-      if ($kanjiPage.contextLabel?.type === "composedOf") return "Composed of";
-      if ($kanjiPage.contextLabel?.type === "usedIn") return "Used in";
-      if ($kanjiPage.contextLabel?.type === "related") return "Related";
+      if (contextLabel?.type === "similar") return "Similar";
+      if (contextLabel?.type === "composedOf") return "Composed of";
+      if (contextLabel?.type === "usedIn") return "Used in";
+      if (contextLabel?.type === "related") return "Related";
       return "Same Kanji";
     }
     if ($kanjiPage.tab === "reading") return "Same Reading";
@@ -112,7 +113,7 @@ function Page() {
       <Match when={!$kanjiPage.nested}>
         <HeaderKanjiPage />
         <div class="flex flex-col gap-2 sm:gap-4">
-          <Show when={!$kanjiPage.contextLabel}>
+          <Show when={!contextLabel}>
             <div role="tablist" class="tabs tabs-box animate-fade-in">
               <TabItem
                 active={$kanjiPage.tab === "kanji"}
@@ -125,7 +126,7 @@ function Page() {
               </TabItem>
               <TabItem
                 active={$kanjiPage.tab === "reading"}
-                count={$kanjiPage.sameReading?.length ?? 0}
+                count={sameReading?.length ?? 0}
                 onClick={() => {
                   $setKanjiPage("tab", "reading");
                 }}
@@ -134,7 +135,7 @@ function Page() {
               </TabItem>
               <TabItem
                 active={$kanjiPage.tab === "same"}
-                count={$kanjiPage.sameExpression?.length ?? 0}
+                count={sameExpression?.length ?? 0}
                 onClick={() => {
                   $setKanjiPage("tab", "same");
                 }}
@@ -155,7 +156,7 @@ function Page() {
           <div class="flex flex-col items-center gap-2 animate-fade-in">
             <div class="font-secondary text-5xl sm:text-6xl">
               <Switch>
-                <Match when={$kanjiPage.contextLabel}>{$kanjiPage.contextLabel?.text}</Match>
+                <Match when={contextLabel}>{contextLabel?.text}</Match>
                 <Match when={$isRuby()}>
                   <div innerHTML={initialAnkiFields.ExpressionFurigana}></div>
                 </Match>
@@ -209,7 +210,7 @@ function Page() {
           <div class="flex flex-col gap-2 sm:gap-4 ">
             <Switch>
               <Match when={$kanjiPage.tab === "kanji"}>
-                <For each={$kanjiPage.noteList}>
+                <For each={noteList}>
                   {([kanji, data]) => {
                     return (
                       <KanjiContextProvider kanji={kanji}>
@@ -220,10 +221,10 @@ function Page() {
                 </For>
               </Match>
               <Match when={$kanjiPage.tab === "reading"}>
-                <NoteList list={$kanjiPage.sameReading ?? []} />
+                <NoteList list={sameReading ?? []} />
               </Match>
               <Match when={$kanjiPage.tab === "same"}>
-                <NoteList list={$kanjiPage.sameExpression ?? []} />
+                <NoteList list={sameExpression ?? []} />
               </Match>
               <Match when={$kanjiPage.tab === "related"}>
                 <NoteList items={$$relatedNotes()} />

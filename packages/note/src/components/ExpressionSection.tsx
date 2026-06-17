@@ -11,7 +11,7 @@ const Lazy = {
 };
 
 export function ExpressionSection(props: { hideExpression?: boolean }) {
-  const { $card, $initialSide, $isInitialSide } = useCardContext();
+  const { $card, $initialSide, $isInitialSide, nested } = useCardContext();
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
   const { $pitchType } = usePitch();
   const $hideExpression = createMemo(() => props.hideExpression);
@@ -70,7 +70,7 @@ export function ExpressionSection(props: { hideExpression?: boolean }) {
         <Match when={!$card.ready}>
           <div
             class="contents"
-            classList={{ invisible: $card.nested }}
+            classList={{ invisible: nested }}
             innerHTML={$expressionInnerHtml()}
           ></div>
         </Match>

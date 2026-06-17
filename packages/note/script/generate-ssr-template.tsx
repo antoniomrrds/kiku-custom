@@ -43,7 +43,7 @@ export function generateSsrTemplate() {
           isAnkiDroidNewStudyScreen={false}
           isAnkiDroid={false}
         >
-          <ConfigContextProvider config={defaultConfig}>
+          <ConfigContextProvider initialConfig={defaultConfig}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
               <RootAnkiFieldsContextProvider>
                 <CardStoreContextProvider initialSide="front" initialNsfw={false}>
@@ -84,7 +84,7 @@ export function generateSsrTemplate() {
           isAnkiDroidNewStudyScreen={false}
           isAnkiDroid={false}
         >
-          <ConfigContextProvider config={defaultConfig}>
+          <ConfigContextProvider initialConfig={defaultConfig}>
             <AnkiFieldContextProvider initialAnkiFields={ankiFieldsSkeleton} isRoot>
               <RootAnkiFieldsContextProvider>
                 <CardStoreContextProvider initialSide="back" initialNsfw={false}>

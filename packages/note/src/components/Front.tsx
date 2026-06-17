@@ -24,7 +24,7 @@ const Lazy = {
 };
 
 export function Front() {
-  const { $card, $setCard, $isInitialSide } = useCardContext();
+  const { $card, $setCard, $isInitialSide, nested } = useCardContext();
   const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
   const [$clicked, $setClicked] = createSignal(false);
   const [$hideExpression, $setHideExpression] = createSignal(false);
@@ -67,7 +67,7 @@ export function Front() {
 
   return (
     <>
-      {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
+      {$card.ready && !nested && <Lazy.UseAnkiDroid />}
       <Switch>
         <Match when={$card.page === "settings" && $card.ready}>
           <Lazy.Settings />

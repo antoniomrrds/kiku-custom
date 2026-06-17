@@ -127,7 +127,7 @@ export class KikuHost extends HTMLElement {
             isAnkiDroidNewStudyScreen={isAnkiDroidNewStudyScreen ?? false}
             isAnkiDroid={isAnkiDroid ?? false}
           >
-            <ConfigContextProvider config={config}>
+            <ConfigContextProvider initialConfig={config}>
               <AnkiFieldContextProvider initialAnkiFields={ankiFields} isRoot>
                 <RootAnkiFieldsContextProvider>
                   <CardStoreContextProvider

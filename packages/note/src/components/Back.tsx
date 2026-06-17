@@ -34,7 +34,7 @@ const Lazy = {
 
 export function Back(props: { onExitNested?: () => void }) {
   const { navigateBack } = useNavigationTransition();
-  const { $card, $setCard } = useCardContext();
+  const { $card, $setCard, nested } = useCardContext();
   const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
   const loadPlugin = useLoadPlugin();
   const { logger } = useGeneralContext();
@@ -68,7 +68,7 @@ export function Back(props: { onExitNested?: () => void }) {
 
   return (
     <>
-      {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
+      {$card.ready && !nested && <Lazy.UseAnkiDroid />}
       <Switch>
         <Match when={$card.page === "settings" && $card.ready}>
           <Lazy.Settings />

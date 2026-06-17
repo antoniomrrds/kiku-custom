@@ -34,11 +34,11 @@ import {
 export function MergeContextModal() {
   const [$dialogRef, $setDialogRef] = createSignal<HTMLDialogElement>();
   const { $general, logger, $$ankiConnect, $checkAnkiConnect, isAnkiDesktop } = useGeneralContext();
-  const { $card } = useCardContext();
+  const { $card, isMergePreview } = useCardContext();
   const { initialAnkiFields: rootInitialAnkiFields } = useRootAnkiFieldsContext();
   const { noteId: currentNoteId } = useAnkiFieldContext();
 
-  const $shouldFetch = createMemo(() => $$ankiConnect.state === "ready" && !$card.isMergePreview);
+  const $shouldFetch = createMemo(() => $$ankiConnect.state === "ready" && !isMergePreview);
 
   const [$$notesResource, { refetch }] = createResource(
     () => {

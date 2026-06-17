@@ -10,7 +10,7 @@ import { MergeContextModal } from "./MergeContextModal";
 import { useRelatedNotes } from "#/src/hooks/notes";
 
 export function HeaderMain(props: { onExitNested?: () => void }) {
-  const { $card, $initialSide, $$card } = useCardContext();
+  const { $card, $initialSide, $$card, nested, isMergePreview } = useCardContext();
   const { $config, $isConfigOutOfSync } = useConfigContext();
   const { initialDarkMode, $preStartupTime, $startupTime, isAnkiDroidNewStudyScreen } =
     useGeneralContext();
@@ -21,15 +21,15 @@ export function HeaderMain(props: { onExitNested?: () => void }) {
     <HeaderLayout>
       <div class="flex gap-1 sm:gap-2 items-center animate-fade-in-sm">
         <Switch>
-          <Match when={$card.nested}>
+          <Match when={nested}>
             <button on:click={props.onExitNested} on:touchend={(e) => e.stopPropagation()}>
               <ArrowLeftIcon class="size-5 cursor-pointer text-base-content-soft" />
             </button>
-            <Show when={!$card.isMergePreview}>
+            <Show when={!isMergePreview}>
               <MergeContextModal />
             </Show>
           </Match>
-          <Match when={!$card.nested}>
+          <Match when={!nested}>
             <div class="relative">
               <div class="flex items-center">
                 <button
@@ -68,7 +68,7 @@ export function HeaderMain(props: { onExitNested?: () => void }) {
         </Switch>
       </div>
       <div class="flex gap-1 sm:gap-2 items-center">
-        <Show when={!$card.isMergePreview}>
+        <Show when={!isMergePreview}>
           <Switch>
             <Match when={$$card.state === "pending" || $$card.state === "unresolved"}>
               <span

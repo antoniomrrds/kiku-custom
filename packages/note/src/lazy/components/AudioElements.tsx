@@ -25,7 +25,7 @@ function AudioTag(props: { text: string }) {
 
 export function AudioElements() {
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
-  const { $card, $setCard } = useCardContext();
+  const { $card, $setCard, nested } = useCardContext();
   const { $group } = useFieldGroupContext();
   const { $config } = useConfigContext();
   const { logger, isAnkiDroidOldStudyScreen } = useGeneralContext();
@@ -64,7 +64,7 @@ export function AudioElements() {
     on(
       () => $group().sentenceAudioField,
       () => {
-        if ($card.nested && autoPlay) {
+        if (nested && autoPlay) {
           autoPlay = false;
           const audio = $card.expressionAudioRef?.querySelector("audio");
           if (audio) {

@@ -30,11 +30,9 @@ export type CardStore = {
   };
   initialTab: "kanji" | "reading" | "same" | "related";
   navigateBack: (() => void)[];
-  nested: boolean;
   nestedAnkiFields: AnkiFields;
   nestedNoteId: number | undefined;
   nestedIsMergePreview: boolean;
-  isMergePreview: boolean;
   fadeInTopSection: boolean;
 };
 
@@ -45,6 +43,8 @@ type CardContextValue = {
   $isInitialSide: Accessor<boolean>;
   $$card: $$Card;
   onKanjiPageMount: Set<(ctx: { $setKanjiPage: SetStoreFunction<KanjiPageContextStore> }) => void>;
+  nested: boolean;
+  isMergePreview: boolean;
 };
 
 const CardStoreContext = createContext<CardContextValue>();
@@ -74,16 +74,16 @@ export function CardStoreContextProvider(props: {
     },
     initialTab: "kanji",
     navigateBack: [],
-    nested: props.nested ?? false,
     nestedAnkiFields: ankiFieldsSkeleton,
     nestedNoteId: undefined,
     nestedIsMergePreview: false,
-    isMergePreview: props.isMergePreview ?? false,
     fadeInTopSection: false,
   });
 
   const $initialSide = createMemo(() => props.initialSide);
   const $isInitialSide = createMemo(() => $initialSide() === $card.side);
+  const nested = props.nested ?? false;
+  const isMergePreview = props.isMergePreview ?? false;
   const onKanjiPageMount: CardContextValue["onKanjiPageMount"] = new Set();
   const { $$card } = useCardQuery({ $card, $initialSide });
 
@@ -103,6 +103,8 @@ export function CardStoreContextProvider(props: {
         $initialSide,
         $isInitialSide,
         $$card,
+        nested,
+        isMergePreview,
       }}
     >
       {props.children}
