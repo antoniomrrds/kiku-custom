@@ -20,6 +20,7 @@ import type {
   useContext,
 } from "solid-js";
 import type h from "solid-js/h";
+import type html from "solid-js/html";
 import type { JSX } from "solid-js/jsx-runtime";
 import type { createStore, Store } from "solid-js/store";
 import type { Portal } from "solid-js/web";
@@ -41,11 +42,15 @@ import type { AnkiFields } from "#/src/lib/types";
  */
 export type Ctx = {
   /**
-   * The Hyperscript function for creating UI elements.
-   * Kiku uses Solid.js with Hyperscript to ensure high performance and reactivity.
-   * @example h('div', { class: 'text-base-content-soft' }, 'Hello Kiku')
+   * HyperScript method for Solid
+   * https://github.com/solidjs/solid/blob/main/packages/solid/h/README.md
    */
   h: typeof h;
+  /**
+   * Tagged Template Literal html method for Solid
+   * https://github.com/solidjs/solid/blob/main/packages/solid/html/README.md
+   */
+  html: typeof html;
 
   // --- Solid.js Reactive Primitives ---
   /** Creates a reactive signal. [$state, $setState] = createSignal(initialValue) */

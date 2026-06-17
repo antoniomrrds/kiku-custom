@@ -17,6 +17,7 @@ import {
   useContext,
 } from "solid-js";
 import h from "solid-js/h";
+import html from "solid-js/html";
 import { createStore, unwrap } from "solid-js/store";
 import { Match, Portal, Show, Suspense, Switch } from "solid-js/web";
 import type { Ctx } from "#/plugins/plugin-types";
@@ -32,6 +33,7 @@ export function CtxContextProvider(props: { children: JSX.Element }) {
   const { $ankiFields } = useAnkiFieldContext();
   const ctx: Ctx = {
     h,
+    html,
     createSignal,
     createEffect,
     createMemo,
