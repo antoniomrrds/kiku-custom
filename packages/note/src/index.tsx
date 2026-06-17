@@ -352,6 +352,10 @@ export class KikuHostAnki extends KikuHost {
 
   setupKikuCSSStyleSheet(qa: HTMLElement, css: CSSStyleSheet) {
     const { logger } = this;
+    if (document.adoptedStyleSheets.includes(css)) {
+      logger.debug("[init] kiku CSSStyleSheet already added");
+      return;
+    }
     logger.debug("[init] adding kiku CSSStyleSheet");
     document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
     if (qa && globalThis.KIKU && !globalThis.KIKU.kikuCSSStyleSheetObserver) {
