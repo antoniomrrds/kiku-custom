@@ -9,12 +9,14 @@ export const plugin = {
   onPluginLoad: ({ ctx }) => {
     const { $general } = ctx.useGeneralContext();
     const root = $general.root;
+    const layout = $general.layoutRef;
     const fontsPool = [
-      "'Hiragino Mincho ProN'",
-      "'Noto Serif CJK JP'",
-      "'Noto Serif JP'",
-      "'Yu Mincho'",
+      "'Hiragino Mincho ProN', serif",
+      "'Noto Serif CJK JP', serif",
+      "'Yu Mincho', serif",
       "'HanaMinA', 'HanaMinB', serif",
+      "'Noto Sans CJK JP', sans-serif",
+      "'Rounded Mplus 1c', sans-serif",
     ];
 
     const randomFont = fontsPool[Math.floor(Math.random() * fontsPool.length)];
@@ -26,7 +28,7 @@ export const plugin = {
       sessionStorage.setItem("random-font", font);
     }
 
-    if (root) root.style.setProperty("--font-secondary", font);
+    if (layout) layout.style.setProperty("--font-secondary", font);
 
     // wait until the font is loaded
     document.fonts.onloadingdone = () => {

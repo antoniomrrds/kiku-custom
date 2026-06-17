@@ -4,6 +4,8 @@ outline: deep
 
 # Add More External Links
 
+Add or customize external links on the bottom side of definitions section.
+
 ::: code-group
 
 <!-- prettier-ignore -->
