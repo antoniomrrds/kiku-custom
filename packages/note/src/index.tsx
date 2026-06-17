@@ -214,6 +214,7 @@ export class KikuHostAnki extends KikuHost {
       this.setupDevCss(styleTags, config);
     } else {
       const css = await this.getKikuCSSStyleSheet();
+      if (aborter.signal.aborted) return;
       if (!isAnkiWeb) this.setupKikuCSSStyleSheet(qa, css);
       shadow.adoptedStyleSheets = [css];
     }
