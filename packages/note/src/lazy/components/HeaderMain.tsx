@@ -72,7 +72,7 @@ export function HeaderMain(props: { onExitNested?: () => void }) {
           <Switch>
             <Match when={$$card.state === "pending" || $$card.state === "unresolved"}>
               <span
-                class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"
+                class="loading loading-dots loading-xs text-base-content-faint animate-fade-in-sm"
                 classList={{
                   "me-4": $initialSide() === "front" && isAnkiDroidNewStudyScreen,
                 }}

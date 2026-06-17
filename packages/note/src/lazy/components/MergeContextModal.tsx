@@ -78,7 +78,7 @@ export function MergeContextModal() {
     <>
       <Switch>
         <Match when={$$notesResource.loading || $$ankiConnect.loading}>
-          <span class="loading loading-spinner loading-xs text-base-content-faint animate-fade-in-sm"></span>
+          <span class="loading loading-dots loading-xs text-base-content-faint animate-fade-in-sm"></span>
         </Match>
         <Match when={$$notesResource.state === "ready"}>
           <button

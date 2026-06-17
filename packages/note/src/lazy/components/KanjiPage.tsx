@@ -332,7 +332,7 @@ function KanjiCollapsible(props: { data: AnkiNote[] }) {
         <KanjiText />
         <div class="flex gap-1 sm:gap-2 absolute top-2 right-2 sm:top-4 sm:right-4">
           <Show when={$loading()}>
-            <div class="loading loading-sm text-base-content-soft animate-fade-in-sm"></div>
+            <div class="loading loading-dots loading-xs text-base-content-faint animate-fade-in-sm"></div>
           </Show>
           <div class="text-base-content-soft bg-base-300 px-1 rounded-xs animate-fade-in-sm text-sm sm:text-base">
             {$data().length}
