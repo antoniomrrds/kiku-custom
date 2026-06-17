@@ -21,7 +21,7 @@ export default defineConfig({
   },
   srcDir: "mds",
   title: "Kiku",
-  description: "Modern, fully interactive Anki note type designed for Japanese learners.",
+  description: "Feature-rich, fully interactive Anki note type designed for Japanese learners.",
   head: [["link", { rel: "icon", href: "/favicon.ico" }], umamiScript],
   vite: {
     publicDir: "../public",

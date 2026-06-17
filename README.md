@@ -22,7 +22,7 @@
 
 <br/>
 <br/>
-<p>A modern, fully interactive Anki note type designed for Japanese learners.</p>
+<p>A feature-rich, fully interactive Anki note type designed for Japanese learners.</p>
 </div>
 
 <hr/>
