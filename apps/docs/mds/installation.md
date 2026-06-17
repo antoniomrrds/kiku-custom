@@ -53,5 +53,5 @@ Credit to [Lapis](https://github.com/donkuri/lapis) for the table
 
 ## [Kiku Note Manager](https://ankiweb.net/shared/info/408592650?cb=1763445474367) addon
 
-This addon is used to generate notes cache, so the Kanji Scan feature works across all platforms.
+This addon is used to generate notes cache, so the Kanji Web feature works across all platforms.
 Install this addon, then go to `Tools` > `Kiku Note Manager` > `Generate notes cache`.

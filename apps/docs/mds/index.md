@@ -17,7 +17,7 @@ hero:
 features:
   - title: Built-in Themes
     details: Instantly switch between 35 ready-to-use themes, ranging from light and to dark.
-  - title: Kanji Scan
+  - title: Kanji Web
     details: Explore notes that share the same or similar kanji, and quickly jump between related expressions.
   - title: Settings Panel
     details: Adjust your theme, font, size, and other configuration options directly within the note.
