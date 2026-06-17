@@ -7,4 +7,9 @@ outline: deep
 ## Switching from [Lapis](https://github.com/donkuri/lapis)
 
 Switching from Lapis is very straightforward, because all the fields are the same.
-![Lapis to Kiku](/media/lapis-to-kiku.png)
+![Lapis to Kiku Fields](/media/lapis-to-kiku-1.png)
+![Lapis to Kiku Templates](/media/lapis-to-kiku-2.png)
+
+:::info v2.0.0
+New fields `RelatedExpression` and `SentenceTranslation` has been added.
+:::

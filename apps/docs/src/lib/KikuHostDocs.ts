@@ -83,6 +83,7 @@ export class KikuHostDocs extends KikuHost {
 
   #render() {
     this.#dispose?.();
+    this.now = performance.now();
     const isDark = document.documentElement.classList.contains("dark");
     const selectedField = this.getAttribute("selected-field") ?? "";
 

@@ -30,7 +30,7 @@ SentenceAudio:
 
 :::
 
-<img src="/media/field-grouping-1.png" alt="field grouping normal" style="max-width: 100%;">
+<img src="/media/field-grouping-1.2.png" alt="field grouping normal" style="max-width: 100%;">
 
 ---
 
@@ -56,17 +56,18 @@ Sentence:
 
 SentenceAudio:
 
+<!-- prettier-ignore -->
 ```html
-[sound:Tate no Yuusha no Nariagari S3 - 10.mkv_118779.mp3] [sound:Gochuumon wa Usagi Desuka S01E09
-9092049A.mkv_955687.289_958481.289.mp3]
+[sound:Tate no Yuusha no Nariagari S3 - 10.mkv_118779.mp3]
+[sound:Gochuumon wa Usagi Desuka S01E09 9092049A.mkv_955687.289_958481.289.mp3]
 ```
 
 :::
 
-Each picture will be displayed on a different page, while everything else will simply be appended.
+The pictures will be paginated, while everything else will simply be appended.
 
 <video controls autoplay loop>
-  <source src="/media/field-grouping-2.webm" type="video/webm" />
+  <source src="/media/field-grouping-2.2.webm" type="video/webm" />
 </video>
 
 ---
@@ -99,7 +100,7 @@ SentenceAudio:
 :::
 
 <video controls>
-  <source src="/media/field-grouping-3.webm" type="video/webm" />
+  <source src="/media/field-grouping-3.2.webm" type="video/webm" volume="0.3" />
 </video>
 
 ## More Info
@@ -108,7 +109,7 @@ SentenceAudio:
 - If `data-group-id` is a [Unix Timestamp](https://www.unixtimestamp.com/) between year 2000 and 2100, it will be displayed as a date.
 - Each unique `data-group-id` will create a new page.
 - Anything without a `data-group-id` will be shown on the same page.
-- **SentenceFurigana** and **MiscInfo** fields will also be grouped.
+- **SentenceFurigana**, **SentenceTranslation** and **MiscInfo** fields will also be grouped.
 
 ## Merge Context Button
 
@@ -122,7 +123,7 @@ The button is available on the top left corner when you visit nested notes.
 - AnkiConnect is required, and **Prefer AnkiConnect** must be enabled in the settings.
 - Ungrouped fields from both notes will be grouped with their own NoteID as the `data-group-id`.
 - Existing `data-group-id` will be preserved.
-- **Picture**, **Sentence**, **SentenceFurigana**, **SentenceAudio**, **MiscInfo** and **Tag** will be merged.
+- **Picture**, **Sentence**, **SentenceFurigana**, **SentenceTranslation**, **SentenceAudio**, **MiscInfo** and **Tag** will be merged.
 - If either note has empty **SentenceFurigana**, the target note's **SentenceFurigana** will be updated as empty.
 - Some special tags like `leech`, `marked`, `potential_leech` will not be added to the target note.
 - "Delete Root Note" option will be available when the root note is less than 1 day old. This option will delete the root note after merging.
