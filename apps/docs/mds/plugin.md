@@ -4,12 +4,12 @@ outline: deep
 
 # Plugin
 
-A Kiku plugin is a JavaScript module named `_kiku_plugin.js`.
+A Kiku plugin is a JavaScript module named `_kiku_plugin.js` located in your `collection.media` directory.
 This module must export a named variable called `plugin`.
 The type definitions for this module are available [here](https://github.com/youyoumu/kiku/blob/main/packages/note/plugins/plugin-types.ts).
 
 :::info
-In addition to the JavaScript module, you may include a `_kiku_plugin.css` file for custom plugin styling.
+In addition to the JavaScript module, there is also `_kiku_plugin.css` for custom styling.
 :::
 
 <<< ../../../packages/note/plugins/plugin-types.ts
