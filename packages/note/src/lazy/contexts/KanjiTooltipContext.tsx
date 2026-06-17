@@ -190,7 +190,7 @@ function KanjiTooltip() {
           <button
             data-anki-mobile-only="block"
             class="absolute z-20 top-2 right-2"
-            on:click={onActiveTooltip}
+            on:click={onInactiveTooltip}
             on:touchend={(e) => e.stopPropagation()}
           >
             <XIcon class="size-5 cursor-pointer text-base-content-soft" />
