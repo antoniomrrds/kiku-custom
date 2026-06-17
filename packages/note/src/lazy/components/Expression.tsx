@@ -1,4 +1,4 @@
-import { createEffect, createMemo, For, Match, onMount, Show, Switch } from "solid-js";
+import { createMemo, For, Match, Show, Switch } from "solid-js";
 import { parseHtml } from "#/src/lib/dom";
 import { extractKanji } from "#/src/lib/kana";
 import { parseFurigana } from "#/src/lib/parse-furigana";
@@ -11,6 +11,7 @@ import {
 
 export function Expression() {
   const { $ankiFields } = useAnkiFieldContext();
+  const { $initialSide, $isInitialSide } = useCardContext();
 
   const $doc = createMemo(() => parseHtml($ankiFields.ExpressionFurigana));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));
@@ -68,6 +69,9 @@ export function Expression() {
   return (
     <KanjiTooltipContextProvider>
       <Switch>
+        <Match when={$initialSide() === "front" && $isInitialSide()}>
+          {$ankiFields.Expression}
+        </Match>
         <Match when={$isRuby()}>
           <ExpressionRuby />
         </Match>
