@@ -7,30 +7,24 @@
  */
 export const plugin = {
   Sentence: (props) => {
-    const h = props.ctx.h;
+    const html = props.ctx.html;
+    const createMemo = props.ctx.createMemo;
 
-    function SentenceTranslation() {
-      const translation =
-        "SentenceTranslation" in props.ctx.$ankiFields
-          ? props.ctx.$ankiFields?.SentenceTranslation
-          : document.getElementById("SentenceTranslation")?.innerHTML;
+    function ExtraInfo() {
+      const extraInfo = createMemo(() => {
+        if ("ExtraInfo" in props.ctx.$ankiFields) {
+          return props.ctx.$ankiFields?.ExtraInfo;
+        }
+        /**
+         * @type {HTMLTemplateElement}
+         */
+        return document.getElementById("ExtraInfo")?.innerHTML;
+      });
 
-      if (!translation) return null;
-      return h("div", {
-        class: "text-lg text-base-content-calm sentence-translation",
-        innerHTML: translation,
-      })();
+      if (!extraInfo()) return null;
+      return html`<div class="text-lg text-base-content-calm">${() => extraInfo()}</div>`;
     }
 
-    // You can inline the CSS here
-    const style = h(
-      "style",
-      `
-      .sentence-translation { filter: blur(4px); } 
-      .sentence-translation:hover { filter: none; }
-    `,
-    );
-
-    return [props.DefaultSentence(), SentenceTranslation(), style()];
+    return [props.DefaultSentence(), ExtraInfo()];
   },
 };
