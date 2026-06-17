@@ -1,4 +1,5 @@
 import { defaultConfig } from "./default-config";
+import type { Logger } from "./logger";
 import { colorBase100Map, type DaisyUITheme, daisyUIThemes } from "./theme";
 
 export type KikuConfig = {
@@ -80,7 +81,7 @@ export type RootDatasetKey = (typeof rootDatasetArray)[number];
 export type RootDataset = Partial<Record<RootDatasetKey, string>>;
 export const rootDatasetConfigWhitelist = new Set<RootDatasetKey>(rootDatasetArray);
 
-export function validateConfig(config: KikuConfig): KikuConfig {
+export function validateConfig(config: KikuConfig, logger?: Logger): KikuConfig {
   try {
     if (typeof config !== "object" || config === null) throw new Error();
 
@@ -127,7 +128,8 @@ export function validateConfig(config: KikuConfig): KikuConfig {
     };
 
     return valid;
-  } catch {
+  } catch (e) {
+    logger?.warn("[validateConfig] validation failed, using defaults:", e);
     return defaultConfig;
   }
 }

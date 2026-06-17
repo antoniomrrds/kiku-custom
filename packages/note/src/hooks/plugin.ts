@@ -5,7 +5,7 @@ import { constants } from "#/src/lib/contants";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 
 export function useLoadPlugin() {
-  const { $general, $setGeneral, assetsPath } = useGeneralContext();
+  const { $general, $setGeneral, assetsPath, logger } = useGeneralContext();
   const ctx = useCtxContext();
   const owner = getOwner();
 
@@ -18,7 +18,9 @@ export function useLoadPlugin() {
         )
       ).plugin as KikuPlugin;
       return plugin;
-    } catch {}
+    } catch (e) {
+      logger.warn("[plugin] failed to import plugin:", e);
+    }
   }
 
   function loadPlugin() {
@@ -27,7 +29,9 @@ export function useLoadPlugin() {
         runWithOwner(owner, () => {
           plugin?.onPluginLoad?.({ ctx });
         });
-      } catch {}
+      } catch (e) {
+        logger.warn("[plugin] onPluginLoad failed:", e);
+      }
       $setGeneral("plugin", plugin);
     });
   }

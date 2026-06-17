@@ -117,7 +117,7 @@ export function UseAnkiDroid() {
       if (Math.abs(deltaX) >= THRESHOLD) {
         let ease: "ease1" | "ease3" = deltaX > 0 ? "ease3" : "ease1";
         if (reverse) ease = reverseEase(ease);
-        console.log(ease);
+        logger.info("AnkiDroid ease:", ease);
         if (!import.meta.env.DEV) {
           if (ease === "ease1") {
             ankiDroidAPI?.ankiAnswerEase1();

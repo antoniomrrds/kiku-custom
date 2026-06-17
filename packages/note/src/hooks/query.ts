@@ -15,7 +15,7 @@ export function useCardQuery({
   $initialSide: Accessor<CardStore["side"]>;
   $card: Store<CardStore>;
 }) {
-  const { aborter } = useGeneralContext();
+  const { aborter, logger } = useGeneralContext();
   const { initialAnkiFields: ankiFields, $isRootInitialAnkiFields } = useAnkiFieldContext();
   const { getWorker } = useWorker();
 
@@ -142,6 +142,13 @@ export function useCardQuery({
           referenced = termInfo.referenced.flatMap(termInfoFlatMapCb);
         }
       }
+
+      logger.debug(
+        `[query] results for "${expression}": source=${isNotesCache ? "cache" : "ankiConnect"}, ` +
+          `kanji=${noteList.length}, reading=${sameReading.length}, ` +
+          `sameExpr=${sameExpression.length}, related=${relatedExpression.length}, ` +
+          `forms=${forms.length}, antonym=${antonym.length}, referenced=${referenced.length}`,
+      );
 
       return {
         noteList,

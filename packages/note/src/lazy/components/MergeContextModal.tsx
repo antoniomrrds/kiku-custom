@@ -146,7 +146,7 @@ function $Dialog(props: {
 }) {
   const { $$notesResource, $dialogRef, $setDialogRef } = props;
 
-  const { $general } = useGeneralContext();
+  const { $general, logger } = useGeneralContext();
   const { $config } = useConfigContext();
   const { navigate } = useNavigationTransition();
   const { $setCard } = useCardContext();
@@ -233,6 +233,7 @@ function $Dialog(props: {
     const payload = $$updateNoteFieldsPayload();
     await AnkiConnect.invoke("updateNote", payload)
       .catch((e) => {
+        logger.error("[MergeContext] updateNote failed:", e);
         $general.toast.error(
           `Failed to update note fields: ${e instanceof Error ? e.message : ""}`,
         );
@@ -247,6 +248,7 @@ function $Dialog(props: {
               notes: [rootNoteId],
             })
               .catch((e) => {
+                logger.error("[MergeContext] deleteNotes failed:", e);
                 $general.toast.error(
                   `Failed to delete note: ${e instanceof Error ? e.message : ""}`,
                 );

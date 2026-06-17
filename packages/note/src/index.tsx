@@ -251,12 +251,12 @@ export class KikuHostAnki extends KikuHost {
     try {
       const cache = sessionStorage.getItem(constants.key["kiku-config"]);
       if (cache) {
-        config = validateConfig(JSON.parse(cache));
+        config = validateConfig(JSON.parse(cache), logger);
         logger.info("[init] config loaded from sessionStorage");
       } else {
         const res = await fetch(constants.assets["_kiku_config.json"], { cache: "no-store" });
         const json = await res.json();
-        config = validateConfig(json);
+        config = validateConfig(json, logger);
         sessionStorage.setItem(constants.key["kiku-config"], JSON.stringify(config));
         logger.info("[init] config fetched and cached");
       }

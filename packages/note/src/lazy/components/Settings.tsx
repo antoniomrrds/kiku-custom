@@ -83,7 +83,9 @@ export function Settings() {
   onMount(() => {
     try {
       $general.plugin?.onSettingsMount?.({ ctx });
-    } catch {}
+    } catch (e) {
+      logger.warn("[Settings] plugin onSettingsMount failed:", e);
+    }
   });
 
   onMount(() => {
