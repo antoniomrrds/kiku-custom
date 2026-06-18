@@ -22,7 +22,7 @@
   .picture-field-background {
     @apply [&_*:not(img)]:contents;
     @apply [&_:not(:first-child)]:hidden;
-    @apply absolute size-full [&_img]:size-full [&_img]:object-cover [&_img]:scale-110 [&_img]:filter [&_img]:brightness-50 [&_img]:blur-[16px];
+    @apply absolute size-full [&_img]:size-full [&_img]:object-cover [&_img]:scale-110 [&_img]:filter [&_img]:brightness-50 [&_img]:blur-lg;
   }
 
   .picture-field {
@@ -33,7 +33,7 @@
     &[data-tags~="nsfw"],
     &[data-tags~="NSFW"],
     &[data-tags~="Nsfw"] {
-      @apply [&_img]:filter [&_img]:blur-[16px] [&_img]:brightness-50;
+      @apply [&_img]:filter [&_img]:blur-lg [&_img]:brightness-50;
     }
     &[data-transition="true"] {
       @apply [&_img]:transition-[filter];

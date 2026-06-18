@@ -10,7 +10,7 @@ import { MergeContextModal } from "./MergeContextModal";
 import { useRelatedNotes } from "#/src/hooks/notes";
 
 export function HeaderMain(props: { onExitNested?: () => void }) {
-  const { $card, $initialSide, $$card, nested, isMergePreview } = useCardContext();
+  const { $initialSide, $$card, nested, isMergePreview } = useCardContext();
   const { $config, $isConfigOutOfSync } = useConfigContext();
   const { initialDarkMode, $preStartupTime, $startupTime, isAnkiDroidNewStudyScreen } =
     useGeneralContext();

@@ -5,7 +5,7 @@ import { constants } from "#/src/lib/contants";
 import type { KikuPlugin } from "#/plugins/plugin-types";
 
 export function useLoadPlugin() {
-  const { $general, $setGeneral, assetsPath, logger } = useGeneralContext();
+  const { $setGeneral, assetsPath, logger } = useGeneralContext();
   const ctx = useCtxContext();
   const owner = getOwner();
 

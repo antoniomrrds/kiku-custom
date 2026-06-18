@@ -114,8 +114,7 @@ export function Front() {
           <div
             class="flex flex-col gap-4 items-center text-center justify-center"
             classList={{
-              "transition-opacity duration-[1000ms] opacity-0":
-                $hideExpression() && $isInitialSide(),
+              "transition-opacity duration-1000 opacity-0": $hideExpression() && $isInitialSide(),
             }}
           >
             {$card.ready && !$hidden() && <Lazy.Sentence />}
@@ -127,7 +126,7 @@ export function Front() {
           )}
           {$isInitialSide() && (
             <div
-              class={`gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-200 p-2`}
+              class={`gap-2 items-center justify-center text-center border-t hint text-base-content-calm hint-field border-base-200 p-2`}
               {...$hintFieldDataset()}
             >
               <div innerHTML={isServer ? undefined : $ankiFields.Hint}>

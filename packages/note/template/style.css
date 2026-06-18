@@ -5,8 +5,10 @@
 @layer theme, base, components, utilities.daisyui.component, custom;
 
 @layer base {
+  /* Don't modify this line */
   /* __CSS_VARIABLE__ */
 
+  /* Don't modify this line */
   /* __CSS_VARIABLE_DARK__ */
 }
 
@@ -105,18 +107,17 @@
   }
 }
 
+/* ──────────────────── Apply to Anki but not Ankiweb ──────────────────── */
 body:not([data-sveltekit-preload-data]) {
   font-size: 16px;
   scrollbar-gutter: stable;
 }
-
 body:not([data-sveltekit-preload-data]) *,
 body:not([data-sveltekit-preload-data]) :after,
 body:not([data-sveltekit-preload-data]) :before,
 body:not([data-sveltekit-preload-data]) ::backdrop {
   box-sizing: border-box;
 }
-
 body:not([data-sveltekit-preload-data]) {
   margin: 0;
   background: var(--color-base-100);
@@ -124,25 +125,46 @@ body:not([data-sveltekit-preload-data]) {
   /* https://issues.chromium.org/issues/40792788 */
   overflow-y: scroll;
 }
-
 body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar {
   background-color: var(--color-base-100) !important;
 }
-
 body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar-thumb {
   background-color: color-mix(in srgb, var(--color-base-100), currentColor 30%) !important;
 }
-
 body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar-thumb:hover {
   background-color: color-mix(in srgb, var(--color-base-100), currentColor 40%) !important;
 }
-
 @media (min-width: 40rem) {
   body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar {
     width: 10px !important;
     border-radius: 0 !important;
   }
 }
+/* ──────────────────── Apply to Anki but not Ankiweb ──────────────────── */
+
+/* ───────────────────── AnkiDroid old study screen ──────────────────── */
+.android body > div#content {
+  margin: 0;
+}
+/* NOTE: Fighting with https://github.com/ankidroid/Anki-Android/blob/a52a05fff9acf56d9718e7304c93a34463a8461a/AnkiDroid/src/main/assets/flashcard.css#L113 */
+.android body > div#content #kiku-root .picture-field img {
+  max-height: none;
+}
+.android body > div#content #kiku-root .picture-field-background img {
+  max-height: none;
+}
+/* ───────────────────── AnkiDroid old study screen ──────────────────── */
+
+/* ───────────────────────────── AnkiMobile ──────────────────────────── */
+.iphone,
+.ipad {
+  --anki-mobile-display-none: none;
+  --anki-mobile-display-block: block;
+}
+[data-anki-mobile-only="block"] {
+  display: var(--anki-mobile-display-block, none);
+}
+/* ───────────────────────────── AnkiMobile ──────────────────────────── */
 
 .card {
   background-color: var(--color-base-100) !important;
@@ -155,28 +177,6 @@ body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar-thumb:hover {
 [data-kiku-cloak] {
   visibility: hidden;
   opacity: 0;
-}
-
-/* AnkiDroid old study screen */
-.android body > div#content {
-  margin: 0;
-}
-/* NOTE: Fighting with https://github.com/ankidroid/Anki-Android/blob/a52a05fff9acf56d9718e7304c93a34463a8461a/AnkiDroid/src/main/assets/flashcard.css#L113 */
-.android body > div#content #kiku-root .picture-field img {
-  max-height: none;
-}
-.android body > div#content #kiku-root .picture-field-background img {
-  max-height: none;
-}
-
-/* AnkiMobile */
-.iphone,
-.ipad {
-  --anki-mobile-display-none: none;
-  --anki-mobile-display-block: block;
-}
-[data-anki-mobile-only="block"] {
-  display: var(--anki-mobile-display-block, none);
 }
 
 /*TODO: move to head*/

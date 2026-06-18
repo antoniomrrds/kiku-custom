@@ -47,7 +47,7 @@ export function ExpressionSection(props: { hideExpression?: boolean }) {
       classList={{
         "border-b-2 border-dotted border-base-content-soft":
           $initialSide() === "front" && !!$ankiFields.IsClickCard && $isInitialSide(),
-        "transition-opacity duration-[1000ms] opacity-0":
+        "transition-opacity duration-1000 opacity-0":
           $initialSide() === "front" && $hideExpression() && $isInitialSide(),
         "hide-rt": $initialSide() === "front" && $isInitialSide(),
       }}
