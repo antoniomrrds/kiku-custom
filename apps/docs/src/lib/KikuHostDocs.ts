@@ -49,7 +49,7 @@ export class KikuHostDocs extends KikuHost {
   #dispose: (() => void) | undefined;
   #root: HTMLElement;
   #styleTags: HTMLStyleElement[] = [];
-  #isUpdateScheduled = false;
+  #stylesLoaded = false;
 
   constructor() {
     super();
@@ -76,18 +76,7 @@ export class KikuHostDocs extends KikuHost {
       this.side = value === "front" ? "front" : "back";
     }
     if (!this.#root) return;
-    this.requestUpdate();
-  }
-
-  requestUpdate() {
-    if (this.#isUpdateScheduled) {
-      return;
-    }
-    this.#isUpdateScheduled = true;
-    queueMicrotask(() => {
-      this.#render();
-      this.#isUpdateScheduled = false;
-    });
+    this.requestUpdate(this.#render.bind(this));
   }
 
   connectedCallback() {
@@ -97,14 +86,19 @@ export class KikuHostDocs extends KikuHost {
     const style = document.createElement("style");
     style.innerHTML = kikuEmbedCSS;
     this.#styleTags = [style];
-    this.requestUpdate();
     shadow.append(style);
 
-    this.#loadStyles();
-    this.requestUpdate();
+    this.#loadStyles().then(() => {
+      this.#stylesLoaded = true;
+      this.requestUpdate(this.#render.bind(this));
+    });
+    this.requestUpdate(this.#render.bind(this));
   }
 
   #render() {
+    console.log("#render");
+    if (!this.#stylesLoaded) return;
+    console.log("#render real");
     this.#dispose?.();
     this.now = performance.now();
     const isDark = document.documentElement.classList.contains("dark");
@@ -121,7 +115,7 @@ export class KikuHostDocs extends KikuHost {
           : exampleFields.ExpressionAudio,
     };
 
-    const res = this.init({
+    const res = this.render({
       root: this.#root,
       styleTags: this.#styleTags,
       ankiFields,

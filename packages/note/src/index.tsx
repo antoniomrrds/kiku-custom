@@ -44,6 +44,8 @@ export class KikuHost extends HTMLElement {
   side: "front" | "back";
   ssr: boolean;
   now: number;
+  #isUpdateScheduled = false;
+
   constructor() {
     super();
     this.now = performance.now();
@@ -53,7 +55,16 @@ export class KikuHost extends HTMLElement {
     this.ssr = this.hasAttribute("ssr");
   }
 
-  init({
+  requestUpdate(cb?: () => void) {
+    if (this.#isUpdateScheduled) return;
+    this.#isUpdateScheduled = true;
+    queueMicrotask(() => {
+      cb?.();
+      this.#isUpdateScheduled = false;
+    });
+  }
+
+  render({
     root,
     ankiFields,
     config = defaultConfig,
@@ -159,96 +170,112 @@ export class KikuHost extends HTMLElement {
 }
 
 export class KikuHostAnki extends KikuHost {
-  logger: Logger;
+  logger = globalThis.KIKU?.logger ?? new Logger();
   aborter: AbortController;
+  config: KikuConfig | undefined | null;
+  env = this.getEnv();
+  assetsPath: string;
+  qa: HTMLElement;
+  root: HTMLElement;
+  styleTags: HTMLStyleElement[] = [];
+  #cssReady = false;
   constructor() {
     super();
-    this.logger = globalThis.KIKU?.logger ?? new Logger();
     if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
-    if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
     this.aborter = new AbortController();
 
     globalThis.KIKU ??= {};
     globalThis.KIKU.aborter = this.aborter;
     globalThis.KIKU.logger = this.logger;
+
+    this.assetsPath = this.getAssetsPath();
+
+    const qa = document.querySelector("#qa") as HTMLElement;
+    const root = document.querySelector("#kiku-root") as HTMLElement;
+    if (!qa || !root) throw new Error("#qa or #kiku-root not found");
+    this.qa = qa;
+    this.root = root;
   }
 
-  async connectedCallback() {
+  connectedCallback() {
     try {
-      await this.$connectedCallback();
+      this.#connectedCallback();
     } catch (e) {
       window.renderErrorFallback?.(e);
     }
   }
 
-  async $connectedCallback() {
-    globalThis.KIKU ??= {};
-    const { logger, aborter, shadow } = this;
-
-    const config = await this.getConfig();
-    if (aborter.signal.aborted) return;
-
-    const {
-      isAnkiDesktop,
-      isAnkiWeb,
-      isAnkiDroidOldStudyScreen,
-      isAnkiDroidNewStudyScreen,
-      isAnkiDroid,
-    } = this.getEnv();
-
-    if (isAnkiDesktop) this.setupUnload();
+  #connectedCallback() {
+    const { aborter, env, shadow, qa } = this;
+    if (env.isAnkiDesktop) this.setupUnload();
     //TODO: enable when AnkiDroidAPI is ready on new study screen https://github.com/youyoumu/kiku/issues/30
-    if (isAnkiDroidOldStudyScreen) this.setupAnkiDroidAPI();
-    if (isAnkiWeb) this.removeKikuCss();
+    if (env.isAnkiDroidOldStudyScreen) this.setupAnkiDroidAPI();
+    if (env.isAnkiWeb) this.removeKikuCss();
 
-    const assetsPath = this.getAssetsPath(isAnkiWeb);
+    const styleTags = this.setupStyleTags();
 
-    const qa = document.querySelector("#qa") as HTMLElement;
-    const root = document.querySelector("#kiku-root") as HTMLElement;
-    if (!qa || !root) throw new Error("#qa or #kiku-root not found");
-
-    const rootDataset = this.getRootDataSet(root);
-    const styleTags = this.setupStyleTags(qa);
+    this.getConfig()
+      .then((config) => {
+        if (aborter.signal.aborted) return;
+        this.config = config;
+        this.requestUpdate(this.#render.bind(this));
+      })
+      .catch(window.renderErrorFallback);
 
     if (import.meta.env.DEV) {
-      this.setupDevCss(styleTags, config);
-    } else {
-      const css = await this.getKikuCSSStyleSheet();
-      if (aborter.signal.aborted) return;
-      if (!isAnkiWeb) this.setupKikuCSSStyleSheet(qa, css);
-      shadow.adoptedStyleSheets = [css];
+      this.setupDevCss(styleTags, this.config ?? undefined);
+      this.#cssReady = true;
     }
 
-    this.setupKikuPluginCss();
+    if (!import.meta.env.DEV)
+      this.getKikuCSSStyleSheet()
+        .then((css) => {
+          if (aborter.signal.aborted) return;
+          if (!css) throw new Error("kikuCSSStyleSheet not found");
+          if (!env.isAnkiWeb) this.setupKikuCSSStyleSheet(qa, css);
+          shadow.adoptedStyleSheets = [css];
+          this.#cssReady = true;
+          this.requestUpdate(this.#render.bind(this));
+        })
+        .catch(window.renderErrorFallback);
+
+    this.requestUpdate(this.#render.bind(this));
+  }
+
+  #render() {
+    const { logger, aborter, shadow, config, root, env } = this;
+    if (config === undefined || !this.#cssReady) return;
+    if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
+
+    const rootDataset = this.getRootDataSet();
     const ankiFields = this.getAnkiFields();
 
-    shadow.appendChild(root);
-    if (aborter.signal.aborted) return;
+    if (!shadow.contains(root)) shadow.appendChild(root);
 
-    const res = this.init({
+    const res = this.render({
       root,
       ankiFields,
-      config,
+      config: config ?? undefined,
       aborter,
-      ankiDroidAPI: globalThis.KIKU.ankiDroidAPI,
+      ankiDroidAPI: globalThis.KIKU?.ankiDroidAPI,
       logger,
       cacheStore: globalThis.KIKU,
-      assetsPath,
-      isAnkiWeb,
+      assetsPath: this.assetsPath,
+      isAnkiWeb: env.isAnkiWeb,
       rootDataset,
-      styleTags,
-      isAnkiDroidOldStudyScreen,
-      isAnkiDroidNewStudyScreen,
-      isAnkiDroid,
+      styleTags: this.styleTags,
+      isAnkiDroidOldStudyScreen: env.isAnkiDroidOldStudyScreen,
+      isAnkiDroidNewStudyScreen: env.isAnkiDroidNewStudyScreen,
+      isAnkiDroid: env.isAnkiDroid,
     });
 
-    Object.assign(globalThis.KIKU, res);
+    if (globalThis.KIKU) Object.assign(globalThis.KIKU, res);
     if (import.meta.env.DEV) root.dataset.side = this.side;
   }
 
   async getConfig() {
     const { logger } = this;
-    let config: KikuConfig | undefined;
+    let config: KikuConfig | null = null;
     try {
       const cache = sessionStorage.getItem(constants.key["kiku-config"]);
       if (cache) {
@@ -308,10 +335,10 @@ export class KikuHostAnki extends KikuHost {
     }
   }
 
-  getAssetsPath(isAnkiWeb: boolean) {
+  getAssetsPath() {
     const { logger } = this;
     let assetsPath = window.location.origin;
-    if (isAnkiWeb) {
+    if (this.env.isAnkiWeb) {
       assetsPath = `${window.location.origin}/study/media`;
       logger.info("[init] AnkiWeb mode, assetsPath:", assetsPath);
     }
@@ -322,8 +349,8 @@ export class KikuHostAnki extends KikuHost {
     document.querySelector("#kiku-css")?.remove();
   }
 
-  getRootDataSet(root: HTMLElement) {
-    const { logger } = this;
+  getRootDataSet() {
+    const { logger, root } = this;
     const rootDataset: RootDataset = {
       theme: root.dataset.theme,
       themeDark: root.dataset.themeDark,
@@ -335,16 +362,18 @@ export class KikuHostAnki extends KikuHost {
     return rootDataset;
   }
 
-  setupStyleTags(qa: HTMLElement) {
-    const { shadow } = this;
+  setupStyleTags() {
+    const { shadow, qa } = this;
     const style = qa.querySelector<HTMLStyleElement>("style");
     const shadowStyle = style?.cloneNode(true) as HTMLStyleElement | undefined;
     if (shadowStyle) shadow.appendChild(shadowStyle);
     const styleTags = [style, shadowStyle].filter(Boolean) as HTMLStyleElement[];
+    this.styleTags = styleTags;
     return styleTags;
   }
 
   async getKikuCSSStyleSheet() {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     const { aborter } = this;
     let css = globalThis.KIKU?.kikuCSSStyleSheet;
     if (css) return css;
