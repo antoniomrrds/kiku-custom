@@ -48,6 +48,7 @@ export default defineConfig({
         items: [
           { text: "Features", link: "/features" },
           { text: "Field Grouping", link: "/field-grouping" },
+          { text: "Related Expression", link: "/related-expression" },
           { text: "Plugin", link: "/plugin" },
           { text: "How Things Work", link: "/how-things-work" },
           { text: "Development", link: "/development" },

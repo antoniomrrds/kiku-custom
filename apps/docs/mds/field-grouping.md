@@ -100,7 +100,7 @@ SentenceAudio:
 :::
 
 <video controls>
-  <source src="/media/field-grouping-3.2.webm" type="video/webm" volume="0.3" />
+  <source src="/media/field-grouping-3.2.webm" type="video/webm" />
 </video>
 
 ## More Info
