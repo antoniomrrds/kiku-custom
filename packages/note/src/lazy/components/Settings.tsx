@@ -534,13 +534,13 @@ function FontSizeRangeSetting(props: { configKey: NumStrConfigKey; label: string
       showUndo
       rangeSize="xs"
       Preview={(props) => {
-        const v = props.value as TailwindSize;
+        const $value = createMemo(() => props.value as TailwindSize);
         return (
           <div
             class="font-secondary"
             style={{
-              "font-size": tailwindFontSizeVar[v].fontSize,
-              "line-height": tailwindFontSizeVar[v].lineHeight,
+              "font-size": tailwindFontSizeVar[$value()].fontSize,
+              "line-height": tailwindFontSizeVar[$value()].lineHeight,
             }}
           >
             あ
