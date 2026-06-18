@@ -81,7 +81,7 @@ export function getPitchPatternName(moraCount = 0, pitchNum = -1, locale: Locale
  * @param {number} [moraCount=0] mora count
  * @returns {[number]} pitch pattern
  */
-export function makeHeiban(moraCount = 0) {
+export function makeHeiban(moraCount = 0): number[] {
   if (moraCount < 1) return [];
   return [0, ...Array(moraCount).fill(1).slice(0, -1), 1];
 }
@@ -95,7 +95,7 @@ export function makeHeiban(moraCount = 0) {
  * @param {number} [moraCount=0] mora count
  * @returns {[number]} pitch pattern
  */
-export function makeAtamadaka(moraCount = 0) {
+export function makeAtamadaka(moraCount = 0): number[] {
   if (moraCount < 1) return [];
   return [1, ...Array(moraCount).fill(0).slice(0, -1), 0];
 }
@@ -108,7 +108,7 @@ export function makeAtamadaka(moraCount = 0) {
  * @param {number} [moraCount=0] mora count
  * @returns {[number]} pitch pattern
  */
-export function makeOdaka(moraCount = 0) {
+export function makeOdaka(moraCount = 0): number[] {
   if (moraCount < 2) return [];
   return [0, ...Array(moraCount).fill(1).slice(0, -1), 0];
 }
@@ -126,7 +126,7 @@ export function makeOdaka(moraCount = 0) {
  * @param {number} [pitchNum=0] pitch number
  * @returns {[number]} pitch pattern
  */
-export function makeNakadaka(moraCount = 0, pitchNum = 0) {
+export function makeNakadaka(moraCount = 0, pitchNum = 0): number[] {
   if (moraCount < 3 || pitchNum < 2 || pitchNum >= moraCount) return [];
   return [0, ...Array(pitchNum - 1).fill(1), ...Array(moraCount - pitchNum).fill(0), 0];
 }
@@ -140,7 +140,7 @@ export function makeNakadaka(moraCount = 0, pitchNum = 0) {
  * @param {[number]} [pattern=[]] pitch pattern
  * @returns {[number]} pitch pattern with digraph points removed
  */
-export function removeDigraphPitches(reading = "", pattern = []) {
+export function removeDigraphPitches(reading = "", pattern: number[] = []) {
   return pattern.filter((_, i) => !isDigraph(reading[i]));
 }
 
@@ -155,7 +155,11 @@ export function removeDigraphPitches(reading = "", pattern = []) {
  * @param {boolean} [digraphsIncluded=false] are digraph pitch points present
  * @returns {number} pitch number
  */
-export function getPitchNumFromPattern(reading = "", pitchPattern = [], digraphsIncluded = false) {
+export function getPitchNumFromPattern(
+  reading = "",
+  pitchPattern: number[] = [],
+  digraphsIncluded = false,
+) {
   if (!reading || !pitchPattern.length) {
     return -1;
   }
@@ -180,7 +184,7 @@ export function getPitchNumFromPattern(reading = "", pitchPattern = [], digraphs
  * @param {number} [pitchNum=-1] pitch number
  * @returns {[number]} pitch pattern
  */
-export function makePitchPattern(moraCount = 0, pitchNum = -1) {
+export function makePitchPattern(moraCount = 0, pitchNum = -1): number[] {
   switch (getPitchPatternName(moraCount, pitchNum)) {
     case PATTERN_NAMES.HEIBAN.EN:
       return makeHeiban(moraCount);
