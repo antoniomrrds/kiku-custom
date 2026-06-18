@@ -6,7 +6,7 @@ outline: deep
 
 ## Switching from [Lapis](https://github.com/donkuri/lapis)
 
-Switching from Lapis is very straightforward, because all the fields are the same.
+Switching from Lapis is very straightforward. Apart from the newly added fields, all other fields are exactly the same.
 ![Lapis to Kiku Fields](/media/lapis-to-kiku-1.png)
 ![Lapis to Kiku Templates](/media/lapis-to-kiku-2.png)
 
