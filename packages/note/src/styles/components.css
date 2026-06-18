@@ -10,12 +10,12 @@
     right: 0;
     width: 2px;
     height: 8px;
-    background-color: var(--pitch-color);
+    background-color: var(--color-pitch);
   }
 
   .sentence-field {
     b {
-      color: var(--pitch-color, var(--color-base-content-primary));
+      color: var(--color-pitch, var(--color-base-content-primary));
     }
   }
 

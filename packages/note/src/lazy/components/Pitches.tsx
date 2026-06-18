@@ -73,10 +73,7 @@ export function DefaultPitch(props: {
             {(mora, i) => {
               return (
                 <span
-                  style={{
-                    "border-color": "var(--pitch-color)",
-                    color: "var(--pitch-color)",
-                  }}
+                  class="border-pitch text-pitch"
                   classList={{
                     "border-t-2": props.pitchInfo.pattern[i()] === 1,
                     "pitch-segment":
@@ -89,13 +86,7 @@ export function DefaultPitch(props: {
             }}
           </For>
         </div>
-        <div
-          class="text-sm px-0.5 rounded-sm leading-tight"
-          style={{
-            "background-color": "var(--pitch-color)",
-            color: "var(--pitch-content-color)",
-          }}
-        >
+        <div class="text-sm px-0.5 rounded-sm leading-tight bg-pitch text-pitch-content">
           {props.pitchInfo.pitchNum}
         </div>
       </div>

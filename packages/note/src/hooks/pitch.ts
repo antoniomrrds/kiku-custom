@@ -41,6 +41,7 @@ export function usePitch() {
       : $ankiFields.ExpressionReading;
   });
 
+  //TODO: refactor
   const $pitchInfos = createMemo(() => {
     const numbers = $pitchNumbers();
     const reading = $reading();

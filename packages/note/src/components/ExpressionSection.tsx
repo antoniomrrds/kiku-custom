@@ -43,16 +43,13 @@ export function ExpressionSection(props: { hideExpression?: boolean }) {
 
   return (
     <div
-      class="expression font-secondary text-center vertical-rl transition-colors"
+      class="expression font-secondary text-center vertical-rl transition-colors text-pitch"
       classList={{
         "border-b-2 border-dotted border-base-content-soft":
           $initialSide() === "front" && !!$ankiFields.IsClickCard && $isInitialSide(),
         "transition-opacity duration-1000 opacity-0":
           $initialSide() === "front" && $hideExpression() && $isInitialSide(),
         "hide-rt": $initialSide() === "front" && $isInitialSide(),
-      }}
-      style={{
-        color: "var(--pitch-color)",
       }}
       {...$pitchFieldDataset()}
     >
