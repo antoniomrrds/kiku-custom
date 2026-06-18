@@ -106,14 +106,10 @@ function SentenceField() {
 
   const $sentence = createMemo(() => {
     const doc = parseHtml($group().sentenceField);
-    const ruby = doc.querySelectorAll("ruby");
-    ruby.forEach((el) => {
-      el.classList.add(..."[&_rt]:invisible hover:[&_rt]:visible".split(" "));
-    });
 
     if ($card.side === "front" && $ankiFields.IsAudioCard) {
-      const boldElements = doc.querySelectorAll("b");
-      boldElements.forEach((el) => {
+      const bEls = doc.querySelectorAll("b");
+      bEls.forEach((el) => {
         el.innerHTML = "[...]";
         el.classList.add("text-base-content-primary");
       });

@@ -61,4 +61,8 @@
     --color-pitch: var(--color-accent);
     --color-pitch-content: var(--color-accent-content);
   }
+
+  ruby rt {
+    user-select: none;
+  }
 }
