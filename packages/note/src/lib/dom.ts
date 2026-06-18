@@ -58,3 +58,11 @@ export function preloadImages(pictureHtml: string) {
     if (src) new Image().src = src;
   });
 }
+
+export function objectToCss(selector: string, styles: Record<string, string | number>) {
+  const body = Object.entries(styles)
+    .map(([key, val]) => `  ${key}: ${val};`)
+    .join("\n");
+
+  return `${selector} {\n${body}\n}`;
+}

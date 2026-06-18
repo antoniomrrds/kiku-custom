@@ -1,4 +1,5 @@
 import { defaultConfig } from "./default-config";
+import { objectToCss } from "./dom";
 import type { Logger } from "./logger";
 import { colorBase100Map, type DaisyUITheme, daisyUIThemes } from "./theme";
 
@@ -281,17 +282,12 @@ export const DARK_VARS_REGEX =
   /\.card:has\(> #qa, #content > #qa\)\.nightMode, \.nightMode #kiku-host::part\(root\), \.nightMode #kiku-root, :host\(\[data-dark-mode\]\) #kiku-root \{[^]*?\}/;
 
 export function generateCssVars(vars: Record<string, string>): string {
-  const lines = Object.entries(vars)
-    .map(([key, value]) => `  ${key}: ${value};`)
-    .join("\n");
-
-  return `.card:has(> #qa, #content > #qa), #kiku-host::part(root), #kiku-root {\n${lines}\n}`;
+  return objectToCss(".card:has(> #qa, #content > #qa), #kiku-host::part(root), #kiku-root", vars);
 }
 
 export function generateCssVarsDark(vars: Record<string, string>): string {
-  const lines = Object.entries(vars)
-    .map(([key, value]) => `  ${key}: ${value};`)
-    .join("\n");
-
-  return `.card:has(> #qa, #content > #qa).nightMode, .nightMode #kiku-host::part(root), .nightMode #kiku-root, :host([data-dark-mode]) #kiku-root {\n${lines}\n}`;
+  return objectToCss(
+    ".card:has(> #qa, #content > #qa).nightMode, .nightMode #kiku-host::part(root), .nightMode #kiku-root, :host([data-dark-mode]) #kiku-root",
+    vars,
+  );
 }
