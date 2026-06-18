@@ -18,3 +18,7 @@ If this field is left empty, the two newest cards from the notes query will be p
 - You can use comma `,` `、` or semicolons `;` `；` as delimiters.
 
 :::
+
+:::info
+On the front side, Related Expression section will show duplicate cards with different reading.
+:::
