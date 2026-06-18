@@ -241,11 +241,6 @@ export function getCssVarDark(config: KikuConfig) {
   return cssVar;
 }
 
-export const LIGHT_VARS_REGEX =
-  /\.card:has\(> #qa\), #kiku-host::part\(root\), #kiku-root \{[^]*?\}/;
-export const DARK_VARS_REGEX =
-  /\.card:has\(> #qa\)\.nightMode, \.nightMode #kiku-host::part\(root\), \.nightMode #kiku-root, :host\(\[data-dark-mode\]\) #kiku-root \{[^]*?\}/;
-
 export function updateConfigState({
   root,
   host,
@@ -280,12 +275,17 @@ export function updateConfigState({
   }
 }
 
+export const LIGHT_VARS_REGEX =
+  /\.card:has\(> #qa, #content > #qa\), #kiku-host::part\(root\), #kiku-root \{[^]*?\}/;
+export const DARK_VARS_REGEX =
+  /\.card:has\(> #qa, #content > #qa\)\.nightMode, \.nightMode #kiku-host::part\(root\), \.nightMode #kiku-root, :host\(\[data-dark-mode\]\) #kiku-root \{[^]*?\}/;
+
 export function generateCssVars(vars: Record<string, string>): string {
   const lines = Object.entries(vars)
     .map(([key, value]) => `  ${key}: ${value};`)
     .join("\n");
 
-  return `.card:has(> #qa), #kiku-host::part(root), #kiku-root {\n${lines}\n}`;
+  return `.card:has(> #qa, #content > #qa), #kiku-host::part(root), #kiku-root {\n${lines}\n}`;
 }
 
 export function generateCssVarsDark(vars: Record<string, string>): string {
@@ -293,5 +293,5 @@ export function generateCssVarsDark(vars: Record<string, string>): string {
     .map(([key, value]) => `  ${key}: ${value};`)
     .join("\n");
 
-  return `.card:has(> #qa).nightMode, .nightMode #kiku-host::part(root), .nightMode #kiku-root, :host([data-dark-mode]) #kiku-root {\n${lines}\n}`;
+  return `.card:has(> #qa, #content > #qa).nightMode, .nightMode #kiku-host::part(root), .nightMode #kiku-root, :host([data-dark-mode]) #kiku-root {\n${lines}\n}`;
 }

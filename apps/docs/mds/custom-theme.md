@@ -14,7 +14,7 @@ Open `_kiku_style.css` in your `collection.media` directory. you will find the f
 /* Custom theme here */
 @layer custom {
   /* Customize "light" theme here  */
-  .card:has(> #qa),
+  .card:has(> #qa, #content > #qa),
   #kiku-root[data-theme="light"],
   :host([data-dark-mode]) #kiku-root[data-theme-dark="light"],
   .nightMode #kiku-root[data-theme-dark="light"],
@@ -56,7 +56,7 @@ Open `_kiku_style.css` in your `collection.media` directory. you will find the f
   }
 
   /* Customize "dark" theme here  */
-  .card:has(> #qa).nightMode,
+  .card:has(> #qa, #content > #qa).nightMode,
   #kiku-root[data-theme="dark"],
   :host([data-dark-mode]) #kiku-root[data-theme-dark="dark"],
   .nightMode #kiku-root[data-theme-dark="dark"],
