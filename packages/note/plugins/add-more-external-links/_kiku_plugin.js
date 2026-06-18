@@ -7,8 +7,7 @@
  */
 export const plugin = {
   ExternalLinks: (props) => {
-    const html = props.ctx.html;
-    const useGeneralContext = props.ctx.useGeneralContext;
+    const { html, useGeneralContext } = props.ctx;
     const { ankiDroidAPI } = useGeneralContext();
 
     function NadeshikoLink() {

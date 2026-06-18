@@ -18,6 +18,7 @@ export type CardStore = {
   side: "front" | "back";
   page: "main" | "settings" | "kanji" | "nested";
   ready: boolean;
+  //TODO: remove
   isNsfw: boolean;
   uniqueId: string;
   expressionAudioRef?: HTMLDivElement;

@@ -7,11 +7,10 @@
  */
 export const plugin = {
   Sentence: (props) => {
-    const html = props.ctx.html;
-    const createMemo = props.ctx.createMemo;
+    const { html, createMemo } = props.ctx;
 
     function ExtraInfo() {
-      const extraInfo = createMemo(() => {
+      const $extraInfo = createMemo(() => {
         if ("ExtraInfo" in props.ctx.$ankiFields) {
           return props.ctx.$ankiFields?.ExtraInfo;
         }
@@ -21,8 +20,8 @@ export const plugin = {
         return document.getElementById("ExtraInfo")?.innerHTML;
       });
 
-      if (!extraInfo()) return null;
-      return html`<div class="text-lg text-base-content-calm">${() => extraInfo()}</div>`;
+      if (!$extraInfo()) return null;
+      return html`<div class="text-lg text-base-content-calm" innerHTML=${$extraInfo}></div>`;
     }
 
     return [props.DefaultSentence(), ExtraInfo()];
