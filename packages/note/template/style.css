@@ -157,9 +157,16 @@ body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar-thumb:hover {
   opacity: 0;
 }
 
-/* AnkiDroid */
+/* AnkiDroid old study screen */
 .android body > div#content {
   margin: 0;
+}
+/* NOTE: Fighting with https://github.com/ankidroid/Anki-Android/blob/a52a05fff9acf56d9718e7304c93a34463a8461a/AnkiDroid/src/main/assets/flashcard.css#L113 */
+.android body > div#content #kiku-root .picture-field img {
+  max-height: none;
+}
+.android body > div#content #kiku-root .picture-field-background img {
+  max-height: none;
 }
 
 /* AnkiMobile */
