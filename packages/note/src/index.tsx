@@ -55,6 +55,7 @@ export class KikuHost extends HTMLElement {
     this.ssr = this.hasAttribute("ssr");
   }
 
+  //TODO: no cb
   requestUpdate(cb?: () => void) {
     if (this.#isUpdateScheduled) return;
     this.#isUpdateScheduled = true;
@@ -195,6 +196,17 @@ export class KikuHostAnki extends KikuHost {
     if (!qa || !root) throw new Error("#qa or #kiku-root not found");
     this.qa = qa;
     this.root = root;
+  }
+
+  static get observedAttributes() {
+    return ["side"];
+  }
+
+  attributeChangedCallback(name: string, _old: string | null, value: string | null) {
+    if (name === "side" && this.side !== value) {
+      this.side = value === "front" ? "front" : "back";
+      this.requestUpdate(this.#render.bind(this));
+    }
   }
 
   connectedCallback() {
