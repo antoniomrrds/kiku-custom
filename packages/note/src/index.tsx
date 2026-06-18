@@ -39,7 +39,7 @@ import {
 } from "./lib/types.ts";
 import "./styles/main.css";
 
-export class KikuHost extends HTMLElement {
+export abstract class KikuHost extends HTMLElement {
   shadow: ShadowRoot;
   side: "front" | "back";
   ssr: boolean;
@@ -56,18 +56,18 @@ export class KikuHost extends HTMLElement {
   }
 
   //TODO: no cb
-  requestUpdate(cb?: () => void) {
+  requestUpdate() {
     if (this.#isUpdateScheduled) return;
     this.#isUpdateScheduled = true;
     queueMicrotask(() => {
-      cb?.();
+      this.render();
       this.#isUpdateScheduled = false;
     });
   }
 
   render({
-    root,
-    ankiFields,
+    root = document.createElement("div"),
+    ankiFields = ankiFieldsSkeleton,
     config = defaultConfig,
     aborter = new AbortController(),
     ankiDroidAPI,
@@ -83,25 +83,30 @@ export class KikuHost extends HTMLElement {
     isAnkiDroidOldStudyScreen = false,
     isAnkiDroidNewStudyScreen = false,
     isAnkiDroid = false,
-  }: {
-    root: HTMLElement;
-    ankiFields: AnkiFields;
-    config?: KikuConfig | ((defaultConfig: KikuConfig) => KikuConfig);
-    aborter?: AbortController;
-    ankiDroidAPI?: AnkiDroidAPI;
-    logger?: Logger;
-    cacheStore?: CacheStore;
-    assetsPath?: string;
-    workerPath?: string;
-    rootDataset?: RootDataset;
-    styleTags?: HTMLStyleElement[];
-    initialDarkMode?: boolean;
-    isAnkiWeb?: boolean;
-    isAnkiDesktop?: boolean;
-    isAnkiDroidOldStudyScreen?: boolean;
-    isAnkiDroidNewStudyScreen?: boolean;
-    isAnkiDroid?: boolean;
-  }) {
+  }:
+    | {
+        root?: HTMLElement;
+        ankiFields?: AnkiFields;
+        config?: KikuConfig | ((defaultConfig: KikuConfig) => KikuConfig);
+        aborter?: AbortController;
+        ankiDroidAPI?: AnkiDroidAPI;
+        logger?: Logger;
+        cacheStore?: CacheStore;
+        assetsPath?: string;
+        workerPath?: string;
+        rootDataset?: RootDataset;
+        styleTags?: HTMLStyleElement[];
+        initialDarkMode?: boolean;
+        isAnkiWeb?: boolean;
+        isAnkiDesktop?: boolean;
+        isAnkiDroidOldStudyScreen?: boolean;
+        isAnkiDroidNewStudyScreen?: boolean;
+        isAnkiDroid?: boolean;
+      }
+    | undefined = {}): {
+    dispose: () => void;
+    logger: Logger;
+  } | void {
     const [$preStartupTime] = createSignal(performance.now() - this.now);
     const [$startupTime, $setStartupTime] = createSignal(0);
     const now = performance.now();
@@ -205,7 +210,7 @@ export class KikuHostAnki extends KikuHost {
   attributeChangedCallback(name: string, _old: string | null, value: string | null) {
     if (name === "side" && this.side !== value) {
       this.side = value === "front" ? "front" : "back";
-      this.requestUpdate(this.#render.bind(this));
+      this.requestUpdate();
     }
   }
 
@@ -230,7 +235,7 @@ export class KikuHostAnki extends KikuHost {
       .then((config) => {
         if (aborter.signal.aborted) return;
         this.config = config;
-        this.requestUpdate(this.#render.bind(this));
+        this.requestUpdate();
       })
       .catch(window.renderErrorFallback);
 
@@ -247,14 +252,14 @@ export class KikuHostAnki extends KikuHost {
           if (!env.isAnkiWeb) this.setupKikuCSSStyleSheet(qa, css);
           shadow.adoptedStyleSheets = [css];
           this.#cssReady = true;
-          this.requestUpdate(this.#render.bind(this));
+          this.requestUpdate();
         })
         .catch(window.renderErrorFallback);
 
-    this.requestUpdate(this.#render.bind(this));
+    this.requestUpdate();
   }
 
-  #render() {
+  render() {
     const { logger, aborter, shadow, config, root, env } = this;
     if (config === undefined || !this.#cssReady) return;
     if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
@@ -264,7 +269,7 @@ export class KikuHostAnki extends KikuHost {
 
     if (!shadow.contains(root)) shadow.appendChild(root);
 
-    const res = this.render({
+    const res = super.render({
       root,
       ankiFields,
       config: config ?? undefined,
@@ -385,7 +390,6 @@ export class KikuHostAnki extends KikuHost {
   }
 
   async getKikuCSSStyleSheet() {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     const { aborter } = this;
     let css = globalThis.KIKU?.kikuCSSStyleSheet;
     if (css) return css;

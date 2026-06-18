@@ -76,7 +76,7 @@ export class KikuHostDocs extends KikuHost {
       this.side = value === "front" ? "front" : "back";
     }
     if (!this.#root) return;
-    this.requestUpdate(this.#render.bind(this));
+    this.requestUpdate();
   }
 
   connectedCallback() {
@@ -90,12 +90,12 @@ export class KikuHostDocs extends KikuHost {
 
     this.#loadStyles().then(() => {
       this.#stylesLoaded = true;
-      this.requestUpdate(this.#render.bind(this));
+      this.requestUpdate();
     });
-    this.requestUpdate(this.#render.bind(this));
+    this.requestUpdate();
   }
 
-  #render() {
+  render() {
     console.log("#render");
     if (!this.#stylesLoaded) return;
     console.log("#render real");
@@ -115,7 +115,7 @@ export class KikuHostDocs extends KikuHost {
           : exampleFields.ExpressionAudio,
     };
 
-    const res = this.render({
+    const res = super.render({
       root: this.#root,
       styleTags: this.#styleTags,
       ankiFields,
@@ -131,7 +131,7 @@ export class KikuHostDocs extends KikuHost {
       initialDarkMode: isDark,
       config: (defaultConfig) => ({ ...defaultConfig }),
     });
-    this.#dispose = res.dispose;
+    if (res) this.#dispose = res.dispose;
   }
 
   async #loadStyles() {
