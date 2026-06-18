@@ -44,6 +44,7 @@ import {
   KeybindInput,
   type NumStrConfigKey,
 } from "./SettingsForm";
+import { getTemplatePreview } from "#/src/lazy/lib/template";
 
 function toDashed(str: string) {
   return str.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
@@ -664,38 +665,14 @@ function DebugSettings() {
 
   const $expectedTemplate = createMemo(() => {
     const dataset = $rootDataset();
-    // oxfmt-ignore
-    function getTemplate() {
-      let template = `
-<kiku-host-anki
-  id="kiku-host"
-  side="__SIDE__"
-  ssr
-  data-theme="__DATA_THEME__"
-  data-theme-dark="__DATA_THEME_DARK__"
-></kiku-host-anki>
-<div
-  id="kiku-root"
-  part="root"
-  data-kiku-cloak
-  data-side="__SIDE__"
-  data-theme="__DATA_THEME__"
-  data-theme-dark="__DATA_THEME_DARK__"
-  data-blur-nsfw="__DATA_BLUR_NSFW__"
-  data-picture-on-front="__DATA_PICTURE_ON_FRONT__"
-  data-mod-vertical="__DATA_MOD_VERTICAL__"
->
-`.trim();
-      template = template.replaceAll("__SIDE__", $initialSide());
-      template = template.replaceAll("__DATA_THEME__", dataset.theme.toString() ?? "");
-      template = template.replaceAll("__DATA_THEME_DARK__", dataset.themeDark.toString() ?? "");
-      template = template.replaceAll("__DATA_BLUR_NSFW__", dataset.blurNsfw.toString() ?? "");
-      template = template.replaceAll("__DATA_PICTURE_ON_FRONT__", dataset.pictureOnFront.toString() ?? "");
-      template = template.replaceAll("__DATA_MOD_VERTICAL__", dataset.modVertical.toString() ?? "");
-      return template;
-    }
-
-    return getTemplate();
+    return getTemplatePreview({
+      side: $initialSide(),
+      theme: dataset.theme?.toString() ?? "",
+      themeDark: dataset.themeDark?.toString() ?? "",
+      blurNsfw: dataset.blurNsfw?.toString() ?? "",
+      pictureOnFront: dataset.pictureOnFront?.toString() ?? "",
+      modVertical: dataset.modVertical?.toString() ?? "",
+    });
   });
 
   return (
