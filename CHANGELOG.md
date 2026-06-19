@@ -1,0 +1,60 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+
+- Tabs on kanji page
+- New fields RelatedExpression and SentenceTranslation
+- Go to kanji page from kanji tooltip
+- Display git commit SHA on settings page
+- Blue indicator for new notes
+- Display duplicated cards with different reading on front side
+- Dual theme with `theme` and `themeDark` settings
+- New section on kanji page `関` (related terms)
+- `_kiku_db_main.tar` includes `kiku_db_terms_compact.json.gz` created from jmdict
+- Cache `_kiku.css` inside `document.adoptedStyleSheets`
+- Indicator whether the notes query is using AnkiConnect or notes cache on kanji page
+- Add loading skeleton on every UI with async state
+- New spinner style
+- Kiku now makes use of [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
+- Updated docs with new pictures and videos
+
+### Fixed
+
+- Close dialog button on AnkiMobile not working
+- Handle kanji with 2 code units
+- Handle `<br/>` inside `<style>` on Glossary
+- Error indicator when notes query fails
+- Disable mute NSFW if running on AnkiDroid old study screen
+- Use template tag instead of hidden div
+- Disable AnkiDroid integration on AnkiDroid new study screen
+
+### Changed
+
+- **BREAKING**: Some plugin API changed. Please check the updated plugin examples
+- **BREAKING**: `--pitch-color` and `--pitch-color-content` CSS variable changed to `--color-pitch` and `--color-pitch-content`
+- Reduced overall gap and padding, especially on mobile
+- Sort notes query result by the newest first
+- Kanji tooltip is now mounted once and shared instead of per span
+- Only check for AnkiConnect connection automatically on Anki Desktop
+- Startup time also include the time between first code execution and the start of hydration
+- Settings page can be opened from front side
+- Better `capitalizeSentence` function
+- Fetch all `_kiku_notes_*.json.gz` in parallel
+- Picture pillar box is now clickable
+- Include `html` function in plugin `ctx`
+- Change plugin example to use `html` instead of `h` hyperscript
+- Make `ruby rt` unselectable
+- Switched from `biome` to `oxc` toolchain for linting/formatting
+
+### Removed
+
+- `webFonts` and `volume` settings
+
+[Unreleased]: https://github.com/youyoumu/kiku/compare/v1.10.2...HEAD
