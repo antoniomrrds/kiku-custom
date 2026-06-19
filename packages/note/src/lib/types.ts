@@ -244,6 +244,7 @@ declare global {
         logger?: Logger;
         kikuCSSStyleSheet?: CSSStyleSheet;
         kikuCSSStyleSheetObserver?: MutationObserver;
+        kikuPluginCSSStyleSheet?: CSSStyleSheet;
       } & CacheStore)
     | undefined;
 

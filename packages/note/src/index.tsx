@@ -184,7 +184,8 @@ export class KikuHostAnki extends KikuHost {
   qa: HTMLElement;
   root: HTMLElement;
   styleTags: HTMLStyleElement[] = [];
-  #cssReady = false;
+  #kikuCSSReady = false;
+  #kikuPluginCSSReady = false;
   constructor() {
     super();
     if (globalThis.KIKU?.aborter) globalThis.KIKU.aborter.abort();
@@ -241,7 +242,7 @@ export class KikuHostAnki extends KikuHost {
 
     if (import.meta.env.DEV) {
       this.setupDevCss(styleTags, this.config ?? undefined);
-      this.#cssReady = true;
+      this.#kikuCSSReady = true;
     }
 
     if (!import.meta.env.DEV)
@@ -249,19 +250,28 @@ export class KikuHostAnki extends KikuHost {
         .then((css) => {
           if (aborter.signal.aborted) return;
           if (!css) throw new Error("kikuCSSStyleSheet not found");
-          if (!env.isAnkiWeb) this.setupKikuCSSStyleSheet(qa, css);
-          shadow.adoptedStyleSheets = [css];
-          this.#cssReady = true;
+          if (!env.isAnkiWeb) this.setupKikuCSSStyleSheetObserver(qa, css);
+          shadow.adoptedStyleSheets = [...shadow.adoptedStyleSheets, css];
+          this.#kikuCSSReady = true;
           this.requestUpdate();
         })
         .catch(window.renderErrorFallback);
+
+    this.getKikuPluginCSSStyleSheet()
+      .then((css) => {
+        if (aborter.signal.aborted) return;
+        if (css) shadow.adoptedStyleSheets = [...shadow.adoptedStyleSheets, css];
+        this.#kikuPluginCSSReady = true;
+        this.requestUpdate();
+      })
+      .catch(window.renderErrorFallback);
 
     this.requestUpdate();
   }
 
   render() {
     const { logger, aborter, shadow, config, root, env } = this;
-    if (config === undefined || !this.#cssReady) return;
+    if (config === undefined || !this.#kikuCSSReady || !this.#kikuPluginCSSReady) return;
     if (globalThis.KIKU?.dispose) globalThis.KIKU.dispose();
 
     const rootDataset = this.getRootDataSet();
@@ -403,7 +413,28 @@ export class KikuHostAnki extends KikuHost {
     return css;
   }
 
-  setupKikuCSSStyleSheet(qa: HTMLElement, css: CSSStyleSheet) {
+  async getKikuPluginCSSStyleSheet() {
+    const { aborter, logger } = this;
+    let css = globalThis.KIKU?.kikuPluginCSSStyleSheet;
+    if (css) return css;
+
+    try {
+      const res = await fetch("./_kiku_plugin.css", { signal: aborter.signal });
+      const text = await res.text();
+      css = new CSSStyleSheet();
+      css.replaceSync(text);
+    } catch (e) {
+      logger.warn(
+        "[init] kiku plugin CSSStyleSheet load failed:",
+        e instanceof Error ? e.message : e,
+      );
+    }
+    if (globalThis.KIKU) globalThis.KIKU.kikuPluginCSSStyleSheet = css;
+
+    return css;
+  }
+
+  setupKikuCSSStyleSheetObserver(qa: HTMLElement, css: CSSStyleSheet) {
     const { logger } = this;
     if (document.adoptedStyleSheets.includes(css)) {
       logger.debug("[init] kiku CSSStyleSheet already added");
@@ -463,14 +494,6 @@ export class KikuHostAnki extends KikuHost {
     shadow.appendChild(shadowStyle);
     styleTags.push(shadowStyle);
     styleTags.push(style);
-  }
-
-  setupKikuPluginCss() {
-    const { shadow } = this;
-    const kikuPluginCss = document.createElement("link");
-    kikuPluginCss.rel = "stylesheet";
-    kikuPluginCss.href = "./_kiku_plugin.css";
-    shadow.prepend(kikuPluginCss);
   }
 }
 

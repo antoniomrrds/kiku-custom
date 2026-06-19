@@ -57,6 +57,7 @@
     display: none;
     &:not([data-has-picture=""]) {
       display: flex;
+      flex-direction: column;
     }
   }
 
