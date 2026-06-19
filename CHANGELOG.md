@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v2.0.0-beta.1] - 2026-06-19
+
 ### Added
 
 - Tabs on kanji page
@@ -57,4 +59,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `webFonts` and `volume` settings
 
-[Unreleased]: https://github.com/youyoumu/kiku/compare/v1.10.2...HEAD
+[Unreleased]: https://github.com/youyoumu/kiku/compare/v2.0.0-beta.1...HEAD
+[v2.0.0-beta.1]: https://github.com/youyoumu/kiku/compare/v1.10.2...v2.0.0-beta.1
