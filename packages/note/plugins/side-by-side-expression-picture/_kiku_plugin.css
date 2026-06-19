@@ -1,0 +1,14 @@
+@media (max-width: 40rem) {
+  div.flex-col.sm\:flex-row:has(.picture-field-container) {
+    flex-direction: row;
+  }
+
+  div.flex-col.sm\:flex-row:has(.picture-field-container) > :nth-child(2) {
+    /* use 30% or 40% if you want smaller picture */
+    max-width: 50%;
+  }
+
+  .picture-field {
+    height: calc(var(--spacing) * 38);
+  }
+}
