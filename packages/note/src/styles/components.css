@@ -32,6 +32,8 @@
   }
 
   .picture-field {
+    display: flex;
+    justify-content: center;
     @apply [&_*:not(img)]:contents;
     @apply [&_:not(:first-child)]:hidden;
     @apply relative h-44 sm:h-56 cursor-pointer [&_img]:h-full [&_img]:object-contain [&_img]:hover:filter-none;
