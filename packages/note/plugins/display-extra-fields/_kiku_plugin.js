@@ -14,10 +14,8 @@ export const plugin = {
         if ("ExtraInfo" in props.ctx.$ankiFields) {
           return props.ctx.$ankiFields?.ExtraInfo;
         }
-        /**
-         * @type {HTMLTemplateElement}
-         */
-        return document.getElementById("ExtraInfo")?.innerHTML;
+        const template = document.getElementById("ExtraInfo");
+        return template?.innerHTML;
       });
 
       if (!$extraInfo()) return null;
