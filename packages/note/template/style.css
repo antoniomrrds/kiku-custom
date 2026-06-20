@@ -166,7 +166,7 @@ body:not([data-sveltekit-preload-data]) ::-webkit-scrollbar-thumb:hover {
 }
 /* ───────────────────────────── AnkiMobile ──────────────────────────── */
 
-.card {
+.card.card.card {
   background-color: var(--color-base-100) !important;
 }
 
