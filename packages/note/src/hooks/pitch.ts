@@ -26,6 +26,17 @@ export function extractPitchNumbers(html: string) {
   return unique(numbers);
 }
 
+export function normalizePitchType(s: string) {
+  let pitchCategory: string | null = s.trim().toLowerCase();
+  if (pitchCategory === "平板") pitchCategory = "heiban";
+  if (pitchCategory === "頭高") pitchCategory = "atamadaka";
+  if (pitchCategory === "中高") pitchCategory = "nakadaka";
+  if (pitchCategory === "尾高") pitchCategory = "odaka";
+  if (pitchCategory === "起伏") pitchCategory = "kifuku";
+  if (!pitchTypes.includes(pitchCategory as PitchType)) pitchCategory = null;
+  return pitchCategory;
+}
+
 export function usePitch() {
   const { $ankiFields, $isRootAnkiFields } = useAnkiFieldContext();
 
@@ -41,24 +52,20 @@ export function usePitch() {
       : $ankiFields.ExpressionReading;
   });
 
-  //TODO: refactor
   const $pitchInfos = createMemo(() => {
     const numbers = $pitchNumbers();
     const reading = $reading();
     if (!numbers.length) return [];
     const pitchCategories = $ankiFields.PitchCategories.split(",").map((s) => {
-      let pitchCategory: string | null = s.trim().toLowerCase();
-      if (pitchCategory === "平板") pitchCategory = "heiban";
-      if (pitchCategory === "頭高") pitchCategory = "atamadaka";
-      if (pitchCategory === "中高") pitchCategory = "nakadaka";
-      if (pitchCategory === "尾高") pitchCategory = "odaka";
-      if (pitchCategory === "起伏") pitchCategory = "kifuku";
-      if (!pitchTypes.includes(pitchCategory as PitchType)) pitchCategory = null;
-      return pitchCategory;
+      return normalizePitchType(s);
     });
     return numbers.map((pitchNum, i) => {
       const result = hatsuon({ reading, pitchNum, locale: "EN" });
-      if (pitchCategories.length === numbers.length && pitchCategories[i] === "kifuku") {
+      if (
+        pitchCategories.length === numbers.length &&
+        pitchCategories[i] === "kifuku" &&
+        result.patternName !== "heiban"
+      ) {
         result.patternName = pitchCategories[i] ?? result.patternName;
       }
       return result;

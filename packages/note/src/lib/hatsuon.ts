@@ -200,12 +200,13 @@ export function makePitchPattern(moraCount = 0, pitchNum = -1): number[] {
 }
 
 /**
- * Returns pitch accent information for the provided word and pitch number
+ * Returns pitch accent information for the provided word and pitch number.
  *
  * @module
- * @param {string} [reading=''] Japanese word represented in kana
- * @param {number} [pitchNum=-1] pitch number
- * @returns {object} pitch data
+ * @param {object} [options={}] - The configuration options.
+ * @param {string} [options.reading=''] - Japanese word represented in kana.
+ * @param {number} [options.pitchNum=-1] - The pitch accent number.
+ * @param {Locale} [options.locale='JA'] - The locale setting for pattern names.
  */
 export function hatsuon({
   reading = "",
