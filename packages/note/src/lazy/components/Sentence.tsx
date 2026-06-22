@@ -86,7 +86,7 @@ function SentenceFieldWithTranslation() {
       class="collapse animate-fade-in border-b-2 rounded-b-none border-base-200"
       ref={$setContainerRef}
     >
-      <input class="p-0" type="checkbox" />
+      <input class="p-0 pointer-events-none" type="checkbox" />
       <div class="collapse-title after:inset-s-5 after:inset-e-auto">
         <SentenceField />
       </div>
