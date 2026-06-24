@@ -1,0 +1,15 @@
+/* _kiku_plugin.css */
+
+/* Pick 1 */
+
+/* This will hide related expression and frequency, freeing up space */
+div:has(
+  > div.hover\:h-auto.overflow-hidden.transition-\[height\].\[interpolate-size\:allow-keywords\]
+) {
+  display: none;
+}
+
+/* This will hide related expression, but still show frequency */
+div.hover\:h-auto.overflow-hidden.transition-\[height\].\[interpolate-size\:allow-keywords\] {
+  visibility: hidden;
+}
