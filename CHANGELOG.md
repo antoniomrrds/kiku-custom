@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v2.0.0] - 2026-06-24
+
+Stable release. No changes from v2.0.0-beta.3.
+
 ## [v2.0.0-beta.3] - 2026-06-22
 
 ### Added
@@ -76,7 +80,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `webFonts` and `volume` settings
 
-[Unreleased]: https://github.com/youyoumu/kiku/compare/v2.0.0-beta.3...HEAD
+[Unreleased]: https://github.com/youyoumu/kiku/compare/v2.0.0...HEAD
+[v2.0.0]: https://github.com/youyoumu/kiku/compare/v2.0.0-beta.3...v2.0.0
 [v2.0.0-beta.3]: https://github.com/youyoumu/kiku/compare/v2.0.0-beta.2...v2.0.0-beta.3
 [v2.0.0-beta.2]: https://github.com/youyoumu/kiku/compare/v2.0.0-beta.1...v2.0.0-beta.2
 [v2.0.0-beta.1]: https://github.com/youyoumu/kiku/compare/v1.10.2...v2.0.0-beta.1
