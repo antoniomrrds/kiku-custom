@@ -21,7 +21,9 @@ This file is auto-generated. Any manual changes will be lost on save.
 
 Add **ExtraInfo** inside a template element:
 
-```html
+::: code-group
+
+```html [_kiku_back.html]
 <template id="ExtraInfo">{{ExtraInfo}}</template>
 
 <!-- Kiku Note v2.0.0
@@ -29,6 +31,8 @@ This file is auto-generated. Any manual changes will be lost on save.
 
 ... rest of the file
 ```
+
+:::
 
 ::: warning
 Do not modify the rest of the file, even with code formatters (such as [Prettier](https://prettier.io/)).
