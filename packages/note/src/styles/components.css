@@ -59,6 +59,16 @@
     @apply [&_img]:filter-none;
   }
 
+  @media (max-width: 40rem) {
+    .expression-picture-box:has(.picture-field img[data-orientation="potrait"]) {
+      flex-direction: row;
+    }
+
+    .picture-field:has(img[data-orientation="potrait"]) {
+      height: calc(var(--spacing) * 38);
+    }
+  }
+
   .sentence-field {
     b {
       color: var(--color-pitch, var(--color-base-content-primary));
