@@ -87,11 +87,11 @@ function SentenceFieldWithTranslation() {
       ref={$setContainerRef}
     >
       <input class="p-0 pointer-events-none" type="checkbox" />
-      <div class="collapse-title after:inset-s-5 after:inset-e-auto">
+      <div class="collapse-title after:inset-s-5 after:inset-e-auto p-0 pb-2">
         <SentenceField />
       </div>
       <div
-        class="collapse-content text-base sm:text-lg text-base-content-calm"
+        class="collapse-content text-base sm:text-lg text-base-content-calm p-0"
         innerHTML={$group().sentenceTranslationField}
       ></div>
     </div>
