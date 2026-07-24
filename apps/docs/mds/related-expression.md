@@ -33,7 +33,9 @@ This is incredibly useful for linking cards you frequently confuse, or words tha
 
 - Expressions explicitly defined in the **RelatedExpression** field will be underlined.
 - You can use commas (`,` / `、`) or semicolons (`;` / `；`) as delimiters.
-  :::
+- New cards will have a status indicator. This status indicator feature only works on Anki desktop.
+
+:::
 
 ## Fallback Behavior
 
