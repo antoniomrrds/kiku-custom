@@ -391,7 +391,7 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string; source
   const $expressionFurigana = createMemo(() => $data().fields.ExpressionFurigana.value);
   const $expressionReading = createMemo(() => $data().fields.ExpressionReading.value);
   const $leech = createMemo(() => $data().tags.includes("leech"));
-  const $$isNew = createMemo(() => $$card()?.newNotes.includes($data().noteId) ?? false);
+  const $$isNew = createMemo(() => $$card()?.newNotes.some((n) => n.noteId === $data().noteId) ?? false);
   const $doc = createMemo(() => parseHtml($expressionFurigana()));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));
   const $furiganaData = createMemo(() => parseFurigana($isRuby() ? "" : $expressionFurigana()));

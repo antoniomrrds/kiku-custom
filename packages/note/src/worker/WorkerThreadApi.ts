@@ -62,7 +62,7 @@ export class WorkerThreadApi {
       const kanjiListResult: Record<string, AnkiNote[]> = {};
       const readingListResult: Record<string, AnkiNote[]> = {};
       const expressionListResult: Record<string, AnkiNote[]> = {};
-      const newNotes: number[] = [];
+      const newNotes: AnkiNote[] = [];
 
       const manifest = await this.notesManifest();
 
@@ -137,7 +137,7 @@ export class WorkerThreadApi {
       kanjiListResult: Record<string, AnkiNote[]>;
       readingListResult: Record<string, AnkiNote[]>;
       expressionListResult: Record<string, AnkiNote[]>;
-      newNotes: number[];
+      newNotes: AnkiNote[];
     };
     let isNotesCache: boolean;
 
@@ -204,7 +204,7 @@ export class WorkerThreadApi {
       kanjiResult: Record<string, AnkiNote[]>;
       readingResult: Record<string, AnkiNote[]>;
       expressionResult: Record<string, AnkiNote[]>;
-      newNotes: number[];
+      newNotes: AnkiNote[];
       isNotesCache: boolean;
     }>((resolve, reject) => {
       this.pendingQueryShared.push({
@@ -235,7 +235,7 @@ export class WorkerThreadApi {
       kanjiResult: Record<string, AnkiNote[]>;
       readingResult: Record<string, AnkiNote[]>;
       expressionResult: Record<string, AnkiNote[]>;
-      newNotes: number[];
+      newNotes: AnkiNote[];
       isNotesCache: boolean;
     }) => void;
   }[] = [];
