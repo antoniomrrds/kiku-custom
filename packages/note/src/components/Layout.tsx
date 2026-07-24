@@ -3,7 +3,7 @@ import { Portal } from "solid-js/web";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
 
 export function Layout(props: { children: JSX.Element }) {
-  const { $general, $setGeneral } = useGeneralContext();
+  const { $general, $setGeneral, isAnkiWeb } = useGeneralContext();
 
   return (
     <div
@@ -18,7 +18,12 @@ export function Layout(props: { children: JSX.Element }) {
       </div>
       <Portal mount={$general.layoutRef}>
         {$general.toast.message && (
-          <div class="toast toast-top toast-center z-50">
+          <div
+            class="toast toast-top toast-center z-50"
+            classList={{
+              absolute: isAnkiWeb,
+            }}
+          >
             <div
               class="alert"
               classList={{
