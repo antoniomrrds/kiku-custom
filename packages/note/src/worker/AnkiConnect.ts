@@ -2,6 +2,10 @@ import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 import type { AnkiNote } from "#/src/lib/types";
 import type { MainThreadApi } from "./MainThreadApi";
 
+export function escapeRegex(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export class AnkiConnect {
   private fetchJson: MainThreadApi["fetchJson"];
   public ankiConnectAddress: string;
@@ -55,19 +59,23 @@ export class AnkiConnect {
     const kanjiQuery =
       kanjiList.length === 0
         ? null
-        : `${noteFilter} AND (${kanjiList.map((k) => `"Expression:*${k}*"`).join(" OR ")})`;
+        : `${noteFilter} AND Expression:re:${kanjiList.map(escapeRegex).join("|")}`;
 
+    const readingPattern = readingList.map(escapeRegex).join("|");
     const readingQuery =
       readingList.length === 0
         ? null
-        : `${noteFilter} AND (${readingList.map((r) => `"ExpressionReading:${r}"`).join(" OR ")})`;
+        : readingList.length === 1
+          ? `${noteFilter} AND ExpressionReading:re:^${readingPattern}$`
+          : `${noteFilter} AND ExpressionReading:re:^(${readingPattern})$`;
 
+    const expressionPattern = expressionList.map(escapeRegex).join("|");
     const expressionQuery =
       expressionList.length === 0
         ? null
-        : `${noteFilter} AND (${expressionList
-            .flatMap((e) => [`"Expression:${e}"`, `"RelatedExpression:*${e}*"`])
-            .join(" OR ")})`;
+        : expressionList.length === 1
+          ? `${noteFilter} AND (Expression:re:^${expressionPattern}$ OR RelatedExpression:re:${expressionPattern})`
+          : `${noteFilter} AND (Expression:re:^(${expressionPattern})$ OR RelatedExpression:re:${expressionPattern})`;
 
     const newQuery = `${noteFilter} AND is:new`;
 
