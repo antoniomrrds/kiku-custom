@@ -77,6 +77,9 @@ function $RelatedExpression() {
     }
   });
 
+  const $newNotes = createMemo(() => new Set($$card()?.newNotes.flatMap((n) => n.cards) ?? []));
+  const $isNewNote = createMemo(() => $newNotes().has(Number(initialAnkiFields.CardID)));
+
   const isExplicitRelatedExpression = (note: AnkiNote) => {
     return $$card()?.relatedExpression?.some((n) => n.noteId === note.noteId) ?? false;
   };
@@ -136,7 +139,7 @@ function $RelatedExpression() {
 
   return (
     <div ref={$setRef} class="flex gap-x-2 sm:gap-x-4 flex-wrap relative">
-      <Show when={$relatedExpression().length}>
+      <Show when={$relatedExpression().length || $isNewNote()}>
         <div class="flex gap-px items-center">
           <MoveDown
             class="size-4 sm:size-5 text-base-content-faint"
@@ -145,7 +148,7 @@ function $RelatedExpression() {
             }}
           ></MoveDown>
           <button
-            class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
+            class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm indicator"
             classList={{
               "text-base-content-soft": !$isInitialAnkiFields(),
               "text-base-content": $isInitialAnkiFields(),
@@ -158,15 +161,19 @@ function $RelatedExpression() {
             on:touchend={(e) => e.stopPropagation()}
           >
             {initialAnkiFields.Expression}
+            <Show when={$isNewNote()}>
+              <span class="status status-info"></span>
+            </Show>
           </button>
         </div>
       </Show>
       <For each={$relatedExpression()}>
         {(note) => {
           const cardId = note.cards[0]?.toString() ?? "";
+          const isNew = $newNotes().has(Number(cardId));
           return (
             <button
-              class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm"
+              class="hover:text-base-content transition-colors cursor-pointer animate-fade-in-sm indicator"
               classList={{
                 "text-base-content-soft underline underline-offset-4 sm:underline-offset-5 decoration-1":
                   $ankiFields.CardID !== cardId && isExplicitRelatedExpression(note),
@@ -197,6 +204,9 @@ function $RelatedExpression() {
               {$initialSide() === "front"
                 ? note.fields.ExpressionReading.value
                 : note.fields.Expression.value}
+              <Show when={isNew}>
+                <span class="status status-info"></span>
+              </Show>
             </button>
           );
         }}
