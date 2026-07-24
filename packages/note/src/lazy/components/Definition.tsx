@@ -88,6 +88,19 @@ export function Definition() {
         p.push({ name: "Glossary", html: glossary });
       }
     }
+
+    if ($config.definitionStyle === "glossary-split") {
+      for (const item of p) {
+        const doc = parseHtml(item.html);
+        const iEl = doc.querySelector("i:first-child");
+        if (!(iEl instanceof HTMLElement)) continue;
+        if (iEl?.textContent === `(${item.name})`) {
+          iEl.style.display = "none";
+        }
+        item.html = doc.body.innerHTML;
+      }
+    }
+
     return p;
   });
 
