@@ -36,12 +36,10 @@ export function PictureSection() {
     "data-nsfw": $isNsfw() ? "true" : "false",
   }));
 
+  // NOTE: if the first data-group-id has no picture, the SSR output will still display the first picture from Picture field.
+  // This is a bug but it still preferable than having a layout shift.
   const $dataSet1 = createMemo<DatasetProp>(() => ({
-    "data-has-picture": isServer
-      ? "{{#Picture}}true{{/Picture}}"
-      : $ankiFields.Picture
-        ? "true"
-        : "",
+    "data-has-picture": isServer ? "{{#Picture}}true{{/Picture}}" : $currentPicture() ? "true" : "",
   }));
 
   const $opacity = createMemo(() => {
