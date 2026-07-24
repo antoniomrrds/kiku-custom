@@ -488,7 +488,7 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string; source
           <div class="flex gap-2 items-end">
             <div class="font-secondary text-2xl sm:text-4xl">
               <Switch>
-                <Match when={$isRuby()}>
+                <Match when={$isRuby() || $furiganaData().length === 0}>
                   <ExpressionNoFurigana />
                 </Match>
                 <Match when={true}>
