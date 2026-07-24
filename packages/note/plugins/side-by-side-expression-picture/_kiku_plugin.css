@@ -1,9 +1,9 @@
 @media (max-width: 40rem) {
-  div.flex-col.sm\:flex-row:has(.picture-field-container) {
+  .expression-picture-box {
     flex-direction: row;
   }
 
-  div.flex-col.sm\:flex-row:has(.picture-field-container) > :nth-child(2) {
+  .picture-field-container) {
     /* use 30% or 40% if you want smaller picture */
     max-width: 50%;
   }

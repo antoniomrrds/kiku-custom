@@ -1,28 +1,10 @@
 @layer components {
-  .pitch-segment {
-    padding-inline-end: 0.25rem;
-    position: relative;
-  }
-  .pitch-segment::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 2px;
-    height: 8px;
-    background-color: var(--color-pitch);
+  .expression-picture-box {
+    @apply flex rounded-lg gap-2 sm:gap-4 flex-col sm:flex-row relative z-10;
   }
 
-  .sentence-field {
-    b {
-      color: var(--color-pitch, var(--color-base-content-primary));
-    }
-    ruby rt {
-      visibility: hidden;
-    }
-    ruby:hover rt {
-      visibility: visible;
-    }
+  .expression-audio-box {
+    @apply flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-38 sm:min-h-56;
   }
 
   .picture-field-background {
@@ -56,6 +38,7 @@
   }
 
   .picture-field-container {
+    @apply sm:max-w-1/2 bg-base-200 sm:items-center rounded-lg relative overflow-hidden justify-center;
     display: none;
     &:not([data-has-picture=""]) {
       display: flex;
@@ -76,11 +59,37 @@
     @apply [&_img]:filter-none;
   }
 
+  .sentence-field {
+    b {
+      color: var(--color-pitch, var(--color-base-content-primary));
+    }
+    ruby rt {
+      visibility: hidden;
+    }
+    ruby:hover rt {
+      visibility: visible;
+    }
+  }
+
   .pitch-field {
     display: none;
     &[data-has-pitch="true"] {
       display: flex;
     }
+  }
+
+  .pitch-segment {
+    padding-inline-end: 0.25rem;
+    position: relative;
+  }
+  .pitch-segment::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 8px;
+    background-color: var(--color-pitch);
   }
 
   .hint-field {
