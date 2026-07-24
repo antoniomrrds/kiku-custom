@@ -91,7 +91,7 @@ function SentenceFieldWithTranslation() {
         <SentenceField />
       </div>
       <div
-        class="collapse-content text-lg text-base-content-calm"
+        class="collapse-content text-base sm:text-lg text-base-content-calm"
         innerHTML={$group().sentenceTranslationField}
       ></div>
     </div>
