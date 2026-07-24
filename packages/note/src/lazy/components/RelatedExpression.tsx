@@ -36,6 +36,12 @@ function $RelatedExpression() {
     useAnkiFieldContext();
   const [$ref, $setRef] = createSignal<HTMLDivElement>();
 
+  const $displayExpression = createMemo(() => {
+    if ($initialSide() === "back") return initialAnkiFields.Expression;
+    if (initialAnkiFields.IsSentenceCard || initialAnkiFields.IsAudioCard) return "?";
+    return initialAnkiFields.Expression;
+  });
+
   const $relatedExpression = createMemo(() => {
     const query = $$card();
     if (!query) return [];
@@ -160,7 +166,7 @@ function $RelatedExpression() {
             }}
             on:touchend={(e) => e.stopPropagation()}
           >
-            {initialAnkiFields.Expression}
+            {$displayExpression()}
             <Show when={$isNewNote()}>
               <span class="status status-info"></span>
             </Show>
