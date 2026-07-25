@@ -66,3 +66,135 @@ export function objectToCss(selector: string, styles: Record<string, string | nu
 
   return `${selector} {\n${body}\n}`;
 }
+
+function applySingleBold(html: string, boldText: string): string {
+  const doc = parseHtml(html);
+
+  // Each segment tracks a text node, its cumulative position in the full text,
+  // and whether it's already inside a <b> tag.
+  interface Segment {
+    node: Text;
+    start: number;
+    isBolded: boolean;
+  }
+
+  const segments: Segment[] = [];
+  let pos = 0;
+
+  // Walk the DOM tree collecting text nodes. Skips <rt> elements so furigana
+  // readings don't pollute the text we search against (e.g., <ruby>拘<rt>こだわ</rt></ruby>
+  // contributes only "拘" to the text).
+  function collectTextNodes(node: Node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent ?? "";
+      if (text.length > 0) {
+        segments.push({
+          node: node as Text,
+          start: pos,
+          isBolded: !!(node.parentElement?.closest("b")),
+        });
+        pos += text.length;
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      if ((node as Element).tagName === "RT") return;
+      for (const child of (node as Element).childNodes) {
+        collectTextNodes(child);
+      }
+    }
+  }
+  collectTextNodes(doc.body);
+
+  if (pos === 0) return html;
+
+  // Concatenate all text node content for a single indexOf search.
+  const fullText = segments.map((s) => s.node.textContent).join("");
+
+  let searchFrom = 0;
+  let foundSegStart = -1;
+  let foundSegEnd = -1;
+  let foundIdx = -1;
+  let foundEndPos = -1;
+
+  const segLen = (s: Segment) => s.node.textContent?.length ?? 0;
+
+  // Find the first occurrence of boldText that isn't already bolded.
+  // If the found range overlaps any segment with isBolded=true, skip it
+  // and continue searching from after that match.
+  while (searchFrom <= fullText.length - boldText.length) {
+    const idx = fullText.indexOf(boldText, searchFrom);
+    if (idx === -1) break;
+
+    const endPos = idx + boldText.length;
+
+    const segStartIdx = segments.findIndex((s) => s.start <= idx && idx < s.start + segLen(s));
+    const segEndIdx = segments.findIndex((s) => s.start < endPos && endPos <= s.start + segLen(s));
+
+    if (segStartIdx !== -1 && segEndIdx !== -1) {
+      const anyBolded = segments.slice(segStartIdx, segEndIdx + 1).some((s) => s.isBolded);
+      if (!anyBolded) {
+        foundSegStart = segStartIdx;
+        foundSegEnd = segEndIdx;
+        foundIdx = idx;
+        foundEndPos = endPos;
+        break;
+      }
+    }
+
+    searchFrom = endPos;
+  }
+
+  if (foundSegStart === -1) return html;
+
+  try {
+    const range = doc.createRange();
+    const startNode = segments[foundSegStart].node;
+    const endNode = segments[foundSegEnd].node;
+
+    // If the matched text starts or ends inside a <ruby> element, expand the
+    // range to cover the entire <ruby> (including its <rt> children). This
+    // ensures furigana annotations are carried inside the new <b> tag.
+    const startRuby = startNode.parentElement?.closest?.("ruby");
+    const endRuby = endNode.parentElement?.closest?.("ruby");
+
+    if (startRuby) {
+      range.setStartBefore(startRuby);
+    } else {
+      range.setStart(startNode, foundIdx - segments[foundSegStart].start);
+    }
+    if (endRuby) {
+      range.setEndAfter(endRuby);
+    } else {
+      range.setEnd(endNode, foundEndPos - segments[foundSegEnd].start);
+    }
+
+    // Remove the matched content from the DOM, wrap it in <b>, then insert it
+    // back in the same position. If the range partially covers an element
+    // (e.g., splitting a <ruby>), extractContents clones and splits the
+    // element automatically.
+    const fragment = range.extractContents();
+    const b = doc.createElement("b");
+    b.appendChild(fragment);
+    range.insertNode(b);
+  } catch {
+    return html;
+  }
+
+  return doc.body.innerHTML;
+}
+
+export function applyBoldFormatting(sourceHtml: string | undefined | null, targetHtml: string | undefined | null): string {
+  if (!sourceHtml || !targetHtml) return targetHtml ?? "";
+
+  const sourceDoc = parseHtml(sourceHtml);
+  const boldElements = sourceDoc.querySelectorAll("b");
+  if (boldElements.length === 0) return targetHtml;
+
+  let result = targetHtml;
+  for (const bEl of boldElements) {
+    const boldText = bEl.textContent;
+    if (!boldText) continue;
+    result = applySingleBold(result, boldText);
+  }
+
+  return result;
+}
