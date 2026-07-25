@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, For, on, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import { parseHtml } from "#/src/lib/dom";
 import { useCollectGlossaryImgs } from "#/src/hooks/glossary";
@@ -40,6 +40,14 @@ export function DefinitionPictureSection(props: { currentHtml?: string }) {
   const [$defPicIndex, $setDefPicIndex] = createSignal(0);
 
   const currentDefPic = () => $definitionPictures()[$defPicIndex()] || "";
+
+  createEffect(
+    on(
+      () => $ankiFields.CardID,
+      () => $setDefPicIndex(0),
+      { defer: true },
+    ),
+  );
 
   return (
     <Show when={$definitionPictures().length > 0}>
