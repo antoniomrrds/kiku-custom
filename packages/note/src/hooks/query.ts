@@ -4,7 +4,7 @@ import type { CardStore } from "#/src/contexts/CardContext";
 import type { AnkiNote } from "#/src/lib/types";
 import { type Store, unwrap } from "solid-js/store";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
-import { extractKanji } from "#/src/lib/kana";
+import { extractKanji, toOppositeKana } from "#/src/lib/kana";
 import { parseRelatedExpression } from "#/src/lib/parse-related-expression";
 import { useWorker } from "./worker";
 
@@ -36,7 +36,11 @@ export function useCardQuery({
   });
   const $readingList = createMemo(() => {
     if ($isFront()) return [];
-    return ankiFields.ExpressionReading ? [ankiFields.ExpressionReading] : [];
+    const reading = ankiFields.ExpressionReading;
+    if (!reading) return [];
+    const opposite = toOppositeKana(reading);
+    if (opposite === reading) return [reading];
+    return [reading, opposite];
   });
   const $relatedExpressions = createMemo(() => {
     if ($isFront()) return [];
