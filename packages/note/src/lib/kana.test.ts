@@ -1,5 +1,58 @@
 import { describe, expect, it } from "vitest";
-import { extractKanji } from "./kana";
+import {
+  extractKanji,
+  hiraganaToKatakana,
+  katakanaToHiragana,
+  toOppositeKana,
+} from "./kana";
+
+describe("hiraganaToKatakana", () => {
+  it("converts hiragana to katakana", () => {
+    expect(hiraganaToKatakana("あいうえお")).toBe("アイウエオ");
+  });
+
+  it("leaves non-hiragana characters unchanged", () => {
+    expect(hiraganaToKatakana("あa1カ")).toBe("アa1カ");
+  });
+
+  it("handles empty string", () => {
+    expect(hiraganaToKatakana("")).toBe("");
+  });
+});
+
+describe("katakanaToHiragana", () => {
+  it("converts katakana to hiragana", () => {
+    expect(katakanaToHiragana("アイウエオ")).toBe("あいうえお");
+  });
+
+  it("leaves non-katakana characters unchanged", () => {
+    expect(katakanaToHiragana("カa1あ")).toBe("かa1あ");
+  });
+
+  it("handles empty string", () => {
+    expect(katakanaToHiragana("")).toBe("");
+  });
+});
+
+describe("toOppositeKana", () => {
+  it("converts katakana to hiragana when input contains katakana", () => {
+    expect(toOppositeKana("アイウエオ")).toBe("あいうえお");
+    expect(toOppositeKana("aカキ")).toBe("aかき");
+  });
+
+  it("converts hiragana to katakana when input contains no katakana", () => {
+    expect(toOppositeKana("あいうえお")).toBe("アイウエオ");
+    expect(toOppositeKana("aあいう")).toBe("aアイウ");
+  });
+
+  it("handles mixed strings with only hiragana", () => {
+    expect(toOppositeKana("漢字あ")).toBe("漢字ア");
+  });
+
+  it("handles empty string", () => {
+    expect(toOppositeKana("")).toBe("");
+  });
+});
 
 describe("extractKanji", () => {
   it("should extract unique kanji characters in order of first appearance", () => {
