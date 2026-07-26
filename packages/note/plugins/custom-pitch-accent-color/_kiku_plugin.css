@@ -1,3 +1,7 @@
+/* [Pick 1] */
+
+/* ────────────────────────────────────────────────────────────────────── */
+/* [1] Customize the pitch color for each pitch type */
 [data-pitch-type^="heiban"] {
   --color-pitch: #3b82f6; /* Blue */
   --color-pitch-content: #ffffff;
@@ -17,4 +21,21 @@
 [data-pitch-type^="kifuku"] {
   --color-pitch: #8b5cf6; /* Violet */
   --color-pitch-content: #ffffff;
+}
+
+/* ────────────────────────────────────────────────────────────────────── */
+/* [2] Only apply color to the pitch graph */
+[data-pitch-type]:not(.pitch-field [data-pitch-type]) {
+  --color-pitch: var(--color-base-content);
+  --color-pitch-content: var(--color-base-100);
+}
+
+.sentence-field {
+  b {
+    --color-pitch: var(--color-base-content-primary);
+  }
+}
+
+.text-pitch {
+  color: var(--color-base-content);
 }
