@@ -1,6 +1,12 @@
-import { KikuHost } from "@repo/note";
+import {
+  KikuHost,
+  defaultConfig,
+  generateCssVars,
+  generateCssVarsDark,
+  getCssVar,
+  getCssVarDark,
+} from "@repo/note";
 import kikuWorkerUrl from "@repo/note/_kiku_worker.js?url";
-import kikuEmbedCSS from "#/src/styles/kiku-embed.css?raw";
 
 const cardFieldNames = [
   "IsWordAndSentenceCard",
@@ -84,7 +90,7 @@ export class KikuHostDocs extends KikuHost {
     shadow.append(this.#root);
 
     const style = document.createElement("style");
-    style.innerHTML = kikuEmbedCSS;
+    style.innerHTML = `@layer base {\n${generateCssVars(getCssVar(defaultConfig))}\n\n${generateCssVarsDark(getCssVarDark(defaultConfig))}\n}`;
     this.#styleTags = [style];
     shadow.append(style);
 

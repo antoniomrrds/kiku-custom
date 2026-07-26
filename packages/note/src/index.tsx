@@ -498,3 +498,6 @@ export class KikuHostAnki extends KikuHost {
 }
 
 customElements.define("kiku-host-anki", KikuHostAnki);
+
+export { generateCssVars, generateCssVarsDark, getCssVar, getCssVarDark } from "./lib/config.ts";
+export { defaultConfig } from "./lib/default-config.ts";

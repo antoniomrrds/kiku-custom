@@ -12,6 +12,8 @@ const umamiScript: HeadConfig = [
   },
 ];
 
+// TODO: PURE annotation to avoid Rollup warning https://github.com/vueuse/vueuse/pull/5388
+
 export default defineConfig({
   vue: {
     template: {
