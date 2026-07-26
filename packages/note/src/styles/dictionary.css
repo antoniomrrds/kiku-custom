@@ -12,11 +12,8 @@
     list-style: disc;
   }
 
-  li[data-dictionary*="Jitendex.org"],
-  div[class="yomitan-glossary"] {
-    i:first-child {
-      color: var(--color-base-content-calm) !important;
-    }
+  ol:has(> li:only-of-type) {
+    list-style-type: circle;
   }
 
   &[data-definition-style="glossary-split"] {
@@ -26,6 +23,13 @@
     }
     li {
       list-style-type: none;
+    }
+  }
+
+  li[data-dictionary*="Jitendex.org"],
+  div[class="yomitan-glossary"] {
+    i:first-child {
+      color: var(--color-base-content-calm) !important;
     }
   }
 

@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@tailwindcss/language-server':
-        specifier: ^0.14.29
-        version: 0.14.29
+        specifier: ^0.16.0
+        version: 0.16.0
       '@typescript/typescript6':
         specifier: ^6.0.2
         version: 6.0.2
@@ -71,8 +71,8 @@ importers:
         version: 1.9.14
     devDependencies:
       '@tailwindcss/language-server':
-        specifier: ^0.14.29
-        version: 0.14.29
+        specifier: ^0.16.0
+        version: 0.16.0
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))
@@ -1087,8 +1087,8 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@tailwindcss/language-server@0.14.29':
-    resolution: {integrity: sha512-aZ3/XyTNmsoIyhs09Fghlw6D6y7o70aIxHmQEYPFiJPe/1k3HqtxXqhn7g7a5UpA1yeGOyKK9HRNJ8ghZqIclg==}
+  '@tailwindcss/language-server@0.16.0':
+    resolution: {integrity: sha512-ko2xr4nlFIkqwJFnnw7hfdpjbsnK0DOk+QEEI51tvKOCF97OG0RU59iGfadoaOoY6I9xkSMbTW+AAwgnGnLH3w==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -3697,7 +3697,7 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@tailwindcss/language-server@0.14.29': {}
+  '@tailwindcss/language-server@0.16.0': {}
 
   '@tailwindcss/node@4.3.3':
     dependencies:

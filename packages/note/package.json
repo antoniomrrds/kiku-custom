@@ -40,7 +40,7 @@
     "solid-js": "^1.9.14"
   },
   "devDependencies": {
-    "@tailwindcss/language-server": "^0.14.29",
+    "@tailwindcss/language-server": "^0.16.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/jsdom": "^28.0.3",
     "@types/node": "^25.9.5",

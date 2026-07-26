@@ -224,18 +224,21 @@ function removeMainDefinitionFromGlossary(glossary: string, mainDefinition: stri
   const glossaryDoc = parser.parseFromString(glossary, "text/html");
   const mainDefinitionDoc = parser.parseFromString(mainDefinition, "text/html");
 
-  const mainDefinitionLi = mainDefinitionDoc.querySelector(
+  const mainDefinitionLis = mainDefinitionDoc.querySelectorAll(
     'div[class="yomitan-glossary"] > ol > li[data-dictionary]',
   );
-  if (!mainDefinitionLi) return glossary;
-  const mainDefinitionDictionary = mainDefinitionLi.getAttribute("data-dictionary");
-  if (!mainDefinitionDictionary) return glossary;
+  const mainDefinitionDicts = Array.from(mainDefinitionLis)
+    .map((li) => li.getAttribute("data-dictionary"))
+    .filter(Boolean) as string[];
+  if (mainDefinitionDicts.length === 0) return glossary;
 
   const glossaries = glossaryDoc.querySelectorAll(
     `div[class="yomitan-glossary"] > ol > li[data-dictionary]`,
   );
   for (const glossaryLi of glossaries) {
-    if (glossaryLi.getAttribute("data-dictionary") === mainDefinitionDictionary) {
+    const dictName = glossaryLi.getAttribute("data-dictionary");
+    if (!dictName) continue;
+    if (mainDefinitionDicts.includes(dictName)) {
       glossaryLi.remove();
     }
   }

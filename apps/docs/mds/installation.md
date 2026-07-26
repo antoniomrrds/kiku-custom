@@ -35,7 +35,7 @@ Open your Yomitan settings, go to `Anki` > `Configure Anki flashcard`, select `K
 | MainDefinition        | Something like `{single-glossary-jmdict/jitendex}`. Find this by clicking the down arrow next to this field, and find a dictionary in a similar format.  |
 | DefinitionPicture     | Here you can include any image you'd like to use to help _illustrate_ the definition or the vocabulary term.                                             |
 | Sentence              | `{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}`                                                                                                        |
-| SentenceFurigana      | `{sentence-furigana}`                                                                                                                                    |
+| SentenceFurigana      | `{sentence-furigana-plain}`                                                                                                                              |
 | SentenceTranslation   |                                                                                                                                                          |
 | SentenceAudio         |                                                                                                                                                          |
 | Picture               |                                                                                                                                                          |
