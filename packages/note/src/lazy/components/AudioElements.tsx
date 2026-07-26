@@ -69,12 +69,12 @@ export function AudioElements() {
           const audio = $card.expressionAudioRef?.querySelector("audio");
           if (audio) {
             logger.info("[AudioElements] autoPlay: expression");
-            audio.play();
+            void audio.play();
             audio.onpause = () => {
               const audio = $card.sentenceAudioRef?.querySelectorAll("audio")[0];
               if (audio) {
                 logger.info("[AudioElements] autoPlay: sentence");
-                audio.play();
+                void audio.play();
               } else {
                 logger.debug("[AudioElements] autoPlay: no sentence audio to chain");
               }

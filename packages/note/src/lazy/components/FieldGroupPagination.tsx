@@ -23,7 +23,7 @@ export function FieldGroupPagination() {
       const el = $card.sentenceAudios?.[0];
       if (el) {
         el.click();
-        if (el instanceof HTMLAudioElement) el.play();
+        if (el instanceof HTMLAudioElement) void el.play();
       }
     }
   };
@@ -33,7 +33,7 @@ export function FieldGroupPagination() {
       const el = $card.sentenceAudios?.[0];
       if (el) {
         el.click();
-        if (el instanceof HTMLAudioElement) el.play();
+        if (el instanceof HTMLAudioElement) void el.play();
       }
     }
   };

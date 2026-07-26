@@ -38,14 +38,14 @@ export function ConfigContextProvider(props: { children: JSX.Element; initialCon
         isAnkiDesktop,
       }),
       ({ config, assetsPath, isAnkiDesktop }) => {
-        workerApi.promise.then((workerApi) => {
+        void workerApi.promise.then((workerApi) =>
           workerApi.init({
             constants,
             config,
             assetsPath: import.meta.env.DEV ? "" : assetsPath,
             preferAnkiConnect: config.preferAnkiConnect && isAnkiDesktop,
-          });
-        });
+          }),
+        );
       },
       { defer: true },
     ),

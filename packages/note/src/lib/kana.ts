@@ -15,7 +15,7 @@ function isKatakana(char: string): boolean {
 const OFFSET = 0x60;
 
 function convert(str: string, predicate: (c: string) => boolean, offset: number): string {
-  return [...str]
+  return Array.from(str)
     .map((c) => (predicate(c) ? String.fromCodePoint(codePoint(c) + offset) : c))
     .join("");
 }
@@ -29,7 +29,7 @@ export function katakanaToHiragana(str: string): string {
 }
 
 export function toOppositeKana(str: string): string {
-  if ([...str].some(isKatakana)) {
+  if (Array.from(str).some(isKatakana)) {
     return katakanaToHiragana(str);
   }
   return hiraganaToKatakana(str);

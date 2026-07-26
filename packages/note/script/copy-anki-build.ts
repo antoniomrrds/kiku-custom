@@ -72,4 +72,7 @@ class Script {
 }
 
 const script = new Script();
-script.run();
+script.run().catch((e) => {
+  console.error("Script failed:", e);
+  process.exit(1);
+});

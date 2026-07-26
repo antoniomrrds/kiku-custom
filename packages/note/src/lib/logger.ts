@@ -49,7 +49,11 @@ export class Logger {
   private format(level: LogLevel, args: unknown[]): string {
     const time = new Date().toISOString().split("T")[1].replace("Z", "");
     const msg = args
-      .map((a) => (typeof a === "object" ? JSON.stringify(a, null, 2) : String(a)))
+      .map((a) => {
+        if (typeof a === "object") return JSON.stringify(a, null, 2);
+        if (typeof a === "string") return a;
+        return JSON.stringify(a) ?? "undefined";
+      })
       .join(" ");
 
     return `[${time}] [${level.toUpperCase()}] ${msg}`;

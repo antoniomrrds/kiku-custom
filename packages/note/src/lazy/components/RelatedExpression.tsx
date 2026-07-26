@@ -114,7 +114,7 @@ function $RelatedExpression() {
         if (audio) {
           logger.info("[RelatedExpression] autoPlay: expression");
           if (audio instanceof HTMLAnchorElement) audio.click();
-          if (audio instanceof HTMLAudioElement) audio.play();
+          if (audio instanceof HTMLAudioElement) void audio.play();
         } else {
           logger.debug("[RelatedExpression] autoPlay: no expression audio to play");
         }

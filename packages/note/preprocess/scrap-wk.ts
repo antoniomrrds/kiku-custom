@@ -137,7 +137,7 @@ class WkScraper {
         console.error(`Failed to write kanji info for ${kanji}:`, e);
         failedKanji.push(kanji);
       }
-      sleep(200);
+      await sleep(200);
     }
     await writeFile(
       paths["@/.wk/failed_kanji.json"],
@@ -249,7 +249,7 @@ class WkScraper {
         console.error(`Failed to write vocab info for ${vocab}:`, e);
         failedVocab.push(vocab);
       }
-      sleep(50);
+      await sleep(50);
     }
     await writeFile(
       paths["@/.wk/failed_vocab.json"],

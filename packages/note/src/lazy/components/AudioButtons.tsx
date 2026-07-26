@@ -46,7 +46,7 @@ function NotePlayIcons() {
             logger.debug("[AudioButtons] click: expression");
             stopAllAudios();
             $card.expressionAudioRef?.querySelector("a")?.click();
-            $card.expressionAudioRef?.querySelector("audio")?.play();
+            void $card.expressionAudioRef?.querySelector("audio")?.play();
           }}
         ></NotePlayIcon>
       </Show>
@@ -58,7 +58,7 @@ function NotePlayIcons() {
               logger.debug("[AudioButtons] click: sentence", i());
               stopAllAudios();
               el.click();
-              if (el instanceof HTMLAudioElement) el.play();
+              if (el instanceof HTMLAudioElement) void el.play();
             }}
           ></NotePlayIcon>
         )}

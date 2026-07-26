@@ -10,7 +10,9 @@ export default {
     app.component("VPButton", VPButton);
     app.component("KikuEmbed", KikuEmbed);
     if (inBrowser) {
-      import("#/src/lib/KikuHostDocs");
+      import("#/src/lib/KikuHostDocs").catch((e) => {
+        console.error("Failed to load KikuHostDocs:", e);
+      });
     }
   },
 } satisfies Theme;

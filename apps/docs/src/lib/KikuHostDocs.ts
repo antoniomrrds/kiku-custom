@@ -97,6 +97,8 @@ export class KikuHostDocs extends KikuHost {
     this.#loadStyles().then(() => {
       this.#stylesLoaded = true;
       this.requestUpdate();
+    }).catch((e) => {
+      console.error("Failed to load styles:", e);
     });
     this.requestUpdate();
   }

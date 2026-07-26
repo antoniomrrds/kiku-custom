@@ -10,30 +10,28 @@ export function useLoadPlugin() {
   const owner = getOwner();
 
   async function getPlugin(assetsPath: string) {
-    try {
-      const plugin = (
-        await import(
-          /* @vite-ignore */
-          `${assetsPath}/${constants.assets["_kiku_plugin.js"]}`
-        )
-      ).plugin as KikuPlugin;
-      return plugin;
-    } catch (e) {
-      logger.warn("[plugin] failed to import plugin:", e);
-    }
+    const mod = await import(
+      /* @vite-ignore */
+      `${assetsPath}/${constants.assets["_kiku_plugin.js"]}`
+    );
+    return mod.plugin as KikuPlugin;
   }
 
   function loadPlugin() {
-    getPlugin(assetsPath).then((plugin) => {
-      try {
-        runWithOwner(owner, () => {
-          plugin?.onPluginLoad?.({ ctx });
-        });
-      } catch (e) {
-        logger.warn("[plugin] onPluginLoad failed:", e);
-      }
-      $setGeneral("plugin", plugin);
-    });
+    getPlugin(assetsPath)
+      .then((plugin) => {
+        try {
+          runWithOwner(owner, () => {
+            plugin?.onPluginLoad?.({ ctx });
+          });
+        } catch (e) {
+          logger.warn("[plugin] onPluginLoad failed:", e);
+        }
+        $setGeneral("plugin", plugin);
+      })
+      .catch((e) => {
+        logger.warn("[plugin] failed to load plugin:", e);
+      });
   }
 
   return loadPlugin;

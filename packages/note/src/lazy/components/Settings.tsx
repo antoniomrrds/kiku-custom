@@ -90,7 +90,7 @@ export function Settings() {
   });
 
   onMount(() => {
-    if (isAnkiDesktop) $checkAnkiConnect();
+    if (isAnkiDesktop) void $checkAnkiConnect();
   });
 
   return (

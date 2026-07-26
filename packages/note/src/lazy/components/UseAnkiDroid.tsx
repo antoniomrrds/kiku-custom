@@ -108,7 +108,7 @@ export function UseAnkiDroid() {
     isTouching = false;
     if ($initialSide() === "front") {
       if (isSwiping) return;
-      ankiDroidAPI?.ankiShowAnswer();
+      void ankiDroidAPI?.ankiShowAnswer();
     } else if ($initialSide() === "back") {
       $setRightIconOffset(0);
       $setLeftIconOffset(0);
@@ -120,9 +120,9 @@ export function UseAnkiDroid() {
         logger.info("AnkiDroid ease:", ease);
         if (!import.meta.env.DEV) {
           if (ease === "ease1") {
-            ankiDroidAPI?.ankiAnswerEase1();
+            void ankiDroidAPI?.ankiAnswerEase1();
           } else if (ease === "ease3") {
-            ankiDroidAPI?.ankiAnswerEase3();
+            void ankiDroidAPI?.ankiAnswerEase3();
           }
         }
       }

@@ -136,24 +136,28 @@ function KanjiTooltip() {
             element: arrowEl,
           }),
         ],
-      }).then(({ x, y, placement, middlewareData }) => {
-        const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
-        const staticSide =
-          {
-            top: "bottom",
-            right: "left",
-            bottom: "top",
-            left: "right",
-          }[placement.split("-")[0]] ?? "";
+      })
+        .then(({ x, y, placement, middlewareData }) => {
+          const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
+          const staticSide =
+            {
+              top: "bottom",
+              right: "left",
+              bottom: "top",
+              left: "right",
+            }[placement.split("-")[0]] ?? "";
 
-        $setPosition({
-          x,
-          y,
-          arrowX: arrowX ?? 0,
-          arrowY: arrowY ?? 0,
-          staticSide,
+          $setPosition({
+            x,
+            y,
+            arrowX: arrowX ?? 0,
+            arrowY: arrowY ?? 0,
+            staticSide,
+          });
+        })
+        .catch((e) => {
+          console.error("[KanjiTooltip] computePosition failed:", e);
         });
-      });
     }
   });
 

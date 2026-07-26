@@ -38,7 +38,7 @@ export class WorkerThreadApi {
     constants: Constants;
     config: KikuConfig;
     preferAnkiConnect: boolean;
-  }) {
+  }): void {
     this.assetsPath = payload.assetsPath;
     this.constants = payload.constants;
     this.config = payload.config;
@@ -143,7 +143,7 @@ export class WorkerThreadApi {
 
     if (this.preferAnkiConnect) {
       try {
-        this.log.info("Querying with AnkiConnect");
+        void this.log.info("Querying with AnkiConnect");
         result = await this.ankiConnect.queryFieldContains({
           kanjiList,
           readingList,
@@ -152,17 +152,17 @@ export class WorkerThreadApi {
         });
         isNotesCache = false;
       } catch {
-        this.log.warn("Failed to query with AnkiConnect, falling back to notes cache");
+        void this.log.warn("Failed to query with AnkiConnect, falling back to notes cache");
         result = await queryWithNotesCache();
         isNotesCache = true;
       }
     } else {
       try {
-        this.log.info("Querying with notes cache");
+        void this.log.info("Querying with notes cache");
         result = await queryWithNotesCache();
         isNotesCache = true;
       } catch {
-        this.log.warn("Failed to query with notes cache, falling back to AnkiConnect");
+        void this.log.warn("Failed to query with notes cache, falling back to AnkiConnect");
         result = await this.ankiConnect.queryFieldContains({
           kanjiList,
           readingList,
@@ -375,7 +375,7 @@ export class WorkerThreadApi {
         { cache: "no-store" },
       )) as KikuDbMainManifest;
     } catch {
-      this.log.error("Failed to load db main manifest");
+      void this.log.error("Failed to load db main manifest");
       throw new Error("Failed to load db main manifest");
     }
     this.cache.set(key, manifest);

@@ -238,7 +238,7 @@ export class KikuHostAnki extends KikuHost {
         this.config = config;
         this.requestUpdate();
       })
-      .catch(window.renderErrorFallback);
+      .catch((e) => window.renderErrorFallback?.(e));
 
     if (import.meta.env.DEV) {
       this.setupDevCss(styleTags, this.config ?? undefined);
@@ -255,7 +255,7 @@ export class KikuHostAnki extends KikuHost {
           this.#kikuCSSReady = true;
           this.requestUpdate();
         })
-        .catch(window.renderErrorFallback);
+        .catch((e) => window.renderErrorFallback?.(e));
 
     this.getKikuPluginCSSStyleSheet()
       .then((css) => {
@@ -264,7 +264,7 @@ export class KikuHostAnki extends KikuHost {
         this.#kikuPluginCSSReady = true;
         this.requestUpdate();
       })
-      .catch(window.renderErrorFallback);
+      .catch((e) => window.renderErrorFallback?.(e));
 
     this.requestUpdate();
   }

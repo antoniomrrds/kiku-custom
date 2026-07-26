@@ -42,7 +42,7 @@ export function useNavigationTransition() {
         },
       })?.finished.then(() => {
         document.documentElement.removeAttribute("data-transition-direction");
-      });
+      }).catch(() => {});
     } else {
       start();
     }
@@ -73,7 +73,7 @@ export function useThemeTransition() {
         },
       })?.finished.then(() => {
         document.documentElement.removeAttribute("data-theme-transition");
-      });
+      }).catch(() => {});
     }
   }
 

@@ -21,6 +21,7 @@
     "@typescript/typescript6": "^6.0.2",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.75.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "turbo": "^2.10.6",
     "typescript": "^7.0.2"
   },

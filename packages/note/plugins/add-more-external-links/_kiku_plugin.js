@@ -21,7 +21,7 @@ export const plugin = {
 
     function AnkiDroidBrowseButton() {
       const onclick = () => {
-        ankiDroidAPI?.ankiSearchCard(
+        void ankiDroidAPI?.ankiSearchCard(
           `("note:Kiku" OR "note:Lapis") AND "Expression:*${props.ctx.$ankiFields.Expression}*"`,
         );
       };
