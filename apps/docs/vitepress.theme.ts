@@ -1,6 +1,6 @@
 import { inBrowser, type Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";
-import KikuEmbed from "#/src/components/KikuEmbed.vue";
+import KikuEmbed from "#/src/components/KikuEmbed.tsx";
 import "#/src/styles/global.css";
 import { VPButton } from "vitepress/theme";
 

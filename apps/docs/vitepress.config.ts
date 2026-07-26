@@ -1,3 +1,4 @@
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import { defineConfig, type HeadConfig } from "vitepress";
 import { vitePluginCopyKikuAssets } from "./tools/vite-plugin-copy-kiku-assets";
 import { vitePluginServeKikuAssets } from "./tools/vite-plugin-serve-kiku-assets";
@@ -26,8 +27,10 @@ export default defineConfig({
   vite: {
     publicDir: "../public",
     plugins: [
+      //@ts-expect-error rolldown/rollup type mismatch
+      vueJsx(),
       vitePluginCopyKikuAssets(),
-      //@ts-expect-error
+      //@ts-expect-error rolldown/rollup type mismatch
       vitePluginServeKikuAssets(),
     ],
   },

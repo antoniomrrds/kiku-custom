@@ -8,15 +8,15 @@
     "dev": "vitepress dev --port 5174",
     "build": "vitepress build",
     "start": "vitepress preview",
-    "typecheck": "vue-tsc -b"
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@repo/note": "workspace:*"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue-jsx": "^5.1.6",
     "vite": "^8.1.5",
     "vitepress": "2.0.0-alpha.17",
-    "vue": "^3.5.40",
-    "vue-tsc": "^3.3.8"
+    "vue": "^3.5.40"
   }
 }
