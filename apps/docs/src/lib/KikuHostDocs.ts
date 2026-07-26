@@ -96,9 +96,7 @@ export class KikuHostDocs extends KikuHost {
   }
 
   render() {
-    console.log("#render");
     if (!this.#stylesLoaded) return;
-    console.log("#render real");
     this.#dispose?.();
     this.now = performance.now();
     const isDark = document.documentElement.classList.contains("dark");
