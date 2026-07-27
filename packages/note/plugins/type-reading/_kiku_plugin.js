@@ -66,6 +66,7 @@ export const plugin = {
             placeholder="Type the reading..."
             value=${value()}
             onInput=${handleInput}
+            onkeydown="event.stopPropagation();"
             style=${() => ($card.side === "front" ? "" : "display: none")}
           />
           <div style=${resultStyle}>

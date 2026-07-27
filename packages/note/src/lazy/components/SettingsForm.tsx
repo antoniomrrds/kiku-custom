@@ -113,6 +113,7 @@ export function TextSetting(props: { configKey: StringConfigKey; label: string }
         class="input w-full"
         placeholder={defaultConfig[props.configKey] as string}
         value={$config[props.configKey] as string}
+        on:keydown={(e) => e.stopPropagation()}
         on:input={(e) => {
           $setConfig(props.configKey, (e.target as HTMLInputElement).value);
         }}

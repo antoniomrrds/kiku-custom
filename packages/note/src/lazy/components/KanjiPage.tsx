@@ -174,6 +174,7 @@ function Page() {
               disabled={$kanjiPage.tab !== "kanji"}
               placeholder="Search"
               value={$search()}
+              on:keydown={(e) => e.stopPropagation()}
               on:input={(e) => {
                 $setSearch((e.target as HTMLInputElement).value);
               }}
