@@ -288,6 +288,11 @@ function RelatedExpressionSettings() {
           label="Exclude New Cards"
           tooltip="Exclude new (unstudied) cards from related expression results"
         />
+        <ToggleSetting
+          configKey="relatedExpressionFallback"
+          label="Fallback"
+          tooltip="When disabled, only show explicitly related expressions without fallback to same expression, reading, forms, antonym, or referenced"
+        />
       </div>
     </Section>
   );

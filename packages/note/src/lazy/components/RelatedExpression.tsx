@@ -89,6 +89,11 @@ function $RelatedExpression() {
       relatedExpression = relatedExpression.filter((v) => !newCardIds.has(v.cards[0]));
     }
 
+    if (!$config.relatedExpressionFallback) {
+      fallbackPriority1 = [];
+      fallbackPriority2 = [];
+    }
+
     fallbackPriority1 = fallbackPriority1.sort(sortNote);
     fallbackPriority2 = fallbackPriority2.sort(sortNote);
 
