@@ -229,7 +229,7 @@ declare global {
     withResolvers<T>(): PromiseWithResolvers<T>;
   }
 
-  var pycmd: () => void;
+  var pycmd: (cmd?: string) => void;
   var AnkiDroidJS: {
     new (contract: { version: string; developer?: string }): AnkiDroidAPI;
     prototype: AnkiDroidAPI;
