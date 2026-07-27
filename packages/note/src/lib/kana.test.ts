@@ -3,6 +3,7 @@ import {
   extractKanji,
   hiraganaToKatakana,
   katakanaToHiragana,
+  romajiToHiragana,
   toOppositeKana,
 } from "./kana";
 
@@ -75,5 +76,105 @@ describe("extractKanji", () => {
     const input = "𬵪𩶗𫒼𣶏と𬵪𩶗𫒼𣶏";
 
     expect(extractKanji(input)).toEqual(["𬵪", "𩶗", "𫒼", "𣶏"]);
+  });
+});
+
+describe("romajiToHiragana", () => {
+  it("converts basic vowels", () => {
+    expect(romajiToHiragana("aiueo")).toBe("あいうえお");
+  });
+
+  it("converts k-row", () => {
+    expect(romajiToHiragana("kakikukeko")).toBe("かきくけこ");
+  });
+
+  it("converts s-row with shi", () => {
+    expect(romajiToHiragana("sashisuseso")).toBe("さしすせそ");
+  });
+
+  it("converts t-row with chi and tsu", () => {
+    expect(romajiToHiragana("tachitsuteto")).toBe("たちつてと");
+  });
+
+  it("converts n-row", () => {
+    expect(romajiToHiragana("naninuneno")).toBe("なにぬねの");
+  });
+
+  it("converts h-row with fu", () => {
+    expect(romajiToHiragana("hahifuheho")).toBe("はひふへほ");
+  });
+
+  it("converts m-row", () => {
+    expect(romajiToHiragana("mamimumemo")).toBe("まみむめも");
+  });
+
+  it("converts y-row", () => {
+    expect(romajiToHiragana("yayuyo")).toBe("やゆよ");
+  });
+
+  it("converts r-row", () => {
+    expect(romajiToHiragana("rarirurero")).toBe("らりるれろ");
+  });
+
+  it("converts w-row", () => {
+    expect(romajiToHiragana("wawon")).toBe("わをん");
+  });
+
+  it("converts g-row (dakuten)", () => {
+    expect(romajiToHiragana("gagigugego")).toBe("がぎぐげご");
+  });
+
+  it("converts z-row with ji", () => {
+    expect(romajiToHiragana("zajizuzezo")).toBe("ざじずぜぞ");
+  });
+
+  it("converts d-row with unusual mappings", () => {
+    expect(romajiToHiragana("dadidudedo")).toBe("だぢづでど");
+  });
+
+  it("converts b-row", () => {
+    expect(romajiToHiragana("babibubebo")).toBe("ばびぶべぼ");
+  });
+
+  it("converts p-row (handakuten)", () => {
+    expect(romajiToHiragana("papipupepo")).toBe("ぱぴぷぺぽ");
+  });
+
+  it("converts palatalized syllables (yōon)", () => {
+    expect(romajiToHiragana("kyakyukyo")).toBe("きゃきゅきょ");
+    expect(romajiToHiragana("shashusho")).toBe("しゃしゅしょ");
+    expect(romajiToHiragana("chachucho")).toBe("ちゃちゅちょ");
+    expect(romajiToHiragana("nyanyunyo")).toBe("にゃにゅにょ");
+    expect(romajiToHiragana("hyahyuhyo")).toBe("ひゃひゅひょ");
+    expect(romajiToHiragana("myamyumyo")).toBe("みゃみゅみょ");
+    expect(romajiToHiragana("ryaryuryo")).toBe("りゃりゅりょ");
+    expect(romajiToHiragana("gyagyugyo")).toBe("ぎゃぎゅぎょ");
+    expect(romajiToHiragana("jajujo")).toBe("じゃじゅじょ");
+    expect(romajiToHiragana("byabyubyo")).toBe("びゃびゅびょ");
+    expect(romajiToHiragana("pyapyupyo")).toBe("ぴゃぴゅぴょ");
+  });
+
+  it("passes through non-romaji characters unchanged", () => {
+    expect(romajiToHiragana("a1b-こ")).toBe("あ1b-こ");
+  });
+
+  it("handles empty string", () => {
+    expect(romajiToHiragana("")).toBe("");
+  });
+
+  it("converts full word: nihongo", () => {
+    expect(romajiToHiragana("nihongo")).toBe("にほんご");
+  });
+
+  it("converts full word: konnichiha", () => {
+    expect(romajiToHiragana("konnichiha")).toBe("こんにちは");
+  });
+
+  it("handles double consonants with xtsu", () => {
+    expect(romajiToHiragana("gaxtsukou")).toBe("がっこう");
+  });
+
+  it("converts small kana with x-prefix", () => {
+    expect(romajiToHiragana("xaxixuxexo")).toBe("ぁぃぅぇぉ");
   });
 });

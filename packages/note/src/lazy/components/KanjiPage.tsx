@@ -29,6 +29,7 @@ import {
   useKanjiPageContext,
 } from "#/src/lazy/contexts/KanjiPageContext";
 import { capitalize } from "#/src/lib/text";
+import { fuzzySearch } from "#/src/lib/fuzzy";
 
 export function KanjiPage() {
   return (
@@ -70,12 +71,9 @@ function Page() {
   const $filteredNoteList = createMemo(() => {
     if (!$search()) return noteList;
     return noteList.map(([k, list]) => {
-      const filtered = list.filter((n) => {
-        return (
-          n.fields.Expression.value.includes($search()) ||
-          n.fields.ExpressionReading.value.includes($search())
-        );
-      });
+      const filtered = list.filter((n) =>
+        fuzzySearch($search(), n.fields.Expression.value, n.fields.ExpressionReading.value),
+      );
       return [k, filtered] as const;
     });
   });
