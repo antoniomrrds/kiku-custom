@@ -45,31 +45,53 @@ function $RelatedExpression() {
   const $relatedExpression = createMemo(() => {
     const query = $$card();
     if (!query) return [];
+    // TODO: turn into config
+    const excludeNewCards = true;
+    const newCardIds = new Set(query.newNotes.flatMap((n) => n.cards));
 
+    // On front side, only show cards with the same expression but different reading
     if ($initialSide() === "front") {
       return [...(query.sameExpression ?? [])]
         .filter((v) => {
+          if (excludeNewCards)
+            return (
+              !newCardIds.has(v.cards[0]) &&
+              v.fields["ExpressionReading"].value !== initialAnkiFields.ExpressionReading
+            );
           return v.fields["ExpressionReading"].value !== initialAnkiFields.ExpressionReading;
         })
         .sort(sortNote);
     }
 
-    const fallbackPriority1 = [
+    // Priority 1: same expression, same reading, same kanji
+    let fallbackPriority1 = [
       ...(query.sameExpression ?? []),
       ...(query.sameReading ?? []),
       ...query.noteList.flatMap((n) => {
         return n[1];
       }),
-    ].sort(sortNote);
+    ];
 
-    const fallbackPriority2 = [
+    // Priority 2: forms, antonym, referenced
+    let fallbackPriority2 = [
       ...(query.forms ?? []),
       ...(query.antonym ?? []),
       ...(query.referenced ?? []),
-    ].sort(sortNote);
+    ];
 
-    const relatedExpression = query.relatedExpression;
+    // Priority 3: related expression
+    let relatedExpression = query.relatedExpression;
 
+    if (excludeNewCards) {
+      fallbackPriority1 = fallbackPriority1.filter((v) => !newCardIds.has(v.cards[0]));
+      fallbackPriority2 = fallbackPriority2.filter((v) => !newCardIds.has(v.cards[0]));
+      relatedExpression = relatedExpression.filter((v) => !newCardIds.has(v.cards[0]));
+    }
+
+    fallbackPriority1 = fallbackPriority1.sort(sortNote);
+    fallbackPriority2 = fallbackPriority2.sort(sortNote);
+
+    // If related expression is less than 2, fill with fallback priority 2 and 1
     if (relatedExpression?.length && relatedExpression.length < 2) {
       return dedupeByCardId([
         ...relatedExpression,
