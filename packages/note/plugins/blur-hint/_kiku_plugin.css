@@ -1,0 +1,7 @@
+.hint-field > div {
+  filter: blur(6px);
+}
+
+.hint-field > div:hover {
+  filter: blur(0);
+}
