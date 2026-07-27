@@ -3,6 +3,7 @@ import {
   createSignal,
   ErrorBoundary,
   For,
+  Index,
   type JSX,
   Match,
   onMount,
@@ -65,6 +66,20 @@ function Page() {
     useKanjiPageContext();
   const { $$relatedNotes } = useRelatedNotes();
 
+  const [$search, $setSearch] = createSignal("");
+  const $filteredNoteList = createMemo(() => {
+    if (!$search()) return noteList;
+    return noteList.map(([k, list]) => {
+      const filtered = list.filter((n) => {
+        return (
+          n.fields.Expression.value.includes($search()) ||
+          n.fields.ExpressionReading.value.includes($search())
+        );
+      });
+      return [k, filtered] as const;
+    });
+  });
+
   const $title = createMemo(() => {
     if ($kanjiPage.tab === "kanji") {
       if (contextLabel?.type === "similar") return "Similar";
@@ -113,46 +128,59 @@ function Page() {
       <Match when={!$kanjiPage.nested}>
         <HeaderKanjiPage />
         <div class="flex flex-col gap-2 sm:gap-4">
-          <Show when={!contextLabel}>
-            <div role="tablist" class="tabs tabs-box animate-fade-in">
-              <TabItem
-                active={$kanjiPage.tab === "kanji"}
-                neverDisabled={true}
-                onClick={() => {
-                  $setKanjiPage("tab", "kanji");
-                }}
-              >
-                漢字
-              </TabItem>
-              <TabItem
-                active={$kanjiPage.tab === "reading"}
-                count={sameReading?.length ?? 0}
-                onClick={() => {
-                  $setKanjiPage("tab", "reading");
-                }}
-              >
-                読
-              </TabItem>
-              <TabItem
-                active={$kanjiPage.tab === "same"}
-                count={sameExpression?.length ?? 0}
-                onClick={() => {
-                  $setKanjiPage("tab", "same");
-                }}
-              >
-                同
-              </TabItem>
-              <TabItem
-                active={$kanjiPage.tab === "related"}
-                count={$$relatedNotes().length}
-                onClick={() => {
-                  $setKanjiPage("tab", "related");
-                }}
-              >
-                関
-              </TabItem>
-            </div>
-          </Show>
+          <div class="flex gap-2 tabs tabs-box">
+            <Show when={!contextLabel}>
+              <div role="tablist" class="tabs tabs-box animate-fade-in p-0 shadow-none">
+                <TabItem
+                  active={$kanjiPage.tab === "kanji"}
+                  neverDisabled={true}
+                  onClick={() => {
+                    $setKanjiPage("tab", "kanji");
+                  }}
+                >
+                  漢字
+                </TabItem>
+                <TabItem
+                  active={$kanjiPage.tab === "reading"}
+                  count={sameReading?.length ?? 0}
+                  onClick={() => {
+                    $setKanjiPage("tab", "reading");
+                  }}
+                >
+                  読
+                </TabItem>
+                <TabItem
+                  active={$kanjiPage.tab === "same"}
+                  count={sameExpression?.length ?? 0}
+                  onClick={() => {
+                    $setKanjiPage("tab", "same");
+                  }}
+                >
+                  同
+                </TabItem>
+                <TabItem
+                  active={$kanjiPage.tab === "related"}
+                  count={$$relatedNotes().length}
+                  onClick={() => {
+                    $setKanjiPage("tab", "related");
+                  }}
+                >
+                  関
+                </TabItem>
+              </div>
+            </Show>
+
+            <input
+              type="text"
+              class="input flex-1"
+              disabled={$kanjiPage.tab !== "kanji"}
+              placeholder="Search"
+              value={$search()}
+              on:input={(e) => {
+                $setSearch((e.target as HTMLInputElement).value);
+              }}
+            />
+          </div>
           <div class="flex flex-col items-center gap-2 animate-fade-in">
             <div class="font-secondary text-5xl sm:text-6xl">
               <Switch>
@@ -210,15 +238,15 @@ function Page() {
           <div class="flex flex-col gap-2 sm:gap-4 ">
             <Switch>
               <Match when={$kanjiPage.tab === "kanji"}>
-                <For each={noteList}>
-                  {([kanji, data]) => {
+                <Index each={$filteredNoteList()}>
+                  {(item) => {
                     return (
-                      <KanjiContextProvider kanji={kanji}>
-                        <KanjiCollapsible data={data} />
+                      <KanjiContextProvider kanji={item()[0]}>
+                        <KanjiCollapsible data={item()[1]} />
                       </KanjiContextProvider>
                     );
                   }}
-                </For>
+                </Index>
               </Match>
               <Match when={$kanjiPage.tab === "reading"}>
                 <NoteList list={sameReading ?? []} />
@@ -391,7 +419,9 @@ function AnkiNoteItem(props: { data: AnkiNote; highlightedKanji?: string; source
   const $expressionFurigana = createMemo(() => $data().fields.ExpressionFurigana.value);
   const $expressionReading = createMemo(() => $data().fields.ExpressionReading.value);
   const $leech = createMemo(() => $data().tags.includes("leech"));
-  const $$isNew = createMemo(() => $$card()?.newNotes.some((n) => n.noteId === $data().noteId) ?? false);
+  const $$isNew = createMemo(
+    () => $$card()?.newNotes.some((n) => n.noteId === $data().noteId) ?? false,
+  );
   const $doc = createMemo(() => parseHtml($expressionFurigana()));
   const $isRuby = createMemo(() => $doc().querySelector("ruby"));
   const $furiganaData = createMemo(() => parseFurigana($isRuby() ? "" : $expressionFurigana()));
