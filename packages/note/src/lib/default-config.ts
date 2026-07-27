@@ -21,6 +21,7 @@ export const defaultConfig: KikuConfig = {
   modVertical: false,
   definitionStyle: "normal",
   definitionPictureFromGlossary: false,
+  relatedExpressionExcludeNewCards: true,
   fontSizeBaseExpression: "5xl",
   fontSizeBasePitch: "xl",
   fontSizeBaseSentence: "2xl",

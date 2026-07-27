@@ -99,6 +99,8 @@ export function Settings() {
       <div class="sm:pb-14">
         <GeneralSettings />
         <div class="divider"></div>
+        <RelatedExpressionSettings />
+        <div class="divider"></div>
         <DefinitionSettings />
         <div class="divider"></div>
         <ModSettings />
@@ -270,6 +272,21 @@ function GeneralSettings() {
           configKey="layoutMaxWidth"
           label="Layout Max Width"
           values={tailwindContainerSize}
+        />
+      </div>
+    </Section>
+  );
+}
+
+function RelatedExpressionSettings() {
+  return (
+    <Section>
+      <SectionTitle>Related Expression</SectionTitle>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] rounded-box gap-2 sm:gap-4">
+        <ToggleSetting
+          configKey="relatedExpressionExcludeNewCards"
+          label="Exclude New Cards"
+          tooltip="Exclude new (unstudied) cards from related expression results"
         />
       </div>
     </Section>

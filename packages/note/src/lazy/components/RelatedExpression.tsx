@@ -14,6 +14,7 @@ import { ankiFieldsSkeleton, type AnkiNote } from "#/src/lib/types";
 import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
 import { useCardContext } from "#/src/contexts/CardContext";
 import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
 import { MoveDown } from "./Icons";
 import { preloadImages } from "#/src/lib/dom";
 
@@ -32,6 +33,7 @@ const dedupeByCardId = (notes: AnkiNote[]) => {
 function $RelatedExpression() {
   const { logger } = useGeneralContext();
   const { $card, $setCard, $initialSide, $$card } = useCardContext();
+  const { $config } = useConfigContext();
   const { $ankiFields, $setAnkiFields, resetAnkiFields, initialAnkiFields, $isInitialAnkiFields } =
     useAnkiFieldContext();
   const [$ref, $setRef] = createSignal<HTMLDivElement>();
@@ -45,8 +47,7 @@ function $RelatedExpression() {
   const $relatedExpression = createMemo(() => {
     const query = $$card();
     if (!query) return [];
-    // TODO: turn into config
-    const excludeNewCards = true;
+    const excludeNewCards = $config.relatedExpressionExcludeNewCards;
     const newCardIds = new Set(query.newNotes.flatMap((n) => n.cards));
 
     // On front side, only show cards with the same expression but different reading
