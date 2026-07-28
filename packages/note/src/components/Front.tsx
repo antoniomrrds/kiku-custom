@@ -21,6 +21,7 @@ const Lazy = {
   RelatedExpression: lazy(async () => ({ default: (await import("#/src/lazy")).RelatedExpression, })),
   Expression: lazy(async () => ({ default: (await import("#/src/lazy")).Expression })),
   Settings: lazy(async () => ({ default: (await import("#/src/lazy")).Settings })),
+  CardEnd: lazy(async () => ({ default: (await import("#/src/lazy")).CardEnd })),
 };
 
 export function Front() {
@@ -139,6 +140,7 @@ export function Front() {
               <Lazy.AudioButtons position={2} />
             </Show>
           )}
+          {$card.ready && <Lazy.CardEnd />}
         </Match>
       </Switch>
       {$card.ready && <Lazy.AudioElements />}

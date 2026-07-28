@@ -17,6 +17,7 @@ import { ExpressionSection } from "./ExpressionSection";
 // oxfmt-ignore
 const Lazy = {
   Settings: lazy(async () => ({ default: (await import("#/src/lazy")).Settings })),
+  CardEnd: lazy(async () => ({ default: (await import("#/src/lazy")).CardEnd })),
   HeaderMain: lazy(async () => ({ default: (await import("#/src/lazy")).HeaderMain })),
   BackFooter: lazy(async () => ({ default: (await import("#/src/lazy")).BackFooter })),
   AudioButtons: lazy(async () => ({ default: (await import("#/src/lazy")).AudioButtons })),
@@ -143,6 +144,7 @@ export function Back(props: { onExitNested?: () => void }) {
               <Lazy.AudioButtons position={2} />
             </>
           )}
+          {$card.ready && <Lazy.CardEnd />}
         </Match>
       </Switch>
       {$card.ready && <Lazy.PictureModal />}

@@ -35,17 +35,24 @@ describe("applyBoldFormatting", () => {
   });
 
   it("should bold text within larger sentence in target", () => {
-    const source = "「でも、あんまりそこに<b>拘る</b>と......変な暴走をしそうだから。ひとまず、キスが目標で」";
-    const target = "「でも、あんまりそこに拘ると......変な暴走をしそうだから。ひとまず、キスが目標で」";
+    const source =
+      "「でも、あんまりそこに<b>拘る</b>と......変な暴走をしそうだから。ひとまず、キスが目標で」";
+    const target =
+      "「でも、あんまりそこに拘ると......変な暴走をしそうだから。ひとまず、キスが目標で」";
     const result = applyBoldFormatting(source, target);
-    expect(result).toBe("「でも、あんまりそこに<b>拘る</b>と......変な暴走をしそうだから。ひとまず、キスが目標で」");
+    expect(result).toBe(
+      "「でも、あんまりそこに<b>拘る</b>と......変な暴走をしそうだから。ひとまず、キスが目標で」",
+    );
   });
 
   it("should bold text that spans <ruby> elements in target", () => {
     const source = "朝ご飯を食べようとしていたところで真昼が<b>襲来</b>してきた";
-    const target = "朝ご飯を食べようとしていたところで真昼が<ruby>襲来<rt>しゅうらい</rt></ruby>してきた";
+    const target =
+      "朝ご飯を食べようとしていたところで真昼が<ruby>襲来<rt>しゅうらい</rt></ruby>してきた";
     const result = applyBoldFormatting(source, target);
-    expect(result).toBe("朝ご飯を食べようとしていたところで真昼が<b><ruby>襲来<rt>しゅうらい</rt></ruby></b>してきた");
+    expect(result).toBe(
+      "朝ご飯を食べようとしていたところで真昼が<b><ruby>襲来<rt>しゅうらい</rt></ruby></b>してきた",
+    );
   });
 
   it("should bold text that spans <ruby> with trailing okurigana in target", () => {
@@ -113,7 +120,9 @@ describe("applyBoldFormatting", () => {
   });
 
   it("should extract text content from nested source <b> elements", () => {
-    expect(applyBoldFormatting("<b><span>nested</span> text</b>", "nested text")).toBe("<b>nested text</b>");
+    expect(applyBoldFormatting("<b><span>nested</span> text</b>", "nested text")).toBe(
+      "<b>nested text</b>",
+    );
   });
 
   it("should preserve internal whitespace inside bold text", () => {

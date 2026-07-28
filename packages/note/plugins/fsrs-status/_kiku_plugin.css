@@ -1,4 +1,6 @@
-#FSRS_status { display: none !important; }
+#FSRS_status {
+  display: none !important;
+}
 
 .fsrs-status {
   position: fixed;

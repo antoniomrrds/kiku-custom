@@ -60,9 +60,7 @@ describe("escapeRegex", () => {
   });
 
   it("should escape mixed special characters", () => {
-    expect(escapeRegex(".*+?^${}()|[]\\")).toBe(
-      "\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\",
-    );
+    expect(escapeRegex(".*+?^${}()|[]\\")).toBe("\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\");
   });
 
   it("should handle Japanese characters without escaping them", () => {

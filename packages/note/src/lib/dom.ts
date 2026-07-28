@@ -91,7 +91,7 @@ function applySingleBold(html: string, boldText: string): string {
         segments.push({
           node: node as Text,
           start: pos,
-          isBolded: !!(node.parentElement?.closest("b")),
+          isBolded: !!node.parentElement?.closest("b"),
         });
         pos += text.length;
       }
@@ -182,7 +182,10 @@ function applySingleBold(html: string, boldText: string): string {
   return doc.body.innerHTML;
 }
 
-export function applyBoldFormatting(sourceHtml: string | undefined | null, targetHtml: string | undefined | null): string {
+export function applyBoldFormatting(
+  sourceHtml: string | undefined | null,
+  targetHtml: string | undefined | null,
+): string {
   if (!sourceHtml || !targetHtml) return targetHtml ?? "";
 
   const sourceDoc = parseHtml(sourceHtml);

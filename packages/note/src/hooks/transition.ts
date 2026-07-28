@@ -40,9 +40,11 @@ export function useNavigationTransition() {
         beforeCallback() {
           document.documentElement.dataset.transitionDirection = direction;
         },
-      })?.finished.then(() => {
-        document.documentElement.removeAttribute("data-transition-direction");
-      }).catch(() => {});
+      })
+        ?.finished.then(() => {
+          document.documentElement.removeAttribute("data-transition-direction");
+        })
+        .catch(() => {});
     } else {
       start();
     }
@@ -71,9 +73,11 @@ export function useThemeTransition() {
         beforeCallback() {
           document.documentElement.dataset.themeTransition = "true";
         },
-      })?.finished.then(() => {
-        document.documentElement.removeAttribute("data-theme-transition");
-      }).catch(() => {});
+      })
+        ?.finished.then(() => {
+          document.documentElement.removeAttribute("data-theme-transition");
+        })
+        .catch(() => {});
     }
   }
 

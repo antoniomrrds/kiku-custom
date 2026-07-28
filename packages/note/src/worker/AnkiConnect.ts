@@ -84,7 +84,7 @@ export class AnkiConnect {
     const idsLists = await this.batchFindNotes(queries);
     const allIds = [...new Set(idsLists.flat())];
     const [allNotes] = await this.batchNotesInfo([allIds]);
-    const newNoteIds = withNewNotes ? idsLists[idsLists.length - 1] ?? [] : [];
+    const newNoteIds = withNewNotes ? (idsLists[idsLists.length - 1] ?? []) : [];
     const newNoteIdsSet = new Set(newNoteIds);
     const newNotes: AnkiNote[] = withNewNotes
       ? allNotes.filter((n) => newNoteIdsSet.has(n.noteId))

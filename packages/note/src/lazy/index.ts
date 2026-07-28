@@ -3,6 +3,7 @@ export { AudioButtons } from "./components/AudioButtons";
 export { AudioElements } from "./components/AudioElements";
 export { BackBody } from "./components/BackBody";
 export { BackFooter } from "./components/BackFooter";
+export { CardEnd } from "./components/CardEnd";
 export { Expression } from "./components/Expression";
 export { FieldGroupPagination } from "./components/FieldGroupPagination";
 export { Frequency } from "./components/Frequency";

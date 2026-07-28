@@ -160,6 +160,11 @@ export type KikuPlugin = {
   }) => JSX.Element | JSX.Element[];
 
   /**
+   * Adds custom content at the very end of the card (front and back).
+   */
+  CardEnd?: (props: { ctx: Ctx }) => JSX.Element | JSX.Element[];
+
+  /**
    * Customizes the Pitch Accent visualizations.
    * This is called for every pitch info entry found for the word.
    */
