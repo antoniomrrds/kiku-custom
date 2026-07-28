@@ -22,15 +22,20 @@ export const plugin = {
     const {
       html,
       Show,
+      Switch,
+      Match,
+      Portal,
       createSignal,
       createEffect,
       createMemo,
       onMount,
       useAnkiFieldContext,
       useCardContext,
+      useGeneralContext,
     } = props.ctx;
     const { initialAnkiFields, $isInitialAnkiFields } = useAnkiFieldContext();
-    const { $card } = useCardContext();
+    const { $general } = useGeneralContext();
+    const { $card, $initialSide } = useCardContext();
 
     const cardId = initialAnkiFields.CardID;
     const expected = initialAnkiFields.ExpressionReading?.trim() ?? "";
@@ -38,12 +43,18 @@ export const plugin = {
     const [$value, $setValue] = createSignal("");
     const [$hasLoaded, $setHasLoaded] = createSignal(false);
     const [$inputRef, $setInputRef] = createSignal();
+    const [$sentenceFieldRef, $setSentenceFieldRef] = createSignal();
 
     onMount(() => {
       const saved = sessionStorage.getItem(`type-reading-${cardId}`);
       if (saved) $setValue(saved);
       $inputRef()?.focus();
       $setHasLoaded(true);
+    });
+
+    onMount(() => {
+      const sentenceFieldRef = $general.root?.querySelector("div:has(>.sentence-field)");
+      if (sentenceFieldRef) $setSentenceFieldRef(sentenceFieldRef);
     });
 
     createEffect(() => {
@@ -106,24 +117,41 @@ export const plugin = {
       }
     }
 
-    return html`
-      <${Show} when=${$isInitialAnkiFields}>
-        <div class="mt-2 flex flex-col items-center">
-          <input
-            type="text"
-            class="input"
-            placeholder="Type the reading..."
-            value=${$value}
-            on:input=${handleInput}
-            on:keydown=${handleKeyDown}
-            ref=${$setInputRef}
-            style=${$inputStyle}
-          />
-          <div style=${$containerStyle}>
-            <div style=${$answerStyle}>${$valueTrim}</div>
-            <div style=${$expectedStyle}>${expected}</div>
-          </div>
+    const $isFront = createMemo(() => $initialSide() === "front");
+    const $isBack = createMemo(() => $initialSide() === "back");
+    const $show = createMemo(() => $isInitialAnkiFields() && ($isFront() || $sentenceFieldRef()));
+
+    const TypeReading = () => html`
+      <div class="mt-2 flex flex-col items-center">
+        <input
+          type="text"
+          class="input"
+          placeholder="Type the reading..."
+          value=${$value}
+          on:input=${handleInput}
+          on:keydown=${handleKeyDown}
+          ref=${$setInputRef}
+          style=${$inputStyle}
+        />
+        <div style=${$containerStyle}>
+          <div style=${$answerStyle}>${$valueTrim}</div>
+          <div style=${$expectedStyle}>${expected}</div>
         </div>
+      </div>
+    `;
+
+    return html`
+      <${Switch}>
+        <${Match} when=${$isBack}>
+          <${Show} when=${$show}>
+            <${Portal} mount=${$sentenceFieldRef}>
+              <${TypeReading}><//>
+            <//>
+          <//>
+        <//>
+        <${Match} when=${$isFront}>
+          <${TypeReading}><//>
+        <//>
       <//>
     `;
   },
