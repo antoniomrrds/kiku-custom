@@ -23,7 +23,7 @@ Download the latest `Kiku_v*.apkg` from the [Release page](https://github.com/yo
 
 ## 2. Clean Existing Files
 
-Anki will not overwrite files that already exist. To ensure a successful update, you must delete your existing [Kiku files](./how-things-work.md#kiku-files) before importing the new version.
+Anki will not overwrite files that already exist ([tracked issue](https://github.com/ankitects/anki/issues/4491)). To ensure a successful update, you must delete your existing [Kiku files](./how-things-work.md#kiku-files) before importing the new version.
 
 ::: tip Fast Cleanup
 You can quickly delete all Kiku files while preserving your settings via the Kiku Note Manager:
