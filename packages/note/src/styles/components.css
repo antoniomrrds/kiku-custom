@@ -60,11 +60,13 @@
   }
 
   @media (max-width: 40rem) {
-    .expression-picture-box:has(.picture-field img[data-orientation="potrait"]) {
+    .expression-picture-box:has(.picture-field img[data-orientation="portrait"]),
+    .expression-picture-box:has(.picture-field img[data-layout="row"]) {
       flex-direction: row;
     }
 
-    .picture-field:has(img[data-orientation="potrait"]) {
+    .picture-field:has(img[data-orientation="portrait"]),
+    .picture-field:has(img[data-layout="row"]) {
       height: calc(var(--spacing) * 38);
     }
   }
