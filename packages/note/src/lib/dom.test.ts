@@ -145,4 +145,14 @@ describe("applyBoldFormatting", () => {
   it("should handle bold text that does not exist in target", () => {
     expect(applyBoldFormatting("<b>missing</b>", "hello world")).toBe("hello world");
   });
+
+  it("should bold partial ruby text matching within span.term-wrapped target", () => {
+    const source = "「もし<b>移植</b>手術とかが必要なら、俺の――」";
+    const target =
+      '<span class="term">「</span><span class="term">もし</span><span class="term"><ruby>移植手術<rt>いしょくしゅじゅつ</rt></ruby></span><span class="term">とか</span><span class="term">が</span><span class="term"><ruby>必要<rt>ひつよう</rt></ruby></span><span class="term">なら、</span><span class="term"><ruby>俺<rt>おれ</rt></ruby></span><span class="term">の</span><span class="term">――」</span>';
+    const result = applyBoldFormatting(source, target);
+    expect(result).toBe(
+      '<span class="term">「</span><span class="term">もし</span><span class="term"><ruby><b>移植</b>手術<rt>いしょくしゅじゅつ</rt></ruby></span><span class="term">とか</span><span class="term">が</span><span class="term"><ruby>必要<rt>ひつよう</rt></ruby></span><span class="term">なら、</span><span class="term"><ruby>俺<rt>おれ</rt></ruby></span><span class="term">の</span><span class="term">――」</span>',
+    );
+  });
 });

@@ -150,18 +150,25 @@ function applySingleBold(html: string, boldText: string): string {
     const startNode = segments[foundSegStart].node;
     const endNode = segments[foundSegEnd].node;
 
-    // If the matched text starts or ends inside a <ruby> element, expand the
-    // range to cover the entire <ruby> (including its <rt> children). This
-    // ensures furigana annotations are carried inside the new <b> tag.
+    // If the matched text is entirely within a single <ruby> but doesn't cover
+    // its full text content, bold only the matched portion inside the ruby.
+    // Otherwise expand the range to cover the entire <ruby> (including <rt>
+    // children) to keep furigana annotations inside the new <b> tag.
     const startRuby = startNode.parentElement?.closest?.("ruby");
     const endRuby = endNode.parentElement?.closest?.("ruby");
 
-    if (startRuby) {
+    const samePartialRuby =
+      startRuby &&
+      startRuby === endRuby &&
+      !(foundIdx === segments[foundSegStart].start &&
+        foundEndPos === segments[foundSegEnd].start + segLen(segments[foundSegEnd]));
+
+    if (startRuby && !samePartialRuby) {
       range.setStartBefore(startRuby);
     } else {
       range.setStart(startNode, foundIdx - segments[foundSegStart].start);
     }
-    if (endRuby) {
+    if (endRuby && !samePartialRuby) {
       range.setEndAfter(endRuby);
     } else {
       range.setEnd(endNode, foundEndPos - segments[foundSegEnd].start);
