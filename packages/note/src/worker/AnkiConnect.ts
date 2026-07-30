@@ -56,26 +56,21 @@ export class AnkiConnect {
   }) {
     const noteFilter = `("note:Kiku" OR "note:Lapis")`;
 
+    const kanjiPattern = kanjiList.map(escapeRegex).join("|");
     const kanjiQuery =
-      kanjiList.length === 0
-        ? null
-        : `${noteFilter} AND Expression:re:${kanjiList.map(escapeRegex).join("|")}`;
+      kanjiList.length === 0 ? null : `${noteFilter} AND Expression:re:${kanjiPattern}`;
 
     const readingPattern = readingList.map(escapeRegex).join("|");
     const readingQuery =
       readingList.length === 0
         ? null
-        : readingList.length === 1
-          ? `${noteFilter} AND ExpressionReading:re:^${readingPattern}$`
-          : `${noteFilter} AND ExpressionReading:re:^(${readingPattern})$`;
+        : `${noteFilter} AND ExpressionReading:re:^${readingPattern}$`;
 
     const expressionPattern = expressionList.map(escapeRegex).join("|");
     const expressionQuery =
       expressionList.length === 0
         ? null
-        : expressionList.length === 1
-          ? `${noteFilter} AND (Expression:re:^${expressionPattern}$ OR RelatedExpression:re:${expressionPattern})`
-          : `${noteFilter} AND (Expression:re:^(${expressionPattern})$ OR RelatedExpression:re:${expressionPattern})`;
+        : `${noteFilter} AND (Expression:re:^${expressionPattern}$ OR RelatedExpression:re:${expressionPattern})`;
 
     const newQuery = `${noteFilter} AND is:new`;
 
