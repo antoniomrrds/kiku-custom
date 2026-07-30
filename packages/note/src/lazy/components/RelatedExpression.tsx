@@ -173,7 +173,7 @@ function $RelatedExpression() {
 
   return (
     <div ref={$setRef} class="flex gap-x-2 sm:gap-x-4 flex-wrap relative">
-      <Show when={$relatedExpression().length || $isNewNote()}>
+      <Show when={$relatedExpression().length || ($isNewNote() && $initialSide() === "back")}>
         <div class="flex gap-px items-center">
           <MoveDown
             class="size-4 sm:size-5 text-base-content-faint"
@@ -195,7 +195,7 @@ function $RelatedExpression() {
             on:touchend={(e) => e.stopPropagation()}
           >
             {$displayExpression()}
-            <Show when={$isNewNote()}>
+            <Show when={$isNewNote() && $initialSide() === "back"}>
               <span class="status status-info"></span>
             </Show>
           </button>
