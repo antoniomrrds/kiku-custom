@@ -60,13 +60,13 @@
   }
 
   @media (max-width: 40rem) {
-    .expression-picture-box:has(.picture-field img[data-orientation="portrait"]),
-    .expression-picture-box:has(.picture-field img[data-layout="row"]) {
+    .expression-picture-box:has(.picture-field img[data-orientation="portrait"]:first-child),
+    .expression-picture-box:has(.picture-field img[data-layout="row"]:first-child) {
       flex-direction: row;
     }
 
-    .picture-field:has(img[data-orientation="portrait"]),
-    .picture-field:has(img[data-layout="row"]) {
+    .picture-field:has(img[data-orientation="portrait"]:first-child),
+    .picture-field:has(img[data-layout="row"]:first-child) {
       height: calc(var(--spacing) * 38);
     }
   }
