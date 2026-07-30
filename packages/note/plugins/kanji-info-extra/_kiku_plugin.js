@@ -11,20 +11,23 @@ export const plugin = {
     const { checkboxRef, sections } = props;
     const { VisuallySimilar, ComposedOf, UsedIn, Meanings, Related } = sections;
 
+    /** @param {HTMLInputElement} checkbox */
+    function openSection(checkbox) {
+      checkbox.checked = true;
+      checkbox.dispatchEvent(new Event("change"));
+    }
+
     onMount(() => {
-      // You can expand the sections by default by doing the following
-      if (checkboxRef.composedOf) {
-        checkboxRef.composedOf.checked = true;
-        checkboxRef.composedOf.dispatchEvent(new Event("change"));
-      }
-      if (checkboxRef.meanings) {
-        checkboxRef.meanings.checked = true;
-        checkboxRef.meanings.dispatchEvent(new Event("change"));
-      }
+      /** You can expand the sections by default by doing the following */
+      // if (checkboxRef.visuallySimilar) openSection(checkboxRef.visuallySimilar);
+      if (checkboxRef.composedOf) openSection(checkboxRef.composedOf);
+      // if (checkboxRef.usedIn) openSection(checkboxRef.usedIn);
+      if (checkboxRef.meanings) openSection(checkboxRef.meanings);
+      // if (checkboxRef.related) openSection(checkboxRef.related);
     });
 
     return [
-      // You can customize the order here
+      /** You can customize the order here */
       VisuallySimilar(),
       ComposedOf(),
       UsedIn(),
