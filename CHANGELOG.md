@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v2.1.0] - 2026-07-30
+
+### Added
+
+- New plugins: blur-hint, type-reading, fsrs-status, confetti, kanji-info-extra
+- New plugin API `CardEnd`
+- Warning color badge on leech tag
+- New notes indicator on RelatedExpression section
+- Opposite kana in reading list
+- `applyBoldFormatting` to SentenceFurigana
+- Support `MainDefinition` with multiple dictionaries
+- Kanji page search bar
+- `relatedExpressionExcludeNewCards` config
+- `relatedExpressionFallback` config
+- More `hide-related-expression` plugin options
+- More `custom-pitch-accent-color` plugin option
+- `data-orientation` and `data-layout` for expression-picture side by side layout
+- Smaller SentenceTranslation on mobile
+- Smaller SentenceTranslation padding
+
+### Fixed
+
+- Toast position on AnkiWeb
+- Furigana on `AnkiNoteItem`
+- Hide Expression in RelatedExpression section if `IsSentenceCard` or `IsAudioCard`
+- Only hide `i` element if has no tags
+- Reset definition picture index on `ankiFields` change
+
+### Changed
+
+- **BREAKING**: Some container elements now use custom class names instead of tailwind classes
+- Optimized AnkiConnect query performance
+
 ## [v2.0.0] - 2026-06-24
 
 Stable release. No changes from v2.0.0-beta.3.
@@ -80,7 +113,8 @@ Stable release. No changes from v2.0.0-beta.3.
 
 - `webFonts` and `volume` settings
 
-[Unreleased]: https://github.com/youyoumu/kiku/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/youyoumu/kiku/compare/v2.1.0...HEAD
+[v2.1.0]: https://github.com/youyoumu/kiku/compare/v2.0.0...v2.1.0
 [v2.0.0]: https://github.com/youyoumu/kiku/compare/v2.0.0-beta.3...v2.0.0
 [v2.0.0-beta.3]: https://github.com/youyoumu/kiku/compare/v2.0.0-beta.2...v2.0.0-beta.3
 [v2.0.0-beta.2]: https://github.com/youyoumu/kiku/compare/v2.0.0-beta.1...v2.0.0-beta.2
