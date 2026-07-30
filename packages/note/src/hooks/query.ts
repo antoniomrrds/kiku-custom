@@ -109,7 +109,6 @@ export function useCardQuery({
           readingList,
           ankiFields: unwrap(ankiFields),
           expressionList,
-          withNewNotes: !isFront,
         });
       if (aborter.signal.aborted) return;
 
