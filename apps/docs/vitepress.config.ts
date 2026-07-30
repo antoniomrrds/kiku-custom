@@ -65,6 +65,7 @@ export default defineConfig({
           { text: "Add More External Links", link: "/add-more-external-links" },
           { text: "Confetti", link: "/confetti" },
           { text: "Custom Dictionary Style", link: "/custom-dictionary-style" },
+          { text: "Custom Kanji Info Extra", link: "/custom-kanji-info-extra" },
           { text: "Custom Pitch Accent Color", link: "/custom-pitch-accent-color" },
           { text: "Custom Theme", link: "/custom-theme" },
           { text: "Display Extra Fields", link: "/display-extra-fields" },
