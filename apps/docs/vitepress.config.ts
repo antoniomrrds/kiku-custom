@@ -63,18 +63,13 @@ export default defineConfig({
         text: "Recipes",
         items: [
           { text: "Add More External Links", link: "/add-more-external-links" },
-          { text: "Display Extra Fields", link: "/display-extra-fields" },
-          {
-            text: "Unblur Picture Automatically",
-            link: "/unblur-picture-automatically",
-          },
-          { text: "Random Font", link: "/random-font" },
+          { text: "Confetti", link: "/confetti" },
           { text: "Custom Dictionary Style", link: "/custom-dictionary-style" },
+          { text: "Custom Pitch Accent Color", link: "/custom-pitch-accent-color" },
           { text: "Custom Theme", link: "/custom-theme" },
-          {
-            text: "Custom Pitch Accent Color",
-            link: "/custom-pitch-accent-color",
-          },
+          { text: "Display Extra Fields", link: "/display-extra-fields" },
+          { text: "Random Font", link: "/random-font" },
+          { text: "Unblur Picture Automatically", link: "/unblur-picture-automatically" },
         ],
       },
     ],
