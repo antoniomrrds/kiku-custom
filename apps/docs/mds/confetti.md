@@ -19,7 +19,7 @@ Copy the plugin files into your `collection.media` directory.
 <!-- prettier-ignore -->
 <<< ../../../packages/note/plugins/confetti/_kiku_plugin.js [_kiku_plugin.js]
 <<< ../../../packages/note/plugins/confetti/_kiku_plugin.css [_kiku_plugin.css]
-<<< ../../../packages/note/plugins/confetti/_kiku-plugin-confetti.js [_kiku_plugin-confetti.js]
+<<< ../../../packages/note/plugins/confetti/_kiku-plugin-confetti.js [_kiku-plugin-confetti.js]
 :::
 
 Audio files:

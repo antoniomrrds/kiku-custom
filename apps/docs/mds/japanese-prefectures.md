@@ -19,7 +19,7 @@ Copy the plugin files into your `collection.media` directory.
 <!-- prettier-ignore -->
 <<< ../../../packages/note/plugins/japanese-prefectures/_kiku_plugin.js [_kiku_plugin.js]
 <<< ../../../packages/note/plugins/japanese-prefectures/_kiku_plugin.css [_kiku_plugin.css]
-<<< ../../../packages/note/plugins/japanese-prefectures/_kiku-plugin-japanese-prefectures.js [_kiku-plugin-kanji-prefectures.js]
+<<< ../../../packages/note/plugins/japanese-prefectures/_kiku-plugin-japanese-prefectures.js [_kiku-plugin-japanese-prefectures.js]
 :::
 
 Map file:
