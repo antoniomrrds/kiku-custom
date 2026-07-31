@@ -3,7 +3,7 @@
     flex-direction: row;
   }
 
-  .picture-field-container) {
+  .picture-field-container {
     /* use 30% or 40% if you want smaller picture */
     max-width: 50%;
   }
