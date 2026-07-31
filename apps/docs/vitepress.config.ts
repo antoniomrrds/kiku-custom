@@ -69,6 +69,7 @@ export default defineConfig({
           { text: "Custom Pitch Accent Color", link: "/custom-pitch-accent-color" },
           { text: "Custom Theme", link: "/custom-theme" },
           { text: "Display Extra Fields", link: "/display-extra-fields" },
+          { text: "Japanese Prefectures", link: "/japanese-prefectures" },
           { text: "Random Font", link: "/random-font" },
           { text: "Unblur Picture Automatically", link: "/unblur-picture-automatically" },
         ],
