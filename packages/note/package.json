@@ -33,6 +33,8 @@
     "apply": "tsc -b && COMMIT_SHA=${VERCEL_GIT_COMMIT_SHA:-$(git rev-parse HEAD)} vite build && vite-node ./script/generate-template.ts && vite-node ./script/copy-anki-build.ts && vite-node ./script/update-note-type.ts",
     "apply:fast": "FAST_BUILD=true vite build && vite-node ./script/generate-template.ts && vite-node ./script/copy-anki-build.ts && vite-node ./script/update-note-type.ts",
     "package": "vite-node ./script/package.ts",
+    "plugin:symlink": "vite-node ./script/plugin.ts symlink",
+    "plugin:copy": "vite-node ./script/plugin.ts copy",
     "update-tailwind-property": "node ./script/update-tailwind-property.ts"
   },
   "dependencies": {
