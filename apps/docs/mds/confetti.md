@@ -6,6 +6,10 @@ outline: deep
 
 Press `2` `3` `4` to fire confetti that grows more intense with each press. Press `1` to shake the expression and reset.
 
+<video controls playsinline width="100%">
+  <source src="https://i.imgur.com/fNMrMLh.mp4" type="video/mp4">
+</video>
+
 ## Setup
 
 Copy the plugin files into your `collection.media` directory.

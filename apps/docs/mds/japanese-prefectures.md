@@ -6,6 +6,10 @@ outline: deep
 
 Renders a map of Japan when the card's `Expression` or `ExpressionReading` is a Japanese prefecture.
 
+<video controls playsinline width="100%">
+  <source src="https://i.imgur.com/KdW3lKZ.mp4" type="video/mp4">
+</video>
+
 ## Setup
 
 Copy the plugin files into your `collection.media` directory.
