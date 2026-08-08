@@ -20,11 +20,7 @@ export const AnkiConnect = {
   },
 };
 
-export async function gzipFile(
-  src: string,
-  dest: string = `${src}.gz`,
-  removeSrc = true,
-) {
+export async function gzipFile(src: string, dest: string = `${src}.gz`, removeSrc = true) {
   return new Promise<void>((resolve, reject) => {
     const gzip = createGzip();
     const input = createReadStream(src);

@@ -20,17 +20,18 @@ import type {
   useContext,
 } from "solid-js";
 import type h from "solid-js/h";
+import type html from "solid-js/html";
 import type { JSX } from "solid-js/jsx-runtime";
-import type { createStore } from "solid-js/store";
+import type { createStore, Store } from "solid-js/store";
 import type { Portal } from "solid-js/web";
-import type { UseKanjiContext } from "#/components/_kiku_lazy/KanjiContext";
-import type { UseAnkiFieldContext } from "#/components/shared/AnkiFieldsContext";
-import type { UseBreakpointContext } from "#/components/shared/BreakpointContext";
-import type { UseCardContext } from "#/components/shared/CardContext";
-import type { UseConfigContext } from "#/components/shared/ConfigContext";
-import type { UseGeneralContext } from "#/components/shared/GeneralContext";
-import type { PitchInfo } from "#/util/hatsuon";
-import type { AnkiBackFields, AnkiFrontFields } from "#/util/types";
+import type { UseKanjiContext } from "#/src/lazy/contexts/KanjiContext";
+import type { UseAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import type { UseBreakpointContext } from "#/src/contexts/BreakpointContext";
+import type { UseCardContext } from "#/src/contexts/CardContext";
+import type { UseConfigContext } from "#/src/contexts/ConfigContext";
+import type { UseGeneralContext } from "#/src/contexts/GeneralContext";
+import type { PitchInfo } from "#/src/lib/hatsuon";
+import type { AnkiFields } from "#/src/lib/types";
 
 /**
  * The Plugin Context (Ctx) provides the essential building blocks for creating
@@ -41,14 +42,18 @@ import type { AnkiBackFields, AnkiFrontFields } from "#/util/types";
  */
 export type Ctx = {
   /**
-   * The Hyperscript function for creating UI elements.
-   * Kiku uses Solid.js with Hyperscript to ensure high performance and reactivity.
-   * @example h('div', { class: 'text-red-500' }, 'Hello Kiku')
+   * HyperScript method for Solid
+   * https://github.com/solidjs/solid/blob/main/packages/solid/h/README.md
    */
   h: typeof h;
+  /**
+   * Tagged Template Literal html method for Solid
+   * https://github.com/solidjs/solid/blob/main/packages/solid/html/README.md
+   */
+  html: typeof html;
 
   // --- Solid.js Reactive Primitives ---
-  /** Creates a reactive signal. [getter, setter] = createSignal(initialValue) */
+  /** Creates a reactive signal. [$state, $setState] = createSignal(initialValue) */
   createSignal: typeof createSignal;
   /** Creates a reactive effect that re-runs when its dependencies change. */
   createEffect: typeof createEffect;
@@ -102,7 +107,8 @@ export type Ctx = {
    * The raw field data of the current Anki card.
    * These are strings as defined in your Anki note type.
    */
-  ankiFields: AnkiFrontFields | AnkiBackFields;
+  ankiFields: AnkiFields;
+  $ankiFields: Store<AnkiFields>;
 
   // --- Kiku Hooks ---
   /** Provides reactive access to all Anki fields. */
@@ -152,6 +158,11 @@ export type KikuPlugin = {
     DefaultFooter: () => JSX.Element;
     ctx: Ctx;
   }) => JSX.Element | JSX.Element[];
+
+  /**
+   * Adds custom content at the very end of the card (front and back).
+   */
+  CardEnd?: (props: { ctx: Ctx }) => JSX.Element | JSX.Element[];
 
   /**
    * Customizes the Pitch Accent visualizations.

@@ -1,146 +1,149 @@
-import { createEffect, createSignal, lazy, onMount } from "solid-js";
+import { createMemo, createSignal, lazy, Match, onMount, Show, Switch } from "solid-js";
 import { isServer } from "solid-js/web";
-import { useCardContext } from "#/components/shared/CardContext";
-import type { DatasetProp } from "#/util/config";
-import { useLoadPlugin } from "#/util/hooks";
+import { useCardContext } from "#/src/contexts/CardContext";
+import type { DatasetProp } from "#/src/lib/config";
+import { useLoadPlugin } from "#/src/hooks/plugin";
 import { FieldGroupPaginationSection } from "./FieldGroupPaginationSection";
 import { PictureSection } from "./PictureSection";
-import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
-import { useConfigContext } from "./shared/ConfigContext";
-import { useFieldGroupContext } from "./shared/FieldGroupContext";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { ExpressionSection } from "./ExpressionSection";
 
-// biome-ignore format: this looks nicer
+// oxfmt-ignore
 const Lazy = {
-  AudioButtons: lazy(async () => ({ default: (await import("./_kiku_lazy")).AudioButtons, })),
-  HeaderMain: lazy(async () => ({ default: (await import("./_kiku_lazy")).HeaderMain, })),
-  FieldGroupPagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).FieldGroupPagination, })),
-  UseAnkiDroid: lazy(async () => ({ default: (await import("./_kiku_lazy")).UseAnkiDroid, })),
-  Sentence: lazy(async () => ({ default: (await import("./_kiku_lazy")).Sentence, })),
+  AudioButtons: lazy(async () => ({ default: (await import("#/src/lazy")).AudioButtons })),
+  AudioElements: lazy(async () => ({ default: (await import("#/src/lazy")).AudioElements })),
+  HeaderMain: lazy(async () => ({ default: (await import("#/src/lazy")).HeaderMain })),
+  FieldGroupPagination: lazy(async () => ({ default: (await import("#/src/lazy")).FieldGroupPagination, })),
+  UseAnkiDroid: lazy(async () => ({ default: (await import("#/src/lazy")).UseAnkiDroid })),
+  Sentence: lazy(async () => ({ default: (await import("#/src/lazy")).Sentence })),
+  RelatedExpression: lazy(async () => ({ default: (await import("#/src/lazy")).RelatedExpression, })),
+  Expression: lazy(async () => ({ default: (await import("#/src/lazy")).Expression })),
+  Settings: lazy(async () => ({ default: (await import("#/src/lazy")).Settings })),
+  CardEnd: lazy(async () => ({ default: (await import("#/src/lazy")).CardEnd })),
 };
 
 export function Front() {
-  const [$card, $setCard] = useCardContext();
-  const { ankiFields } = useAnkiFieldContext<"front">();
-  const [clicked, setClicked] = createSignal(false);
-  const [hideExpression, setHideExpression] = createSignal(false);
-  const { $group } = useFieldGroupContext();
-  const [$config] = useConfigContext();
+  const { $card, $setCard, $isInitialSide, nested } = useCardContext();
+  const { $ankiFields, $isInitialAnkiFields } = useAnkiFieldContext();
+  const [$clicked, $setClicked] = createSignal(false);
+  const [$hideExpression, $setHideExpression] = createSignal(false);
+  const { $config } = useConfigContext();
+  const { logger } = useGeneralContext();
   const loadPlugin = useLoadPlugin();
+  const $hidden = createMemo(() => {
+    if (isServer) return true;
+    if (!$isInitialSide()) return false;
+    if (
+      $ankiFields.IsSentenceCard ||
+      $ankiFields.IsWordAndSentenceCard ||
+      $ankiFields.IsAudioCard
+    ) {
+      return false;
+    }
+    if ($ankiFields.IsClickCard && $clicked()) {
+      return false;
+    }
+    return true;
+  });
 
   onMount(() => {
     setTimeout(() => {
       $setCard("ready", true);
+      logger.info("[Front] ready, expression:", $ankiFields.Expression);
       loadPlugin();
     }, 0);
 
-    const tags = ankiFields.Tags.split(" ");
-    $setCard("isNsfw", tags.map((tag) => tag.toLowerCase()).includes("nsfw"));
-
     if ($config.modHidden) {
       setTimeout(() => {
-        setHideExpression(true);
+        $setHideExpression(true);
       }, $config.modHiddenDuration);
     }
   });
 
-  createEffect(() => {
-    if (
-      ankiFields.IsAudioCard &&
-      $card.sentenceFieldRef &&
-      $group.sentenceField
-    ) {
-      const boldElements = $card.sentenceFieldRef.querySelectorAll("b");
-      boldElements.forEach((el) => {
-        el.innerHTML = "[...]";
-        el.classList.add("text-base-content-primary");
-      });
-    }
-  });
-
-  const hidden = () => {
-    if (isServer) return true;
-    if (
-      ankiFields.IsSentenceCard ||
-      ankiFields.IsWordAndSentenceCard ||
-      ankiFields.IsAudioCard
-    ) {
-      return false;
-    }
-    if (ankiFields.IsClickCard && clicked()) {
-      return false;
-    }
-    return true;
-  };
-
-  const hintFieldDataset: () => DatasetProp = () => ({
-    "data-has-hint": isServer
-      ? "{{#Hint}}true{{/Hint}}"
-      : ankiFields.Hint
-        ? "true"
-        : "",
-  });
+  const $hintFieldDataset = createMemo<DatasetProp>(() => ({
+    "data-has-hint": isServer ? "{{#Hint}}true{{/Hint}}" : $ankiFields.Hint ? "true" : "",
+  }));
 
   return (
     <>
-      {$card.ready && !$card.nested && <Lazy.UseAnkiDroid />}
-      {$card.ready && <Lazy.HeaderMain />}
-      <div class="flex flex-col gap-4">
-        <div
-          class="flex rounded-lg gap-4 flex-col sm:flex-row tappable"
-          on:click={() => {
-            setClicked((prev) => !prev);
-            setHideExpression(false);
-          }}
-          on:touchend={(e) => e.stopPropagation()}
-        >
-          <div class="flex-1 bg-base-200 p-4 rounded-lg flex flex-col items-center justify-center min-h-40 sm:min-h-56">
-            <div
-              class="expression font-secondary text-center vertical-rl"
-              classList={{
-                "border-b-2 border-dotted border-base-content-soft":
-                  !!ankiFields.IsClickCard,
-                "transition-opacity duration-[1000ms] opacity-0":
-                  hideExpression(),
-              }}
-              innerHTML={
-                isServer
-                  ? undefined
-                  : !ankiFields.IsSentenceCard && !ankiFields.IsAudioCard
-                    ? ankiFields.Expression
-                    : "?"
-              }
-            >
-              {isServer
-                ? `{{#IsSentenceCard}} <span>?</span> {{/IsSentenceCard}} {{#IsAudioCard}} <span>?</span> {{/IsAudioCard}} {{^IsSentenceCard}} {{^IsAudioCard}} {{Expression}} {{/IsAudioCard}} {{/IsSentenceCard}}`
-                : undefined}
+      {$card.ready && !nested && <Lazy.UseAnkiDroid />}
+      <Switch>
+        <Match when={$card.page === "settings" && $card.ready}>
+          <Lazy.Settings />
+        </Match>
+        <Match when={$card.page === "main"}>
+          {$card.ready && <Lazy.HeaderMain />}
+          <div class="flex flex-col">
+            <div class="flex justify-between gap-2 items-start mb-0.5 sm:mb-2">
+              <div
+                class="text-xl sm:text-2xl min-h-lh hover:h-auto overflow-hidden transition-[height] [interpolate-size:allow-keywords] w-full"
+                classList={{
+                  "h-lh": $isInitialAnkiFields(),
+                  "h-auto": !$isInitialAnkiFields(),
+                }}
+              >
+                {$card.ready && <Lazy.RelatedExpression />}
+              </div>
             </div>
+            <div
+              class="expression-picture-box tappable"
+              on:click={() => {
+                if (!$isInitialSide()) return;
+                $setClicked((prev) => !prev);
+                $setHideExpression(false);
+              }}
+              on:touchend={(e) => e.stopPropagation()}
+            >
+              <div class="expression-audio-box">
+                <ExpressionSection hideExpression={$hideExpression()} />
+                <Show when={!$isInitialSide()}>
+                  <div class="hidden sm:block sm:h-8 sm:mt-2">
+                    {$card.ready && (
+                      <div class="animate-fade-in-sm flex gap-2">
+                        <Lazy.AudioButtons position={1} />
+                      </div>
+                    )}
+                  </div>
+                </Show>
+              </div>
+              <PictureSection />
+            </div>
+            {$card.ready && !$hidden() && <FieldGroupPaginationSection />}
           </div>
-
-          <PictureSection />
-        </div>
-        {$card.ready && !hidden() && <FieldGroupPaginationSection />}
-      </div>
-      <div
-        class="flex flex-col gap-4 items-center text-center justify-center"
-        classList={{
-          "transition-opacity duration-[1000ms] opacity-0": hideExpression(),
-        }}
-      >
-        {$card.ready && !hidden() && <Lazy.Sentence />}
-      </div>
-      {$card.ready && ankiFields.IsAudioCard && (
-        <div class="flex gap-2 justify-center animate-fade-in-sm">
-          <Lazy.AudioButtons position={1} />
-        </div>
-      )}
-      <div
-        class={`flex gap-2 items-center justify-center text-center border-t-1 hint text-base-content-calm hint-field border-base-content-soft p-2`}
-        {...hintFieldDataset()}
-      >
-        <div innerHTML={isServer ? undefined : ankiFields.Hint}>
-          {isServer ? "{{Hint}}" : undefined}
-        </div>
-      </div>
+          <div
+            class="flex flex-col gap-4 items-center text-center justify-center"
+            classList={{
+              "transition-opacity duration-1000 opacity-0": $hideExpression() && $isInitialSide(),
+            }}
+          >
+            {$card.ready && !$hidden() && <Lazy.Sentence />}
+          </div>
+          {$card.ready && $ankiFields.IsAudioCard && $isInitialSide() && (
+            <div class="flex gap-2 justify-center animate-fade-in-sm">
+              <Lazy.AudioButtons position={1} />
+            </div>
+          )}
+          {$isInitialSide() && (
+            <div
+              class={`gap-2 items-center justify-center text-center border-t hint text-base-content-calm hint-field border-base-200 p-2`}
+              {...$hintFieldDataset()}
+            >
+              <div innerHTML={isServer ? undefined : $ankiFields.Hint}>
+                {isServer ? "{{Hint}}" : undefined}
+              </div>
+            </div>
+          )}
+          {$card.ready && (
+            <Show when={!$isInitialSide()}>
+              <Lazy.AudioButtons position={2} />
+            </Show>
+          )}
+          {$card.ready && <Lazy.CardEnd />}
+        </Match>
+      </Switch>
+      {$card.ready && <Lazy.AudioElements />}
     </>
   );
 }

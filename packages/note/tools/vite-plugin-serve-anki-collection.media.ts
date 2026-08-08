@@ -8,10 +8,7 @@ export function serveAnkiCollectionMedia(): PluginOption {
   return {
     name: "serve-anki-media-root",
     configureServer: async (server) => {
-      for (const dir of [
-        env.ANKI_COLLECTION_MEDIA_PATH,
-        paths["@/.collection.media/"],
-      ]) {
+      for (const dir of [env.ANKI_COLLECTION_MEDIA_PATH, paths["@/.collection.media/"]]) {
         try {
           await stat(dir);
           server.middlewares.use(serveStatic(dir, { maxAge: 60000 }));

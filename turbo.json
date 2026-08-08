@@ -8,7 +8,7 @@
       "outputs": ["dist/**", ".vitepress/dist/**"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["^typecheck", "@repo/note#build"]
     },
     "test": {
       "dependsOn": ["^test"]

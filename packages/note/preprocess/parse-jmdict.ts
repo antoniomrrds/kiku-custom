@@ -1,11 +1,13 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as cheerio from "cheerio";
-import { paths } from "../tools/paths.ts";
+import { paths } from "#/tools/paths.ts";
 
-type JmdictTerm = {
-  kanji: string[];
+export type JmdictTerm = {
+  forms: string[];
   reading: string[];
   meanings: string[];
+  antonym: string[];
+  referenced: string[];
 };
 
 export class JmdictParser {
@@ -23,16 +25,12 @@ export class JmdictParser {
   async parseAll() {
     const $ = await this.load();
 
-    const entries: {
-      kanji: string[];
-      reading: string[];
-      meanings: string[];
-    }[] = [];
+    const entries: JmdictTerm[] = [];
 
     $("entry").each((_, entry) => {
       const $entry = $(entry);
 
-      const kanji = $entry
+      const forms = $entry
         .find("k_ele keb")
         .map((_, el) => $(el).text())
         .get();
@@ -47,7 +45,17 @@ export class JmdictParser {
         .map((_, el) => $(el).text())
         .get();
 
-      entries.push({ kanji, reading, meanings });
+      const antonym = $entry
+        .find("sense ant")
+        .map((_, el) => $(el).text().split("・")[0])
+        .get();
+
+      const referenced = $entry
+        .find("sense xref")
+        .map((_, el) => $(el).text().split("・")[0])
+        .get();
+
+      entries.push({ forms, reading, meanings, antonym, referenced });
     });
 
     console.log(entries);
@@ -56,48 +64,39 @@ export class JmdictParser {
 
   async writeTerm() {
     const terms = await this.parseAll();
-    await writeFile(
-      paths["@/.jmdict/term.json"],
-      JSON.stringify(terms, null, 2),
-    );
+    await writeFile(paths["@/.jmdict/term.json"], JSON.stringify(terms, null, 2));
   }
 
   async writeTermMap() {
-    const terms = JSON.parse(
-      await readFile(paths["@/.jmdict/term.json"], "utf8"),
-    ) as JmdictTerm[];
+    const terms = JSON.parse(await readFile(paths["@/.jmdict/term.json"], "utf8")) as JmdictTerm[];
     const termMap: Record<string, JmdictTerm> = {};
     terms.forEach((term) => {
-      term.kanji.forEach((kanji) => {
-        if (termMap[kanji]) {
-          termMap[kanji] = {
-            kanji: Array.from(
-              new Set([...term.kanji, ...termMap[kanji].kanji]),
-            ),
-            meanings: Array.from(
-              new Set([...term.meanings, ...termMap[kanji].meanings]),
-            ),
-            reading: Array.from(
-              new Set([...term.reading, ...termMap[kanji].reading]),
-            ),
-          };
+      term.forms.forEach((form) => {
+        if (termMap[form]) {
+          const existing = termMap[form];
+          const hasCommonReading = term.reading.some((r) => existing.reading.includes(r));
+          if (hasCommonReading) {
+            termMap[form] = {
+              forms: existing.forms,
+              reading: Array.from(new Set([...term.reading, ...existing.reading])),
+              meanings: Array.from(new Set([...term.meanings, ...existing.meanings])),
+              antonym: existing.antonym,
+              referenced: existing.referenced,
+            };
+          }
         } else {
-          termMap[kanji] = term;
+          termMap[form] = term;
         }
       });
     });
 
-    await writeFile(
-      paths["@/.jmdict/termMap.json"],
-      JSON.stringify(termMap, null, 2),
-    );
+    await writeFile(paths["@/.jmdict/termMap.json"], JSON.stringify(termMap, null, 2));
   }
 
   termMap: Record<string, JmdictTerm> | undefined = undefined;
   async lookup(term: string) {
     this.termMap =
-      this.termMap ||
-      JSON.parse(await readFile(paths["@/.jmdict/termMap.json"], "utf8"));
+      this.termMap || JSON.parse(await readFile(paths["@/.jmdict/termMap.json"], "utf8"));
     if (!this.termMap) throw new Error("termMap not found");
     return this.termMap[term];
   }
@@ -105,8 +104,5 @@ export class JmdictParser {
 
 export const jmdictParser = new JmdictParser();
 
-// step 1
 // await jmdictParser.writeTerm();
-
-// step 2
 // await jmdictParser.writeTermMap();

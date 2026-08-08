@@ -27,8 +27,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "#/plugins/*": ["./plugins/*"],
-      "#/*": ["./src/*"]
+      "#/*": ["./*"]
     }
   },
   "include": ["src", "preview", "plugins"],

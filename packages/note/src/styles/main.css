@@ -1,0 +1,23 @@
+/* https://github.com/saadeghi/daisyui/issues/4209#issuecomment-3512250505 */
+@layer theme, base, components, utilities.daisyui.component;
+@import "tailwindcss";
+@import "./daisyui.css";
+@import "./theme.css";
+@import "./base.css";
+@import "./components.css";
+@import "./utilities.css";
+@import "./tailwind-property.css";
+@import "./dictionary.css";
+@import "./configurable.css";
+@source "..";
+
+@custom-variant hover (&:hover);
+
+@utility gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+[data-kiku-cloak] {
+  visibility: visible !important;
+  opacity: 1 !important;
+}

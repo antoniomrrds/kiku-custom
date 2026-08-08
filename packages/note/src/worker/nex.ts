@@ -17,9 +17,9 @@ type NexMessage = {
 // Convert a local API into the shape of the remote proxy:
 // keep only methods, and make every call return a Promise.
 export type NexRemote<T extends object> = {
-  [K in keyof T as T[K] extends (...args: infer A) => infer R
-    ? K
-    : never]: T[K] extends (...args: infer A) => infer R
+  [K in keyof T as T[K] extends (...args: infer A) => infer R ? K : never]: T[K] extends (
+    ...args: infer A
+  ) => infer R
     ? (...args: A) => Promise<Awaited<R>>
     : never;
 };
@@ -31,10 +31,7 @@ type NexRequestHandler = (message: NexMessage) => void;
 // `postMessage` plus a message listener.
 type NexEndpoint = {
   postMessage(message: NexMessage): void;
-  addEventListener(
-    type: "message",
-    listener: (event: MessageEvent<NexMessage>) => void,
-  ): void;
+  addEventListener(type: "message", listener: (event: MessageEvent<NexMessage>) => void): void;
 };
 
 abstract class NexBase<TRemote extends object> {
@@ -83,7 +80,8 @@ abstract class NexBase<TRemote extends object> {
       const pending = this.pending.get(id);
       if (!pending) return;
       this.pending.delete(id);
-      error ? pending.reject(error) : pending.resolve(result);
+      if (error) pending.reject(error);
+      else pending.resolve(result);
       return;
     }
 
@@ -94,9 +92,7 @@ abstract class NexBase<TRemote extends object> {
     try {
       const maybeFn = Reflect.get(this.api, fn, this.api);
       const result =
-        typeof maybeFn === "function"
-          ? await Reflect.apply(maybeFn, this.api, args)
-          : maybeFn;
+        typeof maybeFn === "function" ? await Reflect.apply(maybeFn, this.api, args) : maybeFn;
       this.postMessage({ res: { id, result } });
     } catch (error) {
       this.postMessage({ res: { id, error } });

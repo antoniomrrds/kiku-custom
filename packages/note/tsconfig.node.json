@@ -26,8 +26,7 @@
     "noUncheckedSideEffectImports": true,
 
     "paths": {
-      "#/plugins/*": ["./plugins/*"],
-      "#/*": ["./src/*"]
+      "#/*": ["./*"]
     }
   },
   "include": [
@@ -36,6 +35,6 @@
     "preprocess",
     "tools",
     "script",
-    "src/util/types.ts"
+    "src/lib/types.ts"
   ]
 }

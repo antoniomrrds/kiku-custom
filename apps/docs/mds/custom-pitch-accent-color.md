@@ -4,6 +4,10 @@ outline: deep
 
 # Custom Pitch Accent Color
 
-Using `_kiku_plugin.css`, you can adjust the color of each pitch accent type.
+Customize the color of each pitch accent type.
 
-<<< ../../../packages/note/plugins/custom-pitch-accent-color/_kiku_plugin.css
+::: code-group
+
+<!-- prettier-ignore -->
+<<< ../../../packages/note/plugins/custom-pitch-accent-color/_kiku_plugin.css [_kiku_plugin.css]
+:::

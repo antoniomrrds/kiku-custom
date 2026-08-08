@@ -22,7 +22,7 @@
 
 <br/>
 <br/>
-<p>A modern, fully interactive Anki note type designed for Japanese learners.</p>
+<p>A feature-rich, fully interactive Anki note type designed for Japanese learners.</p>
 </div>
 
 <hr/>
@@ -32,8 +32,7 @@
 To get started, visit the documentation [here](https://kiku.youyoumu.my.id/installation.html).
 
 ## Demo
-
-[demo.webm](https://github.com/user-attachments/assets/2ba85de6-8694-4b1b-b5f2-bf0ef8e0b520)
+[kanji-web.webm](https://github.com/user-attachments/assets/6d6027bf-0e68-4dc8-8f55-53eb04002fcf)
 
 [See more features](https://kiku.youyoumu.my.id/features.html)
 

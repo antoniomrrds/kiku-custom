@@ -1,115 +1,205 @@
-import { createEffect, createMemo, createSignal, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  lazy,
+  on,
+  Show,
+} from "solid-js";
 import { isServer } from "solid-js/web";
-import type { DatasetProp } from "#/util/config";
-import { parseHtml } from "#/util/general";
-import { useAnkiFieldContext } from "./shared/AnkiFieldsContext";
-import { useCardContext } from "./shared/CardContext";
-import { useConfigContext } from "./shared/ConfigContext";
-import { useFieldGroupContext } from "./shared/FieldGroupContext";
+import { parseHtml } from "#/src/lib/dom";
+import { isNsfw } from "#/src/lib/util";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
+import { usePictureModalTransition } from "#/src/hooks/transition";
+import { useConfigContext } from "#/src/contexts/ConfigContext";
+
+const Lazy = {
+  ArrowLeftIcon: lazy(async () => ({
+    default: (await import("#/src/lazy")).ArrowLeftIcon,
+  })),
+};
+
 export function PictureSection() {
-  const [$card, $setCard] = useCardContext();
+  const { $card, $isInitialSide } = useCardContext();
   const { $group } = useFieldGroupContext();
-  const { ankiFields } = useAnkiFieldContext();
-  const [clicked, setClicked] = createSignal(false);
-  const [subIndex, setSubIndex] = createSignal(0);
+  const { $ankiFields } = useAnkiFieldContext();
+  const { $setPictureModal } = usePictureModalTransition();
+  const [$clicked, $setClicked] = createSignal(false);
+  const [$subIndex, $setSubIndex] = createSignal(0);
   const [$config] = useConfigContext();
-  const isVisible = () => clicked() || $config.showPictureDirectlyOnFront;
-  const pictures = createMemo(() => {
+
+  // Mostra a imagem se:
+  // 1. o usuário clicou para revelar
+  // OU
+  // 2. showPictureDirectlyOnFront está ativado
+  const isVisible = () => $clicked() || $config.showPictureDirectlyOnFront;
+
+  const $pictures = createMemo(() => {
     if (isServer) return [];
-    const doc = parseHtml($group.pictureField);
+
+    const doc = parseHtml($group().pictureField);
+
     return Array.from(doc.querySelectorAll("img")).map((img) => img.outerHTML);
   });
 
-  createEffect(() => {
-    $group.pictureField;
-    setSubIndex(0);
-  });
+  const $currentPicture = createMemo(() => $pictures()[$subIndex()] || "");
 
-  const currentPicture = () => pictures()[subIndex()] || "";
+  const $isNsfw = createMemo(() => isNsfw($ankiFields.Tags));
 
-  const pictureFieldDataset: () => DatasetProp = () => ({
+  const $pictureFieldDataset = createMemo(() => ({
     "data-transition": $card.ready ? "true" : undefined,
-    "data-tags": "{{Tags}}",
-    "data-nsfw": $card.isNsfw ? "true" : "false",
-  });
+    "data-tags": isServer ? "{{Tags}}" : $ankiFields.Tags,
+    "data-nsfw": $isNsfw() ? "true" : "false",
+  }));
 
-  const dataSet1: () => DatasetProp = () => ({
+  // NOTE: if the first data-group-id has no picture,
+  // the SSR output will still display the first picture from Picture field.
+  // This is a bug but it is still preferable to having a layout shift.
+  const $dataSet1 = createMemo(() => ({
     "data-has-picture": isServer
       ? "{{#Picture}}true{{/Picture}}"
-      : ankiFields.Picture
+      : $currentPicture()
         ? "true"
         : "",
+  }));
+
+  // Controla a visibilidade da imagem.
+  //
+  // Se showPictureDirectlyOnFront estiver ativado,
+  // a imagem aparece diretamente.
+  //
+  // Caso contrário:
+  // - no lado inicial, mantém o comportamento padrão;
+  // - no outro lado, fica escondida até clicar.
+  const $opacity = createMemo(() => {
+    if (isVisible()) return 1;
+    if ($isInitialSide()) return undefined;
+    return 0;
   });
+
+  // Quando muda o grupo de imagens,
+  // volta para a primeira imagem.
+  createEffect(
+    on(
+      () => $group().pictureField,
+      () => $setSubIndex(0),
+    ),
+  );
+
+  // Quando muda de lado do card,
+  // reseta o estado de clique.
+  createEffect(
+    on(
+      () => $isInitialSide(),
+      () => $setClicked(false),
+    ),
+  );
 
   const next = (e: MouseEvent) => {
     e.stopPropagation();
-    setSubIndex((prev) => (prev + 1) % pictures().length);
+
+    const length = $pictures().length;
+
+    if (length <= 1) return;
+
+    $setSubIndex((prev) => (prev + 1) % length);
   };
 
   const prev = (e: MouseEvent) => {
     e.stopPropagation();
-    setSubIndex((prev) => (prev - 1 + pictures().length) % pictures().length);
+
+    const length = $pictures().length;
+
+    if (length <= 1) return;
+
+    $setSubIndex((prev) => (prev - 1 + length) % length);
   };
 
   return (
     <div
-      class="sm:max-w-1/2 bg-base-200 flex sm:items-center rounded-lg relative overflow-hidden justify-center picture-field-container group/pic tappable"
+      class="picture-field-container tappable"
       on:click={() => {
+        // Se showPictureDirectlyOnFront estiver ativado,
+        // não precisa clicar para revelar a imagem.
         if (!$config.showPictureDirectlyOnFront) {
-          setClicked((prev) => !prev);
+          $setClicked((prev) => !prev);
         }
       }}
       on:touchend={(e) => e.stopPropagation()}
-      {...dataSet1()}
+      {...$dataSet1()}
     >
       <div
-        class="picture-field-background"
+        class="picture-field-background tappable"
         style={{
-          opacity: isVisible() ? 1 : undefined,
+          opacity: $opacity(),
         }}
-        innerHTML={isServer ? undefined : currentPicture()}
-      >
-        {isServer ? "{{Picture}}" : undefined}
-      </div>
-      <div
-        class="picture-field tappable"
-        style={{
-          opacity: isVisible() ? 1 : undefined,
-        }}
-        on:click={() => {
-          $setCard("pictureModal", currentPicture());
-        }}
+        on:click={() => $setPictureModal($currentPicture())}
         on:touchend={(e) => e.stopPropagation()}
-        {...pictureFieldDataset()}
-        innerHTML={isServer ? undefined : currentPicture()}
+        innerHTML={isServer ? undefined : $currentPicture()}
       >
         {isServer ? "{{Picture}}" : undefined}
       </div>
 
-      <Show when={pictures().length > 1 && $card.ready}>
-        <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
-          <button
-            type="button"
-            class="h-full w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
-            on:click={prev}
-            on:touchend={(e) => e.stopPropagation()}
-          />
-          <button
-            type="button"
-            class="h-full w-6 cursor-pointer hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all"
-            on:click={next}
-            on:touchend={(e) => e.stopPropagation()}
-          />
+      <div
+        class="picture-field tappable"
+        style={{
+          opacity: $opacity(),
+        }}
+        on:click={() => $setPictureModal($currentPicture())}
+        on:touchend={(e) => e.stopPropagation()}
+        {...$pictureFieldDataset()}
+      >
+        {/* 
+          IMPORTANTE:
+          O innerHTML fica em um elemento separado.
+          O Solid não controla os filhos desse elemento.
+        */}
+        <div
+          class="picture-content"
+          innerHTML={isServer ? undefined : $currentPicture()}
+        >
+          {isServer ? "{{Picture}}" : undefined}
         </div>
-        <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none opacity-0 group-hover/pic:opacity-100 transition-opacity">
-          {pictures().map((_, i) => (
-            <div
-              class="w-1.5 h-1.5 rounded-full bg-base-100/50"
-              classList={{ "bg-primary": i === subIndex() }}
-            />
-          ))}
-        </div>
-      </Show>
+
+        {/* 
+          O Show agora está fora do elemento que usa innerHTML.
+          Assim o Solid pode controlar esses nós normalmente.
+        */}
+        <Show when={$pictures().length > 1 && $card.ready}>
+          <div class="absolute inset-y-0 left-0 right-0 flex justify-between pointer-events-none">
+            <button
+              type="button"
+              class="h-full w-4 sm:w-6 cursor-pointer opacity-0 hover:opacity-100 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all flex items-center justify-center"
+              on:click={prev}
+              on:touchend={(e) => e.stopPropagation()}
+            >
+              <Lazy.ArrowLeftIcon class="size-3 sm:size-4 text-base-100" />
+            </button>
+
+            <button
+              type="button"
+              class="h-full w-4 sm:w-6 cursor-pointer opacity-0 hover:opacity-100 hover:bg-base-content/30 hover:backdrop-blur-sm pointer-events-auto transition-all flex items-center justify-center"
+              on:click={next}
+              on:touchend={(e) => e.stopPropagation()}
+            >
+              <Lazy.ArrowLeftIcon class="size-3 sm:size-4 text-base-100 rotate-180" />
+            </button>
+          </div>
+
+          <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none">
+            {$pictures().map((_, i) => (
+              <div
+                class="w-1.5 h-1.5 rounded-full bg-base-100/50 ring-1 ring-base-content/50"
+                classList={{
+                  "bg-primary": i === $subIndex(),
+                }}
+              />
+            ))}
+          </div>
+        </Show>
+      </div>
     </div>
   );
 }

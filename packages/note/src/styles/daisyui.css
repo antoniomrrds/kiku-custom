@@ -1,13 +1,13 @@
-@plugin "daisyui" {
-  root: ":root";
+@plugin "./daisyui-shim.ts" {
+  root: "#kiku-root";
   themes: all;
   include:
     properties, reset, rootcolor, rootscrollgutter, rootscrolllock, svg, scrollbar, button, input,
     label, fieldset, select, alert, badge, toast, collapse, status, toggle, list, loading, range,
-    tooltip, divider, modal, indicator;
+    tooltip, divider, modal, indicator, tab;
 }
 
-/* biome-ignore format: this looks nicer */
+/* prettier-ignore */
 @theme {
   --color-base-content-subtle-100: color-mix( in srgb, var(--color-base-content) 10%, var(--color-base-100));
   --color-base-content-subtle-200: color-mix( in srgb, var(--color-base-content) 20%, var(--color-base-100));
@@ -26,9 +26,9 @@
   --color-base-content-primary: var(--color-primary);
 }
 
-/* biome-ignore format: this looks nicer */
+/* prettier-ignore */
 @layer base {
-  [data-theme] {
+  #kiku-host::part(root), #kiku-root, [data-theme-preview] {
     --color-base-content-subtle-100: color-mix( in srgb, var(--color-base-content) 10%, var(--color-base-100));
     --color-base-content-subtle-200: color-mix( in srgb, var(--color-base-content) 20%, var(--color-base-100));
     --color-base-content-subtle-300: color-mix( in srgb, var(--color-base-content) 30%, var(--color-base-100));
@@ -44,48 +44,5 @@
     --color-base-content-calm: var(--color-base-content-subtle-700);
 
     --color-base-content-primary: var(--color-primary);
-  }
-
-  [data-theme="light"],
-  [data-theme="corporate"],
-  [data-theme="valentine"],
-  [data-theme="halloween"],
-  [data-theme="forest"],
-  [data-theme="aqua"],
-  [data-theme="lofi"],
-  [data-theme="fantasy"],
-  [data-theme="luxury"],
-  [data-theme="dracula"],
-  [data-theme="cmyk"],
-  [data-theme="autumn"],
-  [data-theme="lemonade"],
-  [data-theme="night"],
-  [data-theme="coffee"],
-  [data-theme="winter"],
-  [data-theme="dim"],
-  [data-theme="nord"],
-  [data-theme="sunset"],
-  [data-theme="caramellatte"],
-  [data-theme="abyss"],
-  [data-theme="silk"],
-  [data-theme="temp"] {
-    --color-base-content-primary: var(--color-primary);
-  }
-
-  [data-theme="dark"],
-  [data-theme="cupcake"],
-  [data-theme="bumblebee"],
-  [data-theme="emerald"],
-  [data-theme="synthwave"],
-  [data-theme="retro"],
-  [data-theme="cyberpunk"],
-  [data-theme="garden"],
-  [data-theme="pastel"],
-  [data-theme="wireframe"],
-  [data-theme="black"],
-  [data-theme="business"],
-  [data-theme="acid"],
-  [data-theme="temp"] {
-    --color-base-content-primary: color-mix( in srgb, var(--color-primary) 50%, var(--color-base-content));
   }
 }

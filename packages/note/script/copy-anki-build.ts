@@ -1,7 +1,7 @@
 import { cp, stat } from "node:fs/promises";
 import { basename, join } from "node:path";
-import { env } from "../tools/env.ts";
-import { paths } from "../tools/paths.ts";
+import { env } from "#/tools/env.ts";
+import { paths } from "#/tools/paths.ts";
 
 class Script {
   async ensureAnkiDir() {
@@ -54,17 +54,6 @@ class Script {
     await this.copyFiles(FILES, paths["@/.anki-build/"]);
   }
 
-  async copyFonts() {
-    const FONTS = [
-      "_kiku_font_hina-mincho.woff2",
-      "_kiku_font_klee-one.woff2",
-      "_kiku_font_ibm-plex-sans-jp.woff2",
-    ];
-
-    console.log("\n📁 Copying FONTS...");
-    await this.copyFiles(FONTS, paths["@/.fonts/"]);
-  }
-
   async copyDatabases() {
     const DBS = ["_kiku_db_main.tar", "_kiku_db_main_manifest.json"];
 
@@ -73,17 +62,17 @@ class Script {
   }
 
   async run() {
-    console.log(
-      `🔍 Checking Anki collection at: ${env.ANKI_COLLECTION_MEDIA_PATH}`,
-    );
+    console.log(`🔍 Checking Anki collection at: ${env.ANKI_COLLECTION_MEDIA_PATH}`);
     await this.ensureAnkiDir();
     await this.copyAssetsFromDistToAnkiBuild();
     await this.copyAnkiBuild();
-    await this.copyFonts();
     await this.copyDatabases();
     console.log("\n🎉 Done!");
   }
 }
 
 const script = new Script();
-script.run();
+script.run().catch((e) => {
+  console.error("Script failed:", e);
+  process.exit(1);
+});

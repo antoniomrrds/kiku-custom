@@ -1,0 +1,14 @@
+@media (max-width: 40rem) {
+  .expression-picture-box {
+    flex-direction: row;
+  }
+
+  .picture-field-container {
+    /* use 30% or 40% if you want smaller picture */
+    max-width: 50%;
+  }
+
+  .picture-field {
+    height: calc(var(--spacing) * 38);
+  }
+}

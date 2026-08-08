@@ -1,0 +1,107 @@
+import { createMemo, createSignal, For, Match, Switch } from "solid-js";
+import { Portal } from "solid-js/web";
+import { parseHtml } from "#/src/lib/dom";
+import { useCollectGlossaryImgs } from "#/src/hooks/glossary";
+import { usePictureModalTransition } from "#/src/hooks/transition";
+import { useAnkiFieldContext } from "#/src/contexts/AnkiFieldsContext";
+import { useGeneralContext } from "#/src/contexts/GeneralContext";
+import { useCardContext } from "#/src/contexts/CardContext";
+
+export function PictureModal() {
+  const { $card, $setCard } = useCardContext();
+  const { $general, isAnkiWeb } = useGeneralContext();
+  const { $ankiFields } = useAnkiFieldContext();
+  const { $setPictureModal } = usePictureModalTransition();
+  const [$showAll, $setShowAll] = createSignal(false);
+  const collectGlossaryImgs = useCollectGlossaryImgs();
+
+  const $allPictures = createMemo(() => {
+    const pics = new Map<string, string>(); // src -> html
+    const addImages = (doc: Document) => {
+      for (const img of doc.querySelectorAll("img")) {
+        const src = img.getAttribute("src");
+        if (src) {
+          pics.set(src, img.outerHTML);
+        }
+      }
+    };
+
+    addImages(parseHtml($ankiFields.Picture));
+    addImages(parseHtml($ankiFields.DefinitionPicture));
+    for (const pic of collectGlossaryImgs($ankiFields.Glossary)) {
+      pics.set(pic.src, pic.html);
+    }
+
+    return Array.from(pics.entries()).map(([src, html]) => ({ src, html }));
+  });
+
+  return (
+    <Portal mount={$general.layoutRef}>
+      <div
+        part="picture-modal"
+        class="z-40 top-0 left-0 w-full h-full p-4 sm:p-8 bg-black/75 flex flex-col transition-opacity overflow-auto tappable"
+        classList={{
+          fixed: !isAnkiWeb,
+          absolute: isAnkiWeb,
+          hidden: !$card.pictureModal,
+        }}
+        on:click={() => $setPictureModal(undefined)}
+        on:touchend={(e) => e.stopPropagation()}
+      >
+        <div class="flex justify-end items-center mb-4 sticky top-0 rounded-lg z-10">
+          <button
+            type="button"
+            class="btn btn-sm btn-neutral"
+            classList={{
+              hidden: $allPictures().length < 2,
+            }}
+            on:click={(e) => {
+              e.stopPropagation();
+              $setShowAll((prev) => !prev);
+            }}
+            on:touchend={(e) => e.stopPropagation()}
+          >
+            {$showAll() ? "Back to image" : "All images"}
+          </button>
+        </div>
+
+        <div class="flex-1 flex justify-center items-center">
+          <Switch>
+            <Match when={!$showAll()}>
+              <div
+                class="transition-all [&_img]:max-h-[85vh] sm:[&_img]:max-h-[95vh] [&_*:not(img)]:contents"
+                innerHTML={$card.pictureModal ?? ""}
+              ></div>
+            </Match>
+            <Match when={$showAll()}>
+              <div class="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-2 sm:gap-4 w-full max-w-7xl mx-auto justify-center">
+                <For each={$allPictures()}>
+                  {(pic) => (
+                    <div
+                      class="aspect-square relative rounded-lg overflow-hidden flex items-center justify-center cursor-pointer sm:hover:scale-105 transition-transform group tappable"
+                      on:click={(e) => {
+                        e.stopPropagation();
+                        $setCard("pictureModal", pic.html);
+                        $setShowAll(false);
+                      }}
+                      on:touchend={(e) => e.stopPropagation()}
+                    >
+                      <div
+                        class="absolute inset-0 bg-cover bg-center blur-lg brightness-50 scale-110"
+                        style={{ "background-image": `url("${pic.src}")` }}
+                      />
+                      <div
+                        class="relative z-10 w-full h-full [&_img]:w-full [&_img]:h-full [&_img]:object-contain"
+                        innerHTML={pic.html}
+                      />
+                    </div>
+                  )}
+                </For>
+              </div>
+            </Match>
+          </Switch>
+        </div>
+      </div>
+    </Portal>
+  );
+}

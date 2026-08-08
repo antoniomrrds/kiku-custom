@@ -10,7 +10,7 @@ export const plugin = {
     sessionStorage.setItem("settings-mounted", "true");
   },
   onPluginLoad: ({ ctx }) => {
-    const [$general] = ctx.useGeneralContext();
+    const { $general } = ctx.useGeneralContext();
     const root = $general.root;
     const settingsMounted = sessionStorage.getItem("settings-mounted");
     // stop if settings has ever been mounted

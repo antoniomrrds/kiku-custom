@@ -1,9 +1,9 @@
 import { lazy } from "solid-js";
-import { useFieldGroupContext } from "./shared/FieldGroupContext";
+import { useFieldGroupContext } from "#/src/contexts/FieldGroupContext";
 
-// biome-ignore format: this looks nicer
+// oxfmt-ignore
 const Lazy = {
-  FieldGroupPagination: lazy(async () => ({ default: (await import("./_kiku_lazy")).FieldGroupPagination, })),
+  FieldGroupPagination: lazy(async () => ({ default: (await import("#/src/lazy")).FieldGroupPagination, })),
 };
 
 export function FieldGroupPaginationSection() {
@@ -11,9 +11,9 @@ export function FieldGroupPaginationSection() {
 
   return (
     <div
-      class="flex justify-between text-base-content-soft items-center gap-2 animate-fade-in h-5 sm:h-8"
+      class="flex justify-between text-base-content-soft items-center gap-2 animate-fade-in h-7 sm:h-8 mt-2 sm:mt-4"
       classList={{
-        hidden: $group.ids.length <= 1,
+        hidden: $group().ids.length <= 1,
       }}
     >
       <Lazy.FieldGroupPagination />

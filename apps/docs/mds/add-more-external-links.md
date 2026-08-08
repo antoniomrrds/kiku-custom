@@ -4,7 +4,10 @@ outline: deep
 
 # Add More External Links
 
-In your `collection.media` directory, open the file named `_kiku_plugin.js`,
-and replace its contents with the following code:
+Add or customize external links on the bottom side of definitions section.
 
-<<< ../../../packages/note/plugins/add-more-external-links/_kiku_plugin.js
+::: code-group
+
+<!-- prettier-ignore -->
+<<< ../../../packages/note/plugins/add-more-external-links/_kiku_plugin.js [_kiku_plugin.js]
+:::

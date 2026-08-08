@@ -7,41 +7,53 @@
  */
 export const plugin = {
   Sentence: (props) => {
-    const h = props.ctx.h;
-    const { ankiFields } = props.ctx;
+    const { html, useAnkiFieldContext, createMemo } = props.ctx;
+    const { $ankiFields } = useAnkiFieldContext();
 
     function MiscInfo() {
-      if (!ankiFields.MiscInfo) return null;
-      return h("div", {
-        class: `bg-base-200 p-2 rounded-lg animate-fade-in misc-info text-base-content-calm`,
-        innerHTML: ankiFields.MiscInfo,
-      })();
+      const $miscInfo = createMemo(() => $ankiFields.MiscInfo);
+      if (!$miscInfo()) return null;
+      return html`<div
+        class="bg-base-200 p-2 rounded-lg animate-fade-in misc-info text-base-content-calm"
+        innerHTML=${$miscInfo}
+      ></div>`;
     }
 
     return [props.DefaultSentence(), MiscInfo()];
   },
 
   Footer: (props) => {
-    const h = props.ctx.h;
+    const { html, useGeneralContext, onMount } = props.ctx;
     const DefaultFooter = props.DefaultFooter;
+    const { $general } = useGeneralContext();
+    const shadow = $general.host?.shadowRoot;
+
+    /**
+     * Converts an object of styles into a CSS rule string.
+     *
+     * @param {string} selector - The CSS selector (e.g., '.btn', '#header').
+     * @param {Object.<string, string|number>} styles - The key-value pairs of CSS properties and values.
+     * @returns {string} The formatted CSS block.
+     */
+    function objectToCss(selector, styles) {
+      const body = Object.entries(styles)
+        .map(([key, val]) => `  ${key}: ${val};`)
+        .join("\n");
+
+      return `${selector} {\n${body}\n}`;
+    }
 
     function Footer() {
-      return h("div", { class: `custom-footer` }, DefaultFooter())();
+      onMount(() => {
+        if (!shadow) return;
+        const css = new CSSStyleSheet();
+        css.insertRule(objectToCss(".custom-footer .misc-info", { display: "none" }));
+        shadow.adoptedStyleSheets = [...shadow.adoptedStyleSheets, css];
+      });
+
+      return html`<div class="custom-footer">${DefaultFooter}</div>`;
     }
 
-    function Style() {
-      return h(
-        "style",
-        `
-        .custom-footer { 
-          .misc-info { 
-            display: none; 
-          } 
-        }
-      `,
-      )();
-    }
-
-    return [Footer(), Style()];
+    return [Footer()];
   },
 };

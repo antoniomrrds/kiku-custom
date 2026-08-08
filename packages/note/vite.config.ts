@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import circularDpendency from "vite-plugin-circular-dependency";
 import dts from "vite-plugin-dts";
 import solid from "vite-plugin-solid";
@@ -7,25 +7,24 @@ import { paths } from "./tools/paths.js";
 import { getVersion } from "./tools/util.js";
 import { serveAnkiCollectionMedia } from "./tools/vite-plugin-serve-anki-collection.media.js";
 
+const fastBuild = process.env.FAST_BUILD === "true";
+const plugins: PluginOption[] = [solid({ ssr: true }), tailwindcss()];
+if (!fastBuild) {
+  plugins.push(serveAnkiCollectionMedia());
+  plugins.push(circularDpendency({ outputFilePath: "./.circularDependency.json" }));
+  plugins.push(dts({ tsconfigPath: "./tsconfig.app.json", outDirs: "./dist/types" }));
+}
+
 export default defineConfig({
-  plugins: [
-    solid({ ssr: true }),
-    tailwindcss(),
-    serveAnkiCollectionMedia(),
-    circularDpendency({
-      outputFilePath: "./.circularDependency.json",
-      circleImportThrowErr: true,
-    }),
-    dts({ tsconfigPath: "./tsconfig.app.json", outDir: "./dist/types" }),
-  ],
+  plugins,
   resolve: {
     alias: {
-      "#/plugins": paths["@/plugins/"],
-      "#": paths["@/src/"],
+      "#": paths["@/"],
     },
   },
   define: {
     __VERSION__: JSON.stringify(await getVersion()),
+    __COMMIT_SHA__: JSON.stringify(process.env.COMMIT_SHA ?? "dev"),
   },
   build: {
     lib: {
@@ -38,11 +37,7 @@ export default defineConfig({
     cssMinify: false,
     minify: false,
     rolldownOptions: {
-      external: [
-        "_kiku_font_hina-mincho.woff2",
-        "_kiku_font_klee-one.woff2",
-        "_kiku_font_ibm-plex-sans-jp.woff2",
-      ],
+      external: [],
       output: {
         codeSplitting: {
           groups: [
@@ -57,11 +52,19 @@ export default defineConfig({
             {
               test: (id) => {
                 const result =
-                  /src\/util/.test(id) || /src\/components\/shared/.test(id);
+                  /src\/lib/.test(id) || /src\/hooks/.test(id) || /src\/contexts/.test(id);
                 return result;
               },
               // _kiku_shared is module that is used by _kiku.js and _kiku_lazy.js
               name: "_kiku_shared",
+            },
+            {
+              test: (id) => {
+                const result = /src\/lazy/.test(id);
+                return result;
+              },
+              // _kiku_lazy contains modules that is imported from src/lazy
+              name: "_kiku_lazy",
             },
           ],
         },

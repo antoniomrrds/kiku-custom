@@ -19,8 +19,7 @@ const BASE_DIR =
 const ANKI_USER = process.env.ANKI_USER ?? "User 1";
 
 const ANKI_COLLECTION_MEDIA_PATH =
-  process.env.ANKI_COLLECTION_MEDIA_PATH ||
-  join(BASE_DIR, `Anki2/${ANKI_USER}/collection.media`);
+  process.env.ANKI_COLLECTION_MEDIA_PATH || join(BASE_DIR, `Anki2/${ANKI_USER}/collection.media`);
 
 // 2. Only validate the path if we are NOT in a CI environment (like Vercel)
 if (process.env.CI !== "true") {

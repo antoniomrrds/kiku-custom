@@ -1,12 +1,13 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { paths } from "../tools/paths.ts";
-import { getVersion, log } from "../tools/util.js";
+import { paths } from "#/tools/paths.ts";
+import { getVersion, log } from "#/tools/util.js";
 import { generateSsrTemplate } from "./generate-ssr-template.js";
 
 class Script {
   PATHS = {
     FRONT_SRC: paths["@/template/front.html"],
     BACK_SRC: paths["@/template/back.html"],
+    ERROR_SRC: paths["@/template/error.html"],
     STYLE_SRC: paths["@/template/style.css"],
 
     FRONT_DEST: paths["@/.anki-build/_kiku_front.html"],
@@ -25,26 +26,27 @@ class Script {
   }
 
   async loadSources() {
-    const [front, back, style, plugin, cssPlugin] = await Promise.all([
+    const [front, back, error, style, plugin, cssPlugin] = await Promise.all([
       readFile(this.PATHS.FRONT_SRC, "utf8"),
       readFile(this.PATHS.BACK_SRC, "utf8"),
+      readFile(this.PATHS.ERROR_SRC, "utf8"),
       readFile(this.PATHS.STYLE_SRC, "utf8"),
       readFile(this.PATHS.PLUGIN_SRC, "utf8"),
       readFile(this.PATHS.CSS_PLUGIN_SRC, "utf8"),
     ]);
-    return { front, back, style, plugin, cssPlugin };
+    return { front, back, error, style, plugin, cssPlugin };
   }
 
   async buildTemplates(src: {
     front: string;
     back: string;
+    error: string;
     style: string;
     plugin: string;
     cssPlugin: string;
   }) {
     const version = `v${await getVersion()}`;
-    const { frontSsrTemplate, backSsrTemplate, hydrationScript } =
-      generateSsrTemplate();
+    const { frontSsrTemplate, backSsrTemplate, hydrationScript } = generateSsrTemplate();
 
     log.yellow("Front SSR Template:");
     log.gray(frontSsrTemplate);
@@ -56,10 +58,12 @@ class Script {
     const front = src.front
       .replace("__VERSION__", version)
       .replace("<!-- SSR_TEMPLATE -->", frontSsrTemplate)
+      .replace("<!-- ERROR_TEMPLATE -->", src.error)
       .replace("<!-- HYDRATION_SCRIPT -->", hydrationScript);
     const back = src.back
       .replace("__VERSION__", version)
       .replace("<!-- SSR_TEMPLATE -->", backSsrTemplate)
+      .replace("<!-- ERROR_TEMPLATE -->", src.error)
       .replace("<!-- HYDRATION_SCRIPT -->", hydrationScript);
     const style = src.style.replace("__VERSION__", version);
     const plugin = src.plugin;

@@ -30,11 +30,13 @@ Open your Yomitan settings, go to `Anki` > `Configure Anki flashcard`, select `K
 | ExpressionFurigana    | `{furigana-plain}`                                                                                                                                       |
 | ExpressionReading     | `{reading}`                                                                                                                                              |
 | ExpressionAudio       | `{audio}`                                                                                                                                                |
+| RelatedExpression     |                                                                                                                                                          |
 | SelectionText         | `{popup-selection-text}`                                                                                                                                 |
 | MainDefinition        | Something like `{single-glossary-jmdict/jitendex}`. Find this by clicking the down arrow next to this field, and find a dictionary in a similar format.  |
 | DefinitionPicture     | Here you can include any image you'd like to use to help _illustrate_ the definition or the vocabulary term.                                             |
 | Sentence              | `{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}`                                                                                                        |
-| SentenceFurigana      |                                                                                                                                                          |
+| SentenceFurigana      | `{sentence-furigana-plain}`                                                                                                                              |
+| SentenceTranslation   |                                                                                                                                                          |
 | SentenceAudio         |                                                                                                                                                          |
 | Picture               |                                                                                                                                                          |
 | Glossary              | `{glossary}`                                                                                                                                             |
@@ -51,7 +53,7 @@ Open your Yomitan settings, go to `Anki` > `Configure Anki flashcard`, select `K
 
 Credit to [Lapis](https://github.com/donkuri/lapis) for the table
 
-## [Kiku Note Manager](https://ankiweb.net/shared/info/408592650?cb=1763445474367) addon (Optional)
+## [Kiku Note Manager](https://ankiweb.net/shared/info/408592650?cb=1763445474367) addon
 
-This addon is used to generate notes cache, so the Kanji View feature works across all platforms.
+This addon is used to generate notes cache, so the Kanji Web feature works across all platforms.
 Install this addon, then go to `Tools` > `Kiku Note Manager` > `Generate notes cache`.

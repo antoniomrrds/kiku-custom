@@ -1,19 +1,22 @@
 {
-  "name": "docs",
+  "name": "@repo/docs",
   "version": "0.0.0",
+  "imports": {
+    "#/*": "./*"
+  },
   "scripts": {
     "dev": "vitepress dev --port 5174",
     "build": "vitepress build",
-    "preview": "vitepress preview",
-    "start": "vitepress build && vitepress preview"
+    "start": "vitepress preview",
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@repo/note": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "~5.9.3",
-    "vite": "^8.0.0",
-    "vitepress": "2.0.0-alpha.12",
-    "vue": "^3.5.22"
+    "@vitejs/plugin-vue-jsx": "^5.1.6",
+    "vite": "^8.1.5",
+    "vitepress": "2.0.0-alpha.17",
+    "vue": "^3.5.40"
   }
 }

@@ -1,7 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import { paths } from "../tools/paths.ts";
-import { AnkiConnect, getVersion } from "../tools/util.js";
+import { paths } from "#/tools/paths.ts";
+import { AnkiConnect, getVersion } from "#/tools/util.js";
 
 class Script {
   DECK_NAME = "Kiku"; // change if needed
@@ -22,9 +22,7 @@ class Script {
       includeSched: false,
     });
     if (!result) throw new Error(`Failed to export deck "${this.DECK_NAME}"`);
-    console.log(
-      `✅ Successfully exported deck "${this.DECK_NAME}" to: ${outputPath}`,
-    );
+    console.log(`✅ Successfully exported deck "${this.DECK_NAME}" to: ${outputPath}`);
   }
 
   async run() {

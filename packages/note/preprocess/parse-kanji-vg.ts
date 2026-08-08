@@ -2,7 +2,7 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import * as cheerio from "cheerio";
 import extract from "extract-zip";
-import { paths } from "../tools/paths.ts";
+import { paths } from "#/tools/paths.ts";
 
 export type KanjiComposition = Record<
   string,
@@ -72,10 +72,7 @@ class KanjiVgParser {
       process.stdout.cursorTo(0);
       process.stdout.write(`Processing ${i + 1}/${files.length}`);
       const file = files[i];
-      const svgContent = await readFile(
-        join(paths["@/.kanjivg/kanji/"], file),
-        "utf8",
-      );
+      const svgContent = await readFile(join(paths["@/.kanjivg/kanji/"], file), "utf8");
       const { kanji, composedOf } = this.parseKanjiVG(svgContent);
       if (!kanji) throw new Error(`Failed to parse ${file}`);
       kanjiComposition[kanji] = { composedOf, usedIn: [] };
@@ -89,22 +86,15 @@ class KanjiVgParser {
       }
     }
 
-    await writeFile(
-      paths["@/.kanjivg/kanji.json"],
-      JSON.stringify(kanjiComposition, null, 2),
-    );
+    await writeFile(paths["@/.kanjivg/kanji.json"], JSON.stringify(kanjiComposition, null, 2));
   }
 
   async readKanjiVgJson() {
-    return JSON.parse(
-      await readFile(paths["@/.kanjivg/kanji.json"], "utf8"),
-    ) as KanjiComposition;
+    return JSON.parse(await readFile(paths["@/.kanjivg/kanji.json"], "utf8")) as KanjiComposition;
   }
 }
 
 export const kanjiVgParser = new KanjiVgParser();
-// step 1
-// await kanjiVgParser.fetchAndExtractKanjiVG();
 
-// step 2
+// await kanjiVgParser.fetchAndExtractKanjiVG();
 // await kanjiVgParser.writeKanjiVgJson();

@@ -12,23 +12,24 @@
     list-style: disc;
   }
 
-  li[data-dictionary*="Jitendex.org"],
-  div[class="yomitan-glossary"] {
-    i:first-child {
-      color: var(--color-base-content-calm) !important;
-    }
+  ol:has(> li:only-of-type) {
+    list-style-type: circle;
   }
 
   &[data-definition-style="glossary-split"] {
-    li[data-dictionary] i:first-child {
-      display: none !important;
-    }
     ol {
       padding-inline-start: 0.5em;
       list-style-type: none;
     }
     li {
       list-style-type: none;
+    }
+  }
+
+  li[data-dictionary*="Jitendex.org"],
+  div[class="yomitan-glossary"] {
+    i:first-child {
+      color: var(--color-base-content-calm) !important;
     }
   }
 
@@ -94,9 +95,7 @@
     content: ") ";
   }
 
-  [data-details="JMdict"]
-    .dict-group__tag-list
-    .dict-group__tag:not(:first-child)::before {
+  [data-details="JMdict"] .dict-group__tag-list .dict-group__tag:not(:first-child)::before {
     content: ", ";
   }
 

@@ -1,8 +1,11 @@
 {
   "name": "@repo/note",
+  "version": "2.1.0",
   "private": true,
-  "version": "1.10.2",
   "type": "module",
+  "imports": {
+    "#/*": "./*"
+  },
   "exports": {
     ".": {
       "import": "./dist/_kiku.js",
@@ -16,41 +19,53 @@
   },
   "scripts": {
     "dev": "vite ./preview/anki",
-    "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
-    "download-fonts": "npx vite-node ./preprocess/download-fonts.ts",
-    "copy-anki-build": "npx vite-node ./script/copy-anki-build.ts",
-    "update-note-type": "npx vite-node ./script/update-note-type.ts",
-    "generate-template": "npx vite-node ./script/generate-template.ts",
     "test": "vitest run",
-    "apply": "pnpm run build && pnpm run generate-template && pnpm run copy-anki-build && pnpm run update-note-type",
-    "package": "npx vite-node ./script/package.ts"
+    "format": "oxfmt --check",
+    "download-fonts": "npx vite-node ./preprocess/download-fonts.ts",
+    "format:fix": "oxfmt .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "build": "tsc -b && COMMIT_SHA=${VERCEL_GIT_COMMIT_SHA:-$(git rev-parse HEAD)} vite build",
+    "build:fast": "FAST_BUILD=true vite build",
+    "copy-anki-build": "vite-node ./script/copy-anki-build.ts",
+    "update-note-type": "vite-node ./script/update-note-type.ts",
+    "generate-template": "vite-node ./script/generate-template.ts",
+    "build:win": "tsc -b && vite build",
+    "apply:win": "pnpm run build:win && pnpm run generate-template && pnpm run copy-anki-build && pnpm run update-note-type",
+    "apply:fast:win": "vite build && pnpm run generate-template && pnpm run copy-anki-build && pnpm run update-note-type",
+    "apply": "tsc -b && COMMIT_SHA=${VERCEL_GIT_COMMIT_SHA:-$(git rev-parse HEAD)} vite build && vite-node ./script/generate-template.ts && vite-node ./script/copy-anki-build.ts && vite-node ./script/update-note-type.ts",
+    "apply:fast": "FAST_BUILD=true vite build && vite-node ./script/generate-template.ts && vite-node ./script/copy-anki-build.ts && vite-node ./script/update-note-type.ts",
+    "package": "vite-node ./script/package.ts",
+    "plugin:symlink": "vite-node ./script/plugin.ts symlink",
+    "plugin:copy": "vite-node ./script/plugin.ts copy",
+    "update-tailwind-property": "node ./script/update-tailwind-property.ts"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.7.6",
-    "solid-js": "^1.9.11"
+    "@floating-ui/dom": "^1.8.0",
+    "solid-js": "^1.9.14"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.2.1",
-    "@types/jsdom": "^28.0.1",
-    "@types/node": "^25.5.0",
+    "@tailwindcss/language-server": "^0.16.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/jsdom": "^28.0.3",
+    "@types/node": "^25.9.5",
     "@types/serve-static": "^2.2.0",
-    "@types/unzipper": "^0.10.11",
     "chalk": "^5.6.2",
+    "unzipper": "^0.12.3",
     "cheerio": "^1.2.0",
-    "daisyui": "^5.5.19",
+    "@types/unzipper": "^0.10.11",
+    "daisyui": "^5.7.0",
     "extract-zip": "^2.0.1",
     "jsdom": "^29.1.1",
     "serve-static": "^2.2.1",
-    "tailwindcss": "^4.2.1",
-    "tar": "^7.5.11",
-    "typescript": "~5.9.3",
-    "unzipper": "^0.12.3",
-    "vite": "^8.0.0",
-    "vite-node": "^5.3.0",
-    "vite-plugin-circular-dependency": "^0.5.0",
-    "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-solid": "^2.11.10",
-    "vitest": "^4.1.2"
+    "tailwindcss": "^4.3.3",
+    "tar": "^7.5.22",
+    "vite": "^8.1.5",
+    "vite-node": "^6.0.0",
+    "vite-plugin-circular-dependency": "^0.6.0",
+    "vite-plugin-dts": "^5.0.3",
+    "vite-plugin-solid": "^2.11.13",
+    "vitest": "^4.1.10"
   }
 }

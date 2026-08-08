@@ -1,9 +1,14 @@
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
-import { generateCssVars, getCssVar } from "../src/util/config.js";
-import { defaultConfig } from "../src/util/default-config.js";
-import { paths } from "../tools/paths.ts";
-import { AnkiConnect, log } from "../tools/util.js";
+import {
+  generateCssVars,
+  generateCssVarsDark,
+  getCssVar,
+  getCssVarDark,
+} from "#/src/lib/config.js";
+import { defaultConfig } from "#/src/lib/default-config.js";
+import { paths } from "#/tools/paths.ts";
+import { AnkiConnect, log } from "#/tools/util.js";
 
 class Script {
   NOTE_TYPE = "Kiku";
@@ -24,15 +29,19 @@ class Script {
 
   applyDataAttributes(template: string) {
     return template
-      .replace("__DATA_THEME__", "light")
-      .replace("__DATA_BLUR_NSFW__", "true")
-      .replace("__DATA_PICTURE_ON_FRONT__", "false")
-      .replace("__DATA_MOD_VERTICAL__", "false");
+      .replaceAll("__DATA_THEME__", defaultConfig.theme)
+      .replaceAll("__DATA_THEME_DARK__", defaultConfig.themeDark)
+      .replace("__DATA_BLUR_NSFW__", defaultConfig.blurNsfw.toString())
+      .replace("__DATA_PICTURE_ON_FRONT__", defaultConfig.pictureOnFront.toString())
+      .replace("__DATA_MOD_VERTICAL__", defaultConfig.modVertical.toString());
   }
 
   buildStyleTemplate(styleSrc: string) {
     const cssVars = generateCssVars(getCssVar(defaultConfig));
-    return styleSrc.replace("/* __CSS_VARIABLE__ */", cssVars);
+    const cssVarsDark = generateCssVarsDark(getCssVarDark(defaultConfig));
+    return styleSrc
+      .replace("/* __CSS_VARIABLE__ */", cssVars)
+      .replace("/* __CSS_VARIABLE_DARK__ */", cssVarsDark);
   }
 
   async updateTemplates(frontSrc: string, backSrc: string) {
@@ -63,9 +72,7 @@ class Script {
     });
 
     log.gray(`updateModelStyling: ${JSON.stringify(result)}`);
-    console.log(
-      `✅ Updated "${this.NOTE_TYPE}" style from ${basename(this.STYLE_PATH)}`,
-    );
+    console.log(`✅ Updated "${this.NOTE_TYPE}" style from ${basename(this.STYLE_PATH)}`);
   }
 
   async run() {
